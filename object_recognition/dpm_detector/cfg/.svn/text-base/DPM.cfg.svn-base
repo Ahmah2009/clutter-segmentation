@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+PACKAGE="dpm_detector"
+import roslib; roslib.load_manifest(PACKAGE)
+
+from dynamic_reconfigure.parameter_generator import *
+
+gen = ParameterGenerator()
+
+gen.add("model", str_t, 0, "Pre-trained model for the object to detect", "")
+gen.add ("recognition_threshold", double_t, 0, "Recognition threshold.", -10.0, -10.0, 10.0)
+
+exit(gen.generate(PACKAGE, "dpm_node", "DPM"))

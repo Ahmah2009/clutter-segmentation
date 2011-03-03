@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/launch
+END
+trainer_gui.launch
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/launch/trainer_gui.launch
+END
+tabletop.launch
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/launch/tabletop.launch
+END
+tabletop_standalone_gdb.sh
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/launch/tabletop_standalone_gdb.sh
+END
+select3dobj.launch
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/launch/select3dobj.launch
+END
+tabletop_standalone.sh
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/launch/tabletop_standalone.sh
+END

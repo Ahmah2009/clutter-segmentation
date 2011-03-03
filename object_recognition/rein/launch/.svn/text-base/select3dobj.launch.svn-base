@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="rein" name="select3dobj" type="select3dobj" output="screen" >
+    <remap from="/select3dobj/image" to="/camera/image" />
+    <param name="intrinsics_filename" value="$(find rein)/etc/camera_matrix.yaml" />
+  </node>
+</launch>

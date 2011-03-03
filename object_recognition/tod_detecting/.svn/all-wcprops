@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/wg-ros-pkg/!svn/ver/49539/branches/trunk_diamondback/stacks/object_recognition/tod_detecting
+END
+manifest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/wg-ros-pkg/!svn/ver/49133/branches/trunk_diamondback/stacks/object_recognition/tod_detecting/manifest.xml
+END
+ROS_BUILD_BLACKLIST
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/tod_detecting/ROS_BUILD_BLACKLIST
+END
+mainpage.dox
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/tod_detecting/mainpage.dox
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/wg-ros-pkg/!svn/ver/49172/branches/trunk_diamondback/stacks/object_recognition/tod_detecting/CMakeLists.txt
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/tod_detecting/Makefile
+END

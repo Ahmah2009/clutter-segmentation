@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg
+END
+Point2D32f.msg
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/Point2D32f.msg
+END
+DetectionCandidate.msg
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/DetectionCandidate.msg
+END
+ObjectQueryResponse.msg
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/ObjectQueryResponse.msg
+END
+Template.msg
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/Template.msg
+END
+ImageROI.msg
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/ImageROI.msg
+END
+ObjectQuery.msg
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/ObjectQuery.msg
+END
+DetectionCandidates.msg
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/DetectionCandidates.msg
+END
+TemplateQueryResponse.msg
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/TemplateQueryResponse.msg
+END
+TemplateQuery.msg
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/TemplateQuery.msg
+END
+WeightData.msg
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/WeightData.msg
+END
+PerceptionData.msg
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/PerceptionData.msg
+END
+DiscretizedData.msg
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/DiscretizedData.msg
+END
+Trigger.msg
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/Trigger.msg
+END
+DOTDetectionResult.msg
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/msg/DOTDetectionResult.msg
+END

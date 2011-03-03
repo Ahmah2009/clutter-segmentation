@@ -1,0 +1,23 @@
+<package>
+  <description brief="dpm_detector">
+    Deformable Part Models object detector. This package contains a slightly patched version that runs in Octave and a ROS wrapper that allows it to run in the rein.
+  </description>
+  <author>Pedro Felzenszwalb, Ross Girshick, Deva Ramanan; ROS wrapper by Marius Muja</author>
+  <license></license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/dpm_detector</url>
+
+  <depend package="nodelet" />
+  <depend package="dynamic_reconfigure" />
+  <depend package="rein" />
+
+  <rosdep name="octave" />
+
+  <export>
+    <cpp cflags="-I${prefix}/include -I${prefix}/msg_gen/cpp/include -I${prefix}/msg/cpp -I${prefix}/cfg/cpp" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -ldpm_wrapper" />
+    <nodelet plugin="${prefix}/nodelets.xml" />
+  </export>
+
+</package>
+
+

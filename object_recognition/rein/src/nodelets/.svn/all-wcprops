@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/nodelets
+END
+attention_operator.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/nodelets/attention_operator.cpp
+END
+detector.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/nodelets/detector.cpp
+END
+tabletop_attention_nodelet.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/nodelets/tabletop_attention_nodelet.cpp
+END
+type_conversions.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/nodelets/type_conversions.cpp
+END
+trainer_server.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/nodelets/trainer_server.cpp
+END
+pose_estimator.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/nodelets/pose_estimator.cpp
+END

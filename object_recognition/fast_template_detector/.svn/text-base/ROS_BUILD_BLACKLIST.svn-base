@@ -1,0 +1,86 @@
+mkdir -p bin
+cd build && cmake -Wdev -DCMAKE_TOOLCHAIN_FILE=`rospack find rosbuild`/rostoolchain.cmake  ..
+[rosbuild] Building package fast_template_detector
+[rosbuild] Including /wg/stor2a/gerkey/code/ros-cturtle/ros/core/roslisp/cmake/roslisp.cmake
+[rosbuild] Including /wg/stor2a/gerkey/code/ros-cturtle/ros/core/roscpp/cmake/roscpp.cmake
+[rosbuild] Including /wg/stor2a/gerkey/code/ros-cturtle/ros/core/rospy/cmake/rospy.cmake
+[rosbuild] Including /wg/stor2a/gerkey/code/cturtle_trunk/ros-experimental-trunk/rosjava/cmake/rosjava.cmake
+[rosbuild] Including /wg/stor2a/gerkey/code/cturtle_trunk/ros-experimental-trunk/rosoct/cmake/rosoct.cmake
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build
+cd build && make -j8
+make[1]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[2]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+[  0%] Built target rosbuild_premsgsrvgen
+[  0%] Built target rospack_genmsg_libexe
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+[  0%] make[3]: Entering directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+[  0%] Generating ../msg/java/ros/pkg/fast_template_detector/msg/TemplateQueryResponse.java
+[  1%] [  1%] Generating ../msg/java/ros/pkg/fast_template_detector/msg/TemplateQuery.java
+[  2%] Generating ../msg/java/ros/pkg/fast_template_detector/msg/WeightData.java
+[  2%] Generating ../msg/oct/fast_template_detector/fast_template_detector_TemplateQueryResponse.m
+Generating ../msg_gen/cpp/include/fast_template_detector/TemplateQueryResponse.h
+Generating ../msg/lisp/fast_template_detector/ObjectQuery.lisp, ../msg/lisp/fast_template_detector/_package.lisp, ../msg/lisp/fast_template_detector/_package_ObjectQuery.lisp
+[ 16%] Built target ROSBUILD_genmsg_py
+[ 16%] Generating ../msg/java/ros/pkg/fast_template_detector/msg/ObjectQuery.java
+[Errno 2] No such file or directory: '/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/msg/Template.msg'
+[Errno 2] No such file or directory: '/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/msg/Template.msg'
+[Errno 2] No such file or directory: '/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/msg/Template.msg'
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  couldn't read md5sum pipe in genmsg_cpp
+
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  couldn't read md5sum pipe in genmsg_cpp
+
+make[3]: *** [../msg/oct/fast_template_detector/fast_template_detector_TemplateQueryResponse.m] Aborted
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[3]: *** [../msg/lisp/fast_template_detector/TemplateQueryResponse.lisp] Aborted
+make[3]: *** Waiting for unfinished jobs....
+make[3]: *** [../msg/java/ros/pkg/fast_template_detector/msg/TemplateQueryResponse.java] Aborted
+make[3]: *** Waiting for unfinished jobs....
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[2]: *** [CMakeFiles/ROSBUILD_genmsg_lisp.dir/all] Error 2
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[2]: *** [CMakeFiles/ROSBUILD_genmsg_java.dir/all] Error 2
+Traceback (most recent call last):
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roscpp/scripts/genmsg_cpp.py", line 45, in <module>
+    roscpp.msg_gen.generate_messages(sys.argv)
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roscpp/src/roscpp/msg_gen.py", line 718, in generate_messages
+    generate(arg)
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roscpp/src/roscpp/msg_gen.py", line 692, in generate
+    write_struct(s, spec, cpp_prefix)
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roscpp/src/roscpp/msg_gen.py", line 196, in write_struct
+    gendeps_dict = roslib.gentools.get_dependencies(spec, spec.package, compute_files=False)
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roslib/src/roslib/gentools.py", line 292, in get_dependencies
+    _add_msgs_depends(spec, deps, package)
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roslib/src/roslib/gentools.py", line 82, in _add_msgs_depends
+    key, depspec = roslib.msgs.load_by_type(t, package_context)
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roslib/src/roslib/msgs.py", line 566, in load_by_type
+    return load_from_file(m_f, pkg)
+  File "/wg/stor2a/gerkey/code/ros-cturtle/ros/core/roslib/src/roslib/msgs.py", line 654, in load_from_file
+    f = open(file_path, 'r')
+IOError: [Errno 2] No such file or directory: '/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/msg/Template.msg'
+make[3]: *** [../msg_gen/cpp/include/fast_template_detector/TemplateQueryResponse.h] Error 1
+make[3]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[2]: *** [CMakeFiles/ROSBUILD_genmsg_cpp.dir/all] Error 2
+make[2]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/wg/stor2a/gerkey/code/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/fast_template_detector/build'
+make: *** [all] Error 2

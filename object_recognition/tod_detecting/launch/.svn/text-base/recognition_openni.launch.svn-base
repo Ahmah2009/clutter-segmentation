@@ -1,0 +1,9 @@
+<launch>	
+	<param name="base" value="$(arg base)"/>
+	<param name="config" value="$(arg config)"/>
+	<param name="interval" value="$(arg interval)"/>
+	<node name="recognition_node" pkg="tod_detecting" type="recognition_node">
+		<remap from="/camera" to="/camera/rgb" />
+		<remap from="/points2" to="/camera/depth/points2" />
+	</node>	
+</launch>

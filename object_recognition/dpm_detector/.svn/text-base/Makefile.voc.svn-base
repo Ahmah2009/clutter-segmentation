@@ -1,0 +1,28 @@
+all: installed
+
+TARBALL       = build/voc-release3.1.tgz
+TARBALL_URL   = http://pr.willowgarage.com/downloads/voc-release3.1.tgz
+UNPACK_CMD    = tar -xvzf
+SOURCE_DIR    = build/voc-release3.1
+TARBALL_PATCH = voc.patch
+MD5SUM_FILE   = voc-release3.1.tgz.md5sum
+
+include $(shell rospack find mk)/download_unpack_build.mk
+
+installed: wiped $(SOURCE_DIR)/unpacked
+	echo "Building VOC..."
+	cd $(SOURCE_DIR) && make
+	mkdir -p scripts
+	cp -r ${SOURCE_DIR}/*.m ${SOURCE_DIR}/*.mex ${SOURCE_DIR}/*.cc ${SOURCE_DIR}/Makefile ${SOURCE_DIR}/CHANGES ${SOURCE_DIR}/COPYING ${SOURCE_DIR}/README scripts
+	mkdir -p models
+	cp -r ${SOURCE_DIR}/VOC2006 ${SOURCE_DIR}/VOC2007 ${SOURCE_DIR}/VOC2008 ${SOURCE_DIR}/INRIA models
+	touch installed
+
+clean: wipe
+
+wiped: Makefile.voc
+	make -f Makefile.voc wipe
+	touch wiped
+
+wipe:
+	rm -rf ${TARBALL} ${SOURCE_DIR}

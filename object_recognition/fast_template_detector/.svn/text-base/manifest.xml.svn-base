@@ -1,0 +1,37 @@
+<package>
+  <description brief="fast_template_detector">
+<p>
+  The Fast Template Detector (FTD) library is an implementation of a 
+  template detector based on SSE optimized fast matching of binary data. 
+  An example of such data are Dominant Orientation Templates (see 
+  'Dominant orientation templates for real-time detection of texture-less 
+  objects' by Hinterstoisser et al.).
+</p>
+  </description>
+  
+  <author>Stefan Holzer</author>
+  <license>LGPL</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/fast_template_detector</url>
+  
+  <depend package="std_msgs"/>
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+  <depend package="image_transport"/>
+  <depend package="cv_bridge"/>
+  <depend package="camera_calibration_parsers"/>
+  <depend package="opencv2"/>
+  <depend package="stereo_msgs"/>  
+  <depend package="message_filters"/>
+  <depend package="pcl"/>
+  <depend package="pcl_ros"/>
+  <depend package="tf"/>
+  <depend package="image_geometry"/>
+  <depend package="rosrecord"/>
+  
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lpcl_processing -lftd_discretizers -lftd -lutil" /> 
+  </export>
+</package>
+
+

@@ -1,0 +1,10 @@
+<launch>
+    <node pkg="rein" type="trainer_gui.py" name="bigg_trainer_gui" output="screen" cwd="node">
+        <remap from="start_training" to="bigg/start_training" />
+        <remap from="train_instance" to="bigg/train_instance" />
+        <remap from="save_model" to="bigg/save_model" />
+
+        <remap from="image" to="/narrow_stereo/left/image_rect" />
+        <remap from="masks" to="/tabletop/masks" />
+    </node>
+</launch>

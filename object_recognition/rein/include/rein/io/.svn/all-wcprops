@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/include/rein/io
+END
+db_model_storage.h
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/include/rein/io/db_model_storage.h
+END
+serialization_support.h
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/include/rein/io/serialization_support.h
+END
+fs_model_storage.h
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/include/rein/io/fs_model_storage.h
+END
+model_storage.h
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/include/rein/io/model_storage.h
+END

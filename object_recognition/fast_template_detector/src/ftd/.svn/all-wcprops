@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/wg-ros-pkg/!svn/ver/48781/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/ftd
+END
+fast_template_detector_vs.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/wg-ros-pkg/!svn/ver/48781/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/ftd/fast_template_detector_vs.cpp
+END
+pcl_processing.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/ftd/pcl_processing.cpp
+END

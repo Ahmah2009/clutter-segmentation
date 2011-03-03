@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/filters
+END
+overlap_remover.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/filters/overlap_remover.cpp
+END
+multi_class_best_candidate_selector.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/filters/multi_class_best_candidate_selector.cpp
+END

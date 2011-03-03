@@ -1,0 +1,10 @@
+K 10
+svn:ignore
+V 61
+csn_sample.cpp
+
+confMatrix.cpp
+
+recognition_sample.cpp.mybak
+
+END

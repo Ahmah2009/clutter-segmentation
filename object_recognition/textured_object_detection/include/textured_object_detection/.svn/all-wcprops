@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/wg-ros-pkg/!svn/ver/48509/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection
+END
+ts_parameters.h
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/ts_parameters.h
+END
+gmap3D.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/gmap3D.hpp
+END
+training_set3d.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/training_set3d.h
+END
+shared_functions.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/shared_functions.h
+END
+PASDetection.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/PASDetection.hpp
+END
+camera_info.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/camera_info.hpp
+END
+chamfer.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/chamfer.hpp
+END
+object.h
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/object.h
+END
+training_set.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/svn/wg-ros-pkg/!svn/ver/48509/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/include/textured_object_detection/training_set.h
+END

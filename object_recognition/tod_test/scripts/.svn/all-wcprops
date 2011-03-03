@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/wg-ros-pkg/!svn/ver/49540/branches/trunk_diamondback/stacks/object_recognition/tod_test/scripts
+END
+grab_images_from_bag.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/wg-ros-pkg/!svn/ver/49173/branches/trunk_diamondback/stacks/object_recognition/tod_test/scripts/grab_images_from_bag.py
+END
+test_generating.py
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/wg-ros-pkg/!svn/ver/49540/branches/trunk_diamondback/stacks/object_recognition/tod_test/scripts/test_generating.py
+END
+mask_refine.py
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/wg-ros-pkg/!svn/ver/49540/branches/trunk_diamondback/stacks/object_recognition/tod_test/scripts/mask_refine.py
+END

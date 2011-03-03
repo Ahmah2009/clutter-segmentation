@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts
+END
+trainer_gui.py
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts/trainer_gui.py
+END
+wx_opencv.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts/wx_opencv.py
+END
+publish_null_masks.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts/publish_null_masks.py
+END
+trainer_frame.py
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts/trainer_frame.py
+END
+display_masks.py
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts/display_masks.py
+END
+publish_image_sync.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts/publish_image_sync.py
+END
+trainer_gui.wxg
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/scripts/trainer_gui.wxg
+END

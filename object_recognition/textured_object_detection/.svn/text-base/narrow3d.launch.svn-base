@@ -1,0 +1,19 @@
+<launch>
+  <arg name="topic" default="/prosilica/image_color" />
+  <arg name="ltopic" default="/narrow_stereo_textured/left/image_raw" />
+  <arg name="rtopic" default="/narrow_stereo_textured/right/image_raw" />
+  <arg name="train" default="/home/alex/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/textured_object_detection/bin/train_cf" />    
+  <arg name="config" default="/home/alex/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/textured_object_detection/camera/prosilica.config" />  
+  <arg name="transform" default="/home/alex/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/textured_object_detection/camera/transform.xml" />  
+
+  <node pkg="textured_object_detection" type="rsnode3d" name="rsnode3d" output="screen">
+  </node>
+  
+  <param name="training_base_dir" value="$(arg train)" />
+  <param name="config_file" value="$(arg config)" />
+  <param name="image_in" value="$(arg topic)" />
+  <param name="imagel_in" value="$(arg ltopic)" />
+  <param name="imager_in" value="$(arg rtopic)" />
+  <param name="transform_in" value="$(arg transform)" />
+
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+  <arg name="topic" default="/prosilica/image_color" />
+  <arg name="train" default="/u/ve/data/binpick/single_objects/prosilica/coffee_filter_chess/train3" />    
+  <arg name="config" default="/u/ve/cturtle_trunk/wg-ros-pkg-unreleased/stacks/object_recognition/textured_object_detection/camera/prosilica1.config" />  
+  <node pkg="textured_object_detection" type="tod" name="tod" output="screen">
+    <remap from="image_in" to="$(arg topic)"/>
+  </node>
+  <param name="training_base_dir" value="$(arg train)" />
+  <param name="config_file" value="$(arg config)" />
+</launch>

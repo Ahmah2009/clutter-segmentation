@@ -1,0 +1,12 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~use_rois" : \b [bool] Use regions of interest. min: False, default: False, max: True
+- \b "~template_radius" : \b [int] The radius of the template. min: 0, default: 15, max: 1000
+- \b "~accept_threshold" : \b [double] Threshold for accepting a template match. min: 0.0, default: 0.82, max: 1.0
+- \b "~magnitude_threshold" : \b [double] Ignore gradient with lower magnitude.. min: 0.0, default: 200.0, max: 10000.0
+- \b "~reduction_factor" : \b [double] Factor by what to reduce the gradient image for speedup. min: 1.0, default: 4.0, max: 64.0
+- \b "~diameter" : \b [double] The height and width of each of the square patches to OR the gradients in. min: 1.0, default: 4.0, max: 64.0
+- \b "~fraction_overlap" : \b [double] Fraction overlap between two detections above which one of them is suppressed. min: 0.0, default: 0.6, max: 1.0
+

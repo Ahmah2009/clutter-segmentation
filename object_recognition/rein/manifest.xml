@@ -1,0 +1,47 @@
+<package>
+  <description brief="ReIn">
+
+    The Recognition Infrastructure (ReIn) is a software library that
+    facilitates rapid development for 2D/3D object and scene recognition. ReIn
+    can create different computational graphs from its various modules by
+    combining them together in parallel or in a cascade fashion. Examples
+    include: object detectors, pose estimators, attention operators, etc.
+
+    The backbone of ReIn is supported by OpenCV
+    (http://opencv.willowgarage.com/) and PCL (http://pcl.ros.org).
+
+  </description>
+  <author>Marius Muja, Radu Bogdan Rusu</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/rein</url>
+
+  <!-- ROS data structures -->
+  <depend package="sensor_msgs" />
+  <depend package="geometry_msgs" />
+
+  <!-- ROS dependencies (for ReIn_ros) -->
+  <depend package="roscpp" />
+  <depend package="nodelet" />
+  <depend package="dynamic_reconfigure" />
+  <depend package="tf" />
+  <depend package="pcl_ros" />
+  <depend package="image_geometry" />
+
+  <depend package="cv_bridge" />
+  <depend package="image_transport" />
+
+  <!-- OpenCV/PCL -->
+  <depend package="opencv2" />
+  <depend package="pcl" />
+  
+  <rosdep name="libpq-dev" />
+  <rosdep name="libsoci" />
+
+  <export>
+    <cpp cflags="-I${prefix}/include -I${prefix}/msg_gen/cpp/include -I${prefix}/msg/cpp -I${prefix}/cfg/cpp" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lrein -lrein_ros -lrein_tools" />
+    <nodelet plugin="${prefix}/nodelets.xml" />
+  </export>
+</package>
+
+

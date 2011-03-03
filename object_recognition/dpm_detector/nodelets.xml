@@ -1,0 +1,7 @@
+<library path="lib/libdpm_wrapper">
+    <class name="dpm_detector/DPMNodelet" type="DPMNodelet" base_class_type="nodelet::Nodelet"> 
+        <description>
+            DPMNodelet runs the Deformable Part Models object detector on the input image.
+        </description>
+    </class>
+</library>

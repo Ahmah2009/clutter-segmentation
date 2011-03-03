@@ -1,0 +1,35 @@
+<launch>
+
+   <param name="disparity_range" value="128" type="int"/>
+   <param name="min_disparity" value="60" type="int"/>
+   <node pkg="stereo_image_proc" name="proc" type="stereo_image_proc" ns="narrow_stereo_textured">
+      <remap from="left" to="/narrow_stereo_textured/left"/>
+      <remap from="right" to="/narrow_stereo_textured/right"/>
+   </node>
+
+   <node pkg="dynamic_reconfigure" type="reconfigure_gui" name="reconfigure"/>
+
+   <node pkg="image_view" name="leftRect" type="image_view">
+      <remap from="image" to="/narrow_stereo_textured/left/image_rect"/>
+   </node>
+   <node pkg="image_view" name="rightRect" type="image_view">
+      <remap from="image" to="/narrow_stereo_textured/right/image_rect"/>
+   </node>
+   <node pkg="image_view" name="left" type="image_view" >
+      <remap from="image" to="/narrow_stereo/left/image_raw"/>
+   </node>
+   <node pkg="image_view" name="right" type="image_view">
+      <remap from="image" to="/narrow_stereo/right/image_raw"/>
+   </node>
+   <node pkg="image_view" name="view" type="stereo_view">
+      <remap from="stereo" to="/narrow_stereo_textured"/>
+      <remap from="image" to="image_rect_color"/>
+   </node>
+
+
+   <!--include file="$(find dp_ptu47_pan_tilt_stage)/ptu_calibrated.launch" /-->
+
+   <!--node pkg="rosrecord" name="rosplay" type="rosplay" args="/home/gedikli/WillowGarage/BagFiles/Several_Boxes.bag"/-->
+   <node pkg="rosrecord" name="rosplay" type="rosplay" args="/home/gedikli/WillowGarage/BagFiles/Green_Tea.bag"/>
+
+</launch>

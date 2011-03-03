@@ -1,0 +1,33 @@
+<package>
+  <description brief="VFH cluster classification">
+
+    This package implements a variant of the global VFH (Viewpoint Feature
+    Histogram) descriptor, as presented in R.B. Rusu, G. Bradski, R. Thibaux,
+    J. Hsu. Fast 3D Recognition and Pose Using the Viewpoint Feature Histogram,
+    Proceedings of the 23rd IEEE/RSJ International Conference on Intelligent
+    Robots and Systems (IROS), Taipei, Taiwan, October 18-22, 2010.
+
+  </description>
+
+  <author>Radu Bogdan Rusu</author>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/vfh_cluster_classification</url>
+  <review status="experimental" notes="beta"/>
+  
+  <depend package="rospy"/>
+  <depend package="pcl" />
+  <depend package="bond" />
+  <depend package="pcl_visualization" />
+  <depend package="rein" />
+  <depend package="flann" />
+  <depend package="nodelet" />
+  <depend package="tf" />
+  <depend package="geometry_msgs" />
+  <depend package="sensor_msgs" />
+  <depend package="std_msgs" />
+  <depend package="bullet" />
+  <export>
+    <cpp cflags="-I${prefix}/include -I${prefix}/msg_gen/cpp/include -I${prefix}/msg/cpp -I${prefix}/cfg/cpp" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lvfh_classifier" />
+    <nodelet plugin="${prefix}/nodelets.xml" />
+  </export>
+</package>

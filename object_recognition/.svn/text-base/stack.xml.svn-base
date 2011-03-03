@@ -1,0 +1,27 @@
+<stack>
+  <description brief="object_recognition">
+     The object_recognition stack contains algorithms and tools relevant to
+     object recognition from visual data.
+   </description>
+  <author>Maintained by Gary Bradski, Radu Bogdan Rusu, Marius Muja</author>
+  <license>BSD,,LGPL</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/object_recognition</url>
+  <depend stack="common" /> <!-- nodelet -->
+  <depend stack="common_msgs" /> <!-- nav_msgs, geometry_msgs, sensor_msgs -->
+  <depend stack="driver_common" /> <!-- dynamic_reconfigure -->
+  <depend stack="drivers_experimental" /> <!-- dp_ptu47_pan_tilt_stage -->
+  <depend stack="geometry" /> <!-- tf, eigen -->
+  <depend stack="image_common" /> <!-- image_transport, camera_calibration_parsers -->
+  <depend stack="image_pipeline" /> <!-- stereo_msgs -->
+  <depend stack="perception_pcl" /> <!-- flann, pcl, pcl_ros -->
+  <depend stack="perception_pcl_addons" /> <!-- pcl_visualization -->
+  <depend stack="point_cloud_perception" /> <!-- pcl_tf -->
+  <depend stack="point_cloud_perception_experimental" /> <!-- pcl_point_cloud2_image_color -->
+  <depend stack="ros" /> <!-- rospy, std_msgs, roscpp, message_filters, rosrecord -->
+  <depend stack="vision" /> <!-- chamfer_matching -->
+  <depend stack="vision_opencv" /> <!-- image_geometry, opencv2, cv_bridge -->
+  <depend stack="visual_feature_detectors" /> <!-- features_2d -->
+  <depend stack="vslam" /> <!-- posest, vocabulary_tree -->
+
+</stack>

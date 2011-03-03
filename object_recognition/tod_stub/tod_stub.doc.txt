@@ -1,0 +1,72 @@
+<documentation_stub>
+
+Starting Code
+
+--------------
+
+The contest will be run on ROS the "Robot Operating System". This is to enable maintainability, easy testing and
+allow running on a robot (PR2) without having to know the details of that robot: the recognition and pose code
+will automatically send messages that work with the PR2 grasping and manipulation pipeline.
+
+  * Instructions for downloading and using the code stub for getting 2D images and 3D point clouds for training and
+    test can be downloaded from tod_stub (Textured Object Recognition stub).  In brief, you will do the following:
+
+    o Inside the stub code:
+
+      + In tod_stub/src/trainer.cpp, you will find the calibration board based pose estimator,
+        posestimator.  Based on this estimation, the raw point cloud sensor output will
+        be translated to the calibration board frame.
+
+      + Your implementation would start by modifying tod_stub_impl.cpp.  
+        You will fill out the MyTrainer::process method after the line "//do awesome training here.",
+        and replace the code in MyDetector::detect (which currently just returns random values 
+        for R (rotation matrix), t (translation vector), ID and confidence).
+
+        - MyTrainer::process will provide you with the transformed point cloud data and the
+          raw 2D color image, and ojbect id, and expects you to train your object recognition algorithm
+          with the data.
+
+        - The result of running the training process is up to the user.
+            - The training process should persist whatever data is needed to disk.
+            - Make sure to associate the given object id with any training data.
+            - Each frame should be considered as a single view of a particular object.  The trainer assumes
+
+        - MyDetector::detect will provide you with the raw sensor-provided point
+          cloud data and the raw 2D color image, and expects you to determine
+          the object ID, pose (rotation and translation) and a confidence level,
+          and then store this information in a result vector passed by reference
+          to the detect method.
+
+    o After modifying the source code, rebuild the stub code by typing "rosmake" in the tod_stub project folder
+
+    o To run and test your training code:
+
+      + rosrun tod_stub trainer -O <Object_ID> -B <Bagfile_Name>.bag -C <USER_DEFINED_CONFIG_FILE> -F fiducial.yml
+
+        - <Bagfile_Name>.bag is the file provided by us that contains the training data.  Within the bag file, you will find the point cloud information (/points2), the 1 megapixel color image (/image), and camera information (/camera_info).
+
+        - <USER_DEFINED_CONFIG_FILE> is a file where you may describe parameters for your algorithm.
+        
+        - <Object_ID> the object identifier, it is assumed here that the bag contains only one object. The object id should not contain spaces
+        
+        - fiducial.yml is a file describing the fiducial that is used to calculate the coordinate system of the object. This should be supplied
+          with the training data.
+        
+        - The trainer is meant to be a once per item application.
+
+        - Running trainer will result in a disk based persistence of your training algorithm. You should persist your data in a way
+          that is locally consistent (e.g one file or directory per training session) See the stub for an example.
+
+    o To run and test your detector code:
+      + rosrun tod_stub detector -B <Bagfile_Name>.bag -C <USER DEFINED CONFIG FILE>
+
+        - <Bagfile_Name>.bag is the file provided by us that contains the training data.  Within the bag file, you will find the point cloud information (/points2), the 1 megapixel color image (/image), and camera information (/camera_info).
+
+        - <USER DEFINED CONFIG FILE> a configuration file that may be used by the user to set parameters.
+
+        - Running detector will produce a visualization of the detected objects and their poses.
+
+  * We will provide plenty of data for training, testing and validation, but will also provide a list of objects and places to order calibration sets and fixtures for your own development if desired.
+
+  * Prior to the contest, contestants will check in their code to be trained and run on our server.
+</documentation_stub>

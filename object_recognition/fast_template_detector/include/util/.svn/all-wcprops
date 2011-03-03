@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/include/util
+END
+util.h
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/include/util/util.h
+END
+timer.h
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/include/util/timer.h
+END
+image_utils.h
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/include/util/image_utils.h
+END

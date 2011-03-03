@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools
+END
+clean_segmentation.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools/clean_segmentation.cpp
+END
+save_bag_data.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools/save_bag_data.cpp
+END
+select3dobj.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools/select3dobj.cpp
+END
+point_cloud_resync.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools/point_cloud_resync.cpp
+END
+grabcut.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools/grabcut.cpp
+END
+pc_projector.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools/pc_projector.cpp
+END
+detection_displayer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/rein/src/tools/detection_displayer.cpp
+END

@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/examples
+END
+generate_nister_video.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/examples/generate_nister_video.cpp
+END
+evaluate_nister_mt.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/examples/evaluate_nister_mt.cpp
+END

@@ -1,0 +1,9 @@
+- other: {local-name: /opt/ros/unstable/ros}
+- other: {local-name: /opt/ros/unstable/stacks}
+- svn: {local-name: tod_stub, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition/tod_stub'}
+- svn: {local-name: tod_core, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition/tod_core'}
+- svn: {local-name: tod_training, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition/tod_training'}
+- svn: {local-name: rbrief, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental/rbrief'}
+- git: {local-name: ni, uri: 'https://github.com/ros-pkg-git/ni.git', version: master}
+- svn: {local-name: perception_pcl, uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl/tags/unstable'}
+- svn: {local-name: perception_pcl_addons, uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/tags/unstable'}

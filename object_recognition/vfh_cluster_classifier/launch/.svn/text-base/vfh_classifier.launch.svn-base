@@ -1,0 +1,11 @@
+<launch>
+    <node pkg="nodelet" type="nodelet" name="vfh" args="standalone vfh_classifier/VFHClassifier" output="screen">
+        <remap from="~point_cloud"   to="/points2" />
+        <remap from="~input_detections"   to="/bigg/detections" />
+        <param name="dataset_location" value="$(find vfh_cluster_classifier)/data" />
+        <rosparam>
+            use_point_cloud: True
+            use_input_detections: True
+        </rosparam>
+    </node>
+</launch>

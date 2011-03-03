@@ -1,0 +1,16 @@
+<package>
+  <description brief="tod_converter">
+  Convert bases from textured_object_detection to the new format.
+  </description>
+  <author>Alexander Shishkov</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/tod_converter</url>
+  <depend package="opencv2"/>
+  <depend package="tod_core"/>
+  <export>
+		<cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -ltod_training -ltod_training_ros" />
+  </export>
+</package>
+
+

@@ -1,0 +1,2 @@
+rosrun fast_template_detector dummy_trigger /narrow_stereo_textured/left/image_raw /narrow_stereo_textured/right/image_raw
+

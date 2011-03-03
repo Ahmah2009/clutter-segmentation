@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/launch
+END
+vfh_classifier.launch
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/launch/vfh_classifier.launch
+END
+vfh_estimation.launch
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/launch/vfh_estimation.launch
+END

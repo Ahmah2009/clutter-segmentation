@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/scripts
+END
+label.py
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/scripts/label.py
+END
+bag2images.py
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/scripts/bag2images.py
+END
+make_config.py
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/scripts/make_config.py
+END
+bags2images.py
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/scripts/bags2images.py
+END
+testsystem.py
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/textured_object_detection/scripts/testsystem.py
+END

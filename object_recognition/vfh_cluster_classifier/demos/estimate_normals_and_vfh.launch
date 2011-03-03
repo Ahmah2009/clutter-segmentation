@@ -1,0 +1,83 @@
+<launch>
+
+  <!-- Start two managers to decouple the I/O from the actual computation -->
+  <node pkg="nodelet" type="nodelet" name="manager_read" args="manager" output="screen" />
+  <node pkg="nodelet" type="nodelet" name="manager_compute" args="manager" output="screen" />
+
+  <!-- INPUT: Read in PCD files -->
+
+  <node pkg="nodelet" type="nodelet" name="Reader" args="load pcl/PCDReader manager_read" output="screen">
+    <rosparam>
+      publish_rate: 0
+      filename: ""
+   </rosparam>
+  </node>
+  
+  <!--
+       *** NOTE ***
+       To run this on a live system, disable the Reader above and/or redirect 
+       [Grid/input] to the PointCloud2 generator.
+  -->
+ 
+  <!-- Run a VoxelGrid to resample the data and remove NaNs -->
+  <node pkg="nodelet" type="nodelet" name="Grid" args="load pcl/VoxelGrid manager_compute" output="screen">
+   <remap from="~input" to="Reader/output" />
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: 0
+      # Take care here: if there is actual data > 2.5m it will be lost
+      filter_limit_max: 2.5
+      leaf_size: 0.002
+   </rosparam>
+  </node>
+
+  <!-- Estimate surface normals -->
+  <node pkg="nodelet" type="nodelet" name="Normals" args="load pcl/NormalEstimation manager_compute" output="screen">
+   <remap from="~input" to="Grid/output" />
+    <rosparam>
+      k_search: 0
+      radius_search: 0.02
+      spatial_locator: 0
+   </rosparam>
+  </node>
+
+  <!-- Estimate VFH signatures, and write them to disk -->
+  <node pkg="nodelet" type="nodelet" name="VFH" args="load pcl/VFHEstimation manager_compute" output="screen">
+   <remap from="~input"   to="Grid/output" />
+   <remap from="~normals" to="Normals/output" />
+    <rosparam>
+      k_search: 1
+      spatial_locator: 0
+   </rosparam>
+  </node>
+  <node pkg="nodelet" type="nodelet" name="WriterVFH" args="load pcl/PCDWriter manager_compute" output="screen">
+   <remap from="~input" to="VFH/output" />
+   <rosparam>
+     binary_mode: false
+   </rosparam>
+  </node>
+
+
+  <!-- Concatenate data and write surface normals to disk as PCD for visualization -->
+  <node pkg="nodelet" type="nodelet" name="MUXNormals" args="load pcl/NodeletMUX manager_compute" output="screen">
+    <rosparam>
+      input_topics: [/Grid/output, /Normals/output]
+      max_queue_size: 20
+   </rosparam>
+  </node>
+  <node pkg="nodelet" type="nodelet" name="ConcatenateNormals" args="load pcl/PointCloudConcatenateFieldsSynchronizer manager_compute" output="screen">
+   <remap from="~input" to="MUXNormals/output" />
+   <rosparam>
+     input_messages: 2
+     max_queue_size: 20
+   </rosparam>
+  </node>
+  <node pkg="nodelet" type="nodelet" name="WriterNormals" args="load pcl/PCDWriter manager_compute" output="screen">
+   <remap from="~input" to="ConcatenateNormals/output" />
+   <rosparam>
+     binary_mode: true
+   </rosparam>
+  </node>
+
+</launch>
+

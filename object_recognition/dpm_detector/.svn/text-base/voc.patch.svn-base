@@ -1,0 +1,326 @@
+diff -Naur voc-release3.1/compile.m scripts/compile.m
+--- compile.m	2009-06-08 19:26:04.000000000 -0700
++++ compile.m	2010-07-18 14:18:46.595489163 -0700
+@@ -1,13 +1,13 @@
+-mex -O resize.cc
+-mex -O dt.cc
+-mex -O features.cc
++mex resize.cc
++mex dt.cc
++mex features.cc
+ 
+ % use one of the following depending on your setup
+ % 1 is fastest, 3 is slowest 
+ 
+ % 1) multithreaded convolution using blas
+-mex -O fconvblas.cc -lmwblas -o fconv
++% mex -O fconvblas.cc -lmwblas -o fconv
+ % 2) mulththreaded convolution without blas
+-% mex -O fconvMT.cc -o fconv
++mex fconvMT.cc
+ % 3) basic convolution, very compatible
+ % mex -O fconv.cc -o fconv
+diff -Naur voc-release3.1/dataset_init.m scripts/dataset_init.m
+--- dataset_init.m	1969-12-31 16:00:00.000000000 -0800
++++ dataset_init.m	2010-07-18 14:18:46.625488946 -0700
+@@ -0,0 +1,6 @@
++
++VOCopts.datadir = '/u/mariusm/datasets/';
++VOCopts.annopath=[VOCopts.datadir 'pan_tilt_objects' '/Annotations/%s.xml'];
++VOCopts.imgpath=[VOCopts.datadir 'pan_tilt_objects' '/JPEGImages/%s.jpg'];
++VOCopts.imgsetpath=[VOCopts.datadir 'pan_tilt_objects' '/ImageSets/Main/%s.txt'];
++
+diff -Naur voc-release3.1/demo.m scripts/demo.m
+--- demo.m	2009-05-19 07:13:23.000000000 -0700
++++ demo.m	2010-07-18 14:18:46.635489133 -0700
+@@ -8,25 +8,25 @@
+ % load and display image
+ im=imread(name);
+ clf;
+-image(im);
+-axis equal; 
+-axis on;
+-disp('input image');
+-disp('press any key to continue'); pause;
++%image(im);
++%axis equal; 
++%axis on;
++%disp('input image');
++%disp('press any key to continue'); pause;
+ 
+ % load and display model
+ load(['VOC2007/' cls '_final']);
+-visualizemodel(model);
+-disp([cls ' model']);
+-disp('press any key to continue'); pause;
++%visualizemodel(model);
++%disp([cls ' model']);
++%disp('press any key to continue'); pause;
+ 
+ % detect objects
+ boxes = detect(im, model, 0);
+-top = nms(boxes, 0.5);
+-showboxes(im, top);
++%top = nms(boxes, 0.5);
++%showboxes(im, top);
+ %print(gcf, '-djpeg90', '-r0', [cls '.jpg']);
+-disp('detections');
+-disp('press any key to continue'); pause;
++%disp('detections');
++%disp('press any key to continue'); pause;
+ 
+ % get bounding boxes
+ bbox = getboxes(model, boxes);
+diff -Naur voc-release3.1/detect2.m scripts/detect2.m
+--- detect2.m	1969-12-31 16:00:00.000000000 -0800
++++ detect2.m	2010-07-18 19:29:10.325488326 -0700
+@@ -0,0 +1,9 @@
++function bboxes = detect2(im, model, thresh)
++
++m = model.model;
++
++if thresh<(-9.0)
++    thresh = m.thresh;
++end
++bboxes = process(im,m,thresh);
++
+diff -Naur voc-release3.1/fconvblas.cc scripts/fconvblas.cc
+--- fconvblas.cc	2009-06-08 19:26:04.000000000 -0700
++++ fconvblas.cc	2010-07-18 14:18:46.745489602 -0700
+@@ -1,5 +1,5 @@
+ #include "mex.h"
+-#include "blas.h"
++#include "cblas.h"
+ #include <pthread.h>
+ #include <math.h>
+ #include <string.h>
+@@ -69,7 +69,7 @@
+       int lda = A_dims[0];
+       int incx = 1;
+       int incy = 1;
+-      dgemv(chn, &m, &n, &one, A_off, &lda, B_off, &incx, &one, C_off, &incy);
++      cblas_dgemv(CblasColMajor, CblasNoTrans, m, n, one, A_off, lda, B_off, incx, one, C_off, incy);
+     }
+   }
+   pthread_exit(NULL);
+diff -Naur voc-release3.1/globals.m scripts/globals.m
+--- globals.m	2009-05-19 07:13:23.000000000 -0700
++++ globals.m	2010-07-18 14:18:46.935488812 -0700
+@@ -1,16 +1,16 @@
+ % Set up global variables used throughout the code
+ 
+ % directory for caching models, intermediate data, and results
+-cachedir = '~/voccache/';
++cachedir = '/tmp/voc/';
+ 
+ % directory for LARGE temporary files created during training
+-tmpdir = '/var/tmp/voc/';
++tmpdir = '/tmp/voc/';
+ 
+ % dataset to use
+-VOCyear = '2007';
++VOCyear = '2008';
+ 
+ % directory with PASCAL VOC development kit and dataset
+-VOCdevkit = ['~/VOC' VOCyear '/VOCdevkit/'];
++VOCdevkit = ['/u/mariusm/tmp/VOCdevkit']
+ 
+ % which development kit is being used
+ % this does not need to be updated
+diff -Naur voc-release3.1/HOGpicture.m scripts/HOGpicture.m
+--- HOGpicture.m	2009-05-19 07:13:23.000000000 -0700
++++ HOGpicture.m	2010-07-18 14:18:46.955488796 -0700
+@@ -9,7 +9,7 @@
+ bim = zeros([size(bim1) 9]);
+ bim(:,:,1) = bim1;
+ for i = 2:9,
+-  bim(:,:,i) = imrotate(bim1, -(i-1)*20, 'crop');
++  bim(:,:,i) = imrotate(bim1, -(i-1)*20, 'nearest', 'crop');
+ end
+ 
+ % make pictures of positive weights bs adding up weighted glyphs
+diff -Naur voc-release3.1/initmodel.m scripts/initmodel.m
+--- initmodel.m	2009-05-19 07:13:23.000000000 -0700
++++ initmodel.m	2010-07-18 14:18:46.965488962 -0700
+@@ -66,6 +66,11 @@
+ end
+ 
+ % size of root filter
++model.rootfilters = {};
++model.partfilters = {};
++model.defs = {};
++model.offsets = {};
++model.components = {};
+ if nargin < 5
+   model.rootfilters{1}.size = [round(h/model.sbin) round(w/model.sbin)];
+ else
+diff -Naur voc-release3.1/Makefile scripts/Makefile
+--- Makefile	2009-05-19 07:13:23.000000000 -0700
++++ Makefile	2010-07-19 11:07:53.935494107 -0700
+@@ -1,10 +1,27 @@
+-all: learn
++all: learn mex
++
++mex: features.mex dt.mex resize.mex fconv.mex
+ 
+ learn: learn.cc
+ 	g++ -O3 -o learn learn.cc
+ 
++
++features.mex:
++	 CFLAGS="-O3 -march=nocona -fomit-frame-pointer" mkoctfile --mex features.cc -o features.mex
++
++dt.mex:
++	 CFLAGS="-O3 -march=nocona -fomit-frame-pointer" mkoctfile --mex dt.cc -o dt.mex
++
++resize.mex:
++	 CFLAGS="-O3 -march=nocona -fomit-frame-pointer" mkoctfile --mex resize.cc -o resize.mex
++
++fconv.mex:
++#	CXXFLAGS="-O3  -march=nocona -fomit-frame-pointer" mkoctfile --mex fconvblas.cc -lcblas -o fconv.mex
++	CFLAGS="-O3 -march=nocona -fomit-frame-pointer" mkoctfile --mex fconvMT.cc -o fconv.mex
++
++
+ clean:
+-	/bin/rm learn
++	/bin/rm -f learn *.mex *.o
+ 
+ 
+ 
+diff -Naur voc-release3.1/pascal_init.m scripts/pascal_init.m
+--- pascal_init.m	2009-05-19 07:13:23.000000000 -0700
++++ pascal_init.m	2010-07-18 14:18:47.165488867 -0700
+@@ -2,6 +2,7 @@
+ % initialize the PASCAL development kit 
+ tmp = pwd;
+ cd(VOCdevkit);
+-addpath([cd '/VOCcode']);
+-VOCinit;
++addpath([pwd '/VOCcode']);
++%VOCinit;
+ cd(tmp);
++dataset_init;
+diff -Naur voc-release3.1/pascal_.m scripts/pascal_.m
+--- pascal_.m	1969-12-31 16:00:00.000000000 -0800
++++ pascal_.m	2010-07-18 14:18:47.175489030 -0700
+@@ -0,0 +1,13 @@
++function [ap] = pascal_(cls, n)
++
++% [ap1, ap2] = pascal(cls, n)
++% Train and score a model with n components.
++
++globals;
++pascal_init;
++
++model = pascal_train(cls, n);
++[boxes1, boxes2] = pascal_test(cls, model, 'test', VOCyear);
++ap1 = pascal_eval(cls, boxes1, 'test', ['1_' VOCyear]);
++ap2 = pascal_eval(cls, boxes2, 'test', ['2_' VOCyear]);
++ap = [ap1 ap2];
+diff -Naur voc-release3.1/resize.cc scripts/resize.cc
+--- resize.cc	2009-05-19 07:13:23.000000000 -0700
++++ resize.cc	2010-07-18 14:18:47.285488776 -0700
+@@ -43,7 +43,7 @@
+ 
+     if (sy1 - fsy1 > 1e-3) {
+       assert(k < len);
+-      assert(sy-1 >= 0);
++      //assert(sy-1 >= 0);
+       ofs[k].di = dy*width;
+       ofs[k].si = sy1-1;
+       ofs[k++].alpha = (sy1 - fsy1) * scale;
+diff -Naur voc-release3.1/showboxes.m scripts/showboxes.m
+--- showboxes.m	2009-05-19 07:13:23.000000000 -0700
++++ showboxes.m	2010-07-18 14:18:47.335488941 -0700
+@@ -1,12 +1,40 @@
+-function showboxes(im, boxes)
++%
++%Copyright (C) 2008, 2009 Pedro Felzenszwalb, Ross Girshick
++%Copyright (C) 2007 Pedro Felzenszwalb, Deva Ramanan
++%
++%Permission is hereby granted, free of charge, to any person obtaining
++%a copy of this software and associated documentation files (the
++%"Software"), to deal in the Software without restriction, including
++%without limitation the rights to use, copy, modify, merge, publish,
++%distribute, sublicense, and/or sell copies of the Software, and to
++%permit persons to whom the Software is furnished to do so, subject to
++%the following conditions:
++%
++%The above copyright notice and this permission notice shall be
++%included in all copies or substantial portions of the Software.
++%
++%THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++%EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++%MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++%NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
++%LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
++%OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
++%WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++%
++
++function showboxes(im, boxes, thresh)
+ 
+ % showboxes(im, boxes)
+ % Draw boxes on top of image.
++if ~exist('thresh','var')
++    thresh=0;
++end
+ 
+ clf;
+-image(im); 
++imagesc(im); 
+ axis equal;
+ axis on;
++hold on
+ if ~isempty(boxes)
+   numfilters = floor(size(boxes, 2)/4);
+   for i = 1:numfilters
+@@ -19,7 +47,18 @@
+     else
+       c = 'b';
+     end
+-    line([x1 x1 x2 x2 x1]', [y1 y2 y2 y1 y1]', 'color', c, 'linewidth', 3);
++    confidence = boxes(:,end);
++    X=[x1 x1 x2 x2 x1];
++    Y=[y1 y2 y2 y1 y1];
++    for j=1:numel(x1)
++        if confidence(j)>thresh
++            c2=[c '-'];
++        else
++            c2=[c '-.'];
++        end
++	plot(X(j,:)', Y(j,:)', c2, 'linewidth', 3);
++    end
+   end
+ end
++hold off
+ drawnow;
+diff -Naur voc-release3.1/test_detections.m scripts/test_detections.m
+--- test_detections.m	1969-12-31 16:00:00.000000000 -0800
++++ test_detections.m	2010-07-18 18:33:17.976886285 -0700
+@@ -0,0 +1,14 @@
++
++num_img = 662;
++start = 150;
++
++train_path = '/u/mariusm/datasets/pan_tilt_objects/test/left%.4d.jpg';
++
++for num = start:num_img
++    filename = sprintf(train_path,num);
++    fprintf('%d/%d\n',num-start,num_img-start);
++    im = imread(filename);
++    boxes = process(im,model,0);
++    boxes
++    showboxes(im,boxes);
++end
+diff -Naur voc-release3.1/test.m scripts/test.m
+--- test.m	2009-05-19 07:13:23.000000000 -0700
++++ test.m	1969-12-31 16:00:00.000000000 -0800
+@@ -1,7 +0,0 @@
+-function [ap1, ap2] = test(cls)
+-
+-globals;
+-load([cachedir cls '_final']);
+-[boxes1, boxes2] = pascal_test(cls, model, 'test', VOCyear);
+-ap1 = pascal_eval(cls, boxes1, 'test', ['1_' VOCyear]);
+-ap2 = pascal_eval(cls, boxes2, 'test', ['2_' VOCyear]);

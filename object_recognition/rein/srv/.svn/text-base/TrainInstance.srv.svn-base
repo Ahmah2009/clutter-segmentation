@@ -1,0 +1,14 @@
+# model name
+string name
+# input image
+sensor_msgs/Image image
+sensor_msgs/CameraInfo camera_info
+# optional roi/mask on the input image
+Mask mask
+# (optional) dense point cloud synchronized with the image
+sensor_msgs/PointCloud2 point_cloud
+# (optional) object pose
+geometry_msgs/Pose pose
+# set to True is the image is a background image (not containing the object)
+bool background
+---

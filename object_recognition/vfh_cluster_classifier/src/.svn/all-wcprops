@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/wg-ros-pkg/!svn/ver/49424/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/src
+END
+build_tree.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/src/build_tree.cpp
+END
+nearest_neighbors.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/wg-ros-pkg/!svn/ver/49424/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/src/nearest_neighbors.cpp
+END
+vfh_classifier_nodelet.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/src/vfh_classifier_nodelet.cpp
+END
+vfh_classifier.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/wg-ros-pkg/!svn/ver/48497/branches/trunk_diamondback/stacks/object_recognition/vfh_cluster_classifier/src/vfh_classifier.cpp
+END

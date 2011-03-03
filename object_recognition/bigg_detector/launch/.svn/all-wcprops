@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/wg-ros-pkg/!svn/ver/49570/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch
+END
+bigg_detection.launch
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_detection.launch
+END
+bigg_detection_cam.launch
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_detection_cam.launch
+END
+bigg_vfh_detection.launch
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_vfh_detection.launch
+END
+bigg_vfh_detection_no_gui.launch
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_vfh_detection_no_gui.launch
+END
+bigg_training_ptu.launch
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/wg-ros-pkg/!svn/ver/49570/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_training_ptu.launch
+END
+bigg_training_standalone.launch
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_training_standalone.launch
+END
+bigg_detection_flat.launch
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_detection_flat.launch
+END
+bigg_detection_ptu.launch
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_detection_ptu.launch
+END
+bigg_detection_nn.launch
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_detection_nn.launch
+END
+bigg_training.launch
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_training.launch
+END
+bigg_training_cam.launch
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/bigg_detector/launch/bigg_training_cam.launch
+END

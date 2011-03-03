@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<detectorName>SURF</detectorName>
+<descriptorName>SURF</descriptorName>
+<detectorThreshold>200.</detectorThreshold>
+<nonmaxSuppression>0</nonmaxSuppression>
+<minClusterSize>70</minClusterSize>
+<clusterThreshold>200</clusterThreshold>
+<reprojectErrorThreshold>8.</reprojectErrorThreshold>
+<minInliersCount>70</minInliersCount>
+<knnNum>30</knnNum>
+<ratioTestThreshold>8.9999997615814209e-01</ratioTestThreshold>
+<scale>3.0000002384185791e-01</scale>
+<isRecalcDescriptors>0</isRecalcDescriptors>
+<minStddevFactor>0.15</minStddevFactor>
+</opencv_storage>

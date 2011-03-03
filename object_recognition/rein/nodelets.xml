@@ -1,0 +1,36 @@
+<library path="lib/librein_ros">
+    <class name="rein/TabletopObjects" type="TabletopObjects" base_class_type="nodelet::Nodelet"> 
+        <description>
+            TabletopObjects is an attention operator that segments the objects found on a table.
+        </description>
+    </class>
+</library>
+
+<library path="lib/librein_tools">
+    <class name="rein/PCProjector" type="PCProjector" base_class_type="nodelet::Nodelet"> 
+        <description>
+            Projects a point cloud into an image generating an image mask.
+        </description>
+    </class>
+    <class name="rein/PointCloudResync" type="PointCloudResync" base_class_type="nodelet::Nodelet"> 
+        <description>
+            Subscribes to approximate-sync topics (PointCloud and CameraInfo) are republishes PointCloud synchronized with the CameraInfo.
+        </description>
+    </class>
+    
+    <class name="rein/GrabCut" type="GrabCut" base_class_type="nodelet::Nodelet"> 
+        <description>
+            GrabCut
+        </description>
+    </class>
+    <class name="rein/CleanSegmentation" type="CleanSegmentation" base_class_type="nodelet::Nodelet"> 
+        <description>
+            Cleans a segmented point cloud.
+        </description>
+    </class>
+    <class name="rein/SaveData" type="SaveData" base_class_type="nodelet::Nodelet"> 
+        <description>
+            Saves point clouds, images and masks to files.
+        </description>
+    </class>
+</library>

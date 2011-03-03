@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src
+END
+ObjectDatabase3D.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/ObjectDatabase3D.cpp
+END
+SVDRigidEstimator.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/SVDRigidEstimator.cpp
+END
+Semaphore.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/Semaphore.cpp
+END
+RANSACRigidTransformationEstimator.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/RANSACRigidTransformationEstimator.cpp
+END
+.kdev_include_paths
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/.kdev_include_paths
+END
+Coordinate3DProviderDenseStereo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/Coordinate3DProviderDenseStereo.cpp
+END
+GeometricValidator3D.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/GeometricValidator3D.cpp
+END
+Normal3DProviderDenseStereo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/stereo_object_recognition/src/Normal3DProviderDenseStereo.cpp
+END

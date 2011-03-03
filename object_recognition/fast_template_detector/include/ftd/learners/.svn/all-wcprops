@@ -1,0 +1,11 @@
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/include/ftd/learners
+END
+bimodal_adaptive_template_learner.h
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/include/ftd/learners/bimodal_adaptive_template_learner.h
+END

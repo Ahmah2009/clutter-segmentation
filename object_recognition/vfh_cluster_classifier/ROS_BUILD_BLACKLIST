@@ -1,0 +1,25 @@
+Fails to build on Maverick:
+
+Result: Installing system dependencies of package vfh_cluster_classifier
+=========================================
+Failed to execute 'rosdep install -y vfh_cluster_classifier'
+=========================================
+
+=========================================
+Failed to find stack for package [pcl_ros]
+Failed to load rosdep.yaml for package [pcl_ros]:Cannot locate installation of package pcl_ros: [rospack] couldn't find package [pcl_ros]. ROS_ROOT[/opt/ros/unstable/ros] ROS_PACKAGE_PATH[/tmp/ros:/opt/ros/unstable/stacks]
+Failed to find stack for package [pcl]
+Failed to load rosdep.yaml for package [pcl]:Cannot locate installation of package pcl: [rospack] couldn't find package [pcl]. ROS_ROOT[/opt/ros/unstable/ros] ROS_PACKAGE_PATH[/tmp/ros:/opt/ros/unstable/stacks]
+Failed to find stack for package [pcl_visualization]
+Failed to load rosdep.yaml for package [pcl_visualization]:Cannot locate installation of package pcl_visualization: [rospack] couldn't find package [pcl_visualization]. ROS_ROOT[/opt/ros/unstable/ros] ROS_PACKAGE_PATH[/tmp/ros:/opt/ros/unstable/stacks]
+Failed to find stack for package [flann]
+Failed to load rosdep.yaml for package [flann]:Cannot locate installation of package flann: [rospack] couldn't find package [flann]. ROS_ROOT[/opt/ros/unstable/ros] ROS_PACKAGE_PATH[/tmp/ros:/opt/ros/unstable/stacks]
+Failed to find rosdep libsoci for package vfh_cluster_classifier on OS:ubuntu version:10.10
+ERROR: ABORTING: Rosdeps [u'libsoci'] could not be resolved
+
+=========================================
+ROS_PACKAGE_PATH = /tmp/ros:/opt/ros/unstable/stacks
+ROS_ROOT = /opt/ros/unstable/ros
+PYTHONPATH = /opt/ros/unstable/ros/core/roslib/src
+
+=========================================

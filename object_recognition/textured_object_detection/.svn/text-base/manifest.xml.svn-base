@@ -1,0 +1,24 @@
+<package>
+  <description brief="Object recognition and pose estimation">
+     Uses opencv to object recognition.
+  </description>
+  <author>Alexander Shishkov, Victor Eruhimov</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+
+  <depend package="cv_bridge"/>
+  <depend package="image_transport"/>
+  <depend package="image_geometry"/>    
+  <depend package="posest"/>
+  <depend package="stereo_object_recognition"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -ltextured_object_detection -lshared_functions" />
+  </export>
+
+  <platform os="ubuntu" version="9.04"/>
+  <platform os="ubuntu" version="9.10"/>
+  <platform os="ubuntu" version="10.04"/>
+</package>
+
+

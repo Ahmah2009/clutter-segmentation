@@ -1,0 +1,13 @@
+\subsubsection usage Usage
+\verbatim
+<node name="rein" pkg="rein" type="rein">
+  <param name="use_rois" type="bool" value="False" />
+  <param name="template_radius" type="int" value="15" />
+  <param name="accept_threshold" type="double" value="0.82" />
+  <param name="magnitude_threshold" type="double" value="200.0" />
+  <param name="reduction_factor" type="double" value="4.0" />
+  <param name="diameter" type="double" value="4.0" />
+  <param name="fraction_overlap" type="double" value="0.6" />
+</node>
+\endverbatim
+

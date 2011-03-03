@@ -1,0 +1,16 @@
+/**
+@mainpage
+@htmlinclude manifest.html
+
+@b 
+
+The Recognition Infrastructure (ReIn) is a software library that
+facilitates rapid development for 2D/3D object and scene recognition. ReIn
+can create different computational graphs from its various modules by
+combining them together in parallel or in a cascade fashion. Examples
+include: object detectors, pose estimators, attention operators, etc.
+
+The backbone of ReIn is supported by OpenCV
+(http://opencv.willowgarage.com/) and PCL (http://pcl.ros.org).
+
+*/

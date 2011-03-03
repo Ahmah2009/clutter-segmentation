@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/wg-ros-pkg/!svn/ver/48783/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src
+END
+dummy_trigger.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/dummy_trigger.cpp
+END
+bimodal_adaptive_template_learner_bag.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/bimodal_adaptive_template_learner_bag.cpp
+END
+object_database.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/object_database.cpp
+END
+combine.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/wg-ros-pkg/!svn/ver/48114/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/src/combine.cpp
+END
