@@ -1,3 +1,0 @@
-Point2D32f upperLeftCorner
-Point2D32f lowerRightCorner
-

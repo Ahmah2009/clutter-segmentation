@@ -1,7 +1,0 @@
-<library path="lib/libvfh_classifier">
-    <class name="vfh_classifier/VFHClassifier" type="VFHClassifierNodelet" base_class_type="nodelet::Nodelet" 
-        <description>
-            VFH Classifier nodelet running inside the Recognition Infrastructure.
-        </description>
-    </class>
-</library>

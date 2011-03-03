@@ -1,9 +1,0 @@
-<launch>	
-	<param name="bag" value="$(arg bag)"/>
-	<param name="interval" value="$(arg interval)"/>
-	<node name="openni_image_pcl_recorder" pkg="tod_stub" type="image_pcl_recorder">
-		<remap from="/camera" to="/camera/rgb" />
-		<remap from="/points2" to="/camera/depth/points2" />
-	</node>
-	
-</launch>

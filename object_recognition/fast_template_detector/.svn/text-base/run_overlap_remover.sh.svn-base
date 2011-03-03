@@ -1,1 +1,0 @@
-rosrun fast_template_detector overlap_remover $1 /camera_info:=/narrow_stereo/left/camera_info /image:=/narrow_stereo/left/image_raw /detection_candidates_in:=/best_class_candidates /detection_candidates_out:=/final_candidates

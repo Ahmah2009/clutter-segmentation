@@ -1,2 +1,0 @@
-ROS_NAMESPACE=narrow_stereo_textured rosrun stereo_image_proc stereo_image_proc __name:=siproc
-

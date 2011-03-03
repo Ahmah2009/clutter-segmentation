@@ -1,40 +1,0 @@
-10
-
-dir
-49643
-https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition/fast_template_detector/include
-https://code.ros.org/svn/wg-ros-pkg
-
-
-
-2010-10-06T09:14:40.838009Z
-45350
-holzers
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-7275ad9f-c29b-430a-bdc5-66f4b3af1622
-
-io
-dir
-
-ftd
-dir
-
-util
-dir
-
-pcl
-dir
-
