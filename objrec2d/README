@@ -1,0 +1,18 @@
+objrec2d                                                       README
+---------------------------------------------------------------------
+This is an experimental setup to test the capabilities of ROS packages
+tod_training and tod_detection in stack object_recognition below
+svn path /branches/trunk_diamondback/stacks in wg-ros-pkg.
+
+It is self-contained and in order to setup the environment for this
+experiment, move to this directory in a terminal and call
+
+    rosinstall . /opt/ros/diamondback
+
+and then
+
+    source setup.bash
+
+Compile tod_training by calling
+
+    rosmake tod_training
