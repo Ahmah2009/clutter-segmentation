@@ -1,4 +1,6 @@
 - svn: {local-name: deps/object_recognition, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition'}
 - svn: {local-name: deps/object_recognition_experimental, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental'}
+- svn: {local-name: perception_pcl_addonsi, uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk'}
+- svn: {local-name: vslam, uri: https://code.ros.org/svn/ros-pkg/stacks/vslam/trunk}
 - other: {local-name: /opt/ros/diamondback/ros}
 - other: {local-name: /opt/ros/diamondback/stacks}
