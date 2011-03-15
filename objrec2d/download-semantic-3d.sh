@@ -1,5 +1,7 @@
 #!/bin/sh
 objects=`cat semantic-3d.txt`
+mkdir -p build/semantic-3d
+cd build/semantic-3d
 for obj in $objects
 do
     echo "Downloading $obj ..."
