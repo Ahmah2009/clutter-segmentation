@@ -21,10 +21,18 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
+file(GLOB tod_headers include/tod/training/*.h*)
+file(GLOB tod_srcs src/*.cpp)
+
 #common commands for building c++ executables and libraries
+rosbuild_add_library(${PROJECT_NAME} ${tod_srcs} ${tod_headers} )
+
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+rosbuild_add_executable(preparetraining apps/preparetraining.cpp)
+target_link_libraries(preparetraining ${PROJECT_NAME})

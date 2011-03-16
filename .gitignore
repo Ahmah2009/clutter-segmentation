@@ -1,5 +1,3 @@
-deps
+bin
+lib
 build
-setup.bash
-setup.sh
-setup.zsh
