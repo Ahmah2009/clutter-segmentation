@@ -34,7 +34,7 @@ do
     echo "Extracting files for $obj ..."
     tar -x -C $obj.delimited.pcd           -f $obj.delimited.pcd.tar.bz2
     tar -x -C $obj.delimited.rotated.pcd   -f $obj.delimited.rotated.pcd.tar.bz2
-    tar -x -C $obj.pcd                     -f $obj.delimited.pcd.tar.bz2
+    tar -x -C $obj.pcd                     -f $obj.pcd.tar.bz2
     tar -x -C $obj                         -f $obj.tar.bz2 
     tar -x -C $obj.png                     -f $obj.png.tar.bz2
 done
