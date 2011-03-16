@@ -10,5 +10,19 @@
  */
 int main(int argc, char *argv[])
 {
+    // Input:
+    // - training base directory
+    // - directory with all training data for one specific object
 
+    // list images
+    // for v in views do
+    //     p = estimate_pose(v)
+    //     m = create_mask(v)
+    //     p.serialize()
+    //     m.serialize()
+    // done
+
+    // Output:
+    // - black and white mask representing the region of interest for each training image
+    // - pose estimation for each training image
 }
