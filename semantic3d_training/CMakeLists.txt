@@ -21,11 +21,14 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
-file(GLOB tod_headers include/tod/training/*.h*)
-file(GLOB tod_srcs src/*.cpp)
+file(GLOB hdrs include/*.h*)
+file(GLOB srcs src/*.cpp)
+
 
 #common commands for building c++ executables and libraries
-rosbuild_add_library(${PROJECT_NAME} ${tod_srcs} ${tod_headers} )
+rosbuild_add_library(${PROJECT_NAME} ${srcs} ${hdrs} )
+
+rosbuild_add_gtest(utest test/utest.cpp)
 
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
