@@ -1,6 +1,4 @@
 /*
- * preparetraining.cpp
- *
  * Author: Julius Adorf 
  */
 
@@ -16,7 +14,7 @@ int main(int argc, char *argv[])
     // Input:
     // - training base directory
     // - directory with all training data for one specific object
-    
+
     // TODO: load options from command line using boost::program_options
     // Options opts;
     // options(argc, argv, opts);
@@ -28,11 +26,11 @@ int main(int argc, char *argv[])
     }
 
     // This directory contains all the data from TUM/IAS semantic3d database.
-    string bags_dir(argv[1]);
-    // This directory is the training base that is to be prepared. 
+    string obj_dir(argv[1]);
+    // This directory hosts the training base that is to be prepared. 
     string train_dir(argv[2]);
 
-    cout << bags_dir << endl;
+    cout << obj_dir << endl;
     cout << train_dir << endl;
 
     // list images
