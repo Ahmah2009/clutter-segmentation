@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
     cout << obj_dir << endl;
     cout << train_dir << endl;
 
+    
+
     // list images
     // for v in views do
     //     p = estimate_pose(v)
