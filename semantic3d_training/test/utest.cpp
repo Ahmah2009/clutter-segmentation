@@ -63,8 +63,10 @@ TEST(Misc, ExtractAngleFromFileName) {
 /** Read and write an image to an image file using OpenCV */
 TEST(Misc, ReadWriteImage) {
     using namespace cv;
+    using namespace boost::filesystem;
     Mat img(imread("./data/icetea2_0000_L.png.cropped.png"));
     imwrite("./data/icetea2_0000_L.png.cropped.out.png", img);
+    remove("./data/icetea2_0000_L.png.cropped.out.png");
 }
 
 /** Display images using OpenCV */
@@ -96,7 +98,6 @@ TEST(Misc, ExtractDetectorType) {
 TEST(Misc, DeserializePoseFromYAML) {
     using namespace cv;
     using namespace opencv_candidate;
-
     FileStorage in("./data/pose.yaml", FileStorage::READ);
     PoseRT act_pose;
     act_pose.read(in[PoseRT::YAML_NODE_NAME]);
@@ -112,7 +113,7 @@ TEST(Misc, DeserializePoseFromYAML) {
 TEST(Misc, SerializePoseToYAML) {
     using namespace cv;
     using namespace opencv_candidate;
-
+    using namespace boost::filesystem;
     PoseRT pose;
     pose.rvec = Mat::zeros(3, 1, 1); 
     pose.tvec = Mat::ones(3, 1, 1);
@@ -120,6 +121,8 @@ TEST(Misc, SerializePoseToYAML) {
     FileStorage out("./data/pose.out.yaml", FileStorage::WRITE);
     out << PoseRT::YAML_NODE_NAME;
     pose.write(out);
+
+    remove("./data/pose.out.yaml");
 }
 
 int main(int argc, char **argv){
