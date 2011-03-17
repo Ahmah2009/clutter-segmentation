@@ -3,7 +3,9 @@
  */
 
 #include <gtest/gtest.h>
+#include <stdlib.h>
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 #include "misc.h"
 
 using namespace std;
@@ -50,23 +52,8 @@ TEST(Misc, ListFiles2)
 
 /** Extract an angle from a filename */
 TEST(Misc, ExtractAngleFromFileName) {
-    vector<string> fn;
-    fn.push_back("bean-can_-180_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_-150_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_-120_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_-90_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_-60_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_-30_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_0_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_30_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_60_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_90_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_120_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_150_.log.delimited.rotated.pcd");
-    fn.push_back("bean-can_180_.log.delimited.rotated.pcd");
-    EXPECT_EQ(13, fn.size());
-    for (int i = 0; i < fn.size(); i++) {
-        EXPECT_EQ(-180 + i * 30, extractAngleFromFileName(fn[i]));
+    for (int a = -180; a <= 180; a += 30) {
+        EXPECT_EQ(a, extractAngleFromFileName("bean-can_" + boost::lexical_cast<std::string>(a) + "_.log.delimited.rotated.pcd"));
     }
 }
 
