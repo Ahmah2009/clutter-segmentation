@@ -28,3 +28,22 @@ TEST(ImageIO, DisplayImage) {
     waitKey(5000);
 }
 
+// TODO: Rename test
+
+TEST(ImageIO, CreateImage) {
+    typedef unsigned char uint8;
+    const int r = 410, c = 410;
+    Mat img = Mat::zeros(r, c, CV_8U);
+    // Create one of those funny optical illusions 
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            if ((i / 10) % 5 == 0 || (j / 10) % 5 == 0) {
+                img.at<uint8>(i, j) = 255u;
+            }
+        }
+    }
+    namedWindow("TEST(ImageIO, CreateImage)");
+    imshow("TEST(ImageIO, CreateImage)", img);
+    waitKey(5000);
+}
+

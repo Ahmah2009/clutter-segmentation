@@ -4,3 +4,4 @@ lib
 tags
 ctags.sh
 *.swp
+*.swo
