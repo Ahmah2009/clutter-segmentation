@@ -72,12 +72,11 @@ TEST(PCL, CoordinateProjection) {
     }
 
     // show image
-    namedWindow("TEST(PCL, CoordinateProjection)"); 
     imshow("TEST(PCL, CoordinateProjection)", img);
     waitKey(5000);
 }
 
-/** Test how to create a mask by doing a perspective projection */
+/** Test how to create a mask by point cloud segmentation / perspective projection */
 TEST(PCL, PerspectiveProjection) {
     fiducial::KnownPoseEstimator pose_est("./data/fat_free_milk_image_00000.png.pose.yaml");
     cv::Mat colorimg = cv::imread("./data/fat_free_milk_image_00000.png", CV_LOAD_IMAGE_COLOR);
@@ -89,7 +88,38 @@ TEST(PCL, PerspectiveProjection) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("mask", f2d.image & colorMask);
+    cv::imshow("TEST(PCL, PerspectiveProjection)", f2d.image & colorMask);
     cv::waitKey(5000);
 }
 
+/** Test how to fill in pose information without loading it from a file */
+TEST(PCL, PerspectiveProjectionManualPose) {
+    cv::Mat colorimg = cv::imread("./data/fat_free_milk_image_00000.png", CV_LOAD_IMAGE_COLOR);
+    tod::Camera camera = tod::Camera("./data/fat_free_milk_camera.yml", opencv_candidate::Camera::TOD_YAML);
+    tod::Features2d f2d(camera, colorimg);
+    // Approximately fill in rotation and translation vectors as can be found
+    // in ./data/fat_free_milk_image_00000.png.pose.yaml
+    cv::Mat rvec = cv::Mat::zeros(3, 1, CV_32FC1); 
+    rvec.at<float>(0, 0) = 2.1;
+    rvec.at<float>(1, 0) = 0.52;
+    rvec.at<float>(2, 0) = -0.25;
+    cv::Mat tvec = cv::Mat::zeros(3, 1, CV_32FC1); 
+    tvec.at<float>(0, 0) = 0.056;
+    tvec.at<float>(1, 0) = 0.052;
+    tvec.at<float>(2, 0) = 0.81;
+    f2d.camera.pose.rvec = rvec; 
+    f2d.camera.pose.tvec = tvec;
+    // Load point cloud and perform segmentation and perspective projection
+    PointCloud<PointXYZRGB> cloud;
+    io::loadPCDFile("./data/fat_free_milk_cloud_00000.pcd", cloud);
+    f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
+    cv::Mat colorMask;
+    cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
+    cv::imshow("TEST(PCL, PerspectiveProjectionManualPose)", f2d.image & colorMask);
+    cv::waitKey(5000);
+}
+
+
+// TODO:
+/** Test how the perspective projection is affected by a bad pose estimation */
+// TEST(PCL, PerspectiveProjection) {
