@@ -1,0 +1,28 @@
+%YAML:1.0
+# Camera
+camera:
+   K: !!opencv-matrix
+      rows: 3
+      cols: 3
+      dt: d
+      data: [ 1050., 0., 640., 0., 1050., 480., 0., 0., 1. ]
+   D: !!opencv-matrix
+      rows: 5
+      cols: 1
+      dt: d
+      data: [ 0., 0., 0., 0., 0. ]
+   width: 1280
+   height: 1024
+   # PoseRT
+   pose:
+      rvec: !!opencv-matrix
+         rows: 3
+         cols: 1
+         dt: f
+         data: [ 0., 0., 0. ]
+      tvec: !!opencv-matrix
+         rows: 3
+         cols: 1
+         dt: f
+         data: [ 0., 0., 0. ]
+      estimated: 0
