@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
         string pcl_fn = bags_dir + "/" + object + ".delimited.pcd/" +
             object + "_" + boost::lexical_cast<string>(a) + "_.log.delimited.pcd";
         string png_fn = bags_dir + "/" + object + "/" +
-            object + "_" + angleToFourChars(a) + "_L.png";
+            object + "_" + str(boost::format("%04i") % a) + "_L.png";
         cout << "pcl_fn: " << pcl_fn << endl;
         cout << "png_fn: " << png_fn << endl;
         cout << endl;

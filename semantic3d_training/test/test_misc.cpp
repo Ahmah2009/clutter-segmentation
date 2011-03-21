@@ -24,19 +24,3 @@ TEST(Misc, TestBoostFormat) {
     EXPECT_EQ("0000", str(boost::format("%04i") % 0));
 }
 
-TEST(Misc, AngleToFourChars) {
-    EXPECT_EQ("-180", angleToFourChars(-180)); 
-    EXPECT_EQ("-150", angleToFourChars(-150)); 
-    EXPECT_EQ("-120", angleToFourChars(-120)); 
-    EXPECT_EQ("-090", angleToFourChars(-90)); 
-    EXPECT_EQ("-060", angleToFourChars(-60)); 
-    EXPECT_EQ("-030", angleToFourChars(-30)); 
-    EXPECT_EQ("0000", angleToFourChars(0)); 
-    EXPECT_EQ("0030", angleToFourChars(30)); 
-    EXPECT_EQ("0060", angleToFourChars(60)); 
-    EXPECT_EQ("0090", angleToFourChars(90)); 
-    EXPECT_EQ("0120", angleToFourChars(120)); 
-    EXPECT_EQ("0150", angleToFourChars(150)); 
-    EXPECT_EQ("0180", angleToFourChars(180)); 
-}
-
