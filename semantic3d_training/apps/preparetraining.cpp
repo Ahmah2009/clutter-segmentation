@@ -4,13 +4,17 @@
 
 // TODO: < > or " " ?
 #include <iostream>
+#include <limits>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 #include <opencv_candidate/PoseRT.h>
 #include <opencv2/highgui/highgui.hpp>
+#include <tod/core/Features3d.h>
+#include <tod/training/masking.h>
 #include "pcl/io/pcd_io.h"
 #include "pcl/point_types.h"
+#include "tod/training/clouds.h"
 #include <cv.h>
 #include "misc.h"
 
@@ -20,8 +24,8 @@ using namespace cv;
 using namespace pcl;
 using namespace opencv_candidate;
 
-void createMask(const PointCloud<PointXYZ> & cloud, const Mat & image, const Mat & mask) {
-
+Mat createMask(const PointCloud<PointXYZRGB> & cloud, const PoseRT & pose, const Camera & camera) {
+   return tod::cloudMask(cloud, pose, camera); 
 }
 
 /** \brief Prepares training data for the feature detection and extraction
@@ -56,32 +60,70 @@ int main(int argc, char *argv[])
 
     // TODO: platform-independent path construction
     for (int a = -180, i = 0; a <= 180; a += 30, i++) {
-        string pcl_fn = bags_dir + "/" + object + ".delimited.pcd/" +
-            object + "_" + boost::lexical_cast<string>(a) + "_.log.delimited.pcd";
-        string png_fn = bags_dir + "/" + object + "/" +
-            object + "_" + str(boost::format("%04i") % a) + "_L.png";
+        // TODO: namespace
+        string pcl_fn = str(boost::format("%s/%s.delimited.pcd/%s_%i_.log.delimited.pcd") % bags_dir % object % object % a);
+        string png_fn = str(boost::format("%s/%s/%s_%04i_L.png") % bags_dir % object % object % a);
+
         cout << "pcl_fn: " << pcl_fn << endl;
         cout << "png_fn: " << png_fn << endl;
         cout << endl;
+
         // FIXME: get pose from a better estimate
-        PoseRT p;
+        PoseRT pose;
+        pose.rvec = Mat::zeros(3, 1, CV_32F);
+        pose.rvec.at<float>(0, 0) = 0;
+        pose.rvec.at<float>(1, 0) = 0;
+        pose.rvec.at<float>(2, 0) = 0;
+        pose.tvec = Mat::zeros(3, 1, CV_32F);
+
+        // FIXME: get camera parameters
+        FileStorage fs(str(boost::format("%s/camera.yml") % bags_dir), FileStorage::READ);       
+        tod::Camera camera(fs.root());
+
         // Read full image from semantic 3d training data.
         Mat image = imread(png_fn);
         // Read delimited point cloud from semantic 3d training data.
-        PointCloud<PointXYZ> cloud;
-        io::loadPCDFile(pcl_fn, cloud);
+        PointCloud<PointXYZ> cloudXYZ;
+        io::loadPCDFile(pcl_fn, cloudXYZ);
+        PointCloud<PointXYZRGB> cloud;
+        cloud.points.resize(cloudXYZ.points.size());
+        for (unsigned int j = 0; j < cloud.points.size(); j++) {
+            cloud.points[j].x = cloudXYZ.points[j].x;
+            cloud.points[j].y = cloudXYZ.points[j].y;
+            cloud.points[j].z = cloudXYZ.points[j].z;
+        }
+
+        
+        float ymin = numeric_limits<float>::max();
+        float xavg = 0, zavg = 0;
+        int n = 0;
+        PointCloud<PointXYZRGB>::iterator it = cloud.begin();
+        PointCloud<PointXYZRGB>::iterator end = cloud.end();
+        while (it != end) {
+            xavg += it->x;
+            zavg += it->z;
+            ymin = min(ymin, it->y);
+            n++;
+            it++;
+        }
+        xavg /= n;
+        zavg /= n;
+        pose.tvec.at<float>(0, 0) = -xavg;
+        pose.tvec.at<float>(1, 0) = -ymin;
+        pose.tvec.at<float>(2, 0) = -zavg;
+        
+
         // Create mask
-        Mat mask = Mat::zeros(image.size(), CV_8U);
-        createMask(cloud, image, mask);
+        Mat mask = createMask(cloud, pose, camera);
+
         // Write results to training base
         string b = "image_" + str(boost::format("%04i") % i);
-        imwrite(train_dir + "/" + object + "/" + b + ".png", image);
-        imwrite(train_dir + "/" + object + "/" + b + ".png.mask.png", mask);
-
+        imwrite(str(boost::format("%s/%s/image_%04i.png") % train_dir % object % i), image);
+        imwrite(str(boost::format("%s/%s/image_%04i.png.mask.png") % train_dir % object % i), mask);
         // TODO: make directories if necessary
-        FileStorage out(train_dir + "/" + object + "/" + b + ".png.pose.yaml", FileStorage::WRITE);
+        FileStorage out(str(boost::format("%s/%s/image_%04i.png.pose.yaml") % train_dir % object % i), FileStorage::WRITE);
         out << PoseRT::YAML_NODE_NAME;
-        p.write(out);
+        pose.write(out);
     }
 
     // list images

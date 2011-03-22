@@ -29,9 +29,23 @@ TEST(PCL, ReadKinectPointCloud) {
 
 /** Tests whether a point cloud file from TUM/IAS semantic 3d data set can be
  * read using routines from 'pcl'. Also have a look at the data itself. */
-TEST(PCL, ReadSemantic3dPointCloud) {
+TEST(PCL, ReadSemantic3dPointCloudAsXYZ) {
     PointCloud<PointXYZ> cloud;
     io::loadPCDFile("./data/sample.delimited.pcd", cloud);
+}
+
+/** Demonstrates how a point cloud file from TUM/IAS semantic 3d data set can NOT be
+* read using routines from 'pcl'. Also have a look at the data itself. */
+TEST(PCL, BadReadSemantic3dPointCloudAsXYZRGB) {
+    PointCloud<PointXYZRGB> cloud;
+    ASSERT_THROW(io::loadPCDFile("./data/sample.delimited.pcd", cloud), InvalidConversionException);
+}
+
+/** Tests whether a point cloud file from TUM/IAS semantic 3d data set can be
+ * read using routines from 'pcl'. Also have a look at the data itself. */
+TEST(PCL, GoodReadSemantic3dPointCloudAsXYZRGB) {
+    PointCloud<PointXYZRGB> cloud;
+    io::loadPCDFile("./data/sample.delimited.rgb.pcd", cloud);
 }
 
 /** Test how points can be projected onto two out of three coordinates. Use the
