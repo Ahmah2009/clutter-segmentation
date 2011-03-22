@@ -48,6 +48,26 @@ TEST(PCL, GoodReadSemantic3dPointCloudAsXYZRGB) {
     io::loadPCDFile("./data/sample.delimited.rgb.pcd", cloud);
 }
 
+TEST(PCL, ConvertXYZtoXYZRGB) {
+    PointCloud<PointXYZ> cloud_xyz;
+    PointCloud<PointXYZRGB> cloud_xyzrgb;
+    io::loadPCDFile("./data/sample.delimited.pcd", cloud_xyz);
+    cloud_xyzrgb.points.resize(cloud_xyz.size());
+    for (unsigned int i = 0; i < cloud_xyz.points.size(); i++) {
+        cloud_xyzrgb.points[i].x = cloud_xyz.points[i].x;
+        cloud_xyzrgb.points[i].y = cloud_xyz.points[i].y;
+        cloud_xyzrgb.points[i].z = cloud_xyz.points[i].z;
+    }
+    io::savePCDFileASCII("build/sample.delimited.xyzrgb.pcd", cloud_xyzrgb);
+    PointCloud<PointXYZRGB> cloud_xyzrgb_2;
+    io::loadPCDFile("build/sample.delimited.xyzrgb.pcd", cloud_xyzrgb_2);
+    for (unsigned int i = 0; i < cloud_xyzrgb.points.size(); i++) {
+        ASSERT_EQ(cloud_xyzrgb.points[i].x, cloud_xyzrgb_2.points[i].x);
+        ASSERT_EQ(cloud_xyzrgb.points[i].y, cloud_xyzrgb_2.points[i].y);
+        ASSERT_EQ(cloud_xyzrgb.points[i].z, cloud_xyzrgb_2.points[i].z);
+    }
+}
+
 /** Test how points can be projected onto two out of three coordinates. Use the
  * characteristically shaped icetea2 object and project the y and z coordinates
  * onto a picture. */

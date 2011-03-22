@@ -40,3 +40,6 @@ target_link_libraries(utest ${PROJECT_NAME})
 
 rosbuild_add_executable(preparetraining apps/preparetraining.cpp)
 target_link_libraries(preparetraining ${PROJECT_NAME})
+
+rosbuild_add_executable(xyz_to_xyzrgb apps/xyz_to_xyzrgb.cpp)
+target_link_libraries(xyz_to_xyzrgb ${PROJECT_NAME})
