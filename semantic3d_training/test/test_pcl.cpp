@@ -48,6 +48,7 @@ TEST(PCL, GoodReadSemantic3dPointCloudAsXYZRGB) {
     io::loadPCDFile("./data/sample.delimited.rgb.pcd", cloud);
 }
 
+/** Tests how to convert xyz point cloud data to xyzrgb point cloud data. */
 TEST(PCL, ConvertXYZtoXYZRGB) {
     PointCloud<PointXYZ> cloud_xyz;
     PointCloud<PointXYZRGB> cloud_xyzrgb;
