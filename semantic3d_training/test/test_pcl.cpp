@@ -182,3 +182,29 @@ TEST(PCL, PerspectiveProjectionDistortedPose) {
     cv::waitKey(5000);
 }
 
+/** Manually estimated pose by using pcl_visualization */
+TEST(PCL, PerspectiveProjectionManualPose2) {
+    // See also masker.cpp in tod_training
+    cv::Mat colorimg = cv::imread("./data/icetea2_00000.png", CV_LOAD_IMAGE_COLOR);
+    tod::Camera camera = tod::Camera("./data/fat_free_milk_camera.yml", opencv_candidate::Camera::TOD_YAML);
+    tod::Features2d f2d(camera, colorimg);
+    cv::Mat rvec = cv::Mat::zeros(3, 1, CV_32FC1); 
+    rvec.at<float>(0, 0) = 0;
+    rvec.at<float>(1, 0) = 0;
+    rvec.at<float>(2, 0) = 0;
+    cv::Mat tvec = cv::Mat::zeros(3, 1, CV_32FC1); 
+    tvec.at<float>(0, 0) = 1;
+    tvec.at<float>(1, 0) = -0.25;
+    tvec.at<float>(2, 0) = -0.1;
+    f2d.camera.pose.rvec = rvec; 
+    f2d.camera.pose.tvec = tvec;
+    // Load point cloud and perform segmentation and perspective projection
+    PointCloud<PointXYZRGB> cloud;
+    io::loadPCDFile("./data/cloud_00000.pcd", cloud);
+    f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
+    cv::Mat colorMask;
+    cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
+    cv::imshow("TEST(PCL, PerspectiveProjectionManualPose2)", f2d.image & colorMask);
+    cv::waitKey(5000);
+}
+
