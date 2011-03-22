@@ -17,8 +17,14 @@ using namespace boost::algorithm;
 /** \brief Reads XYZ point clouds from files in a directory and writes XYZRGB
  * point clouds back to files in the same directory.
  */
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        cerr << "Usage: xyz_to_xyzrgb <directory>" << endl;
+        cerr << endl;
+        cerr << "     where <directory> refers to a folder that contains " << endl;
+        cerr << "     PCD files with XYZ point data. Original files will " << endl;
+        cerr << "     not be overwritten." << endl;
+    }
     string dir(argv[1]);
     for (directory_iterator it(dir), end; it != end; ++it) {
         string f(it->path().filename());
@@ -37,16 +43,5 @@ int main(int argc, char *argv[])
             io::savePCDFileASCII(dir + "/" + fnew, cloud_xyzrgb);
         }
     }
-/* 
-    PointCloud<PointXYZ> cloud_xyz;
-    PointCloud<PointXYZRGB> cloud_xyzrgb;
-    io::loadPCDFile("./data/sample.delimited.pcd", cloud_xyz);
-    cloud_xyzrgb.points.resize(cloud_xyz.size());
-    for (unsigned int i = 0; i < cloud_xyz.points.size(); i++) {
-        cloud_xyzrgb.points[i].x = cloud_xyz.points[i].x;
-        cloud_xyzrgb.points[i].y = cloud_xyz.points[i].y;
-        cloud_xyzrgb.points[i].z = cloud_xyz.points[i].z;
-    }
-    io::savePCDFileASCII("build/sample.delimited.xyzrgb.pcd", cloud_xyzrgb); */
 }
 
