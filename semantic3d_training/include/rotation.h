@@ -8,9 +8,9 @@
 // we just return them as references like in Java??? The operators on
 // matrices might give clues.
 
-void populateXRotationMatrix(cv::Mat rot, double angle);
+cv::Mat generateXRotationMatrix(double angle);
 
-void populateYRotationMatrix(cv::Mat rot, double angle);
+cv::Mat generateYRotationMatrix(double angle);
 
-void populateZRotationMatrix(cv::Mat rot, double angle);
+cv::Mat generateZRotationMatrix(double angle);
 

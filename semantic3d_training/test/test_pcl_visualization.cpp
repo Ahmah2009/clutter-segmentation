@@ -12,6 +12,7 @@
 
 // TODO: move to own namespace
 #include "rotation.h"
+#include "pcl_visualization_addons.h"
 
 using namespace pcl;
 using namespace pcl_visualization;
@@ -78,55 +79,12 @@ TEST(PCL_VISUALIZATION, ShowFiducialPoseEstimate) {
     io::loadPCDFile("./data/fat_free_milk_cloud_00000.pcd", cloud);
     // Create visualizer
     PCLVisualizer visualizer;
-
-    // TODO: extract code to function
-    PointXYZ origin;
-    Mat rot = Mat(3, 3, CV_64F);
-    Rodrigues(pose.rvec, rot);
-    // Unit vectors, rotated and translated according to pose
-    Mat xpose = Mat(3, 1, CV_64F);
-    xpose.at<double>(0, 0) = 0.5;
-    xpose.at<double>(1, 0) = 0;
-    xpose.at<double>(2, 0) = 0;
-    xpose = rot * xpose + pose.tvec;
-    Mat ypose = Mat(3, 1, CV_64F);
-    ypose.at<double>(0, 0) = 0;
-    ypose.at<double>(1, 0) = 0.5;
-    ypose.at<double>(2, 0) = 0;
-    ypose = rot * ypose + pose.tvec;
-    Mat zpose = Mat(3, 1, CV_64F);
-    zpose.at<double>(0, 0) = 0;
-    zpose.at<double>(1, 0) = 0;
-    zpose.at<double>(2, 0) = 0.5;
-    zpose = rot * zpose + pose.tvec;
-    // the tip of the x-axis drawn in the pose
-    PointXYZ xtip;
-    xtip.x = xpose.at<double>(0, 0);
-    xtip.y = xpose.at<double>(1, 0);
-    xtip.z = xpose.at<double>(2, 0);
-    // the tip of the y-axis drawn in the pose
-    PointXYZ ytip;
-    ytip.x = ypose.at<double>(0, 0);
-    ytip.y = ypose.at<double>(1, 0);
-    ytip.z = ypose.at<double>(2, 0);
-    // the tip of the z-axis drawn in the pose
-    PointXYZ ztip;
-    ztip.x = zpose.at<double>(0, 0);
-    ztip.y = zpose.at<double>(1, 0);
-    ztip.z = zpose.at<double>(2, 0);
-    // Just pose.tvec as PointXYZ
-    PointXYZ tvec;
-    tvec.x = pose.tvec.at<double>(0, 0);
-    tvec.y = pose.tvec.at<double>(1, 0);
-    tvec.z = pose.tvec.at<double>(2, 0);
     // Add coordinate system
     visualizer.addCoordinateSystem(0.5, 0, 0, 0);
-    // Draw pose
-    visualizer.addLine(tvec, xtip, 1, 0, 0, "tvec-xtip");
-    visualizer.addLine(tvec, ytip, 0, 1, 0, "tvec-ytip");
-    visualizer.addLine(tvec, ztip, 0, 0, 1, "tvec-ztip");
     // Add point cloud
     visualizer.addPointCloud(cloud);
+    // Draw pose
+    addPose(visualizer, pose);
     visualizer.spin();
 }
 

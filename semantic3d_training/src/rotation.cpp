@@ -8,7 +8,8 @@
 
 using namespace cv;
 
-void populateXRotationMatrix(Mat rot, double angle) {
+cv::Mat generateXRotationMatrix(double angle) {
+    Mat rot = Mat(3, 3, CV_64F);
     rot.at<double>(0, 0) = 1;
     rot.at<double>(0, 1) = 0;
     rot.at<double>(0, 2) = 0;
@@ -18,9 +19,11 @@ void populateXRotationMatrix(Mat rot, double angle) {
     rot.at<double>(2, 0) = 0;
     rot.at<double>(2, 1) = sin(angle);
     rot.at<double>(2, 2) = cos(angle);
+    return rot;
 }
 
-void populateYRotationMatrix(Mat rot, double angle) {
+cv::Mat generateYRotationMatrix(double angle) {
+    Mat rot = Mat(3, 3, CV_64F);
     rot.at<double>(0, 0) = cos(angle);
     rot.at<double>(0, 1) = 0;
     rot.at<double>(0, 2) = sin(angle);
@@ -30,9 +33,11 @@ void populateYRotationMatrix(Mat rot, double angle) {
     rot.at<double>(2, 0) = -sin(angle);
     rot.at<double>(2, 1) = 0;
     rot.at<double>(2, 2) = cos(angle);
+    return rot;
 }
 
-void populateZRotationMatrix(Mat rot, double angle) {
+cv::Mat generateZRotationMatrix(double angle) {
+    Mat rot = Mat(3, 3, CV_64F);
     rot.at<double>(0, 0) = cos(angle);
     rot.at<double>(0, 1) = -sin(angle);
     rot.at<double>(0, 2) = 0;
@@ -42,4 +47,6 @@ void populateZRotationMatrix(Mat rot, double angle) {
     rot.at<double>(2, 0) = 0;
     rot.at<double>(2, 1) = 0;
     rot.at<double>(2, 2) = 1;
+    return rot;
 }
+
