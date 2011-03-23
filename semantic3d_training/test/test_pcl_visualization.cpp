@@ -78,63 +78,49 @@ TEST(PCL_VISUALIZATION, ShowFiducialPoseEstimate) {
     io::loadPCDFile("./data/fat_free_milk_cloud_00000.pcd", cloud);
     // Create visualizer
     PCLVisualizer visualizer;
-    // Create rotation matrix according to pose.rvec
-    // TODO: is pose.rvec really to be interpreted like this???
-    Mat rx = Mat(3, 3, CV_64F);
-    Mat ry = Mat(3, 3, CV_64F);
-    Mat rz = Mat(3, 3, CV_64F);
-    Mat rot = Mat(3, 3, CV_64F);
-    populateXRotationMatrix(rx, pose.rvec.at<double>(0, 0));
-    populateYRotationMatrix(ry, pose.rvec.at<double>(1, 0));
-    populateZRotationMatrix(rz, pose.rvec.at<double>(2, 0));
-    rot = rz*ry*rx;
-    // rot = rx*ry*rz;
-    // Model unit vectors along coordinate axes
-    // and rotate and translate them
-    Mat xunit = Mat(3, 1, CV_64F);
-    xunit.at<double>(0, 0) = 1;
-    xunit.at<double>(1, 0) = 0;
-    xunit.at<double>(2, 0) = 0;
-    xunit = rot * xunit + pose.tvec;
-    Mat yunit = Mat(3, 1, CV_64F);
-    yunit.at<double>(0, 0) = 0;
-    yunit.at<double>(1, 0) = 1;
-    yunit.at<double>(2, 0) = 0;
-    yunit = rot * yunit + pose.tvec;
-    Mat zunit = Mat(3, 1, CV_64F);
-    zunit.at<double>(0, 0) = 0;
-    zunit.at<double>(1, 0) = 0;
-    zunit.at<double>(2, 0) = 1;
-    zunit = rot * zunit + pose.tvec;
 
-    cout << "==================================================" << endl;
-    cout << pose.tvec.at<double>(0, 0) << endl;
-    cout << pose.tvec.at<double>(1, 0) << endl;
-    cout << pose.tvec.at<double>(2, 0) << endl;
-
+    // TODO: extract code to function
     PointXYZ origin;
+    Mat rot = Mat(3, 3, CV_64F);
+    Rodrigues(pose.rvec, rot);
+    // Unit vectors, rotated and translated according to pose
+    Mat xpose = Mat(3, 1, CV_64F);
+    xpose.at<double>(0, 0) = 0.5;
+    xpose.at<double>(1, 0) = 0;
+    xpose.at<double>(2, 0) = 0;
+    xpose = rot * xpose + pose.tvec;
+    Mat ypose = Mat(3, 1, CV_64F);
+    ypose.at<double>(0, 0) = 0;
+    ypose.at<double>(1, 0) = 0.5;
+    ypose.at<double>(2, 0) = 0;
+    ypose = rot * ypose + pose.tvec;
+    Mat zpose = Mat(3, 1, CV_64F);
+    zpose.at<double>(0, 0) = 0;
+    zpose.at<double>(1, 0) = 0;
+    zpose.at<double>(2, 0) = 0.5;
+    zpose = rot * zpose + pose.tvec;
     // the tip of the x-axis drawn in the pose
     PointXYZ xtip;
-    xtip.x = xunit.at<double>(0, 0);
-    xtip.y = xunit.at<double>(1, 0);
-    xtip.z = xunit.at<double>(2, 0);
+    xtip.x = xpose.at<double>(0, 0);
+    xtip.y = xpose.at<double>(1, 0);
+    xtip.z = xpose.at<double>(2, 0);
     // the tip of the y-axis drawn in the pose
     PointXYZ ytip;
-    ytip.x = yunit.at<double>(0, 0);
-    ytip.y = yunit.at<double>(1, 0);
-    ytip.z = yunit.at<double>(2, 0);
+    ytip.x = ypose.at<double>(0, 0);
+    ytip.y = ypose.at<double>(1, 0);
+    ytip.z = ypose.at<double>(2, 0);
     // the tip of the z-axis drawn in the pose
     PointXYZ ztip;
-    ztip.x = zunit.at<double>(0, 0);
-    ztip.y = zunit.at<double>(1, 0);
-    ztip.z = zunit.at<double>(2, 0);
+    ztip.x = zpose.at<double>(0, 0);
+    ztip.y = zpose.at<double>(1, 0);
+    ztip.z = zpose.at<double>(2, 0);
     // Just pose.tvec as PointXYZ
     PointXYZ tvec;
     tvec.x = pose.tvec.at<double>(0, 0);
     tvec.y = pose.tvec.at<double>(1, 0);
     tvec.z = pose.tvec.at<double>(2, 0);
     // Add coordinate system
-    visualizer.addCoordinateSystem(1, 0, 0, 0);
+    visualizer.addCoordinateSystem(0.5, 0, 0, 0);
     // Draw pose
     visualizer.addLine(tvec, xtip, 1, 0, 0, "tvec-xtip");
     visualizer.addLine(tvec, ytip, 0, 1, 0, "tvec-ytip");

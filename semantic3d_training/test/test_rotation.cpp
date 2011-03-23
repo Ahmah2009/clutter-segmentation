@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include <cv.h>
 #include <math.h>
+#include <opencv2/calib3d/calib3d.hpp>
 #include "rotation.h"
 
 using namespace cv;
@@ -103,5 +104,15 @@ TEST(ROTATION, IdentityRotation) {
     EXPECT_NEAR(v.at<double>(0, 0), xaxis.at<double>(0, 0), 0.0001);
     EXPECT_NEAR(v.at<double>(1, 0), xaxis.at<double>(1, 0), 0.0001);
     EXPECT_NEAR(v.at<double>(2, 0), xaxis.at<double>(2, 0), 0.0001);
+}
+
+TEST(ROTATION, Rodrigues2Conversion) {
+    Mat rotm = Mat(3, 3, CV_64F);
+    populateXRotationMatrix(rotm, M_PI / 2);
+    Mat rvec = Mat(3, 1, CV_64F);
+    Rodrigues(rotm, rvec);
+    Mat rotm2 = Mat(3, 3, CV_64F);
+    Rodrigues(rvec, rotm2);
+    EXPECT_TRUE(norm(rotm, rotm2) < 0.0001);
 }
 
