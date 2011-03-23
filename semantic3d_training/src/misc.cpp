@@ -4,8 +4,6 @@
 
 #include <stdlib.h>
 #include <iostream>
-#include <boost/lexical_cast.hpp>
-#include <boost/format.hpp>
 #include "misc.h"
 
 using namespace std;
