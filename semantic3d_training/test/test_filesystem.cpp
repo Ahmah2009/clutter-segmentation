@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include <gtest/gtest.h>
 #include <stdlib.h>
 #include <boost/filesystem.hpp>

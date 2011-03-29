@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include <gtest/gtest.h>
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>

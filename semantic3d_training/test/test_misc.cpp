@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include <gtest/gtest.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>

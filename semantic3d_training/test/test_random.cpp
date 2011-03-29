@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include <gtest/gtest.h>
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>

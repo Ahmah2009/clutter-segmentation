@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include <gtest/gtest.h>
 #include <limits>
 #include "pcl/io/pcd_io.h"
@@ -106,9 +108,11 @@ TEST(Pcl, CoordinateProjection) {
         it++;
     }
 
-    // show image
-    imshow("TEST(Pcl, CoordinateProjection)", img);
-    waitKey(5000);
+    if (enableUI) {
+        // show image
+        imshow("TEST(Pcl, CoordinateProjection)", img);
+        waitKey(5000);
+    }
 }
 
 /** Test how to create a mask by point cloud segmentation / perspective projection */
@@ -124,8 +128,10 @@ TEST(Pcl, PerspectiveProjection) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(Pcl, PerspectiveProjection)", f2d.image & colorMask);
-    cv::waitKey(5000);
+    if (enableUI) {
+        cv::imshow("TEST(Pcl, PerspectiveProjection)", f2d.image & colorMask);
+        cv::waitKey(5000);
+    }
 }
 
 /** Test how to fill in pose information without loading it from a file */
@@ -152,8 +158,10 @@ TEST(Pcl, PerspectiveProjectionManualPose) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(Pcl, PerspectiveProjectionManualPose)", f2d.image & colorMask);
-    cv::waitKey(5000);
+    if (enableUI) {
+        cv::imshow("TEST(Pcl, PerspectiveProjectionManualPose)", f2d.image & colorMask);
+        cv::waitKey(5000);
+    }
 }
 
 /** Test how distorted pose estimation value affects masking process */
@@ -178,8 +186,10 @@ TEST(Pcl, PerspectiveProjectionDistortedPose) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(Pcl, PerspectiveProjectionDistortedPose)", f2d.image & colorMask);
-    cv::waitKey(5000);
+    if (enableUI) { 
+        cv::imshow("TEST(Pcl, PerspectiveProjectionDistortedPose)", f2d.image & colorMask);
+        cv::waitKey(5000);
+    }
 }
 
 /** Manually estimated pose by using pcl_visualization */
@@ -204,7 +214,9 @@ TEST(Pcl, PerspectiveProjectionManualPose2) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(Pcl, PerspectiveProjectionManualPose2)", f2d.image & colorMask);
-    cv::waitKey(5000);
+    if (enableUI) {
+        cv::imshow("TEST(Pcl, PerspectiveProjectionManualPose2)", f2d.image & colorMask);
+        cv::waitKey(5000);
+    }
 }
 

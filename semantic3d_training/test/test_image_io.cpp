@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include <gtest/gtest.h>
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
@@ -21,14 +23,15 @@ TEST(ImageIO, ReadWriteImage) {
 TEST(ImageIO, DisplayImage) {
     Mat img(imread("./data/icetea2_0000_L.png.cropped.png"));
     Mat img2(imread("./data/icetea2_0000_L.png.cropped.png", 0));
-    namedWindow("image");
-    imshow("image", img);
-    namedWindow("gray-level image");
-    imshow("gray-level image", img2);
-    waitKey(5000);
+    if (enableUI) {
+        // TODO: simplify
+        namedWindow("image");
+        imshow("image", img);
+        namedWindow("gray-level image");
+        imshow("gray-level image", img2);
+        waitKey(5000);
+    }
 }
-
-// TODO: Rename test
 
 TEST(ImageIO, CreateImage) {
     typedef unsigned char uint8;
@@ -42,8 +45,11 @@ TEST(ImageIO, CreateImage) {
             }
         }
     }
-    namedWindow("TEST(ImageIO, CreateImage)");
-    imshow("TEST(ImageIO, CreateImage)", img);
-    waitKey(5000);
+    if (enableUI) {
+        // TODO: simplify
+        namedWindow("TEST(ImageIO, CreateImage)");
+        imshow("TEST(ImageIO, CreateImage)", img);
+        waitKey(5000);
+    }
 }
 

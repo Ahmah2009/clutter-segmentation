@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include <gtest/gtest.h>
 #include <opencv2/opencv.hpp>
 #include <posest/pnp_ransac.h>
