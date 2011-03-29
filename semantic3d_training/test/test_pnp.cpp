@@ -6,7 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include <posest/pnp_ransac.h>
 
-TEST(PNP, CallSolvePnPRansac) {
+/* TEST(PnP, CallSolvePnPRansac) {
     solvePnPRansac(
         objectPoints,
         imagePoints,
@@ -19,5 +19,5 @@ TEST(PNP, CallSolvePnPRansac) {
         params.maxProjectionError,
         -1,
         &inliers);
-}
+} */
 

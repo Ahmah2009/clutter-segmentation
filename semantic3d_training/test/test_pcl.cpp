@@ -22,34 +22,34 @@ using namespace pcl;
 
 /** Tests whether a point cloud file from kinect training data set can be
  * read using routines from 'pcl'. See http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training */
-TEST(PCL, ReadKinectPointCloud) {
+TEST(Pcl, ReadKinectPointCloud) {
     PointCloud<PointXYZRGB> cloud;
     io::loadPCDFile("./data/cloud_00000.pcd", cloud);
 }
 
 /** Tests whether a point cloud file from TUM/IAS semantic 3d data set can be
  * read using routines from 'pcl'. Also have a look at the data itself. */
-TEST(PCL, ReadSemantic3dPointCloudAsXYZ) {
+TEST(Pcl, ReadSemantic3dPointCloudAsXYZ) {
     PointCloud<PointXYZ> cloud;
     io::loadPCDFile("./data/sample.delimited.pcd", cloud);
 }
 
 /** Demonstrates how a point cloud file from TUM/IAS semantic 3d data set can NOT be
 * read using routines from 'pcl'. Also have a look at the data itself. */
-TEST(PCL, BadReadSemantic3dPointCloudAsXYZRGB) {
+TEST(Pcl, BadReadSemantic3dPointCloudAsXYZRGB) {
     PointCloud<PointXYZRGB> cloud;
     ASSERT_THROW(io::loadPCDFile("./data/sample.delimited.pcd", cloud), InvalidConversionException);
 }
 
 /** Tests whether a point cloud file from TUM/IAS semantic 3d data set can be
  * read using routines from 'pcl'. Also have a look at the data itself. */
-TEST(PCL, GoodReadSemantic3dPointCloudAsXYZRGB) {
+TEST(Pcl, GoodReadSemantic3dPointCloudAsXYZRGB) {
     PointCloud<PointXYZRGB> cloud;
     io::loadPCDFile("./data/sample.delimited.rgb.pcd", cloud);
 }
 
 /** Tests how to convert xyz point cloud data to xyzrgb point cloud data. */
-TEST(PCL, ConvertXYZtoXYZRGB) {
+TEST(Pcl, ConvertXYZtoXYZRGB) {
     PointCloud<PointXYZ> cloud_xyz;
     PointCloud<PointXYZRGB> cloud_xyzrgb;
     io::loadPCDFile("./data/sample.delimited.pcd", cloud_xyz);
@@ -72,7 +72,7 @@ TEST(PCL, ConvertXYZtoXYZRGB) {
 /** Test how points can be projected onto two out of three coordinates. Use the
  * characteristically shaped icetea2 object and project the y and z coordinates
  * onto a picture. */
-TEST(PCL, CoordinateProjection) {
+TEST(Pcl, CoordinateProjection) {
     using namespace cv;
     // TODO: remove platform dependency
     typedef unsigned char uint8;
@@ -107,12 +107,12 @@ TEST(PCL, CoordinateProjection) {
     }
 
     // show image
-    imshow("TEST(PCL, CoordinateProjection)", img);
+    imshow("TEST(Pcl, CoordinateProjection)", img);
     waitKey(5000);
 }
 
 /** Test how to create a mask by point cloud segmentation / perspective projection */
-TEST(PCL, PerspectiveProjection) {
+TEST(Pcl, PerspectiveProjection) {
     // See also masker.cpp in tod_training
     fiducial::KnownPoseEstimator pose_est("./data/fat_free_milk_image_00000.png.pose.yaml");
     cv::Mat colorimg = cv::imread("./data/fat_free_milk_image_00000.png", CV_LOAD_IMAGE_COLOR);
@@ -124,12 +124,12 @@ TEST(PCL, PerspectiveProjection) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(PCL, PerspectiveProjection)", f2d.image & colorMask);
+    cv::imshow("TEST(Pcl, PerspectiveProjection)", f2d.image & colorMask);
     cv::waitKey(5000);
 }
 
 /** Test how to fill in pose information without loading it from a file */
-TEST(PCL, PerspectiveProjectionManualPose) {
+TEST(Pcl, PerspectiveProjectionManualPose) {
     // See also masker.cpp in tod_training
     cv::Mat colorimg = cv::imread("./data/fat_free_milk_image_00000.png", CV_LOAD_IMAGE_COLOR);
     tod::Camera camera = tod::Camera("./data/fat_free_milk_camera.yml", opencv_candidate::Camera::TOD_YAML);
@@ -152,12 +152,12 @@ TEST(PCL, PerspectiveProjectionManualPose) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(PCL, PerspectiveProjectionManualPose)", f2d.image & colorMask);
+    cv::imshow("TEST(Pcl, PerspectiveProjectionManualPose)", f2d.image & colorMask);
     cv::waitKey(5000);
 }
 
 /** Test how distorted pose estimation value affects masking process */
-TEST(PCL, PerspectiveProjectionDistortedPose) {
+TEST(Pcl, PerspectiveProjectionDistortedPose) {
     // See also masker.cpp in tod_training
     cv::Mat colorimg = cv::imread("./data/fat_free_milk_image_00000.png", CV_LOAD_IMAGE_COLOR);
     tod::Camera camera = tod::Camera("./data/fat_free_milk_camera.yml", opencv_candidate::Camera::TOD_YAML);
@@ -178,12 +178,12 @@ TEST(PCL, PerspectiveProjectionDistortedPose) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(PCL, PerspectiveProjectionDistortedPose)", f2d.image & colorMask);
+    cv::imshow("TEST(Pcl, PerspectiveProjectionDistortedPose)", f2d.image & colorMask);
     cv::waitKey(5000);
 }
 
 /** Manually estimated pose by using pcl_visualization */
-TEST(PCL, PerspectiveProjectionManualPose2) {
+TEST(Pcl, PerspectiveProjectionManualPose2) {
     // See also masker.cpp in tod_training
     cv::Mat colorimg = cv::imread("./data/icetea2_00000.png", CV_LOAD_IMAGE_COLOR);
     tod::Camera camera = tod::Camera("./data/fat_free_milk_camera.yml", opencv_candidate::Camera::TOD_YAML);
@@ -204,7 +204,7 @@ TEST(PCL, PerspectiveProjectionManualPose2) {
     f2d.mask = tod::cloudMask(cloud, f2d.camera.pose, camera);
     cv::Mat colorMask;
     cv::cvtColor(f2d.mask, colorMask, CV_GRAY2BGR);
-    cv::imshow("TEST(PCL, PerspectiveProjectionManualPose2)", f2d.image & colorMask);
+    cv::imshow("TEST(Pcl, PerspectiveProjectionManualPose2)", f2d.image & colorMask);
     cv::waitKey(5000);
 }
 

@@ -11,7 +11,7 @@
 
 using namespace cv;
 
-TEST(ROTATION, RotateAroundXAxis) {
+TEST(Rotation, RotateAroundXAxis) {
     Mat rx = generateXRotationMatrix(M_PI / 2);
     Mat yaxis = Mat(3, 1, CV_64F);
     yaxis.at<double>(0, 0) = 0;
@@ -29,7 +29,7 @@ TEST(ROTATION, RotateAroundXAxis) {
     EXPECT_NEAR(v.at<double>(2, 0), zaxis.at<double>(2, 0), 0.0001);
 }
 
-TEST(ROTATION, RotateAroundYAxis) {
+TEST(Rotation, RotateAroundYAxis) {
     Mat ry = generateYRotationMatrix(M_PI / 2);
     Mat zaxis = Mat(3, 1, CV_64F);
     zaxis.at<double>(0, 0) = 0;
@@ -47,7 +47,7 @@ TEST(ROTATION, RotateAroundYAxis) {
     EXPECT_NEAR(v.at<double>(2, 0), xaxis.at<double>(2, 0), 0.0001);
 }
 
-TEST(ROTATION, RotateAroundZAxis) {
+TEST(Rotation, RotateAroundZAxis) {
     Mat rz = generateZRotationMatrix(M_PI / 2);
     Mat xaxis = Mat(3, 1, CV_64F);
     xaxis.at<double>(0, 0) = 1;
@@ -65,7 +65,7 @@ TEST(ROTATION, RotateAroundZAxis) {
     EXPECT_NEAR(v.at<double>(2, 0), yaxis.at<double>(2, 0), 0.0001);
 }
 
-TEST(ROTATION, RotateAroundYZAxes) {
+TEST(Rotation, RotateAroundYZAxes) {
     Mat ry = generateYRotationMatrix(M_PI / 2);
     Mat rz = generateZRotationMatrix(M_PI / 2);
     Mat yaxis = Mat(3, 1, CV_64F);
@@ -84,7 +84,7 @@ TEST(ROTATION, RotateAroundYZAxes) {
     EXPECT_NEAR(v.at<double>(2, 0), yaxis.at<double>(2, 0), 0.0001);
 }
 
-TEST(ROTATION, IdentityRotation) {
+TEST(Rotation, IdentityRotation) {
     Mat rx = generateXRotationMatrix(M_PI / 2);
     Mat ry = generateYRotationMatrix(M_PI / 2);
     Mat rz = generateZRotationMatrix(M_PI / 2);
@@ -98,7 +98,7 @@ TEST(ROTATION, IdentityRotation) {
     EXPECT_NEAR(v.at<double>(2, 0), xaxis.at<double>(2, 0), 0.0001);
 }
 
-TEST(ROTATION, Rodrigues2Conversion) {
+TEST(Rotation, Rodrigues2Conversion) {
     Mat rotm = generateXRotationMatrix(M_PI / 2);
     Mat rvec = Mat(3, 1, CV_64F);
     Rodrigues(rotm, rvec);

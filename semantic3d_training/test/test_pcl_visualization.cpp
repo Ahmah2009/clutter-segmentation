@@ -21,7 +21,7 @@ using namespace pcl_visualization;
 using namespace cv;
 using namespace opencv_candidate;
 
-TEST(PCL_VISUALIZATION, ShowPointCloud) {
+TEST(PclVisualization, ShowPointCloud) {
     PointCloud<PointXYZ> cloud;
     PointCloud<PointXYZ> cloud2;
     io::loadPCDFile("./data/sample.delimited.pcd", cloud);
@@ -33,7 +33,7 @@ TEST(PCL_VISUALIZATION, ShowPointCloud) {
     visualizer.spin();
 }
 
-TEST(PCL_VISUALIZATION, ShowCircle) {
+TEST(PclVisualization, ShowCircle) {
     PCLVisualizer visualizer;
     PointXYZ origin;
     origin.x = 0;
@@ -46,7 +46,7 @@ TEST(PCL_VISUALIZATION, ShowCircle) {
     visualizer.spin();
 }
 
-TEST(PCL_VISUALIZATION, ShowPoseEstimate) {
+TEST(PclVisualization, ShowPoseEstimate) {
     PCLVisualizer visualizer;
     PointXYZ tvec;
     tvec.x = 1;
@@ -70,7 +70,7 @@ TEST(PCL_VISUALIZATION, ShowPoseEstimate) {
 }
 
 // ||rvec|| is the angle, and rvec is the axis of rotation
-TEST(PCL_VISUALIZATION, ShowFiducialPoseEstimate) {
+TEST(PclVisualization, ShowFiducialPoseEstimate) {
     // Load pose estimation from yaml file
     FileStorage fs("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
     PoseRT pose;
@@ -89,7 +89,7 @@ TEST(PCL_VISUALIZATION, ShowFiducialPoseEstimate) {
     visualizer.spin();
 }
 
-TEST(PCL_VISUALIZATION, ShowInvertedPose) {
+TEST(PclVisualization, ShowInvertedPose) {
     // Load pose estimation from yaml file
     FileStorage fs("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
     PoseRT pose;
@@ -112,7 +112,7 @@ TEST(PCL_VISUALIZATION, ShowInvertedPose) {
 }
 
 
-TEST(PCL_VISUALIZATION, ShowAllPoses) {
+TEST(PclVisualization, ShowAllPoses) {
     PCLVisualizer visualizer;
     visualizer.addCoordinateSystem(0.5, 0, 0, 0);
     PoseRT pose;
