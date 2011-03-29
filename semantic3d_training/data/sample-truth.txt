@@ -1,0 +1,4 @@
+# Sample file for recognizer_stats.py
+# expected to be run from semantic3d_training root
+[default]
+data/fat_free_milk_image_00000.png = fat_free_milk

@@ -5,3 +5,4 @@ tags
 ctags.sh
 *.swp
 *.swo
+*.pyc
