@@ -9,6 +9,8 @@
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv_candidate/PoseRT.h>
+#include <boost/format.hpp>
+#include <tod/detecting/Tools.h>
 
 // TODO: move to own namespace
 #include "rotation.h"
@@ -67,8 +69,7 @@ TEST(PCL_VISUALIZATION, ShowPoseEstimate) {
     visualizer.spin();
 }
 
-// FIXME: rvec must probably somehow fit to Rodrigues 3d rotation formula
-// I guess ||rvec|| is the angle, and rvec is the axis of rotation
+// ||rvec|| is the angle, and rvec is the axis of rotation
 TEST(PCL_VISUALIZATION, ShowFiducialPoseEstimate) {
     // Load pose estimation from yaml file
     FileStorage fs("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
@@ -85,6 +86,41 @@ TEST(PCL_VISUALIZATION, ShowFiducialPoseEstimate) {
     visualizer.addPointCloud(cloud);
     // Draw pose
     addPose(visualizer, pose);
+    visualizer.spin();
+}
+
+TEST(PCL_VISUALIZATION, ShowInvertedPose) {
+    // Load pose estimation from yaml file
+    FileStorage fs("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
+    PoseRT pose;
+    pose.read(fs[PoseRT::YAML_NODE_NAME]);
+    PoseRT invPose = tod::Tools::invert(pose);
+    // Load point cloud
+    PointCloud<PointXYZ> cloud;
+    io::loadPCDFile("./data/fat_free_milk_cloud_00000.pcd", cloud);
+    // Create visualizer
+    PCLVisualizer visualizer;
+    // Add coordinate system
+    visualizer.addCoordinateSystem(0.5, 0, 0, 0);
+    // Add point cloud
+    visualizer.addPointCloud(cloud);
+    // Draw pose
+    addPose(visualizer, pose, "standard");
+    // Draw pose
+    addPose(visualizer, invPose, "inverted");
+    visualizer.spin();
+}
+
+
+TEST(PCL_VISUALIZATION, ShowAllPoses) {
+    PCLVisualizer visualizer;
+    visualizer.addCoordinateSystem(0.5, 0, 0, 0);
+    PoseRT pose;
+    for (int i = 0; i < 76; i++) {
+        FileStorage fs(str(boost::format("./data/pose/image_%05i.png.pose.yaml") % i), FileStorage::READ);
+        pose.read(fs[PoseRT::YAML_NODE_NAME]);
+        addPose(visualizer, pose, str(boost::format("pose-%05i-") % i));
+    }    
     visualizer.spin();
 }
 

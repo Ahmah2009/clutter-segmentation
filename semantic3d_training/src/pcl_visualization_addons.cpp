@@ -13,8 +13,7 @@ using namespace pcl_visualization;
 using namespace opencv_candidate;
 using namespace cv;
 
-void addPose(PCLVisualizer & visualizer, PoseRT & pose) {
-    string id_prefix = "";
+void addPose(PCLVisualizer & visualizer, PoseRT & pose, string id_prefix) {
     int axlength = 1;
 
     Mat rot = Mat(3, 3, CV_64F);

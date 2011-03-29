@@ -1,0 +1,16 @@
+%YAML:1.0
+# PoseRT
+pose:
+   rvec: !!opencv-matrix
+      rows: 3
+      cols: 1
+      dt: d
+      data: [ 2.1218429648090469e+00, -1.7420047836634911e-01,
+          1.4970805748427901e-01 ]
+   tvec: !!opencv-matrix
+      rows: 3
+      cols: 1
+      dt: d
+      data: [ 3.8082318733943951e-02, 4.2685249969673530e-02,
+          8.2141151267127377e-01 ]
+   estimated: 1

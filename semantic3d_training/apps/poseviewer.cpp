@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     // Create visualization
     PCLVisualizer visualizer;
     visualizer.addCoordinateSystem(0.5, 0, 0, 0);
-    visualizer.addPointCloud(cloud);
+    visualizer.addPointCloud(cloud, "cloud");
     addPose(visualizer, pose);
     
     // show visualization
