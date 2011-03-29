@@ -1,0 +1,409 @@
+Loading 29 images
+Loading 31 images
+Loading 27 images
+Loading 29 images
+Loading 29 images
+Loading 33 images
+Loading 30 images
+Loading 32 images
+Loading 32 images
+Extracted 2900 points
+Total matches: 858
+Matches for each object (row) per view (column)
+Object 0:	2	0	2	0	0	1	0	4	2	1	0	3	1	3	2	0	1	2	10	10	8	0	0	0	1	3	1	0	1	
+Object 1:	4	6	3	0	1	3	2	2	1	2	3	0	1	1	2	2	2	4	1	2	6	7	11	7	4	0	2	1	1	0	0	
+Object 2:	1	9	5	11	16	4	2	0	5	0	2	7	1	4	2	5	10	12	56	109	11	0	2	2	0	2	5	
+Object 3:	4	1	0	4	5	0	1	3	1	3	1	0	0	1	1	6	1	5	2	3	15	15	2	0	0	0	1	1	0	
+Object 4:	2	6	2	3	3	2	1	3	1	2	0	2	1	2	2	1	3	3	3	3	7	13	2	0	1	2	0	2	1	
+Object 5:	2	2	2	0	2	2	1	3	3	0	1	1	2	2	2	3	1	0	0	2	3	2	2	0	3	5	0	0	3	0	1	3	6	
+Object 6:	3	2	1	1	1	2	4	1	0	3	5	0	1	1	3	3	2	3	1	2	3	13	0	3	2	5	3	3	1	2	
+Object 7:	1	5	2	2	2	2	3	2	4	1	0	0	2	0	1	0	2	1	3	1	5	1	2	0	1	1	2	1	6	2	0	1	
+Object 8:	6	1	5	1	5	4	0	1	2	1	3	1	2	3	0	2	2	3	9	6	12	12	6	1	2	1	0	2	3	1	0	1	
+Max match is 109 for object 2
+6
+Guess: 
+[0.2564850596652098; -0.009092828448686027; 0.3767109798369961]
+[-0.0315962745315262; 0.2444063701812069; 0.119088875648898] 6
+After clarifying: 
+[-0.04115575306437666; -0.0117406851783653; 0.1602628195955723]
+[0.02841458049406721; -0.02001253870680152; -0.0230488674099705] 5
+
+Factor: 0.139884
+Stddev: 0.0984202
+GuessStd: 0.0137675
+Cluster 0 -> 0
+16
+8
+16
+11
+6
+22
+12
+9
+6
+25
+14
+7
+7
+4
+7
+Guess: 
+[-0.01185268583795415; -0.078991797541012; -0.06006327936550598]
+[0.05873719336388653; -0.006219397801543797; -0.01012953573850131] 16
+After clarifying: 
+[0.206380368301193; -0.005798327182170527; -0.1805020051758295]
+[0.03939493453591243; 0.1445133381715095; 0.03352788600952818] 5
+
+Guess: 
+[-0.06115374720191385; -0.1190265646072548; -0.0441270650849445]
+[0.08227751440018341; -0.03916169918008383; -0.01876529343871936] 8
+After clarifying: 
+[-0.06115374720191385; -0.1190265646072548; -0.0441270650849445]
+[0.08227751440018341; -0.03916169918008383; -0.01876529343871936] 8
+
+Guess: 
+[0.01810644616442699; -0.03580985638190494; -0.05287940282627843]
+[0.03029263841724445; 0.01167257629479672; 0.007947745591841641] 16
+After clarifying: 
+[-0.078220827417227; -0.1161287733715231; -0.05234796419343341]
+[0.08183435742954433; -0.04976956288672258; -0.02839585631283852] 5
+
+Guess: 
+[0.02330943053472874; 0.09118487173721015; 0.06966140954057211]
+[-0.06842565837295631; 0.01043439828527553; 0.01425073141512926] 11
+After clarifying: 
+[0.02330943053472874; 0.09118487173721015; 0.06966140954057211]
+[-0.06842565837295631; 0.01043439828527553; 0.01425073141512926] 11
+
+Guess: 
+[0.0513636930441566; -0.01117552003937431; -0.0722308250590928]
+[0.01675431030986064; 0.03703753005620862; -0.004622795152779519] 6
+After clarifying: 
+[0.0513636930441566; -0.01117552003937431; -0.0722308250590928]
+[0.01675431030986064; 0.03703753005620862; -0.004622795152779519] 6
+
+Guess: 
+[-0.03102996015308671; 0.08532112063910074; 0.0828787260289119]
+[-0.06362723492429274; -0.02665753043515038; 0.01321122949928588] 22
+After clarifying: 
+[-0.008819664973400074; 0.1134652977939415; 0.07929531053708928]
+[-0.08360158668883014; -0.01148814618822854; 0.01086099669954035] 7
+
+Guess: 
+[-0.02915391806786098; -0.01285737444140851; 0.01176981539281637]
+[0.1002925698359684; -0.03355982553839923; 0.02310088093403088] 12
+After clarifying: 
+[-0.02915391806786098; -0.01285737444140851; 0.01176981539281637]
+[0.1002925698359684; -0.03355982553839923; 0.02310088093403088] 12
+
+Guess: 
+[-0.04496430144632781; 0.1995772808827695; 0.1615136061999635]
+[-0.05344458667481541; -0.05883193109075519; 0.04845018836071226] 9
+After clarifying: 
+[-0.009906428222913139; 0.1901823564658611; 0.1661224177265866]
+[-0.04931467651168216; -0.0353961387232436; 0.04489589655434566] 8
+
+Guess: 
+[-0.02208157707545167; 0.3257055359633274; 0.2118906307711168]
+[-0.2322968600946977; -0.04556795220133698; 0.05146796893397765] 6
+After clarifying: 
+[-0.02208157707545167; 0.3257055359633274; 0.2118906307711168]
+[-0.2322968600946977; -0.04556795220133698; 0.05146796893397765] 6
+
+Guess: 
+[0.02013030694156154; -0.1054902716124721; -0.05841226393340732]
+[0.07763309240290173; 0.01295157649592198; 0.005077265633835184] 25
+After clarifying: 
+[0.02013030694156154; -0.1054902716124721; -0.05841226393340732]
+[0.07763309240290173; 0.01295157649592198; 0.005077265633835184] 25
+
+Guess: 
+[0.02372573816774324; -0.148345110422761; -0.06373279964946162]
+[0.1068710982436985; 0.01488523376414705; -0.007601248885567403] 14
+After clarifying: 
+[0.02372573816774324; -0.148345110422761; -0.06373279964946162]
+[0.1068710982436985; 0.01488523376414705; -0.007601248885567403] 14
+
+Guess: 
+[0.0692345921351528; 0.1449873816394323; 0.03999342451092465]
+[-0.1107856596386955; 0.04584297382036723; -0.03922735943729698] 7
+After clarifying: 
+[0.0692345921351528; 0.1449873816394323; 0.03999342451092465]
+[-0.1107856596386955; 0.04584297382036723; -0.03922735943729698] 7
+
+Guess: 
+[0.05384773143931609; -0.120977993044656; -0.0662279605504697]
+[0.08916426735130868; 0.03717037305453909; -0.01610026413130007] 7
+After clarifying: 
+[0.05384773143931609; -0.120977993044656; -0.0662279605504697]
+[0.08916426735130868; 0.03717037305453909; -0.01610026413130007] 7
+
+Guess: 
+[0.1252629755329819; 0.7673431994195296; 0.3920606171873746]
+[-0.4136181980062213; -0.05352653500161646; 0.1610339847433347] 4
+After clarifying: 
+[0.1252629755329819; 0.7673431994195296; 0.3920606171873746]
+[-0.4136181980062213; -0.05352653500161646; 0.1610339847433347] 4
+
+Guess: 
+[-1.084883845680011; -1.368626335712711; 0.08098837239734598]
+[0.5913461961648468; -0.4146957316511068; 0.9018557738175944] 7
+After clarifying: 
+[-1.084883845680011; -1.368626335712711; 0.08098837239734598]
+[0.5913461961648468; -0.4146957316511068; 0.9018557738175944] 7
+
+Factor: 0.0536576
+Stddev: 0.198407
+GuessStd: 0.010646
+Factor: 0
+Stddev: 0.198407
+GuessStd: 0
+Factor: 0.0949764
+Stddev: 0.198407
+GuessStd: 0.018844
+Factor: 0
+Stddev: 0.198407
+GuessStd: 0
+Factor: -nan
+Stddev: 0.198407
+GuessStd: -nan
+Factor: 0.114232
+Stddev: 0.198407
+GuessStd: 0.0226644
+Factor: 0.0735838
+Stddev: 0.198407
+GuessStd: 0.0145995
+Factor: 0.110769
+Stddev: 0.198407
+GuessStd: 0.0219774
+Factor: 0.115707
+Stddev: 0.198407
+GuessStd: 0.022957
+Factor: 0.0193585
+Stddev: 0.198407
+GuessStd: 0.00384085
+Factor: -nan
+Stddev: 0.198407
+GuessStd: -nan
+Factor: -nan
+Stddev: 0.198407
+GuessStd: -nan
+Factor: 0
+Stddev: 0.198407
+GuessStd: 0
+Factor: 0
+Stddev: 0.198407
+GuessStd: 0
+Factor: -nan
+Stddev: 0.198407
+GuessStd: -nan
+pointPolygonTest returns 0 points, total points 14
+Overlap between 0 and 1 is 0.000000
+pointPolygonTest returns 0 points, total points 14
+pointPolygonTest returns 9 points, total points 12
+Overlap between 0 and 2 is 0.750000
+pointPolygonTest returns 9 points, total points 12
+Removing cluster 2, inliers 12, in favor of cluster 0, inliers 25
+pointPolygonTest returns 0 points, total points 11
+Overlap between 0 and 3 is 0.000000
+pointPolygonTest returns 0 points, total points 11
+pointPolygonTest returns 0 points, total points 8
+Overlap between 0 and 4 is 0.000000
+pointPolygonTest returns 0 points, total points 8
+pointPolygonTest returns 6 points, total points 9
+Overlap between 0 and 5 is 0.666667
+pointPolygonTest returns 6 points, total points 9
+Removing cluster 5, inliers 8, in favor of cluster 0, inliers 25
+pointPolygonTest returns 15 points, total points 22
+Overlap between 0 and 6 is 0.681818
+pointPolygonTest returns 15 points, total points 22
+Removing cluster 6, inliers 7, in favor of cluster 0, inliers 25
+pointPolygonTest returns 0 points, total points 7
+Overlap between 0 and 7 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 0 and 8 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 0 and 9 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 6
+Overlap between 0 and 10 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 3 points, total points 6
+Overlap between 0 and 11 is 0.500000
+pointPolygonTest returns 3 points, total points 6
+pointPolygonTest returns 0 points, total points 16
+Overlap between 0 and 12 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 0 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 11
+Overlap between 1 and 3 is 0.000000
+pointPolygonTest returns 0 points, total points 11
+pointPolygonTest returns 0 points, total points 8
+Overlap between 1 and 4 is 0.000000
+pointPolygonTest returns 0 points, total points 8
+pointPolygonTest returns 0 points, total points 7
+Overlap between 1 and 7 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 1 and 8 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 1 and 9 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 6
+Overlap between 1 and 10 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 1 points, total points 6
+Overlap between 1 and 11 is 0.166667
+pointPolygonTest returns 1 points, total points 6
+pointPolygonTest returns 0 points, total points 16
+Overlap between 1 and 12 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 1 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 8
+Overlap between 3 and 4 is 0.000000
+pointPolygonTest returns 0 points, total points 8
+pointPolygonTest returns 0 points, total points 7
+Overlap between 3 and 7 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 3 and 8 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 3 and 9 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 6
+Overlap between 3 and 10 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 6
+Overlap between 3 and 11 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 1 points, total points 16
+Overlap between 3 and 12 is 0.062500
+pointPolygonTest returns 1 points, total points 16
+pointPolygonTest returns 6 points, total points 16
+Overlap between 3 and 13 is 0.375000
+pointPolygonTest returns 6 points, total points 16
+pointPolygonTest returns 0 points, total points 7
+Overlap between 4 and 7 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 4 and 8 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 7
+Overlap between 4 and 9 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 0 points, total points 6
+Overlap between 4 and 10 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 6
+Overlap between 4 and 11 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 16
+Overlap between 4 and 12 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 4 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 7
+Overlap between 7 and 8 is 0.000000
+pointPolygonTest returns 0 points, total points 7
+pointPolygonTest returns 6 points, total points 7
+Overlap between 7 and 9 is 0.857143
+pointPolygonTest returns 6 points, total points 7
+Removing cluster 9, inliers 7, in favor of cluster 7, inliers 7
+pointPolygonTest returns 0 points, total points 6
+Overlap between 7 and 10 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 6
+Overlap between 7 and 11 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 16
+Overlap between 7 and 12 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 7 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 6
+Overlap between 8 and 10 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 6
+Overlap between 8 and 11 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 16
+Overlap between 8 and 12 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 8 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 6
+Overlap between 10 and 11 is 0.000000
+pointPolygonTest returns 0 points, total points 6
+pointPolygonTest returns 0 points, total points 16
+Overlap between 10 and 12 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 10 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 11 and 12 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 11 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+pointPolygonTest returns 0 points, total points 16
+Overlap between 12 and 13 is 0.000000
+pointPolygonTest returns 0 points, total points 16
+Cluster 0 -> 0
+Cluster 1 -> 1
+Cluster 3 -> 2
+Cluster 4 -> 3
+Cluster 7 -> 4
+Cluster 8 -> 5
+Cluster 10 -> 6
+Cluster 11 -> 7
+Cluster 12 -> 8
+Cluster 13 -> 9
+9
+Guess: 
+[1.698897797144981; -0.3279880330065962; 0.4878947667063795]
+[-0.06833785325244977; 0.8177832285627434; 0.7846696285176414] 9
+After clarifying: 
+[1.693075913961081; -0.3321051973912125; 0.4889547172694849]
+[-0.06732805514855107; 0.8184533234663347; 0.7862091391388882] 8
+
+Factor: 0.07236
+Stddev: 0.240027
+GuessStd: 0.0173683
+Cluster 0 -> 0
+8
+Guess: 
+[0.2394638614502573; 0.261767988669352; 0.0812052231210139]
+[-0.2101755464822493; 0.1770624802532487; 0.06169813305764901] 8
+After clarifying: 
+[0.04515163093705866; 0.08933961660789373; 0.05470805938808403]
+[-0.06530441337634281; 0.02881440927375818; -0.0006751790632051448] 6
+
+Factor: 0.0359281
+Stddev: 0.268906
+GuessStd: 0.00966131
+Cluster 0 -> 0
+Object name = campbells_chicken_noodle, imageId = 0 32 32715 3285077672 
+Object name = fat_free_milk, imageId = 0 17 19 32 33 81 32715 169257584 1025000209 1136623616 1142636544 3285077672 3285077752 
+Object name = fat_free_milk, imageId = 0 19 32 1473 32715 169257616 3285077672 3285078776 
+Object name = fat_free_milk, imageId = 0 18 97 32715 1132950743 1138730808 1143641879 1144041625 1144347279 3285077656 
+Object name = fat_free_milk, imageId = 0 19 113 32715 1133362071 1143768995 3285077656 
+Object name = fat_free_milk, imageId = 0 18 97 1040 32715 3285077656 
+Object name = fat_free_milk, imageId = 0 19 32 1121 32715 3285077672 
+Object name = fat_free_milk, imageId = 0 19 32715 3285077656 
+Object name = fat_free_milk, imageId = 17 32715 1136623616 1142636544 3285077752 
+Object name = fat_free_milk, imageId = 0 3 5 19 
+Object name = fat_free_milk, imageId = 0 1071573083 3218321643 3285077992 
+Object name = fluorescent_paint, imageId = 1 8 21 32 37 32715 2751463544 
+Object name = tilex, imageId = 0 21 85 32715 2684354680 3216794923 
