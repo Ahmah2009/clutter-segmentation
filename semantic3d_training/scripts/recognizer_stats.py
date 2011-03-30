@@ -29,7 +29,7 @@ import optparse
 import ConfigParser
 import simplerecognizer
 
-def stats(base, tod_config, mode, truthtable, verbose=False):
+def stats(base, tod_config, mode, testdir, truthtable, verbose=False):
     # number of recognized objects
     true_positives = 0
     false_positives = 0
@@ -37,13 +37,14 @@ def stats(base, tod_config, mode, truthtable, verbose=False):
     total_cnt = 0
     # loop over test images
     for image, exp_objects in truthtable.items():
-        if not os.path.exists(image):
+        image_abs = os.path.join(testdir, image)
+        if not os.path.exists(image_abs):
             raise Exception("File %s does not exist" % image)
         exp_objects = set(exp_objects)
         total_cnt += len(exp_objects)
         if verbose:
             print "Recognizing objects on %s ... " % image
-        rec_objects = simplerecognizer.recognize(base, image, tod_config, mode, False, None)
+        rec_objects = simplerecognizer.recognize(base, image_abs, tod_config, mode, False, None)
         tp_set = exp_objects.copy() & rec_objects
         fp_set = rec_objects.copy() - exp_objects
         true_positives += len(tp_set)
@@ -74,10 +75,11 @@ def main():
     cfg = ConfigParser.ConfigParser()
     cfg.read(options.truth)
     truthtable = dict()
-    for key, val in cfg.items("default"):
+    for key, val in cfg.items("images"):
         truthtable[key] = val.split(" ")
     # collect statistics
-    s = stats(options.base, options.tod_config, options.mode, truthtable, options.verbose)
+    testdir = os.path.dirname(options.truth)
+    s = stats(options.base, options.tod_config, options.mode, testdir, truthtable, options.verbose)
     print s
 
 if __name__ == "__main__":
