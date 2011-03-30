@@ -2,7 +2,6 @@ bin
 build
 lib
 tags
-ctags.sh
 *.swp
 *.swo
 *.pyc
