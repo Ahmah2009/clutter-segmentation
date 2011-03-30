@@ -70,4 +70,7 @@ and generate the training data base using
     # this shouldn't be necessary and config.txt contains
     # duplicate information
     $ cp bags/config.txt base/config.txt
+
 The tutorial describing how to generate bags for training is unfortunately just an empty stub.
+
+TODO: move this tutorial to Google Doc

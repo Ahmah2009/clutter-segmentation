@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include <posest/pnp_ransac.h>
 
+// TODO: delete me?
 /* TEST(PnP, CallSolvePnPRansac) {
     solvePnPRansac(
         objectPoints,
