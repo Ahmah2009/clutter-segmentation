@@ -4,7 +4,7 @@
 
 #ifndef __TEST_H__
 
-#define enableUI false
+#define enableUI true
 
 #define __TEST_H__ __TEST_H__
 #endif
