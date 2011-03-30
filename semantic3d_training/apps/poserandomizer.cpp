@@ -36,12 +36,14 @@ void randomize(PoseRT & pose, double stddev_t, double stddev_r) {
 
 int main(int argc, char **argv) {
     // Read input arguments
-    cout << "Usage: poserandomizer <pose-directory> <stddev-translation> <stddev-rotation> <serialize> <visualize>" << endl;
+    if (argc != 6) {
+        cout << "Usage: poserandomizer <pose-directory> <stddev-translation> <stddev-rotation> <serialize> <visualize>" << endl;
+    }
     string dir(argv[1]);
     double stddev_t = boost::lexical_cast<double>(argv[2]);
     double stddev_r = boost::lexical_cast<double>(argv[3]);
-    bool serialize = boost::lexical_cast<bool>(argv[4]);
-    bool visualize = boost::lexical_cast<bool>(argv[4]);
+    bool serialize = (1 == boost::lexical_cast<int>(argv[4]));
+    bool visualize = (1 == boost::lexical_cast<int>(argv[5]));
 
     boost::filesystem::directory_iterator it(dir);
     boost::filesystem::directory_iterator end;
@@ -69,8 +71,10 @@ int main(int argc, char **argv) {
             }
             
             if (serialize) {
-                FileStorage out(it->path().string(), FileStorage::YAML_WRITE);
-                pose.write(out);
+                cout << "serializing!" << endl;
+                FileStorage out(it->path().string(), FileStorage::WRITE);
+                out << PoseRT::YAML_NODE_NAME;
+                rpose.write(out);
             }
         }
         it++;
