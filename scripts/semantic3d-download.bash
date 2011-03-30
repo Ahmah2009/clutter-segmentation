@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-#
-#
 
 if [ "$1" = "--help" ] || [ ! "$1" ] ; then
     cat <<HELP
-Usage: download-semantic-3d.bash [--no-extract] <directory>
+Usage: semantic3d-download.bash [--no-extract] <directory>
 
-Downloads all semantic-3d dataset from IAS/TUM using wget.
+Downloads all semantic dataset from IAS/TUM using wget.
 HELP
     exit
 fi
@@ -15,7 +13,6 @@ if [ ! "$CLUTSEG_PATH" ] ; then
     echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
     exit
 fi
-
 
 objlist=$(mktemp)
 
