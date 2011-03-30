@@ -61,6 +61,7 @@ def stats(base, tod_config, mode, testdir, truthtable, verbose=False):
         print "Total objects on images:  %d" % total_cnt
     return (true_positives, false_positives, total_cnt)
 
+# TODO: truth is not really the word i want to use, maybe something less clear is better  ...
 def main():
     # Parse command-line
     option_parser = optparse.OptionParser("recognizer_stats [OPTIONS]")
@@ -68,6 +69,7 @@ def main():
     option_parser.add_option("-f", "--tod_config", dest="tod_config", help="forwarded to tod_detecting recognizer")
     option_parser.add_option("-m", "--mode", default="0", dest="mode", help="forwarded to tod_detecting recognizer")
     option_parser.add_option("-t", "--truth", dest="truth", help="file that lists test images and expected objects")
+    option_parser.add_option("-T", "--test", dest="test", help="directory containing the images as referred to in truth file")
     option_parser.add_option("-v", "--verbose", action="store_true", default=False, dest="verbose", help="be verbose")
     options, args = option_parser.parse_args()
     options, args = option_parser.parse_args()
@@ -78,8 +80,7 @@ def main():
     for key, val in cfg.items("images"):
         truthtable[key] = val.split(" ")
     # collect statistics
-    testdir = os.path.dirname(options.truth)
-    s = stats(options.base, options.tod_config, options.mode, testdir, truthtable, options.verbose)
+    s = stats(options.base, options.tod_config, options.mode, options.test, truthtable, options.verbose)
     print s
 
 if __name__ == "__main__":
