@@ -1,12 +1,35 @@
 # Use this rosinstall script in the directory where repository
-# clutter-segmentation resides in.
-# TODO: freeze revisions of dependencies
-- svn: {local-name: object_recognition, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition',
-    version: -r 50321}
-- svn: {local-name: object_recognition_experimental, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental'}
-- svn: {local-name: perception_pcl_addons, uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk'}
-- svn: {local-name: vslam, uri: 'https://code.ros.org/svn/ros-pkg/stacks/vslam/trunk'}
-- svn: {local-name: opencv_candidate, uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/vision_bleeding/opencv_candidate'}
-- git: {local-name: clutter-segmentation, uri: 'indefero@code.in.tum.de:clutter-segmentation.git'}
+# clutter-segmentation resides in. The revisions have been freezed at a state
+# where tod_training and tod_detecting were in a working state.
+- svn: {
+    local-name: object_recognition,
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition',
+    version: '-r 50320'
+}
+- svn: {
+    local-name: object_recognition_experimental,
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental',
+    version: '-r 50489'
+}
+- svn: {
+    local-name: perception_pcl_addons,
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk',
+    version: '-r 36486'
+}
+- svn: {
+    local-name: vslam,
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vslam/trunk',
+    version: '-r 36486' 
+}
+- svn: {
+    local-name: opencv_candidate,
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/vision_bleeding/opencv_candidate',
+    version: '-r 50489'
+}
+- git: {
+    local-name: clutter-segmentation,
+    uri: 'indefero@code.in.tum.de:clutter-segmentation.git'
+}
 - other: {local-name: /opt/ros/diamondback/ros}
 - other: {local-name: /opt/ros/diamondback/stacks}
+
