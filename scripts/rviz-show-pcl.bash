@@ -25,7 +25,7 @@ if [ ! "$(pgrep rosout)" ] ; then
 fi 
 
 # Start rviz
-rosrun rviz rviz --display-config $CLUTSEG_PATH/clutter-segmentation/objrec2d/pcl_view_training.vcg &
+rosrun rviz rviz --display-config $CLUTSEG_PATH/clutter-segmentation/misc/pcl_view_training.vcg &
 echo "Sleeping for 3 seconds to give rviz a headstart ..."
 sleep 3
 rosbag play $CLUTSEG_PATH/bags/downy.bag $CLUTSEG_PATH/bags/downy.tf.bag --pause
