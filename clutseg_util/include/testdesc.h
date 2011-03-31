@@ -8,5 +8,7 @@
 
 using namespace std;
 
-map<string, set<string> > loadTestConfig(const string & filename);
+typedef map<string, set<string> > TestDesc;
+
+TestDesc loadTestDesc(const string & filename);
 

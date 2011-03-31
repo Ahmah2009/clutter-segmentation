@@ -1,0 +1,29 @@
+[images]
+t0000.png = teas_tea fat_free_milk
+t0001.png =
+t0002.png =
+t0003.png = 
+t0004.png = downy tilex fluorescent_paint odwalla_lime campbells_chicken_noodle
+t0005.png = silk tide
+t0006.png = silk tide
+t0007.png = silk tide
+t0008.png = silk tide
+t0009.png = silk
+t0010.png = silk teas_tea
+t0011.png = silk teas_tea
+t0012.png = silk teas_tea
+t0013.png = silk teas_tea
+t0014.png = silk teas_tea
+t0015.png = teas_tea
+t0016.png = teas_tea
+t0017.png = teas_tea
+t0018.png = teas_tea
+t0019.png =
+t0020.png = odwalla_lime
+t0021.png = odwalla_lime
+t0022.png = odwalla_lime
+t0023.png = odwalla_lime
+t0024.png = odwalla_lime
+t0025.png = odwalla_lime
+t0026.png = odwalla_lime
+

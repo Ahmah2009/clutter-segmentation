@@ -54,7 +54,7 @@ reload the training base every time. Unfortunately that can hardly be avoided
 since the training base is changed between each run. Given these time
 estimates, and allowing the experiment to complete within two hours, we can try
 60 different parameter combinations.
-"""
+""
 
 import optparse
 

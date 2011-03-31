@@ -23,14 +23,19 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 file(GLOB hdrs include/*.h*)
 file(GLOB srcs src/*.cpp)
+file(GLOB tsts test/*.cpp)
 
 #common commands for building c++ executables and libraries
 rosbuild_add_library(${PROJECT_NAME} ${srcs} ${hdrs} )
+
+rosbuild_add_gtest(utest ${tsts})
+target_link_libraries(utest ${PROJECT_NAME})
+
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 rosbuild_add_boost_directories()
 # rosbuild_link_boost(${PROJECT_NAME})
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
+rosbuild_add_executable(blackbox_recognizer apps/blackbox_recognizer.cpp)
+target_link_libraries(blackbox_recognizer tod_detecting ${PROJECT_NAME})

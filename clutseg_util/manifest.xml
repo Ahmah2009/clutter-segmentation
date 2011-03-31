@@ -10,6 +10,7 @@
   <!-- <url>http://ros.org/wiki/clutseg_util</url> -->
   <depend package="pcl_visualization" />
   <depend package="opencv_candidate" />
+  <depend package="tod_detecting" />
 
   <export>
       <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lclutseg_util" />

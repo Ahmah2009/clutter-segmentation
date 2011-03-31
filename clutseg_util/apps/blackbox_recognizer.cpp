@@ -2,16 +2,31 @@
  * blackbox_recognizer.cpp
  */
 
-/* This blackbox recognizer takes a test configuration file that lists a number
- * of test images and the objects that can be found on each test image. It
- * prints out the image name, the actual objects on this image and those object
- * that have been predicted to be on the image. The advantage of such
- * batch-processing is speed because the training base has not to be reloaded
- * each time.
+/* This recognizer takes a test configuration file that lists a number of test
+ * images and the objects that can be found on each test image. It prints out
+ * the image name, the actual objects on this image and those object that have
+ * been predicted to be on the image. The advantage of such batch-processing is
+ * speed because the training base has not to be reloaded each time.
+ *
+ * Originally derived from folder_recognizer.cpp in tod_detecting/apps. The
+ * folder_recognizer.cpp in tod_detecting rev. 50320 is broken for several
+ * reasons.
+ * - it does only handle png files
+ * - it interprets files that contain .png in their filename as images
+ * - it inscrupulously tries to recognize objects on each image it can find
+ *   within a directory, but does not attempt to recurse.
+ * - it produces OpenCV errors
+ * - it's command-line description is out of sync
+ * - it generates spam sample.config.yaml files
+ * - it is spamming standard output
+ * - ...
+ * 
+ * This implementation fixes some of the issues.
  */
 
 #include "tod/detecting/Loader.h"
 #include "tod/detecting/Recognizer.h"
+#include "testdesc.h"
 
 #include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
@@ -30,9 +45,11 @@ namespace
 {
 struct Options
 {
-  std::string testConfig;
+  std::string imageDirectory;
   std::string baseDirectory;
   std::string config;
+  std::string testdescFilename;
+  std::string resultFilename;
   std::string logFilename;
   TODParameters params;
   int verbose;
@@ -46,11 +63,16 @@ int options(int ac, char ** av, Options& opts)
   // Declare the supported options.
   po::options_description desc("Allowed options");
   desc.add_options()("help", "Produce help message.");
-  desc.add_options()("test_config,t", po::value<string>(&opts.testConfig), "Test configuration file");
+  desc.add_options()("image,I", po::value<string>(&opts.imageDirectory), "Test image base directory.");
+  desc.add_options()("testdesc", po::value<string>(&opts.testdescFilename), "Test description file");
   desc.add_options()("base,B", po::value<string>(&opts.baseDirectory)->default_value("./"),
                      "The directory that the training base is in.");
   desc.add_options()("tod_config,f", po::value<string>(&opts.config), "The name of the configuration file");
-  desc.add_options()("log,l", po::value<string>(&opts.logFilename), "The name of the log file");
+  desc.add_options()("log,l", po::value<string>(&opts.logFilename), "The name "
+    "of the log file where results are written to in YAML format. Cannot be written "
+    "to standard output because standard output seems to serve debugging "
+    "purposes...");
+  desc.add_options()("result,r", po::value<string>(&opts.resultFilename), "Result file using INI-style/Python config file syntax. This one is optional.");
   desc.add_options()("verbose,V", po::value<int>(&opts.verbose)->default_value(1), "Verbosity level");
   desc.add_options()("mode,m", po::value<int>(&opts.mode)->default_value(0), "Mode");
 
@@ -67,11 +89,8 @@ int options(int ac, char ** av, Options& opts)
   FileStorage fs;
   if (opts.config.empty() || !(fs = FileStorage(opts.config, FileStorage::READ)).isOpened())
   {
-    cout << "Must supply configuration. see newly generated sample.config.yaml" << "\n";
+    cout << "Must supply configuration." << "\n";
     cout << desc << endl;
-    FileStorage fs("./sample.config.yaml", FileStorage::WRITE);
-    fs << TODParameters::YAML_NODE_NAME;
-    TODParameters::CreateSampleParams().write(fs);
     return 1;
   }
   else
@@ -80,6 +99,13 @@ int options(int ac, char ** av, Options& opts)
   if (!vm.count("image"))
   {
     cout << "Must supply an image directory." << "\n";
+    cout << desc << endl;
+    return 1;
+  }
+
+  if (!vm.count("testdesc"))
+  {
+    cout << "Must supply a test description file." << "\n";
     cout << desc << endl;
     return 1;
   }
@@ -132,21 +158,26 @@ int main(int argc, char* argv[])
     return 1;
   }
 
+  TestDesc testdesc = loadTestDesc(opts.testdescFilename);
+
   FileStorage fs;
-  fs.open(opts.testConfig, FileStorage::READ);
+  fs.open(opts.logFilename, FileStorage::WRITE);
   fs << "trainFolder" << opts.baseDirectory;
   fs << "test1" << "{";
   fs << "testFolder" << opts.imageDirectory;
   fs << "objects" << "{";
 
-  boost::filesystem::directory_iterator end_itr;
+  bool writeR = (opts.resultFilename != "");
+  fstream r;
+  if (writeR) {
+    r.open(opts.resultFilename.c_str(), ios_base::out);
+    r << "[predictions]" << endl;
+  }
+
   int objectIndex = 1;
-  for (boost::filesystem::directory_iterator itr(opts.imageDirectory); itr != end_itr; ++itr)
-  {
-    size_t position = itr->leaf().rfind(".png");
-    if (position!=string::npos)
-    {
-      std::string image_name = itr->leaf();
+   
+  for (TestDesc::iterator it = testdesc.begin(), end = testdesc.end(); it != end; it++) {
+      std::string image_name = it->first;
       string path = opts.imageDirectory + "/" + image_name;
       cout << "< Reading the image... " << path;
 
@@ -155,7 +186,7 @@ int main(int argc, char* argv[])
       cout << ">" << endl;
       if (test.image.empty())
       {
-        cout << "Can not read test image" << endl;
+        cout << "Cannot read test image" << endl;
         break;
       }
       extractor->detectAndExtract(test);
@@ -169,6 +200,11 @@ int main(int argc, char* argv[])
       vector<tod::Guess> foundObjects;
       recognizer->match(test, foundObjects);
 
+      if (writeR) {
+        r << image_name << " = ";
+      }
+
+        set<string> found;
       foreach(const Guess& guess, foundObjects)
       {
         stringstream nodeIndex;
@@ -184,13 +220,25 @@ int main(int argc, char* argv[])
         fs << "imageIndex" << index;
 #endif
         fs << "imageName" << image_name;
-        fs << "idx" <<  guess.image_indices_;
+        // damn nasty bug
+        //fs << "idx" <<  guess.image_indices_;
         fs << "}";
+        found.insert(guess.getObject()->name);
       }
-    }
+          if (writeR) {
+            foreach(string obj, found) {
+            r << obj << " ";
+            }
+          }
+      if (writeR) {
+        r << endl;
+      }
   }
   fs << "objectsCount" << objectIndex - 1;
   fs << "}" << "}";
   fs.release();
+  if(writeR) {
+    r.close();
+  }
   return 0;
 }

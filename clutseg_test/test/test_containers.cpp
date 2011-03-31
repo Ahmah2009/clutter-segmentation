@@ -41,4 +41,21 @@ TEST(Containers, UseCharPointerAndStringInterchangeablyAsKeys) {
     EXPECT_EQ(42, m[foo2]);
 }
 
-
+TEST(Containers, IterateOverMap) {
+    map<string, int> m;
+    m["alpha"] = 1;
+    m["beta"] = 2;
+    m["gamma"] = 3;
+    m["delta"] = 4;
+    string str;
+    int sum = 0;
+    for (map<string, int>::iterator it = m.begin(), end = m.end(); it != end; it++) {
+        str += it->first;
+        sum += it->second;
+    }
+    EXPECT_TRUE(str.find("alpha") != string::npos);
+    EXPECT_TRUE(str.find("beta") != string::npos);
+    EXPECT_TRUE(str.find("gamma") != string::npos);
+    EXPECT_TRUE(str.find("delta") != string::npos);
+    EXPECT_EQ(10, sum);
+}
