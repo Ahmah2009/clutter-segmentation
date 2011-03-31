@@ -26,7 +26,7 @@ file(GLOB srcs src/*.cpp)
 
 rosbuild_add_library(${PROJECT_NAME} ${srcs} ${hdrs} )
 
-rosbuild_add_gtest(utest test/test.cpp test/test_bitset.cpp test/test_filesystem.cpp test/test_image_io.cpp test/test_pcl.cpp test/test_pcl_visualization.cpp test/test_pcl_visualization_addons.cpp test/test_random.cpp test/test_rotation.cpp test/test_yaml.cpp)
+rosbuild_add_gtest(utest test/test.cpp test/test_bitset.cpp test/test_containers.cpp test/test_filesystem.cpp test/test_image_io.cpp test/test_pcl.cpp test/test_pcl_visualization.cpp test/test_pcl_visualization_addons.cpp test/test_random.cpp test/test_readfile.cpp test/test_rotation.cpp test/test_yaml.cpp)
 target_link_libraries(utest clutseg_util ${PROJECT_NAME})
 
 #common commands for building c++ executables and libraries

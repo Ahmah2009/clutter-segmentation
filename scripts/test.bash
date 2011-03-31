@@ -18,7 +18,7 @@ fi
 
 mode=0
 
-res=$CLUTSEG_PATH/test/results.txt
+res=$CLUTSEG_PATH/tod_kinect_test/results.txt
 tod_training_pkg=`rospack find tod_training`
 tod_detecting_pkg=`rospack find tod_detecting`
 echo "Experiment running on "`date` >> $res
@@ -44,5 +44,5 @@ echo "--------------------------------------------------" >> $res
 echo "" >> $res
 echo "" >> $res
 # TODO: remove test-truth.txt
-python $CLUTSEG_PATH/clutter-segmentation/scripts/recognizer_stats.py -t $CLUTSEG_PATH/test-truth.txt -B $CLUTSEG_PATH/tod_kinect_train/ -f $CLUTSEG_PATH/tod_kinect_train/config.yaml --verbose -m $mode >> $res
+python $CLUTSEG_PATH/clutter-segmentation/scripts/recognizer_stats.py --test $CLUTSEG_PATH/tod_kinect_test -t $CLUTSEG_PATH/tod_kinect_test/test-truth.txt -B $CLUTSEG_PATH/tod_kinect_train/ -f $CLUTSEG_PATH/tod_kinect_train/config.yaml --verbose -m $mode >> $res
 echo "" >> $res

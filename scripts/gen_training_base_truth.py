@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #
+# TODO: rename truth to testConfig
 # TODO: obsolete? not used at the moment.
 #
 
