@@ -2,7 +2,7 @@
 
 if [ "$1" = "--help" ] ; then
     cat <<HELP
-Usage: s3dbase-single-extract-features.bash <training-subject>
+Usage: s3dbase-extract-features.bash <training-subject>
 
 Extracts features using tod_training detector and f3dcreator, thus running the
 last two steps of the tod_training pipeline without estimating poses or
