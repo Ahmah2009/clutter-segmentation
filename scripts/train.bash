@@ -16,17 +16,18 @@ if [ ! "$CLUTSEG_PATH" ] ; then
     exit
 fi
 
-if [ "$1" != "--no-dump" ] ; then
-    # Dump contents of bag files
-    rosrun tod_training dump_all.py $CLUTSEG_PATH/bags $CLUTSEG_PATH/base
-fi
-# Build training base
-cp $CLUTSEG_PATH/bags/fiducial.yml b$CLUTSEG_PATH/ase/
-cp $CLUTSEG_PATH/bags/features.config.yaml b$CLUTSEG_PATH/ase/
-cp $CLUTSEG_PATH/bags/config.yaml b$CLUTSEG_PATH/ase/
-cp $CLUTSEG_PATH/bags/config.txt $CLUTSEG_PATH/base/
-cd $CLUTSEG_PATH/base
-rosrun tod_training train_all.sh
+pushd $CLUTSEG_PATH > /dev/null
+    if [ "$1" != "--no-dump" ] ; then
+        # Dump contents of bag files
+        rosrun tod_training dump_all.py tod_kinect_bags tod_kinect_train
+    fi
+    # Build training tod_kinect_train
+    cp tod_kinect_bags/fiducial.yml tod_kinect_train/
+    cp tod_kinect_bags/features.config.yaml tod_kinect_train/
+    cp tod_kinect_bags/config.yaml tod_kinect_train/
+    cp tod_kinect_bags/config.txt tod_kinect_train/
+    cd tod_kinect_train
+    rosrun tod_training train_all.sh
 
-echo "Finished. See $CLUTSEG_PATH/base"
-
+    echo "Finished. See $CLUTSEG_PATH/tod_kinect_train"
+popd > /dev/null

@@ -4,7 +4,8 @@ if [ "$1" = "--help" ] || [ ! "$1" ] ; then
     cat <<HELP
 Usage: semantic3d-download.bash [--no-extract] <directory>
 
-Downloads all semantic dataset from IAS/TUM using wget.
+Downloads all semantic dataset from IAS/TUM using wget to any specified
+directory.
 HELP
     exit
 fi

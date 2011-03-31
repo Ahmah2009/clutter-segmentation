@@ -20,5 +20,5 @@ if [ ! "$(pgrep rosout)" ] ; then
     echo "WARNING: Master server roscore does not seem to be running."
 fi 
 
-rosbag play --pause --rate=0.05 --loop $CLUTSEG_PATH/$1.bag $CLUTSEG_PATH/$1.tf.bag
+rosbag play --pause --rate=0.05 --loop $CLUTSEG_PATH/tod_kinect_bags/$1.bag $CLUTSEG_PATH/tod_kinect_bags/$1.tf.bag
 

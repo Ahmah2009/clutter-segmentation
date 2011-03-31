@@ -33,17 +33,17 @@ echo "--------------------------------------------------" >> $res
 echo "" >> $res
 echo "config.yaml" >> $res
 echo "--------------------------------------------------" >> $res
-cat $CLUTSEG_PATH/base/config.yaml >> $res 
+cat $CLUTSEG_PATH/tod_kinect_train/config.yaml >> $res 
 echo "--------------------------------------------------" >> $res
 echo "" >> $res
 echo "" >> $res
 echo "features.config.yaml" >> $res
 echo "--------------------------------------------------" >> $res
-cat $CLUTSEG_PATH/base/features.config.yaml >> $res 
+cat $CLUTSEG_PATH/tod_kinect_train/features.config.yaml >> $res 
 echo "--------------------------------------------------" >> $res
 echo "" >> $res
 echo "" >> $res
 # TODO: remove test-truth.txt
 pkg_semantic3d_training=`rospack find semantic3d_training`
-python $pkg_semantic3d_training/scripts/recognizer_stats.py -t $CLUTSEG_PATH/test-truth.txt -B $CLUTSEG_PATH/base/ -f $CLUTSEG_PATH/base/config.yaml --verbose -m $mode >> $res
+python $pkg_semantic3d_training/scripts/recognizer_stats.py -t $CLUTSEG_PATH/test-truth.txt -B $CLUTSEG_PATH/tod_kinect_train/ -f $CLUTSEG_PATH/tod_kinect_train/config.yaml --verbose -m $mode >> $res
 echo "" >> $res

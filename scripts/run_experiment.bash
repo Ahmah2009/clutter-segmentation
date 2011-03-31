@@ -134,13 +134,13 @@ pushd $CLUTSEG_PATH/poserandomization > /dev/null
         echo "" >> $res
         echo "config.yaml" >> $res
         echo "--------------------------------------------------" >> $res
-        cat ../base/config.yaml >> $res 
+        cat undistorted/config.yaml >> $res 
         echo "--------------------------------------------------" >> $res
         echo "" >> $res
         echo "" >> $res
         echo "features.config.yaml" >> $res
         echo "--------------------------------------------------" >> $res
-        cat ../base/features.config.yaml >> $res 
+        cat undistorted/features.config.yaml >> $res 
         echo "--------------------------------------------------" >> $res
         echo "" >> $res
         echo "" >> $res
@@ -176,13 +176,13 @@ pushd $CLUTSEG_PATH/poserandomization > /dev/null
         echo "" >> $res
         echo "config.yaml" >> $res
         echo "--------------------------------------------------" >> $res
-        cat ../base/config.yaml >> $res 
+        cat noisy/config.yaml >> $res 
         echo "--------------------------------------------------" >> $res
         echo "" >> $res
         echo "" >> $res
         echo "features.config.yaml" >> $res
         echo "--------------------------------------------------" >> $res
-        cat ../base/features.config.yaml >> $res 
+        cat noisy/features.config.yaml >> $res 
         echo "--------------------------------------------------" >> $res
         echo "" >> $res
         echo "" >> $res
