@@ -1,0 +1,21 @@
+<package>
+  <description brief="clutseg_util">
+
+     Utilities and helper classes for various tasks. 
+
+  </description>
+  <author>Julius Adorf</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <!-- <url>http://ros.org/wiki/clutseg_util</url> -->
+  <depend package="pcl_visualization" />
+  <depend package="opencv_candidate" />
+
+  <export>
+      <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lclutseg_util" />
+  </export>
+
+
+</package>
+
+

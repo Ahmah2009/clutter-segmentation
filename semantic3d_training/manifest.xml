@@ -8,6 +8,7 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <!--<url>http://ros.org/wiki/semantic3d_training</url>-->
+  <depend package="clutseg_util" />
   <depend package="tod_training" />
   <depend package="tod_detecting" />
   <depend package="pcl_visualization" />
