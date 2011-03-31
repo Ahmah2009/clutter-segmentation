@@ -27,6 +27,7 @@
 #include "tod/detecting/Loader.h"
 #include "tod/detecting/Recognizer.h"
 #include "testdesc.h"
+#include "mute.h"
 
 #include <boost/foreach.hpp>
 #include <boost/program_options.hpp>

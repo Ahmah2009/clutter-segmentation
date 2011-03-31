@@ -12,16 +12,13 @@
 using namespace std;
 
 TEST(Testdesc, LoadTestDesc) {
-    map<string, set<string> > m = loadTestDesc("./data/testdesc.txt");
+    TestDesc m = loadTestDesc("./data/testdesc.txt");
 }
 
 TEST(Testdesc, ReadTestDesc) {
-    map<string, set<string> > m = loadTestDesc("./data/testdesc.txt");
-    set<string> s = m["t0000.jpg"];
-    ASSERT_FALSE(s.find("teas_tea") != set::end);
-    ASSERT_FALSE(s.find("fat_free_milk") != set::end);
-    set<string> s2 = m["t0000.jpg"];
-    ASSERT_FALSE(s2.find("teas_tea") != set::end);
-    ASSERT_FALSE(s2.find("fat_free_milk") != set::end);
+    TestDesc m = loadTestDesc("./data/testdesc.txt");
+    set<string> s = m["t0000.png"];
+    ASSERT_FALSE(s.find("teas_tea") == s.end());
+    ASSERT_FALSE(s.find("fat_free_milk") == s.end());
 }
 
