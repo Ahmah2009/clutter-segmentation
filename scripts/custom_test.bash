@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Note: 2011-03-31: works
+
 if [ "$1" = "--help" ] ; then
     cat <<HELP
 Usage: custom_test.bash
