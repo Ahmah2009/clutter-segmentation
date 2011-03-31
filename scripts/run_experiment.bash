@@ -148,10 +148,9 @@ pushd $CLUTSEG_PATH/poserandomization > /dev/null
 
         # Do recognition using first training base
         # Save recognition results to experiment records
-        # $semantic3d_training/scripts/gen_training_base_truth.py --base undistorted undistorted-truth.txt
         echo "Running statistics using undistorted training base" > $res
 
-        $semantic3d_training/scripts/recognizer_stats.py --base undistorted -t $truthfile -f undistorted/config.yaml --verbose -m 1 > $res
+        $CLUTSEG_PATH/clutter-segmentation/scripts/recognizer_stats.py --base undistorted -t $truthfile -f undistorted/config.yaml --verbose -m 1 > $res
         echo "stddev_t = $stddev_t, stddev_r = $stddev_t" >> $res
         echo "" >> $res
     fi
@@ -190,9 +189,8 @@ pushd $CLUTSEG_PATH/poserandomization > /dev/null
 
         # Do recognition using second training base
         # Save recognition results to experiment records
-        # $semantic3d_training/scripts/gen_training_base_truth.py --base noisy noisy-truth.txt
         echo "Running statistics using noisy training base" > $res
-        $semantic3d_training/scripts/recognizer_stats.py --base noisy -t $truthfile -f noisy/config.yaml --verbose -m 1 > $res
+        $CLUTSEG_PATH/clutter-segmentation/scripts/recognizer_stats.py --base noisy -t $truthfile -f noisy/config.yaml --verbose -m 1 > $res
         echo "stddev_t = $stddev_t, stddev_r = $stddev_t" >> $res
         echo "" >> $res
     fi

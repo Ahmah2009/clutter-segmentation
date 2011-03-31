@@ -16,7 +16,6 @@ if [ ! "$CLUTSEG_PATH" ] ; then
     exit
 fi
 
-pkg_semantic3d_training=$(rospack find semantic3d_training)
 testconfig=$(mktemp)
 cat >> $testconfig <<EOF
 # Write configuration on the fly
@@ -51,7 +50,7 @@ tod_kinect_train/odwalla_lime/image_00002.png = odwalla_lime
 EOF
 pushd $CLUTSEG_PATH > /dev/null
     # Collect statistics
-    python $pkg_semantic3d_training/scripts/recognizer_stats.py \
+    python clutter-segmentation/scripts/recognizer_stats.py \
            --test $CLUTSEG_PATH \
            --truth $testconfig \
            --base tod_kinect_train/ \

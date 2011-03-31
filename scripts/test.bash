@@ -2,7 +2,7 @@
 
 if [ "$1" = "--help" ] ; then
     cat <<HELP
-Usage: custom_test_stats.bash
+Usage: test.bash
 
 Creates recognition statistics for test images in tod kinect test images
 folder, using tod kinect training database.
@@ -44,6 +44,5 @@ echo "--------------------------------------------------" >> $res
 echo "" >> $res
 echo "" >> $res
 # TODO: remove test-truth.txt
-pkg_semantic3d_training=`rospack find semantic3d_training`
-python $pkg_semantic3d_training/scripts/recognizer_stats.py -t $CLUTSEG_PATH/test-truth.txt -B $CLUTSEG_PATH/tod_kinect_train/ -f $CLUTSEG_PATH/tod_kinect_train/config.yaml --verbose -m $mode >> $res
+python $CLUTSEG_PATH/clutter-segmentation/scripts/recognizer_stats.py -t $CLUTSEG_PATH/test-truth.txt -B $CLUTSEG_PATH/tod_kinect_train/ -f $CLUTSEG_PATH/tod_kinect_train/config.yaml --verbose -m $mode >> $res
 echo "" >> $res

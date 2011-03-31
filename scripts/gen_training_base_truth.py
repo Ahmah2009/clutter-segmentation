@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 #
+# TODO: obsolete? not used at the moment.
+#
 
 import sys
 import optparse
