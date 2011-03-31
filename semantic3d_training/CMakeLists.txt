@@ -27,7 +27,7 @@ file(GLOB srcs src/*.cpp)
 #common commands for building c++ executables and libraries
 rosbuild_add_library(${PROJECT_NAME} ${srcs} ${hdrs} )
 
-rosbuild_add_gtest(utest test/test.cpp test/test_misc.cpp test/test_pcl_visualization_addons.cpp)
+rosbuild_add_gtest(utest test/test.cpp test/test_misc.cpp)
 target_link_libraries(utest ${PROJECT_NAME})
 
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
