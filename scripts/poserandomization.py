@@ -9,15 +9,16 @@ by experiment.
 
 Two classifiers are trained, one on the original training set and one on the
 training set where noise has been artificially added to the pose estimates.
-The result of the experiment is then given in terms of true and false positives
-of the respective classifiers on a common testing set. The experiment therefore
+The result of the experiment is then given as a confusion matrix, or in other
+terms as a point in ROC space. Basically, we count true and false positives of
+the respective classifiers on a common testing set. The experiment therefore
 collects the following data:
 
 stddev_t, stddev_r, orig_tp, orig_fp, noisy_tp, noisy_fp
 
-The data does not contain any redundancy, yet further statistics can easily
-computed later in no time. The terminology follows the Wikipedia article about
-receiver operating characteristics.
+The terminology follows the Wikipedia article about receiver operating
+characteristics, which in its turn is based on "An introduction to ROC
+analysis" (Fawcett, 2006)
 
 As no attempt has been made to find out the distribution of noise in the
 original pose estimations, a Gaussian noise model with two parameters stddev_t
@@ -47,23 +48,37 @@ training stages actually uses pose estimations, it is just stored in the tar.gz
 feature files. Therefore, for pose randomization it is sufficient to extract
 recreate those archive files.
 
-Every run on tod kinect test dataset takes about two minutes to complete.
+Every run on tod kinect test dataset takes about 20 seconds to complete, when
+using blackbox_recognizer, that tests multiple images in one process.
 Preparing the training base for the next run should be a matter of seconds.
-The unfortunate part in the recognition process that the recognizer has to
-reload the training base every time. Unfortunately that can hardly be avoided
-since the training base is changed between each run. Given these time
-estimates, and allowing the experiment to complete within two hours, we can try
-60 different parameter combinations.
-""
+Constraining the experiment to complete within 20 minutes, we can try about 
+50 different parameter combinations.
+"""
 
 import optparse
 
 def test_configuration_20110331():
     return ((0, 0), (1, 1), (2, 2)) 
 
+def randomize(stddev_t, stddev_r):
+    pass
+
+def train():
+    pass
+
+def evaluate():
+    pass
+
+def run(stddev_t, stddev_r):
+    randomize(stddev_t, stddev_r)
+    train()
+    evaluate()
+    
 def main():
-    print "ERROR: not yet implemented."
-     
+    configurations = test_configurations_20110331()
+    for stddev_t, stddev_r in configurations:
+        run(stddev_t, stddev_r) 
+         
 if __name__ == "__main__":
     main()
 
