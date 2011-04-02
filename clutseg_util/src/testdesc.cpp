@@ -26,7 +26,7 @@ TestDesc loadTestDesc(const string & filename) {
         size_t offs = line.find_first_of('='); 
         if (offs != string::npos) {
             string key = line.substr(0, offs);
-            string val = line.substr(offs, line.length() - offs);
+            string val = line.substr(offs+1, line.length() - offs);
             boost::trim(key);
             vector<string> v;
             boost::split(v, val, boost::is_any_of(" "), boost::token_compress_on);

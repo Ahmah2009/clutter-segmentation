@@ -50,6 +50,7 @@ namespace {
         std::string config;
         std::string testdescFilename;
         std::string resultFilename;
+        std::string statsFilename;
         std::string logFilename;
         TODParameters params;
         int verbose;
@@ -82,6 +83,9 @@ int options(int ac, char **av, Options & opts)
     desc.add_options()("result,r",
                        po::value < string > (&opts.resultFilename),
                        "Result file using INI-style/Python config file syntax. This one is optional.");
+    desc.add_options()("stats,s",
+                       po::value < string > (&opts.statsFilename),
+                       "Statistics are stored in this file. INI-style/Python config file syntax.");
     desc.add_options()("verbose,V",
                        po::value < int >(&opts.verbose)->default_value(1),
                        "Verbosity level");
@@ -181,11 +185,36 @@ int main(int argc, char *argv[])
         r.open(opts.resultFilename.c_str(), ios_base::out);
         r << "[predictions]" << endl;
     }
+   
+    // count hits, misses, error 1, error 2.  see Receiver operating
+    // characteristics.  true/false positives/negatives.  A confusion matrix
+    // has 4 dof and it's easiest to keep track of tp, fp and the column sums
+    // to compute tn, fn later.
+
+    int tp_acc = 0;
+    int fp_acc = 0;
+    int tn_acc = 0;
+    int fn_acc = 0;
+    int p_acc = 0;
+    int n_acc = 0;
+    bool writeS = (opts.statsFilename != "");
+    fstream s;
+    if (writeS) {
+        s.open(opts.statsFilename.c_str(), ios_base::out);
+        s << "[statistics]" << endl;
+    }
 
     int objectIndex = 1;
 
     for (TestDesc::iterator it = testdesc.begin(), end = testdesc.end();
          it != end; it++) {
+        // true positives
+        int tp = 0;
+        // false positives
+        int fp = 0;
+        // total positives
+        int p = it->second.size();
+
         std::string image_name = it->first;
         string path = opts.imageDirectory + "/" + image_name;
         cout << "< Reading the image... " << path;
@@ -217,10 +246,11 @@ int main(int argc, char *argv[])
         {
             stringstream nodeIndex;
             nodeIndex << objectIndex++;
+            string name = guess.getObject()->name;
             string nodeName = "object" + nodeIndex.str();
             fs << nodeName << "{";
             fs << "id" << guess.getObject()->id;
-            fs << "name" << guess.getObject()->name;
+            fs << "name" << name;
             fs << "rvec" << guess.aligned_pose().rvec;
             fs << "tvec" << guess.aligned_pose().tvec;
 #if 0
@@ -231,8 +261,48 @@ int main(int argc, char *argv[])
             // damn nasty bug
             //fs << "idx" <<  guess.image_indices_;
             fs << "}";
-            found.insert(guess.getObject()->name);
+            found.insert(name);
         }
+        foreach(string name, found) {
+            // Check for true or false positive.
+            if (it->second.find(name) == it->second.end()) {
+                fp += 1;
+            } else {
+                tp += 1;
+            }
+        }
+
+        int n = objects.size() - p;
+        int fn = p - tp;
+        int tn = n - fp;
+        if (writeS) {
+            s << endl;
+            s << "# -- " << image_name << " -- " << endl;
+            s << "# actual objects: ";
+            foreach (string x, it->second) {
+                s << x << ", ";
+            }
+            s << endl;
+            s << "# predicted objects: ";
+            foreach (string x, found) {
+                s << x << ", ";
+            }
+            s << endl;
+            s << "# tp = " << tp << endl;
+            s << "# fp = " << fp << endl;
+            s << "# tn = " << tn << endl;
+            s << "# fn = " << fn << endl;
+            s << "# p = " << p << endl;
+            s << "# n = " << n << endl;
+        }
+
+        n_acc += n;
+        p_acc += p;
+        tp_acc += tp;
+        fp_acc += fp;
+        fn_acc += fn;
+        tn_acc += tn;
+
         if (writeR) {
             foreach(string obj, found) {
                 r << obj << " ";
@@ -247,6 +317,27 @@ int main(int argc, char *argv[])
     fs.release();
     if (writeR) {
         r.close();
+    }
+    if (writeS) {
+        // write down confusion matrix
+        // plus some more calculation on top of it
+        s << endl;
+        s << endl;
+        s << "# confusion matrix" << endl;
+        s << "#    accumulated over each test image";
+        s << "tp = " << tp_acc << endl;
+        s << "fp = " << fp_acc << endl;
+        s << "tn = " << tn_acc << endl;
+        s << "fn = " << fn_acc << endl;
+        s << "# n = tn + fp" << endl;
+        s << "n = " << n_acc << endl;
+        s << "# p = tp + fn" << endl;
+        s << "p = " << p_acc << endl; 
+        s << "# tp_rate = tp / p = sensitivity = hit rate = recall" << endl;
+        s << "tp_rate = " << tp_acc / (double) p_acc << endl;
+        s << "# fp_rate = fall-out" << endl;
+        s << "fp_rate = " << fp_acc / (double) n_acc << endl;
+        s.close();
     }
     return 0;
 }
