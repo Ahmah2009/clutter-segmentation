@@ -38,8 +38,9 @@ pushd $CLUTSEG_PATH > /dev/null
         --tod_config=tod_kinect_train/config.yaml \
         --image=tod_kinect_test \
         --testdesc=tod_kinect_test/test-truth.txt \
-        --log=blackbox_recognizer-debug.log \
-        --result=blackbox_recognizer-debug.result.txt \
+        --log=blackbox_recognizer-demo.log \
+        --result=blackbox_recognizer-demo.result.txt \
+        --roc=blackbox_recognizer-demo.roc.gnuplot\
         --verbose=1
 popd > /dev/null
 

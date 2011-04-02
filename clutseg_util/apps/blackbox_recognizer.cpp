@@ -52,6 +52,7 @@ namespace {
         std::string resultFilename;
         std::string statsFilename;
         std::string logFilename;
+        std::string rocFilename;
         TODParameters params;
         int verbose;
         int mode;
@@ -86,6 +87,9 @@ int options(int ac, char **av, Options & opts)
     desc.add_options()("stats,s",
                        po::value < string > (&opts.statsFilename),
                        "Statistics are stored in this file. INI-style/Python config file syntax.");
+    desc.add_options()("roc",
+                       po::value < string > (&opts.rocFilename),
+                       "Generate points on a ROC graph and save it to a file.");
     desc.add_options()("verbose,V",
                        po::value < int >(&opts.verbose)->default_value(1),
                        "Verbosity level");
@@ -202,6 +206,24 @@ int main(int argc, char *argv[])
     if (writeS) {
         s.open(opts.statsFilename.c_str(), ios_base::out);
         s << "[statistics]" << endl;
+    }
+
+    bool writeRoc = (opts.rocFilename != "");
+    fstream roc;
+    if (writeRoc) {
+        roc.open(opts.rocFilename.c_str(), ios_base::out);
+        roc << "set size .75,1" << endl;
+        roc << "set size ratio 1" << endl;
+        roc << "set xtics .1" << endl;
+        roc << "set ytics .1" << endl;
+        roc << "set grid" << endl;
+        roc << "set xrange [0:1.025]" << endl;
+        roc << "set yrange [0:1.025]" << endl;
+        roc << "set key right bottom" << endl;
+        roc << "set ylabel \"True Positive Rate\"" << endl;
+        roc << "set xlabel \"False Positive Rate\" " << endl;
+        roc << "set pointsize 2 " << endl;
+        roc << "plot x with lines, '-' with points" << endl;
     }
 
     int objectIndex = 1;
@@ -339,5 +361,28 @@ int main(int argc, char *argv[])
         s << "fp_rate = " << fp_acc / (double) n_acc << endl;
         s.close();
     }
+    if (writeRoc) {
+        if (n > 0 && p > 0) {
+            roc << fp_acc / (double) n_acc << " ";
+            roc << tp_acc / (double) p_acc << endl;
+        }
+        roc << "e" << endl;
+        roc << "## confusion matrix" << endl;
+        roc << "##    accumulated over each test image";
+        roc << "# tp = " << tp_acc << endl;
+        roc << "# fp = " << fp_acc << endl;
+        roc << "# tn = " << tn_acc << endl;
+        roc << "# fn = " << fn_acc << endl;
+        roc << "## n = tn + fp" << endl;
+        roc << "# n = " << n_acc << endl;
+        roc << "## p = tp + fn" << endl;
+        roc << "# p = " << p_acc << endl; 
+        roc << "## tp_rate = tp / p = sensitivity = hit rate = recall" << endl;
+        roc << "# tp_rate = " << tp_acc / (double) p_acc << endl;
+        roc << "## fp_rate = fall-out" << endl;
+        roc << "# fp_rate = " << fp_acc / (double) n_acc << endl;
+        roc.close();
+    }
+
     return 0;
 }
