@@ -362,7 +362,8 @@ int main(int argc, char *argv[])
         s.close();
     }
     if (writeRoc) {
-        if (n > 0 && p > 0) {
+        // gnuplot does not like NaN
+        if (n_acc > 0 && p_acc > 0) {
             roc << fp_acc / (double) n_acc << " ";
             roc << tp_acc / (double) p_acc << endl;
         }
