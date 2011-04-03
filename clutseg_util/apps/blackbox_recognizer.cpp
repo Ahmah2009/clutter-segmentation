@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
         s << endl;
         s << endl;
         s << "# confusion matrix" << endl;
-        s << "#    accumulated over each test image";
+        s << "#    accumulated over each test image" << endl;
         s << "tp = " << tp_acc << endl;
         s << "fp = " << fp_acc << endl;
         s << "tn = " << tn_acc << endl;

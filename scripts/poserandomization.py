@@ -9,12 +9,16 @@ by experiment.
 
 Two classifiers are trained, one on the original training set and one on the
 training set where noise has been artificially added to the pose estimates.
-The result of the experiment is then given as a confusion matrix, or in other
-terms as a point in ROC space. Basically, we count true and false positives of
-the respective classifiers on a common testing set. The experiment therefore
-collects the following data:
+The result of the experiment is then given as a two confusion matrices, or in
+other terms as two points in ROC space, each point representing one classifier.
+We expect the original classifier to perform more or less equally for each run,
+and different runs might as well give an idea how much randomness governs the
+recognition process (it uses RANSAC!).  Basically, we count true and false
+positives of the respective classifiers on a common testing set. The experiment
+therefore collects the two input parameters and the members of the two
+confusion matrices:
 
-stddev_t, stddev_r, orig_tp, orig_fp, noisy_tp, noisy_fp
+stddev_t, stddev_r, orig_tp, orig_fp, orig_fn, orig_tn, noisy_tp, noisy_fp, noisy_fn, noisy_tn
 
 The terminology follows the Wikipedia article about receiver operating
 characteristics, which in its turn is based on "An introduction to ROC
@@ -48,19 +52,25 @@ training stages actually uses pose estimations, it is just stored in the tar.gz
 feature files. Therefore, for pose randomization it is sufficient to extract
 recreate those archive files.
 
-Every run on tod kinect test dataset takes about 20 seconds to complete, when
-using blackbox_recognizer, that tests multiple images in one process.
-Preparing the training base for the next run should be a matter of seconds.
-Constraining the experiment to complete within 20 minutes, we can try about 
-50 different parameter combinations.
+Every run on both tod kinect test dataset takes about 2 minutes to complete.
+(100 runs were completed in 200 minutes on an intel i5 quad-core processor).
+Constraining the experiment to complete within 2 hours, we can try about 60
+different parameter combinations. Notably, evaluating the classifiers on the
+testing sets does not take much time, and can be neglected. Therefore, to
+improve results of an experiment it is best to increase the number of test
+images. We might even just duplicate the test images in order to average over
+the different results of the RANSAC matching process.
 """
 
 import os
 import tempfile
-import tarfile
+import gzip 
 import shutil
 import subprocess
 import ConfigParser
+import optparse
+
+log = open(os.path.join(os.getenv("HOME"), ".poserandomization.log"), "w")
 
 class InitConfig:
 
@@ -75,13 +85,16 @@ class InitConfig:
         for line in config_file: 
             line = line.strip()
             if line != "":
-                subjects.add(line)
+                self.subjects.add(line)
 
 
 class ParamConfig:
 
     def __init__(self):
-        self.param_set = ((0, 0), (1, 1), (2, 2)) 
+        # self.param_set = ((1, 1), (2, 2), (3, 3), (100, 100))
+        self.param_set = []
+        for i in xrange(1, 100):
+            self.param_set.append((0.01 * i, 0.01 * i))
 
 
 class Result:
@@ -104,7 +117,9 @@ class PoseRT:
     def read(self, yaml_filename):
         """This method just greps the rvec and tvec data out of a YAML file. It
            does not really understand YAML format, it just looks for keywords."""
-        yaml = open(yaml_filename).read()
+        yamlf = open(yaml_filename)
+        yaml = yamlf.read()
+        yamlf.close()
         tvec_offs = yaml.find("tvec:")
         rvec_offs = yaml.find("rvec:")
         tvec_data_offs = yaml.find("data:")
@@ -124,11 +139,16 @@ class PoseRT:
         return nv
 
 def reset(init_cfg):
-    """Copy over all original pose files"""
+    """Copy over all original pose files and f3d archives"""
     for s in init_cfg.subjects:
+        print >>log, "Resetting %s" % s
         sdir = os.path.join(init_cfg.orig_dir, s)
         for f in os.listdir(sdir):
             if f.endswith(".pose.yaml"):
+                shutil.copyfile(
+                    os.path.join(init_cfg.orig_dir, s, f),   
+                    os.path.join(init_cfg.noisy_dir, s, f))
+            elif f.endswith(".f3d.yaml.gz"):
                 shutil.copyfile(
                     os.path.join(init_cfg.orig_dir, s, f),   
                     os.path.join(init_cfg.noisy_dir, s, f))
@@ -136,6 +156,8 @@ def reset(init_cfg):
 def randomize(init_cfg, stddev_t, stddev_r):
     for s in init_cfg.subjects:
         # Delegate to poserandomizer.cpp
+        print >>log, "Randomizing %s" % s
+
         p = subprocess.Popen(
             ("rosrun",
              "semantic3d_training",
@@ -143,44 +165,46 @@ def randomize(init_cfg, stddev_t, stddev_r):
              os.path.join(init_cfg.noisy_dir, s),
              str(stddev_t),
              str(stddev_r),
-             1, 0))  
+             "1", "0"), stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
         p.communicate()
         sdir = os.path.join(init_cfg.noisy_dir, s)
+        n = ""
         for f in os.listdir(sdir):
             if f.endswith(".pose.yaml"):
-               n = f[:-10]
-            # Now read randomized pose and make sure it also appears in the 3d tar
-            # gz files. Man, I hate duplication ... I know that features 2d files
-            # are not read, so just delete them to make sure there will not be any
-            # contradiction in pose data.
-            os.remove(os.path.join(sdir, n + ".features.yaml.gz"))
-            # extract f3d archives to temporary folder
-            dtemp = tempfile.mkdtemp()
-            a_oldfn = os.path.join(sdir, n + ".f3d.yaml.gz")
-            a = tarfile.open(a_oldfn, n + ".f3d.yaml.gz", "r"))
-            a.extractall(dtemp)
-            a.close()
-            # read yaml file
-            pose = PoseRT()
-            pose.read(os.path.join(sdir, f))
-            # modify yaml files in temporary folders 
-            yaml_oldfn = os.path.join(dtemp, n + ".f3d.yaml")
-            yaml = open(yaml_oldfn, "r").read()
-            yaml_newfn = os.path.join(dtemp, n + ".f3d.yaml.new")
-            yaml = _replace_data(yaml, "tvec", pose.tvec)
-            yaml = _replace_data(yaml, "rvec", pose.rvec)
-            f = open(yaml_newfn, "w")
-            f.write(yaml)
-            f.close() 
-            shutil.copyfile(yaml_newfn, yaml_oldfn)
-            os.remove(yaml_newfn)
-            # re-compress archive 
-            a_newfn = os.path.join(dtemp, n + ".f3d.yaml.gz.new")
-            a_new = tarfile.open(a_newfn, "w")
-            a_new.add(os.path.join(dtemp. n + ".f3d.yaml"))
-            a_new.close()
-            shutil.copyfile(a_newfn, a_oldfn)
-            shutil.rmtree(tempd)
+                n = f[:-10]
+                # Now read randomized pose and make sure it also appears in the 3d tar
+                # gz files. Man, I hate duplication ... I know that features 2d files
+                # are not read, so just delete them to make sure there will not be any
+                # contradiction in pose data.
+                f2d_fn = os.path.join(sdir, n + ".features.yaml.gz")
+                if os.path.exists(f2d_fn):
+                    os.remove(f2d_fn)
+                # extract f3d archives to temporary folder
+                a_oldfn = os.path.join(sdir, n + ".f3d.yaml.gz")
+                print >>log, "Generating updated %-100s" % a_oldfn
+                a = gzip.open(a_oldfn, "rb")
+                yaml = a.read()
+                a.close()
+                # read yaml file
+                pose = PoseRT()
+                pose.read(os.path.join(sdir, f))
+                # inject randomize pose
+                yaml = replace_data(yaml, "tvec", pose.tvec)
+                yaml = replace_data(yaml, "rvec", pose.rvec)
+                # re-compress archive 
+                (fd, a_newfn) = tempfile.mkstemp(suffix=".f3d.yaml.gz")
+                # a_newfn = os.path.join(dtemp, n + ".f3d.yaml.gz")
+                g = open(a_newfn, "w")
+                a_new = gzip.GzipFile(n + ".f3d.yaml", fileobj=g, mode="wb")
+                a_new.write(yaml)
+                a_new.close()
+                g.close()
+                shutil.copyfile(a_newfn, a_oldfn)
+                # prevent leaks of file descriptors, will soon run out in
+                # about second or third run!
+                os.close(fd)
+                os.remove(a_newfn)
+                # shutil.rmtree(dtemp)
 
 def replace_data(yaml, vec, new):
     offs = yaml.find(vec + ":")
@@ -189,36 +213,47 @@ def replace_data(yaml, vec, new):
     return yaml[:s+1] + str(new[0]) + ", " + str(new[1]) + ", " + str(new[2]) + yaml[e:]
    
 def blackbox_recognizer(init_cfg, base_dir, stats_file):
-    subprocess.Popen(
+    (h, tmpdevnull) = tempfile.mkstemp()
+    p = subprocess.Popen(
         ("rosrun",
-         "cseg_util",
+         "clutseg_util",
          "blackbox_recognizer",
          "--base=%s" % base_dir,
          "--tod_config=%s" % os.path.join(base_dir, "config.yaml"),
         "--image=%s" % init_cfg.test_dir,
-        "--testdesc=%s" % init_cfg.tesdesc_file,
+        "--testdesc=%s" % init_cfg.testdesc_file,
         "--log=%s" % tmpdevnull,
-        "--stats=%s" % stats_file)
+        "--verbose=%d" % 0,
+        "--stats=%s" % stats_file), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.communicate()
+    os.remove(tmpdevnull)
 
 def evaluate(init_cfg, stddev_t, stddev_r):
     # run blackbox_recognizer
-    orig_stats_file = tempfile.mkstemp()
-    noisy_stats_file = tempfile.mkstemp()
+    h, orig_stats_file = tempfile.mkstemp()
+    g, noisy_stats_file = tempfile.mkstemp()
+    print >>log, "Evaluating original classifier"
     blackbox_recognizer(init_cfg, init_cfg.orig_dir, orig_stats_file)
+    print >>log, "Evaluating noisy classifier"
     blackbox_recognizer(init_cfg, init_cfg.noisy_dir, noisy_stats_file)
     # read in result files
     orig_res = ConfigParser.ConfigParser() 
     noisy_res = ConfigParser.ConfigParser() 
     orig_res.read(orig_stats_file)
-    noisy_res.read(orig_stats_file)
-    # write to some experiment-scope result scope file
-    # TO STANDARD OUT!!
-    print "%10.6d %10.6d %10.3d %10.3d %10.3d %10.3d" % (
+    noisy_res.read(noisy_stats_file)
+    os.close(h)
+    os.close(g)
+    # write row
+    print "%10.6f %10.6f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f" % (
         stddev_t, stddev_r,
-        orig_res.get("statistics", "tp"),
-        orig_res.get("statistics", "fp"),
-        noisy_res.get("statistics", "tp"),
-        noisy_res.get("statistics", "fp"))
+        float(orig_res.get("statistics", "tp")),
+        float(orig_res.get("statistics", "fp")),
+        float(orig_res.get("statistics", "fn")),
+        float(orig_res.get("statistics", "tn")),
+        float(noisy_res.get("statistics", "tp")),
+        float(noisy_res.get("statistics", "fp")),
+        float(noisy_res.get("statistics", "fn")),
+        float(noisy_res.get("statistics", "tn")))
     os.remove(orig_stats_file)
     os.remove(noisy_stats_file)
     
@@ -233,10 +268,17 @@ def main():
         "/home/julius/Studium/BA/poserandomization/noisy",
         "/home/julius/Studium/BA/tod_kinect_test",
         "/home/julius/Studium/BA/tod_kinect_test/test-truth.txt")
-    param_cfg = param_config() 
+    param_cfg = ParamConfig() 
+    print "%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s" % (
+        "stddev_t", "stddev_r",
+        "orig_tp", "orig_fp",
+        "orig_fn", "orig_tn",
+        "noisy_tp", "noisy_fp",
+        "noisy_fn", "noisy_tn")
     for stddev_t, stddev_r in param_cfg.param_set:
-        # run(init_cfg, stddev_t, stddev_r) 
-        pass
+        print >>log, "New experiment run with stddev_t=%10.6f and stddev_r=%10.6f" % (stddev_t, stddev_r)
+        run(init_cfg, stddev_t, stddev_r) 
+    log.close()
          
 if __name__ == "__main__":
     main()

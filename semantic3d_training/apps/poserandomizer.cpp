@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
             FileStorage in(it->path().string(), FileStorage::READ);
             PoseRT pose;
             pose.read(in[PoseRT::YAML_NODE_NAME]);
+            in.release();
     // TODO: do you have to close file storage before opening for writing?
             PoseRT rpose;
             rpose.tvec = pose.tvec.clone();
@@ -75,6 +76,7 @@ int main(int argc, char **argv) {
                 FileStorage out(it->path().string(), FileStorage::WRITE);
                 out << PoseRT::YAML_NODE_NAME;
                 rpose.write(out);
+                out.release();
             }
         }
         it++;

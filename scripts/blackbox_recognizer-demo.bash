@@ -40,7 +40,8 @@ pushd $CLUTSEG_PATH > /dev/null
         --testdesc=tod_kinect_test/test-truth.txt \
         --log=blackbox_recognizer-demo.log \
         --result=blackbox_recognizer-demo.result.txt \
-        --roc=blackbox_recognizer-demo.roc.gnuplot\
+        --stats=blackbox_recognizer-demo.stats.txt \
+        --roc=blackbox_recognizer-demo.roc.gnuplot \
         --verbose=1
 popd > /dev/null
 
