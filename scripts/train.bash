@@ -25,8 +25,6 @@ pushd $CLUTSEG_PATH > /dev/null
     cp tod_kinect_bags/fiducial.yml tod_kinect_train/
     cp tod_kinect_bags/features.config.yaml tod_kinect_train/
     cp tod_kinect_bags/config.yaml tod_kinect_train/
-    cp tod_kinect_bags/config9.txt tod_kinect_train/
-    cp tod_kinect_bags/config15.txt tod_kinect_train/
     cd tod_kinect_train
     rosrun tod_training train_all.sh
 

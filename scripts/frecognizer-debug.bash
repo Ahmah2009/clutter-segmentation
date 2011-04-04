@@ -5,7 +5,7 @@ if [ "$1" = "--help" ] ; then
 Usage: frecognizer-debug.bash
 
 Runs the folder recognizer executable of tod_detecting in GNU debugger,
-using tod kinect dataset. Might be useful for quick regression tests.
+using tod kinect training 9 dataset. Might be useful for quick regression tests.
 HELP
     exit
 fi
@@ -17,9 +17,9 @@ fi
 
 pkg_tod_detecting=$(rospack find tod_detecting)
 gdb --args $pkg_tod_detecting/bin/frecognizer \
-    --base=$CLUTSEG_PATH/tod_kinect_train/ \
-    --tod_config=$CLUTSEG_PATH/tod_kinect_train/config.yaml \
-    --image=$CLUTSEG_PATH/test \
-    --log=$CLUTSEG_PATH/tmp/test.deleteme.log \
+    --base=$CLUTSEG_PATH/tod_kinect_train_9/ \
+    --tod_config=$CLUTSEG_PATH/tod_kinect_train_9/config.yaml \
+    --image=$CLUTSEG_PATH/tod_kinect_test_27 \
+    --log=$CLUTSEG_PATH/test.deleteme.log \
     --verbose=1
 

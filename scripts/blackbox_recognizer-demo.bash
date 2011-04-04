@@ -35,13 +35,13 @@ pushd $CLUTSEG_PATH > /dev/null
     pkg_clutseg_util=$(rospack find clutseg_util)
     $cmd $pkg_clutseg_util/bin/blackbox_recognizer \
         --base=tod_kinect_train_9/ \
-        --tod_config=tod_kinect_train_9/config9.yaml \
-        --image=tod_kinect_test/testset27 \
-        --testdesc=tod_kinect_test/testset27/test-truth.txt \
-        --log=tod_kinect_test/testset27/blackbox_recognizer-demo.log \
-        --result=tod_kinect_test/testset27/blackbox_recognizer-demo.result.txt \
-        --stats=tod_kinect_test/testset27/blackbox_recognizer-demo.stats.txt \
-        --roc=tod_kinect_test/testset27/blackbox_recognizer-demo.roc.gnuplot \
+        --tod_config=tod_kinect_train_9/config.yaml \
+        --image=tod_kinect_test_27 \
+        --testdesc=tod_kinect_test_27/testdesc.txt \
+        --log=tod_kinect_test_27/blackbox_recognizer-demo.log \
+        --result=tod_kinect_test_27/blackbox_recognizer-demo.result.txt \
+        --stats=tod_kinect_test_27/blackbox_recognizer-demo.stats.txt \
+        --roc=tod_kinect_test_27/blackbox_recognizer-demo.roc.gnuplot \
         --verbose=1
 popd > /dev/null
 

@@ -13,7 +13,7 @@ def test_load_pose():
 
 def test_listdir():
     p = os.getenv("CLUTSEG_PATH")
-    files = os.listdir(os.path.join(p, "tod_kinect_train/downy/"))
+    files = os.listdir(os.path.join(p, "tod_kinect_train_9/downy/"))
     assert "image_00003.png.pose.yaml" in files
     
 def test_replace_data():
@@ -27,7 +27,7 @@ def test_get_env_var():
 
 def test_gzip_decompress():
     p = os.getenv("CLUTSEG_PATH")
-    f = gzip.open(os.path.join(p, "tod_kinect_train", "downy", "image_00000.png.features.yaml.gz"), "rb")
+    f = gzip.open(os.path.join(p, "tod_kinect_train_9", "downy", "image_00000.png.features.yaml.gz"), "rb")
     f.close()
 
 def test_gzip_compressed_name():
