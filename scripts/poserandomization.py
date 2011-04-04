@@ -52,14 +52,15 @@ training stages actually uses pose estimations, it is just stored in the tar.gz
 feature files. Therefore, for pose randomization it is sufficient to extract
 recreate those archive files.
 
-Every run on both tod kinect test dataset takes about 2 minutes to complete.
-(100 runs were completed in 200 minutes on an intel i5 quad-core processor).
-Constraining the experiment to complete within 2 hours, we can try about 60
-different parameter combinations. Notably, evaluating the classifiers on the
-testing sets does not take much time, and can be neglected. Therefore, to
-improve results of an experiment it is best to increase the number of test
-images. We might even just duplicate the test images in order to average over
-the different results of the RANSAC matching process.
+Every run on the two tod kinect test dataset takes about 2 minutes to complete,
+with a training base of 9 objects (100 runs were completed in 200 minutes on an
+intel i5 quad-core processor). Constraining the experiment to complete within 2
+hours, we can try about 60 different parameter combinations. Notably,
+evaluating the classifiers on the testing sets does not take much time, and can
+be neglected. Therefore, to improve results of an experiment it is best to
+increase the number of test images. We might even just duplicate the test
+images in order to average over the different results of the RANSAC matching
+process.
 """
 
 import os
@@ -90,11 +91,11 @@ class InitConfig:
 
 class ParamConfig:
 
-    def __init__(self):
-        # self.param_set = ((1, 1), (2, 2), (3, 3), (100, 100))
+    def __init__(self, param_file):
         self.param_set = []
-        for i in xrange(1, 100):
-            self.param_set.append((0.01 * i, 0.01 * i))
+        for line in param_file:
+            sd = line.strip().split(" ")
+            self.param_set.append((int(sd[0]), int(sd[1])))
 
 
 class Result:
@@ -243,17 +244,29 @@ def evaluate(init_cfg, stddev_t, stddev_r):
     noisy_res.read(noisy_stats_file)
     os.close(h)
     os.close(g)
-    # write row
-    print "%10.6f %10.6f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f" % (
-        stddev_t, stddev_r,
-        float(orig_res.get("statistics", "tp")),
-        float(orig_res.get("statistics", "fp")),
-        float(orig_res.get("statistics", "fn")),
-        float(orig_res.get("statistics", "tn")),
-        float(noisy_res.get("statistics", "tp")),
-        float(noisy_res.get("statistics", "fp")),
-        float(noisy_res.get("statistics", "fn")),
-        float(noisy_res.get("statistics", "tn")))
+    if (orig_res.has_option("statistics", "tp")) and
+        orig_res.has_option("statistics", "fp")) and
+        orig_res.has_option("statistics", "fn")) and
+        orig_res.has_option("statistics", "tn")) and
+        noisy_res.has_option("statistics", "tp")) and
+        noisy_res.has_option("statistics", "fp")) and
+        noisy_res.has_option("statistics", "fn")) and
+        noisy_res.has_option("statistics", "tn"))):
+        # write row
+        print "%10.6f %10.6f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f" % (
+            stddev_t, stddev_r,
+            float(orig_res.get("statistics", "tp")),
+            float(orig_res.get("statistics", "fp")),
+            float(orig_res.get("statistics", "fn")),
+            float(orig_res.get("statistics", "tn")),
+            float(noisy_res.get("statistics", "tp")),
+            float(noisy_res.get("statistics", "fp")),
+            float(noisy_res.get("statistics", "fn")),
+            float(noisy_res.get("statistics", "tn")))
+    else:
+        # fail-soft
+        print "%10.6f %10.6f %10s %10s %10s %10s %10s %10s %10s %10s" % (
+            stddev_t, stddev_r, "-", "-", "-", "-", "-", "-", "-", "-")
     os.remove(orig_stats_file)
     os.remove(noisy_stats_file)
     
@@ -263,12 +276,20 @@ def run(init_cfg, stddev_t, stddev_r):
     evaluate(init_cfg, stddev_t, stddev_r)
     
 def main():
+    option_parser = optparse.OptionParser("poserandomization [OPTIONS]")
+    option_parser.add_option("-o", "--orig", dest="orig_dir")
+    option_parser.add_option("-n", "--noisy", dest="noisy_dir")
+    option_parser.add_option("-t", "--test", dest="test_dir")
+    option_parser.add_option("-d", "--testdesc", dest="testdesc_file")
+    option_parser.add_option("-p", "--params", dest="param_file")
+    options, args = option_parser.parse_args()
+
     init_cfg = InitConfig(
-        "/home/julius/Studium/BA/poserandomization/undistorted",
-        "/home/julius/Studium/BA/poserandomization/noisy",
-        "/home/julius/Studium/BA/tod_kinect_test",
-        "/home/julius/Studium/BA/tod_kinect_test/test-truth.txt")
-    param_cfg = ParamConfig() 
+        options.orig_dir,
+        options.noisy_dir,
+        options.test_dir,
+        options.testdesc_file)
+    param_cfg = ParamConfig(options.param_file) 
     print "%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s" % (
         "stddev_t", "stddev_r",
         "orig_tp", "orig_fp",

@@ -30,6 +30,14 @@
     local-name: clutter-segmentation,
     uri: 'indefero@code.in.tum.de:clutter-segmentation.git'
 }
+- svn: {
+    local-name: pano_py,
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_py'
+}
+- svn: {
+    local-name: pano_core,
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_core'
+}
 - other: {local-name: /opt/ros/diamondback/ros}
 - other: {local-name: /opt/ros/diamondback/stacks}
 

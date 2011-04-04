@@ -78,7 +78,9 @@ def main():
     cfg.read(options.truth)
     truthtable = dict()
     for key, val in cfg.items("images"):
-        truthtable[key] = val.split(" ")
+        val = val.strip()
+        if val != "":
+            truthtable[key] = val.split(" ")
     # collect statistics
     s = stats(options.base, options.tod_config, options.mode, options.test, truthtable, options.verbose)
     print s
