@@ -4,9 +4,9 @@ if [ "$1" = "--help" ] ; then
     cat <<HELP
 Usage: blackbox_recognizer-demo.bash [-g]
 
-Runs the blackbox recognizer, using tod kinect dataset.  Might be useful for
-quick regression tests or also for demonstration purposes. Set -g flag for
-starting in GNU debugger.
+Runs the blackbox recognizer, using tod kinect training dataset 9 and tod
+kinect test dataset 27.  Might be useful for quick regression tests or also for
+demonstration purposes. Set -g flag for starting in GNU debugger.
 HELP
     exit
 fi
@@ -34,14 +34,14 @@ pushd $CLUTSEG_PATH > /dev/null
     fi
     pkg_clutseg_util=$(rospack find clutseg_util)
     $cmd $pkg_clutseg_util/bin/blackbox_recognizer \
-        --base=tod_kinect_train/ \
-        --tod_config=tod_kinect_train/config.yaml \
-        --image=tod_kinect_test \
-        --testdesc=tod_kinect_test/test-truth.txt \
-        --log=blackbox_recognizer-demo.log \
-        --result=blackbox_recognizer-demo.result.txt \
-        --stats=blackbox_recognizer-demo.stats.txt \
-        --roc=blackbox_recognizer-demo.roc.gnuplot \
+        --base=tod_kinect_train_9/ \
+        --tod_config=tod_kinect_train_9/config9.yaml \
+        --image=tod_kinect_test/testset27 \
+        --testdesc=tod_kinect_test/testset27/test-truth.txt \
+        --log=tod_kinect_test/testset27/blackbox_recognizer-demo.log \
+        --result=tod_kinect_test/testset27/blackbox_recognizer-demo.result.txt \
+        --stats=tod_kinect_test/testset27/blackbox_recognizer-demo.stats.txt \
+        --roc=tod_kinect_test/testset27/blackbox_recognizer-demo.roc.gnuplot \
         --verbose=1
 popd > /dev/null
 

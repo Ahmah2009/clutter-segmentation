@@ -48,7 +48,7 @@ shift $(($OPTIND - 1))
 # TODO: run against already prepared test setup
 stddev_t=0.01
 stddev_r=0.03
-truthfile=$CLUTSEG_PATH/test/test-truth.txt
+truthfile=$CLUTSEG_PATH/tod_kinect_test/testset27/test-truth.txt
 
 pushd $CLUTSEG_PATH/poserandomization > /dev/null
 
@@ -190,7 +190,7 @@ pushd $CLUTSEG_PATH/poserandomization > /dev/null
         # Do recognition using second training base
         # Save recognition results to experiment records
         echo "Running statistics using noisy training base" > $res
-        $CLUTSEG_PATH/clutter-segmentation/scripts/recognizer_stats.py --base noisy -t $truthfile -f noisy/config.yaml --verbose -m 1 > $res
+        $CLUTSEG_PATH/clutter-segmentation/scripts/recognizer_stats.py --base noisy --test $CLUTSEG_PATH/tod_kinect_test/testset27 -t $truthfile -f noisy/config.yaml --verbose -m 1 > $res
         echo "stddev_t = $stddev_t, stddev_r = $stddev_t" >> $res
         echo "" >> $res
     fi
