@@ -244,14 +244,14 @@ def evaluate(init_cfg, stddev_t, stddev_r):
     noisy_res.read(noisy_stats_file)
     os.close(h)
     os.close(g)
-    if (orig_res.has_option("statistics", "tp")) and
-        orig_res.has_option("statistics", "fp")) and
-        orig_res.has_option("statistics", "fn")) and
-        orig_res.has_option("statistics", "tn")) and
-        noisy_res.has_option("statistics", "tp")) and
-        noisy_res.has_option("statistics", "fp")) and
-        noisy_res.has_option("statistics", "fn")) and
-        noisy_res.has_option("statistics", "tn"))):
+    if (orig_res.has_option("statistics", "tp") and
+        orig_res.has_option("statistics", "fp") and
+        orig_res.has_option("statistics", "fn") and
+        orig_res.has_option("statistics", "tn") and
+        noisy_res.has_option("statistics", "tp") and
+        noisy_res.has_option("statistics", "fp") and
+        noisy_res.has_option("statistics", "fn") and
+        noisy_res.has_option("statistics", "tn")):
         # write row
         print "%10.6f %10.6f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f" % (
             stddev_t, stddev_r,
