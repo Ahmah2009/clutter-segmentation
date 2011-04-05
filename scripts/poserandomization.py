@@ -93,9 +93,11 @@ class ParamConfig:
 
     def __init__(self, param_file):
         self.param_set = []
-        for line in param_file:
+        f = open(param_file)
+        for line in f:
             sd = line.strip().split(" ")
-            self.param_set.append((int(sd[0]), int(sd[1])))
+            self.param_set.append((float(sd[0]), float(sd[1])))
+        f.close()
 
 
 class Result:
@@ -274,7 +276,19 @@ def run(init_cfg, stddev_t, stddev_r):
     reset(init_cfg)
     randomize(init_cfg, stddev_t, stddev_r)
     evaluate(init_cfg, stddev_t, stddev_r)
-    
+   
+def experiment(init_cfg, param_cfg):
+    print "%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s" % (
+        "stddev_t", "stddev_r",
+        "orig_tp", "orig_fp",
+        "orig_fn", "orig_tn",
+        "noisy_tp", "noisy_fp",
+        "noisy_fn", "noisy_tn")
+    for stddev_t, stddev_r in param_cfg.param_set:
+        print >>log, "New experiment run with stddev_t=%10.6f and stddev_r=%10.6f" % (stddev_t, stddev_r)
+        run(init_cfg, stddev_t, stddev_r) 
+    log.flush() 
+ 
 def main():
     option_parser = optparse.OptionParser("poserandomization [OPTIONS]")
     option_parser.add_option("-o", "--orig", dest="orig_dir")
@@ -290,15 +304,7 @@ def main():
         options.test_dir,
         options.testdesc_file)
     param_cfg = ParamConfig(options.param_file) 
-    print "%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s" % (
-        "stddev_t", "stddev_r",
-        "orig_tp", "orig_fp",
-        "orig_fn", "orig_tn",
-        "noisy_tp", "noisy_fp",
-        "noisy_fn", "noisy_tn")
-    for stddev_t, stddev_r in param_cfg.param_set:
-        print >>log, "New experiment run with stddev_t=%10.6f and stddev_r=%10.6f" % (stddev_t, stddev_r)
-        run(init_cfg, stddev_t, stddev_r) 
+    experiment(init_cfg, param_cfg)
     log.close()
          
 if __name__ == "__main__":
