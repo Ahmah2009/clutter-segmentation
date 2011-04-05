@@ -39,3 +39,10 @@ rosbuild_add_boost_directories()
 # rosbuild_link_boost(${PROJECT_NAME})
 rosbuild_add_executable(blackbox_recognizer apps/blackbox_recognizer.cpp)
 target_link_libraries(blackbox_recognizer tod_detecting ${PROJECT_NAME})
+
+rosbuild_add_executable(poseviewer apps/poseviewer.cpp)
+target_link_libraries(poseviewer ${PROJECT_NAME})
+
+rosbuild_add_executable(xyz_to_xyzrgb apps/xyz_to_xyzrgb.cpp)
+target_link_libraries(xyz_to_xyzrgb ${PROJECT_NAME})
+
