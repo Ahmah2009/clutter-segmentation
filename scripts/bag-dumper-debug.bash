@@ -2,7 +2,7 @@
 
 if [ "$1" = "--help" ] ; then
     cat <<HELP
-Usage: bag_dumper-debug.bash
+Usage: bag-dumper-debug.bash
 HELP
     exit
 fi

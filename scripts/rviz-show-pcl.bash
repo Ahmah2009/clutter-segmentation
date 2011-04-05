@@ -3,7 +3,7 @@
 # TODO: decide whether this is helpful for Dejan
 # TODO: find one single term to fix problems with name of training data and training base
 
-if [ "$1" = "--help" ] then
+if [ "$1" = "--help" ] ; then
     cat <<HELP
 Usage: rviz-show-pcl.bash
 
