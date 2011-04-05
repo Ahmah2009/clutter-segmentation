@@ -17,7 +17,7 @@ if __name__ == '__main__':
     bridge = CvBridge()
     bag = rosbag.Bag(file, 'r')
     i = 0
-    for topic, msg, t in bag.read_messages(topics=['/camera/rgb/image_color']):
+    for topic, msg, t in bag.read_messages(topics=['image']):
         try:
             cv_image = bridge.imgmsg_to_cv(msg, "bgr8")
             image_name = os.path.join(targetdir, "image_%05d.jpg" % i)
