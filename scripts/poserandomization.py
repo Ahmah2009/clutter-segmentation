@@ -267,6 +267,7 @@ def evaluate(init_cfg, stddev_t, stddev_r):
             float(noisy_res.get("statistics", "tn")))
     else:
         # fail-soft
+        print >>log, "ERROR: Could not read statistics"
         print "%10.6f %10.6f %10s %10s %10s %10s %10s %10s %10s %10s" % (
             stddev_t, stddev_r, "-", "-", "-", "-", "-", "-", "-", "-")
     os.remove(orig_stats_file)
