@@ -46,3 +46,6 @@ target_link_libraries(poseviewer ${PROJECT_NAME})
 rosbuild_add_executable(xyz_to_xyzrgb apps/xyz_to_xyzrgb.cpp)
 target_link_libraries(xyz_to_xyzrgb ${PROJECT_NAME})
 
+rosbuild_add_executable(poseinfo apps/poseinfo.cpp)
+target_link_libraries(poseinfo ${PROJECT_NAME})
+

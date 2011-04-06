@@ -5,6 +5,7 @@
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 #include <opencv_candidate/PoseRT.h>
 #include <cv.h>
 #include <pcl/point_types.h>
@@ -19,35 +20,28 @@ using namespace pcl_visualization;
 
 int main(int argc, char *argv[]) {
     // Read arguments
-    if (argc != 8) {
-        cerr << "Usage: poseviewer <point-cloud-file> <tvec.x> <tvec.y> <tvec.z> <rvec.x> <rvec.y> <rvec.z>" << endl;
+    if (argc == 0) {
+        cerr << "Usage: poseviewer (<point-cloud-file>|<pose-file>)*" << endl;
         return 1;
     }
-    string pcd_file(argv[1]);
-    PoseRT pose;
-    pose.tvec = Mat(3, 1, CV_64F);
-    pose.rvec = Mat(3, 1, CV_64F);
-    pose.tvec.at<double>(0, 0) = boost::lexical_cast<double>(argv[2]);
-    pose.tvec.at<double>(1, 0) = boost::lexical_cast<double>(argv[3]);
-    pose.tvec.at<double>(2, 0) = boost::lexical_cast<double>(argv[4]);
-    pose.rvec.at<double>(0, 0) = boost::lexical_cast<double>(argv[5]);
-    pose.rvec.at<double>(1, 0) = boost::lexical_cast<double>(argv[6]);
-    pose.rvec.at<double>(2, 0) = boost::lexical_cast<double>(argv[7]);
 
-    // Repeat arguments for easier reference
-    cout << boost::format("Point cloud file:   %s\n") % pcd_file; 
-    cout << boost::format("Translation vector: %5.3f %5.3f %5.3f\n") % pose.tvec.at<double>(0, 0) % pose.tvec.at<double>(1, 0) % pose.tvec.at<double>(2, 0); 
-    cout << boost::format("Rotation vector:    %5.3f %5.3f %5.3f\n") % pose.rvec.at<double>(0, 0) % pose.rvec.at<double>(1, 0) % pose.rvec.at<double>(2, 0); 
-
-    // Load point cloud
-    PointCloud<PointXYZ> cloud;
-    io::loadPCDFile(pcd_file, cloud);
-    
     // Create visualization
     PCLVisualizer visualizer;
     visualizer.addCoordinateSystem(0.5, 0, 0, 0);
-    visualizer.addPointCloud(cloud, "cloud");
-    addPose(visualizer, pose);
+
+    for (int i = 0; i < argc; i++) {
+        string arg(argv[i]);
+        if (boost::algorithm::ends_with(arg, ".pcd")) {
+            PointCloud<PointXYZ> cloud;
+            io::loadPCDFile(arg, cloud);
+            visualizer.addPointCloud(cloud, str(boost::format("cloud-%d") % i));
+        } else if (boost::algorithm::ends_with(arg, ".yaml")) {
+            PoseRT pose;
+            FileStorage in(arg, FileStorage::READ); 
+            pose.read(in[PoseRT::YAML_NODE_NAME]);
+            addPose(visualizer, pose, str(boost::format("pose-%d") % i));
+        }
+    }
     
     // show visualization
     visualizer.spin(); 

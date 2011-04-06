@@ -2,9 +2,9 @@
 
 if [ "$1" = "--help" ] ; then
     cat <<HELP
-Usage: ias-kinect-download.bash
+Usage: ias-kinect-get
 
-Downloads ias kinect training bags from http://ias.cs.tum.edu/~pangerci
+Downloads IAS kinect training bags from http://ias.cs.tum.edu/~pangerci
 HELP
     exit
 fi

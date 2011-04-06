@@ -2,7 +2,7 @@
 
 if [ "$1" = "--help" ] ; then
     cat <<HELP
-Usage: ias-kinect-train.bash
+Usage: ias-kinect-train
 
 Creates a training base from IAS kinect bags.
 HELP
