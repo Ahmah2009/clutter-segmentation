@@ -2,7 +2,7 @@
 
 if [ "$1" = "--help" ] ; then
     cat <<HELP
-Usage: ias-kinect-recognize-debug.bash
+Usage: ias-kinect-recog-dbg
 
 Recognizes objects on a test image.
 HELP
