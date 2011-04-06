@@ -18,7 +18,7 @@ TEST(Random, DiscreteUniformSample) {
     mt19937 twister;
     uniform_int<> six(1,6);
     variate_generator<mt19937&, uniform_int<> > die(twister, six);
-    int x = die();
+    die();
 }
 
 TEST(Random, NormalSample) {
