@@ -163,7 +163,7 @@ def randomize(init_cfg, stddev_t, stddev_r):
 
         p = subprocess.Popen(
             ("rosrun",
-             "semantic3d_training",
+             "clutseg_util",
              "poserandomizer",
              os.path.join(init_cfg.noisy_dir, s),
              str(stddev_t),
