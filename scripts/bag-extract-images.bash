@@ -9,7 +9,7 @@ import cv
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-	print "Usage: bag-extract-images.py <bag-file> <target-dir>"
+	print "Usage: bag-extract-images.py <bag-file> <target-dir> [<topic>]"
     i = 0
     pano_links = []
     file = sys.argv[1]

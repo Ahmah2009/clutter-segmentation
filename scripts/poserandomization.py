@@ -75,11 +75,12 @@ log = open(os.path.join(os.getenv("HOME"), ".poserandomization.log"), "w")
 
 class InitConfig:
 
-    def __init__(self, orig_dir, noisy_dir, test_dir, testdesc_file):
+    def __init__(self, orig_dir, noisy_dir, test_dir, testdesc_file, mode):
         self.orig_dir = orig_dir
         self.noisy_dir = noisy_dir
         self.test_dir = test_dir
         self.testdesc_file = testdesc_file
+        self.mode = mode
         # read in list of objects in training base
         config_file = open(os.path.join(orig_dir, "config.txt"))
         self.subjects = set() 
@@ -226,6 +227,7 @@ def blackbox_recognizer(init_cfg, base_dir, stats_file):
         "--image=%s" % init_cfg.test_dir,
         "--testdesc=%s" % init_cfg.testdesc_file,
         "--log=%s" % tmpdevnull,
+        "--mode=%s" % init_cfg.mode,
         "--verbose=%d" % 0,
         "--stats=%s" % stats_file), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
@@ -255,7 +257,7 @@ def evaluate(init_cfg, stddev_t, stddev_r):
         noisy_res.has_option("statistics", "fn") and
         noisy_res.has_option("statistics", "tn")):
         # write row
-        print "%10.6f %10.6f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f %10.3f" % (
+        print "%10.6f %10.6f %10d %10d %10d %10d %10d %10d %10d %10d" % (
             stddev_t, stddev_r,
             float(orig_res.get("statistics", "tp")),
             float(orig_res.get("statistics", "fp")),
@@ -296,6 +298,7 @@ def main():
     option_parser.add_option("-n", "--noisy", dest="noisy_dir")
     option_parser.add_option("-t", "--test", dest="test_dir")
     option_parser.add_option("-d", "--testdesc", dest="testdesc_file")
+    option_parser.add_option("-m", "--mode", dest="recognizer mode")
     option_parser.add_option("-p", "--params", dest="param_file")
     options, args = option_parser.parse_args()
 
@@ -303,7 +306,8 @@ def main():
         options.orig_dir,
         options.noisy_dir,
         options.test_dir,
-        options.testdesc_file)
+        options.testdesc_file,
+        options.mode)
     param_cfg = ParamConfig(options.param_file) 
     experiment(init_cfg, param_cfg)
     log.close()

@@ -20,8 +20,8 @@ def main():
     bags_dir = args.bag_directory
     print bags_dir
     for f in os.listdir(bags_dir):
-        print "Renaming topics in %s" % f
         if f.endswith(".bag"):
+            print "Renaming topics in %s" % f
             srcfn = os.path.join(bags_dir, f)
             dstfn = os.path.join(bags_dir, f + ".1")
             with rosbag.Bag(dstfn, "w") as dst:
@@ -32,8 +32,8 @@ def main():
                         dst.write("points2", msg, t)
                     else:
                         dst.write(topic, msg, t)
-        os.remove(srcfn)
-        os.rename(dstfn, srcfn)
+            os.remove(srcfn)
+            os.rename(dstfn, srcfn)
 
 if __name__ == "__main__":
     main()
