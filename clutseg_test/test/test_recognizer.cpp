@@ -67,97 +67,28 @@ void drawProjections(const Mat & image, int id,
     }
 }
 
-int options(int ac, char **av, Options & opts)
+TEST(Recognizer, TestRun)
 {
-    // Declare the supported options.
-    po::options_description desc("Allowed options");
-    desc.add_options()("help", "Produce help message.");
-    desc.add_options()("image,I", po::value < string > (&opts.imageFile),
-                       "Query image. Required.");
-    desc.add_options()("base,B",
-                       po::value < string >
-                       (&opts.baseDirectory)->default_value("./"),
-                       "The directory that the training base is in.");
-    desc.add_options()("tod_config,f", po::value < string > (&opts.config),
-                       "The name of the configuration file");
-    desc.add_options()("verbose,V",
-                       po::value < int >(&opts.verbose)->default_value(2),
-                       "Verbosity level");
-    desc.add_options()("mode,m",
-                       po::value < int >(&opts.mode)->default_value(0),
-                       "Mode: 0-textured object detection, 1 - kinect version");
-
-    po::variables_map vm;
-    po::store(po::parse_command_line(ac, av, desc), vm);
-    po::notify(vm);
-
-    if (vm.count("help")) {
-        std::cout << desc << "\n";
-        return 1;
-    }
+    string p(getenv("CLUTSEG_PATH"));
+    Options opts;
+    opts.baseDirectory = p + "/ias_kinect_train";
+    opts.imageFile = p + "/ias_kinect_train/haltbare_milch/image_00000.png";
+    opts.config = p + "/ias_kinect_train/config.yaml";
+    opts.verbose = 2;
+    opts.mode = 1;
 
     FileStorage fs;
     fs = FileStorage(opts.config, FileStorage::READ);
-
-    EXPECT_FALSE(opts.config.empty());
-    EXPECT_TRUE(fs.isOpened());
-
-    if (opts.config.empty()
-        || !fs.isOpened()) {
-        std::
-            cout <<
-            "Must supply configuration. see newly generated sample.config.yaml"
-            << "\n";
-        std::cout << desc << std::endl;
-        FileStorage fs("./sample.config.yaml", FileStorage::WRITE);
-        fs << TODParameters::YAML_NODE_NAME;
-        TODParameters::CreateSampleParams().write(fs);
-        return 1;
-    } else
-        opts.params.read(fs[TODParameters::YAML_NODE_NAME]);
-
-    EXPECT_TRUE(vm.count("image") > 0);
-    if (!vm.count("image")) {
-        std::cout << "Must supply an image file." << "\n";
-        std::cout << desc << std::endl;
-        return 1;
-    }
-
-    EXPECT_TRUE(vm.count("base") > 0);
-    if (!vm.count("base")) {
-        std::cout << "Must supply training base directory." << "\n";
-        std::cout << desc << std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-
-
-TEST(Recognizer, TestRun)
-{
-    //string p(getenv("CLUTSEG_PATH"));
-
-    const int argc = 6;
-    char *argv[argc];
-    argv[0] = "recognizer";
-    argv[1] = "--base=ias_kinect_train";
-    argv[2] = "--image=ias_kinect_train/haltbare_milch/image_00000.png";
-    argv[3] = "--tod_config=ias_kinect_train/config.yaml";
-    argv[4] = "--verbose=2";
-    argv[5] = "--mode=1";
-
-    Options opts;
-    int opt_stat = options(argc, argv, opts);
+    opts.params.read(fs[TODParameters::YAML_NODE_NAME]);
+    
     // Validate assumptions on option values
-    ASSERT_EQ(0, opt_stat);
     EXPECT_EQ(KINECT, opts.mode);
     EXPECT_EQ(2, opts.verbose);
 
     tod::Loader loader(opts.baseDirectory);
     vector < cv::Ptr < TexturedObject > >objects;
     loader.readTexturedObjects(objects);
-    
+
     // [julius] Assumption: All 4 training objects are represented by one
     // TexturedObject.
     EXPECT_EQ(4, objects.size());
@@ -244,11 +175,5 @@ TEST(Recognizer, TestRun)
         std::cout << std::endl;
     }
 
-}
-
-/** In SVN revision 50321 there is a version of GuessGenerator that
- * does not use pose estimations from training images at all */
-TEST(Recognizer, TODRecognizerUsesNoPose) {
-    
 }
 
