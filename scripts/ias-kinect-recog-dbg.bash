@@ -4,7 +4,7 @@ if [ "$1" = "--help" ] ; then
     cat <<HELP
 Usage: ias-kinect-recog-dbg
 
-Recognizes objects on a test image.
+Debugs recognizer using data from ias kinect dataset.
 HELP
     exit
 fi
@@ -16,5 +16,5 @@ fi
 
 pkg_tod_detecting=$(rospack find tod_detecting)
 pushd $CLUTSEG_PATH > /dev/null
-    gdb --args $pkg_tod_detecting/bin/recognizer --base=ias_kinect_train --image=$1 --tod_config=ias_kinect_train/config.yaml --verbose=2
+    gdb --args $pkg_tod_detecting/bin/recognizer --base=ias_kinect_train --image=ias_kinect_train/haltbare_milch/image_00000.png --tod_config=ias_kinect_train/config.yaml --verbose=2 --mode=1
 popd > /dev/null

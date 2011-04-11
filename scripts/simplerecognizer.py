@@ -69,7 +69,7 @@ def main():
     option_parser.add_option("-B", "--base", dest="base", help="forwarded to tod_detecting recognizer")
     option_parser.add_option("-I", "--image", dest="image", help="forwarded to tod_detecting recognizer")
     option_parser.add_option("-f", "--tod_config", dest="tod_config", help="forwarded to tod_detecting recognizer")
-    option_parser.add_option("-m", "--mode", default="0", dest="mode", help="forwarded to tod_detecting recognizer")
+    option_parser.add_option("-m", "--mode", default="1", dest="mode", help="forwarded to tod_detecting recognizer")
     option_parser.add_option("-b", "--bestonly", default=True, dest="bestonly", help="whether to print only the object that is most likely on the test image")
     option_parser.add_option("-e", "--expect", dest="expect", help="return 0 if this object has been recognized on the picture, 1 otherwise")
     options, args = option_parser.parse_args()
