@@ -4,17 +4,17 @@
 - svn: {
     local-name: object_recognition,
     uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition',
-    version: '-r 50320'
+    version: '-r 50846'
 }
 - svn: {
     local-name: object_recognition_experimental,
     uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental',
-    version: '-r 50489'
+    version: '-r 50846'
 }
 - svn: {
     local-name: perception_pcl_addons,
     uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk',
-    version: '-r 36486'
+    version: '-r 36588'
 }
 - svn: {
     local-name: vslam,
@@ -24,7 +24,7 @@
 - svn: {
     local-name: opencv_candidate,
     uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/vision_bleeding/opencv_candidate',
-    version: '-r 50489'
+    version: '-r 50846'
 }
 - git: {
     local-name: clutter-segmentation,
@@ -32,11 +32,13 @@
 }
 - svn: {
     local-name: pano_py,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_py'
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_py',
+    version: '-r 36588'
 }
 - svn: {
     local-name: pano_core,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_core'
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_core',
+    version: '-r 36588'
 }
 - other: {local-name: /opt/ros/diamondback/ros}
 - other: {local-name: /opt/ros/diamondback/stacks}

@@ -4,7 +4,8 @@ if [ "$1" = "--help" ] ; then
     cat <<HELP
 Usage: ias-kinect-recog-dbg
 
-Debugs recognizer using data from ias kinect dataset.
+Debugs recognizer using data from ias kinect dataset. See ticket 5083 in
+wg-ros-pkg trac if getting OpenCV errors.
 HELP
     exit
 fi
