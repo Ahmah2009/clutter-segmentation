@@ -94,7 +94,7 @@ int options(int ac, char **av, Options & opts)
                        po::value < int >(&opts.verbose)->default_value(1),
                        "Verbosity level");
     desc.add_options()("mode,m",
-                       po::value < int >(&opts.mode)->default_value(0),
+                       po::value < int >(&opts.mode)->default_value(1),
                        "Mode");
 
     po::variables_map vm;
@@ -273,8 +273,8 @@ int main(int argc, char *argv[])
             fs << nodeName << "{";
             fs << "id" << guess.getObject()->id;
             fs << "name" << name;
-            fs << "rvec" << guess.aligned_pose().rvec;
-            fs << "tvec" << guess.aligned_pose().tvec;
+            //fs << "r" << guess.aligned_pose().r();
+            //fs << "t" << guess.aligned_pose().t();
 #if 0
             int index = atoi((image_name.substr(0, position)).c_str());
             fs << "imageIndex" << index;
