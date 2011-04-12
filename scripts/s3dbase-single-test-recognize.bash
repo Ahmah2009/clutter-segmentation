@@ -16,6 +16,6 @@ if [ ! "$CLUTSEG_PATH" ] ; then
 fi
 
 pushd $CLUTSEG_PATH/s3dbase-single > /dev/null
-    rosrun tod_detecting recognizer --base=. --tod_config=./config.yaml --image=./icetea2/image_00001.png --verbose=2
+    rosrun tod_detecting recognizer --base=. --tod_config=./config.yaml --image=./icetea2/image_00001.png --verbose=2 --mode=1
 popd > /dev/null
 

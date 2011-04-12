@@ -16,7 +16,7 @@ if [ ! "$CLUTSEG_PATH" ] ; then
 fi
 
 
-mode=0
+mode=1
 
 res=$CLUTSEG_PATH/tod_kinect_test_9/results.txt
 tod_training_pkg=`rospack find tod_training`

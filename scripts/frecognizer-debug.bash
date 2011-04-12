@@ -21,5 +21,6 @@ gdb --args $pkg_tod_detecting/bin/frecognizer \
     --tod_config=$CLUTSEG_PATH/tod_kinect_train_9/config.yaml \
     --image=$CLUTSEG_PATH/tod_kinect_test_27 \
     --log=$CLUTSEG_PATH/test.deleteme.log \
+    --mode=2 \
     --verbose=1
 

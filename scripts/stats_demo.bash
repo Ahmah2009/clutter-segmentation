@@ -54,7 +54,8 @@ pushd $CLUTSEG_PATH > /dev/null
            --test $CLUTSEG_PATH \
            --truth $testconfig \
            --base tod_kinect_train_9/ \
-           --tod_config tod_kinect_train_9/config.yaml $*
+           --tod_config tod_kinect_train_9/config.yaml \
+           --mode 1 $*
 popd > /dev/null
 rm $testconfig
 

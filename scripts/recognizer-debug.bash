@@ -21,5 +21,6 @@ gdb --args $pkg_tod_detecting/bin/recognizer \
     --base=$CLUTSEG_PATH/tod_kinect_train_9 \
     --image=$CLUTSEG_PATH/tod_kinect_train_9/fat_free_milk/image_00000.png \
     --tod_config=$CLUTSEG_PATH/tod_kinect_train_9/config.yaml \
-    --verbose=1
+    --verbose=1 \
+    --mode=1
 

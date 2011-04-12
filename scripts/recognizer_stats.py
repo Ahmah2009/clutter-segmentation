@@ -67,7 +67,7 @@ def main():
     option_parser = optparse.OptionParser("recognizer_stats [OPTIONS]")
     option_parser.add_option("-B", "--base", dest="base", help="forwarded to tod_detecting recognizer")
     option_parser.add_option("-f", "--tod_config", dest="tod_config", help="forwarded to tod_detecting recognizer")
-    option_parser.add_option("-m", "--mode", default="0", dest="mode", help="forwarded to tod_detecting recognizer")
+    option_parser.add_option("-m", "--mode", default="1", dest="mode", help="forwarded to tod_detecting recognizer")
     option_parser.add_option("-t", "--truth", dest="truth", help="file that lists test images and expected objects")
     option_parser.add_option("-T", "--test", dest="test", help="directory containing the images as referred to in truth file")
     option_parser.add_option("-v", "--verbose", action="store_true", default=False, dest="verbose", help="be verbose")
