@@ -63,6 +63,7 @@ images in order to average over the different results of the RANSAC matching
 process.
 """
 
+import sys
 import os
 import tempfile
 import gzip 
@@ -267,11 +268,13 @@ def evaluate(init_cfg, stddev_t, stddev_r):
             float(noisy_res.get("statistics", "fp")),
             float(noisy_res.get("statistics", "fn")),
             float(noisy_res.get("statistics", "tn")))
+        sys.stdout.flush()
     else:
         # fail-soft
         print >>log, "ERROR: Could not read statistics"
         print "%10.6f %10.6f %10s %10s %10s %10s %10s %10s %10s %10s" % (
             stddev_t, stddev_r, "-", "-", "-", "-", "-", "-", "-", "-")
+        sys.stdout.flush()
     os.remove(orig_stats_file)
     os.remove(noisy_stats_file)
     
@@ -287,6 +290,7 @@ def experiment(init_cfg, param_cfg):
         "orig_fn", "orig_tn",
         "noisy_tp", "noisy_fp",
         "noisy_fn", "noisy_tn")
+    sys.stdout.flush()
     for stddev_t, stddev_r in param_cfg.param_set:
         print >>log, "New experiment run with stddev_t=%10.6f and stddev_r=%10.6f" % (stddev_t, stddev_r)
         run(init_cfg, stddev_t, stddev_r) 
