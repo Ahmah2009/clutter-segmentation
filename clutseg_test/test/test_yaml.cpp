@@ -8,6 +8,7 @@
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>
 #include <boost/filesystem.hpp>
+#include <opencv_candidate/Camera.h>
 
 using namespace cv;
 
@@ -50,4 +51,12 @@ TEST(Yaml, SerializePoseToYAML) {
 
     remove("./data/pose.out.yaml");
 }
+
+TEST(Yaml, ReadCameraFromYaml) {
+    using namespace opencv_candidate;
+    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
+    EXPECT_TRUE(CV_IS_MAT(&(camera.D)));
+    EXPECT_TRUE(CV_IS_MAT(&(camera.K)));
+}
+
 

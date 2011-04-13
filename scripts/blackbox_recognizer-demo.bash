@@ -42,6 +42,6 @@ pushd $CLUTSEG_PATH > /dev/null
         --result=tod_kinect_test_27/blackbox_recognizer-demo.result.txt \
         --stats=tod_kinect_test_27/blackbox_recognizer-demo.stats.txt \
         --roc=tod_kinect_test_27/blackbox_recognizer-demo.roc.gnuplot \
-        --verbose=1
+        --verbose=2
 popd > /dev/null
 
