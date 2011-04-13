@@ -4,12 +4,12 @@
 - svn: {
     local-name: object_recognition,
     uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition',
-    version: '-r 50846'
+    version: '-r 50897'
 }
 - svn: {
     local-name: object_recognition_experimental,
     uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental',
-    version: '-r 50846'
+    version: '-r 50897'
 }
 - svn: {
     local-name: perception_pcl_addons,
@@ -24,7 +24,7 @@
 - svn: {
     local-name: opencv_candidate,
     uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/vision_bleeding/opencv_candidate',
-    version: '-r 50846'
+    version: '-r 50897'
 }
 - git: {
     local-name: clutter-segmentation,
