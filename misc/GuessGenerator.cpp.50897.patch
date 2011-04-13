@@ -1,0 +1,31 @@
+--- GuessGenerator.cpp	2011-04-13 13:59:59.410420001 +0200
++++ GuessGenerator.cpp.patched	2011-04-13 13:59:00.620420007 +0200
+@@ -81,8 +81,13 @@
+     {
+       cv::Mat rvec;
+       cv::Rodrigues(aligned_pose_.r<cv::Mat> (), rvec);
+-      cv::projectPoints(cv::Mat(aligned_points_), rvec, aligned_pose_.t<cv::Mat> (), k_, d_,
+-                        projected_points);
++      // cv::projectPoints(cv::Mat(aligned_points_), rvec, aligned_pose_.t<cv::Mat> (), k_, d_,
++      //                  projected_points);
++      // cout << "k_ = " << k_ <<  ", is mat: " << CV_IS_MAT(&k_) << endl;
++      // cout << "d_ = " << d_ <<  ", is mat: " << CV_IS_MAT(&d_) << endl;
++      // cout << "K = " << K <<  ", is mat: " << CV_IS_MAT(&K) << endl;
++      // cout << "D = " << D <<  ", is mat: " << CV_IS_MAT(&D) << endl;
++      cv::projectPoints(cv::Mat(aligned_points_), rvec, aligned_pose_.t<cv::Mat> (), K, D, projected_points);
+     }
+     //Alexander Shishkov: temporary comment (I think this code block is not needed)
+     /*else
+@@ -423,8 +428,10 @@
+     {
+       // Just use PnP
+       cv::Mat rvec, tvec;
+-      solvePnPRansac(object_points, image_points, features_2d.camera.K, features_2d.camera.D, rvec, tvec, false,
+-                     params.ransacIterationsCount, params.maxProjectionError, -1, &inliers);
++      solvePnPRansac(
++            object_points, image_points, 
++            object->observations[0].camera().K, object->observations[0].camera().D,
++            rvec, tvec, false, params.ransacIterationsCount, params.maxProjectionError, -1, &inliers);
+       pose.setR(rvec);
+       pose.setT(tvec);
+     }
