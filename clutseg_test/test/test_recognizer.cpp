@@ -72,7 +72,7 @@ TEST(Recognizer, TestRun)
     string p(getenv("CLUTSEG_PATH"));
     Options opts;
     opts.baseDirectory = p + "/ias_kinect_train";
-    opts.imageFile = p + "/ias_kinect_train/haltbare_milch/image_00000.png";
+    opts.imageFile = p + "/ias_kinect_test_all/all01/image_00002.jpg";
     opts.config = p + "/ias_kinect_train/config.yaml";
     opts.verbose = 0;
     opts.mode = KINECT;
@@ -163,8 +163,8 @@ TEST(Recognizer, TestRun)
         matcher->getObjectMatches(objectId, matches);
         totalMatchCnt += matches.size();
     }
-    EXPECT_LT(6 * test.keypoints.size(), totalMatchCnt);
-    EXPECT_LT(totalMatchCnt, 10 * test.keypoints.size());
+    EXPECT_LT(2 * test.keypoints.size(), totalMatchCnt);
+    EXPECT_LT(totalMatchCnt, 4 * test.keypoints.size());
     
     foreach(const Guess & guess, guesses) {
         cout << "Object name = " << guess.getObject()->name << ", imageId = ";
@@ -177,5 +177,8 @@ TEST(Recognizer, TestRun)
         cout << std::endl;
     }
 
+    if (enableUI) {
+       drawProjections(test.image, -1, guesses, base, opts);
+    }
 }
 
