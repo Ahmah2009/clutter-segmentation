@@ -30,6 +30,7 @@
 #include "mute.h"
 
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <iostream>
@@ -135,6 +136,30 @@ int options(int ac, char **av, Options & opts)
 
     return 0;
 
+}
+
+void drawProjections(const Mat& image, int id, const vector<Guess>& guesses, const TrainingBase& base,
+                     const Options& opts)
+{
+  if (guesses.empty())
+    return;
+  Mat drawImg, correspondence;
+  image.copyTo(drawImg);
+  namedWindow("proj", 1);
+  namedWindow("correspondence", CV_WINDOW_KEEPRATIO);
+  foreach(const Guess& guess, guesses)
+        {
+          guess.draw(drawImg, 0, ".");
+          Mat temp, small;
+          drawImg.copyTo(temp);
+          resize(temp, small, Size(640, 480), CV_INTER_LINEAR);
+          small.copyTo(drawImg);
+          imshow("proj", drawImg);
+          guess.draw(correspondence, 1, opts.baseDirectory);
+          if (!correspondence.empty())
+            imshow("correspondence", correspondence);
+          waitKey(0);
+        }
 }
 
 int main(int argc, char *argv[])
@@ -256,15 +281,16 @@ int main(int argc, char *argv[])
         else
             cvtColor(test.image, drawImage, CV_GRAY2BGR);
 
-        vector < tod::Guess > foundObjects;
-        recognizer->match(test, foundObjects);
+        vector < tod::Guess > guesses;
+        recognizer->match(test, guesses);
 
         if (writeR) {
             r << image_name << " = ";
         }
 
         set < string > found;
-        foreach(const Guess & guess, foundObjects)
+        map < string, int> guessCount;
+        foreach(const Guess & guess, guesses)
         {
             stringstream nodeIndex;
             nodeIndex << objectIndex++;
@@ -284,7 +310,17 @@ int main(int argc, char *argv[])
             //fs << "idx" <<  guess.image_indices_;
             fs << "}";
             found.insert(name);
+            if (guessCount.find(name) == guessCount.end()) {
+                guessCount[name] = 1;
+            } else {
+                guessCount[name] += 1;
+            }
         }
+
+        if (opts.verbose >= 2) {
+           drawProjections(test.image, -1, guesses, base, opts);
+        }
+
         foreach(string name, found) {
             // Check for true or false positive.
             if (it->second.find(name) == it->second.end()) {
@@ -332,6 +368,9 @@ int main(int argc, char *argv[])
         }
         if (writeR) {
             r << endl;
+        }
+        foreach (string obj, found) {
+            cout << (boost::format("Detected %15s (%d different guesses)") % obj % guessCount[obj]) << endl;
         }
     }
     fs << "objectsCount" << objectIndex - 1;

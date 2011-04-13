@@ -20,7 +20,7 @@ tmpf=$(mktemp)
 rosrun tod_detecting recognizer --image=$1 \
     --tod_config=$CLUTSEG_PATH/tod_kinect_train_9/config.yaml \
     --base=$CLUTSEG_PATH/tod_kinect_train_9 \
-    --verbose=1 --mode=1 | grep "Object name" > $tmpf
+    --verbose=2 --mode=1 | grep "Object name" > $tmpf
 zenity --text-info --filename=$tmpf --title "Results"
 rm $tmpf
 
