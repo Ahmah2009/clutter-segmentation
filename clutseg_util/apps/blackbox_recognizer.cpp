@@ -202,9 +202,13 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    TestDesc testdesc = loadTestDesc(opts.testdescFilename);
+
+    bool write_store = (opts.storeDirectory != "");
+
     // If --storeDirectory is specified, all and as many results as possible
     // are to be written to that folder.
-    if (opts.storeDirectory != "") {
+    if (write_store) {
         opts.resultFilename = opts.storeDirectory + "/results.txt";
         opts.statsFilename = opts.storeDirectory + "/stats.txt";
         opts.rocFilename = opts.storeDirectory + "/roc.gnuplot";
@@ -212,62 +216,33 @@ int main(int argc, char *argv[])
         opts.tableFilename = opts.storeDirectory + "/table.csv";
     }
 
-    TestDesc testdesc = loadTestDesc(opts.testdescFilename);
+    bool write_log = (opts.logFilename != "");
+    bool write_result = (opts.resultFilename != "");
+    bool write_table = (opts.tableFilename != "");
+    bool write_stats = (opts.statsFilename != "");
+    bool write_roc = (opts.rocFilename != "");
 
-    FileStorage fs;
-    fs.open(opts.logFilename, FileStorage::WRITE);
-    fs << "trainFolder" << opts.baseDirectory;
-    fs << "test1" << "{";
-    fs << "testFolder" << opts.imageDirectory;
-    fs << "objects" << "{";
-
-    int objectIndex = 1;
-
-    bool writeR = (opts.resultFilename != "");
-    fstream r;
-    if (writeR) {
-        r.open(opts.resultFilename.c_str(), ios_base::out);
-        r << "[predictions]" << endl;
-    }
-   
-    // count hits, misses, error 1, error 2.  see Receiver operating
-    // characteristics.  true/false positives/negatives.  A confusion matrix
-    // has 4 dof and it's easiest to keep track of tp, fp and the column sums
-    // to compute tn, fn later.
-
-    int tp_acc = 0;
-    int fp_acc = 0;
-    int tn_acc = 0;
-    int fn_acc = 0;
-    int p_acc = 0;
-    int n_acc = 0;
-
-    bool writeD = (opts.storeDirectory != "");
-
-    bool writeT = (opts.tableFilename != "");
-    fstream t;
-    if (writeT) {
-        t.open(opts.tableFilename.c_str(), ios_base::out);
-        t << boost::format("%-15s %-25s %-5s %-3s %-7s "
-                           "%-10s %-10s %-10s %-10s %-10s %-10s "
-                           "%-10s %-10s %-10s %-10s %-10s %-10s "
-                           "%-10s %-10s") 
-                            % "image" % "object" % "guess" % "hit" % "inliers"
-                            % "guess_tx" % "guess_ty" % "guess_tz" % "guess_rx" % "guess_ry" % "guess_rz"
-                            % "est_tx" % "est_ty" % "est_tz" % "est_rx" % "est_ry" % "est_rz" 
-                            % "max_rerr_t" % "max_rerr_r" << endl;
-    }
-
-    bool writeS = (opts.statsFilename != "");
-    fstream s;
-    if (writeS) {
-        s.open(opts.statsFilename.c_str(), ios_base::out);
-        s << "[statistics]" << endl;
-    }
-
-    bool writeRoc = (opts.rocFilename != "");
+    FileStorage log;
+    fstream result;
     fstream roc;
-    if (writeRoc) {
+    fstream stats;
+    fstream table;
+
+
+    if (write_log) {
+        log.open(opts.logFilename, FileStorage::WRITE);
+        log << "trainFolder" << opts.baseDirectory;
+        log << "test1" << "{";
+        log << "testFolder" << opts.imageDirectory;
+        log << "objects" << "{";
+    }
+
+    if (write_result) {
+        result.open(opts.resultFilename.c_str(), ios_base::out);
+        result << "[predictions]" << endl;
+    }
+ 
+    if (write_roc) {
         roc.open(opts.rocFilename.c_str(), ios_base::out);
         roc << "set size .75,1" << endl;
         roc << "set size ratio 1" << endl;
@@ -283,8 +258,38 @@ int main(int argc, char *argv[])
         roc << "plot x with lines, '-' with points" << endl;
     }
 
-    for (TestDesc::iterator it = testdesc.begin(), end = testdesc.end();
-         it != end; it++) {
+    if (write_stats) {
+        stats.open(opts.statsFilename.c_str(), ios_base::out);
+        stats << "[statistics]" << endl;
+    }
+
+    if (write_table) {
+        table.open(opts.tableFilename.c_str(), ios_base::out);
+        table << boost::format("%-15s %-25s %-5s %-3s %-7s "
+                           "%-10s %-10s %-10s %-10s %-10s %-10s "
+                           "%-10s %-10s %-10s %-10s %-10s %-10s "
+                           "%-10s %-10s") 
+                            % "image" % "object" % "guess" % "hit" % "inliers"
+                            % "guess_tx" % "guess_ty" % "guess_tz" % "guess_rx" % "guess_ry" % "guess_rz"
+                            % "est_tx" % "est_ty" % "est_tz" % "est_rx" % "est_ry" % "est_rz" 
+                            % "max_rerr_t" % "max_rerr_r" << endl;
+    }
+  
+    int objectIndex = 1;
+
+    // count hits, misses, error 1, error 2.  see Receiver operating
+    // characteristics.  true/false positives/negatives.  A confusion matrix
+    // has 4 dof and it's easiest to keep track of tp, fp and the column sums
+    // to compute tn, fn later.
+
+    int tp_acc = 0;
+    int fp_acc = 0;
+    int tn_acc = 0;
+    int fn_acc = 0;
+    int p_acc = 0;
+    int n_acc = 0;
+
+    for (TestDesc::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
         set<string> expected = it->second; 
         // true positives
         int tp = 0;
@@ -293,10 +298,10 @@ int main(int argc, char *argv[])
         // total positives
         int p = expected.size();
 
-        string image_name = it->first;
+        string img_name = it->first;
         Features2d test;
         
-        string path = opts.imageDirectory + "/" + image_name;
+        string path = opts.imageDirectory + "/" + img_name;
         if (!readImage(test, path)) {
             cerr << "Error: cannot read image" << endl;
             return -1;
@@ -304,48 +309,43 @@ int main(int argc, char *argv[])
 
         extractor->detectAndExtract(test);
 
-        vector < tod::Guess > guesses;
+        vector<Guess> guesses;
         recognizer->match(test, guesses);
 
-        if (writeR) {
-            r << image_name << " = ";
-        }
-
         // The set of detected objects on the query image.
-        set < string > found;
+        set<string> found;
         // The number of guesses per detected object.
-        map < string, int> guessCount;
-        foreach(const Guess & guess, guesses)
-        {
-            stringstream nodeIndex;
-            nodeIndex << objectIndex++;
+        map<string, int> guess_count;
+        foreach(const Guess & guess, guesses) {
             string name = guess.getObject()->name;
             Pose guess_pose = guess.aligned_pose();
-            string nodeName = "object" + nodeIndex.str();
-            fs << nodeName << "{";
-            fs << "id" << guess.getObject()->id;
-            fs << "name" << name;
-            fs << "imageName" << image_name;
-            fs << Pose::YAML_NODE_NAME;
-            guess_pose.write(fs);
-            fs << "}";
+            
             found.insert(name);
-            if (guessCount.find(name) == guessCount.end()) {
-                guessCount[name] = 1;
-            } else {
-                guessCount[name] += 1;
-            }
+            guess_count[name] += 1;
 
-            if (writeD) {
+            if (write_log) {
+                stringstream nodeIndex;
+                nodeIndex << objectIndex;
+                string nodeName = "object" + nodeIndex.str();
+                log << nodeName << "{";
+                log << "id" << guess.getObject()->id;
+                log << "name" << name;
+                log << "imageName" << img_name;
+                log << Pose::YAML_NODE_NAME;
+                guess_pose.write(log);
+                log << "}";
+            }
+           
+            if (write_store) {
                 // Write guessed pose to file
-                FileStorage pout;
-                pout.open(str(boost::format("%s/%s.%s.%d.guessed.pose.yaml") % opts.storeDirectory % image_name % name % guessCount[name]), FileStorage::WRITE);
-                pout << Pose::YAML_NODE_NAME;
-                guess_pose.write(pout);
-                pout.release();
+                FileStorage p_out;
+                p_out.open(str(boost::format("%s/%s.%s.%d.guessed.pose.yaml") % opts.storeDirectory % img_name % name % guess_count[name]), FileStorage::WRITE);
+                p_out << Pose::YAML_NODE_NAME;
+                guess_pose.write(p_out);
+                p_out.release();
             }
 
-            if (writeT) {
+            if (write_table) {
                 PoseRT guess_posert;
                 poseToPoseRT(guess_pose, guess_posert);
                 float guess_tx = guess_posert.tvec.at<float>(0, 0);
@@ -354,15 +354,16 @@ int main(int argc, char *argv[])
                 float guess_rx = guess_posert.rvec.at<float>(0, 0);
                 float guess_ry = guess_posert.rvec.at<float>(1, 0);
                 float guess_rz = guess_posert.rvec.at<float>(2, 0);
-                t << boost::format("%-15s %-25s %5d %3d %7d "
+                table << boost::format("%-15s %-25s %5d %3d %7d "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
                            "%-10s %-10s") 
-                            % image_name % name % guessCount[name]  % (expected.find(name) == expected.end() ? 0 : 1) % guess.inliers.size()
+                            % img_name % name % guess_count[name]  % (expected.find(name) == expected.end() ? 0 : 1) % guess.inliers.size()
                             % guess_tx % guess_ty % guess_tz % guess_rx % guess_ry % guess_rz
                             % "-" % "-" % "-" % "-" % "-" % "-" 
                             % "-" % "-" << endl;
             }
+            objectIndex++;
         }
 
         if (opts.verbose >= 2) {
@@ -386,25 +387,25 @@ int main(int argc, char *argv[])
         int n = objects.size() - p;
         int fn = p - tp;
         int tn = n - fp;
-        if (writeS) {
-            s << endl;
-            s << "# -- " << image_name << " -- " << endl;
-            s << "# actual objects: ";
+        if (write_stats) {
+            stats << endl;
+            stats << "# -- " << img_name << " -- " << endl;
+            stats << "# actual objects: ";
             foreach (string x, it->second) {
-                s << x << ", ";
+                stats << x << ", ";
             }
-            s << endl;
-            s << "# predicted objects: ";
+            stats << endl;
+            stats << "# predicted objects: ";
             foreach (string x, found) {
-                s << x << ", ";
+                stats << x << ", ";
             }
-            s << endl;
-            s << "# tp = " << tp << endl;
-            s << "# fp = " << fp << endl;
-            s << "# tn = " << tn << endl;
-            s << "# fn = " << fn << endl;
-            s << "# p = " << p << endl;
-            s << "# n = " << n << endl;
+            stats << endl;
+            stats << "# tp = " << tp << endl;
+            stats << "# fp = " << fp << endl;
+            stats << "# tn = " << tn << endl;
+            stats << "# fn = " << fn << endl;
+            stats << "# p = " << p << endl;
+            stats << "# n = " << n << endl;
         }
 
         n_acc += n;
@@ -414,46 +415,29 @@ int main(int argc, char *argv[])
         fn_acc += fn;
         tn_acc += tn;
 
-        if (writeR) {
+        if (write_result) {
+            result << img_name << " = ";
             foreach(string obj, found) {
-                r << obj << " ";
+                result << obj << " ";
             }
-        }
-        if (writeR) {
-            r << endl;
+            result << endl;
         }
         foreach (string obj, found) {
-            cout << (boost::format("Detected %15s (%d different guesses)") % obj % guessCount[obj]) << endl;
+            cout << (boost::format("Detected %15s (%d different guesses)") % obj % guess_count[obj]) << endl;
         }
     }
-    fs << "objectsCount" << objectIndex - 1;
-    fs << "}" << "}";
-    fs.release();
-    if (writeR) {
-        r.close();
+
+    if (write_log) {
+        log << "objectsCount" << objectIndex - 1;
+        log << "}" << "}";
+        log.release();
     }
-    if (writeS) {
-        // write down confusion matrix
-        // plus some more calculation on top of it
-        s << endl;
-        s << endl;
-        s << "# confusion matrix" << endl;
-        s << "#    accumulated over each test image" << endl;
-        s << "tp = " << tp_acc << endl;
-        s << "fp = " << fp_acc << endl;
-        s << "tn = " << tn_acc << endl;
-        s << "fn = " << fn_acc << endl;
-        s << "# n = tn + fp" << endl;
-        s << "n = " << n_acc << endl;
-        s << "# p = tp + fn" << endl;
-        s << "p = " << p_acc << endl; 
-        s << "# tp_rate = tp / p = sensitivity = hit rate = recall" << endl;
-        s << "tp_rate = " << tp_acc / (double) p_acc << endl;
-        s << "# fp_rate = fall-out" << endl;
-        s << "fp_rate = " << fp_acc / (double) n_acc << endl;
-        s.close();
+
+    if (write_result) {
+        result.close();
     }
-    if (writeRoc) {
+
+    if (write_roc) {
         // gnuplot does not like NaN
         if (n_acc > 0 && p_acc > 0) {
             roc << fp_acc / (double) n_acc << " ";
@@ -477,8 +461,30 @@ int main(int argc, char *argv[])
         roc.close();
     }
 
-    if (writeT) {
-        t.close();
+    if (write_stats) {
+        // write down confusion matrix
+        // plus some more calculation on top of it
+        stats << endl;
+        stats << endl;
+        stats << "# confusion matrix" << endl;
+        stats << "#    accumulated over each test image" << endl;
+        stats << "tp = " << tp_acc << endl;
+        stats << "fp = " << fp_acc << endl;
+        stats << "tn = " << tn_acc << endl;
+        stats << "fn = " << fn_acc << endl;
+        stats << "# n = tn + fp" << endl;
+        stats << "n = " << n_acc << endl;
+        stats << "# p = tp + fn" << endl;
+        stats << "p = " << p_acc << endl; 
+        stats << "# tp_rate = tp / p = sensitivity = hit rate = recall" << endl;
+        stats << "tp_rate = " << tp_acc / (double) p_acc << endl;
+        stats << "# fp_rate = fall-out" << endl;
+        stats << "fp_rate = " << fp_acc / (double) n_acc << endl;
+        stats.close();
+    }
+
+    if (write_table) {
+        table.close();
     }
 
     return 0;
