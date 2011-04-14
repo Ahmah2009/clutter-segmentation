@@ -40,6 +40,8 @@
 #include <opencv_candidate/PoseRT.h>
 #include <iostream>
 #include <fstream>
+#include <set>
+#include <string>
 
 #define foreach BOOST_FOREACH
 
@@ -151,6 +153,16 @@ int options(int ac, char **av, Options & opts)
 
     return 0;
 
+}
+
+bool readImage(Features2d & test, const string & path) {
+    cout << boost::format("Reading <%s>") % path << endl;
+    test.image = imread(path, 0);
+    if (test.image.empty()) {
+        cout << "Cannot read test image" << endl;
+        return false;
+    }
+    return true;
 }
 
 int main(int argc, char *argv[])
@@ -273,31 +285,24 @@ int main(int argc, char *argv[])
 
     for (TestDesc::iterator it = testdesc.begin(), end = testdesc.end();
          it != end; it++) {
+        set<string> expected = it->second; 
         // true positives
         int tp = 0;
         // false positives
         int fp = 0;
         // total positives
-        int p = it->second.size();
+        int p = expected.size();
 
-        std::string image_name = it->first;
-        string path = opts.imageDirectory + "/" + image_name;
-        cout << "< Reading the image... " << path;
-
+        string image_name = it->first;
         Features2d test;
-        test.image = imread(path, 0);
-        cout << ">" << endl;
-        if (test.image.empty()) {
-            cout << "Cannot read test image" << endl;
-            break;
+        
+        string path = opts.imageDirectory + "/" + image_name;
+        if (!readImage(test, path)) {
+            cerr << "Error: cannot read image" << endl;
+            return -1;
         }
-        extractor->detectAndExtract(test);
 
-        Mat drawImage;
-        if (test.image.channels() > 1)
-            test.image.copyTo(drawImage);
-        else
-            cvtColor(test.image, drawImage, CV_GRAY2BGR);
+        extractor->detectAndExtract(test);
 
         vector < tod::Guess > guesses;
         recognizer->match(test, guesses);
@@ -306,28 +311,23 @@ int main(int argc, char *argv[])
             r << image_name << " = ";
         }
 
+        // The set of detected objects on the query image.
         set < string > found;
+        // The number of guesses per detected object.
         map < string, int> guessCount;
         foreach(const Guess & guess, guesses)
         {
             stringstream nodeIndex;
             nodeIndex << objectIndex++;
             string name = guess.getObject()->name;
+            Pose guess_pose = guess.aligned_pose();
             string nodeName = "object" + nodeIndex.str();
             fs << nodeName << "{";
             fs << "id" << guess.getObject()->id;
             fs << "name" << name;
-            // fs << "r" << guess.aligned_pose().r();
-            // fs << "t" << guess.aligned_pose().t();
-#if 0
-            int index = atoi((image_name.substr(0, position)).c_str());
-            fs << "imageIndex" << index;
-#endif
             fs << "imageName" << image_name;
             fs << Pose::YAML_NODE_NAME;
-            guess.aligned_pose().write(fs);
-            // damn nasty bug
-            //fs << "idx" <<  guess.image_indices_;
+            guess_pose.write(fs);
             fs << "}";
             found.insert(name);
             if (guessCount.find(name) == guessCount.end()) {
@@ -336,7 +336,6 @@ int main(int argc, char *argv[])
                 guessCount[name] += 1;
             }
 
-            Pose guess_pose = guess.aligned_pose();
             if (writeD) {
                 // Write guessed pose to file
                 FileStorage pout;
@@ -359,7 +358,7 @@ int main(int argc, char *argv[])
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
                            "%-10s %-10s") 
-                            % image_name % name % guessCount[name]  % (it->second.find(name) == it->second.end() ? 0 : 1) % guess.inliers.size()
+                            % image_name % name % guessCount[name]  % (expected.find(name) == expected.end() ? 0 : 1) % guess.inliers.size()
                             % guess_tx % guess_ty % guess_tz % guess_rx % guess_ry % guess_rz
                             % "-" % "-" % "-" % "-" % "-" % "-" 
                             % "-" % "-" << endl;
