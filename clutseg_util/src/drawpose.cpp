@@ -24,3 +24,21 @@ void drawPose(const Pose & pose, const Mat & image, const Camera & camera, Mat &
     drawPose(posert, image, camera, canvas);
 }
 
+void poseToPoseRT(const Pose & src, PoseRT & dst) {
+    Mat R;
+    eigen2cv(src.t(), dst.tvec);
+    eigen2cv(src.r(), R);
+    Rodrigues(R, dst.rvec);
+}
+
+void poseRtToPose(const PoseRT & src, Pose & dst) {
+    Eigen::Vector3f t;
+    cv2eigen(src.tvec, t);
+    dst.setT(t);
+    Mat R;
+    Eigen::Matrix<double, 3, 3> Re;
+    Rodrigues(src.rvec, R);
+    cv2eigen(R, Re);
+    dst.setR(R);
+}
+

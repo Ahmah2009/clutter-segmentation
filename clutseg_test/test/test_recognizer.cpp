@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  *
  * This test helps understand tod_detecting pipeline by validating assumptions,
- * and thus generate hard facts. It is basically derived from recognizer.cpp in
+ * and thus generate hard facts. It is basically copied from recognizer.cpp in
  * tod_detecting.
  */
 
@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <boost/format.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "drawpose.h"
 
 #include "tod/detecting/Loader.h"
 #include "tod/detecting/Parameters.h"
@@ -71,9 +73,12 @@ TEST(Recognizer, TestRun)
 {
     string p(getenv("CLUTSEG_PATH"));
     Options opts;
-    opts.baseDirectory = p + "/ias_kinect_train";
-    opts.imageFile = p + "/ias_kinect_test_all/all01/image_00002.jpg";
-    opts.config = p + "/ias_kinect_train/config.yaml";
+    //opts.baseDirectory = p + "/ias_kinect_train";
+    //opts.imageFile = p + "/ias_kinect_test_all/all01/image_00014.jpg";
+    //opts.config = p + "/ias_kinect_train/config.yaml";
+    opts.baseDirectory = p + "/tod_kinect_train_15";
+    opts.imageFile = p + "/tod_kinect_test_27/t0020.png";
+    opts.config = p + "/tod_kinect_train/config.yaml";
     opts.verbose = 0;
     opts.mode = KINECT;
 
@@ -175,6 +180,11 @@ TEST(Recognizer, TestRun)
         BOOST_FOREACH(unsigned int image_index, image_indices)
             cout << image_index << " ";
         cout << std::endl;
+
+        Mat canvas = test.image.clone();
+        drawPose(guess.aligned_pose(), test.image, guess.getObject()->observations[0].camera(), canvas);
+        imshow(guess.getObject()->name, canvas);
+        waitKey(0);
     }
 
     if (enableUI) {

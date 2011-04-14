@@ -16,3 +16,7 @@ void drawPose(const PoseRT & pose, const Mat & image, const Camera & camera, Mat
 
 void drawPose(const Pose & pose, const Mat & image, const Camera & camera, Mat & canvas);
 
+void poseToPoseRT(const Pose & src, PoseRT & dst);
+
+void poseRtToPose(const PoseRT & src, Pose & dst);
+
