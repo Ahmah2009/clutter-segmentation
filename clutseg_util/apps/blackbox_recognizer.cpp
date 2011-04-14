@@ -21,18 +21,23 @@
  * - it is spamming standard output
  * - ...
  * 
- * This implementation fixes some of the issues.
+ * This implementation fixes some of the issues. Also, it tries to collect as
+ * much information about the performance and output of the classifier on a
+ * given testing set.
  */
 
 #include "tod/detecting/Loader.h"
 #include "tod/detecting/Recognizer.h"
 #include "testdesc.h"
 #include "mute.h"
+#include "drawpose.h"
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv_candidate/PoseRT.h>
 #include <iostream>
 #include <fstream>
 
@@ -54,6 +59,8 @@ namespace {
         std::string statsFilename;
         std::string logFilename;
         std::string rocFilename;
+        std::string tableFilename;
+        std::string storeDirectory;
         TODParameters params;
         int verbose;
         int mode;
@@ -91,6 +98,14 @@ int options(int ac, char **av, Options & opts)
     desc.add_options()("roc",
                        po::value < string > (&opts.rocFilename),
                        "Generate points on a ROC graph and save it to a file.");
+    desc.add_options()("table",
+                       po::value < string > (&opts.tableFilename),
+                       "Generate a CSV table containing information about guesses.");
+    desc.add_options()("store",
+                       po::value < string > (&opts.storeDirectory),
+                       "Write all results to this folder in a pre-defined "
+                       "manner. If you specify this option then arguments of "
+                       "--result, --stats, --roc, --table will be ignored.");
     desc.add_options()("verbose,V",
                        po::value < int >(&opts.verbose)->default_value(1),
                        "Verbosity level");
@@ -138,30 +153,6 @@ int options(int ac, char **av, Options & opts)
 
 }
 
-void drawProjections(const Mat& image, int id, const vector<Guess>& guesses, const TrainingBase& base,
-                     const Options& opts)
-{
-  if (guesses.empty())
-    return;
-  Mat drawImg, correspondence;
-  image.copyTo(drawImg);
-  namedWindow("proj", 1);
-  namedWindow("correspondence", CV_WINDOW_KEEPRATIO);
-  foreach(const Guess& guess, guesses)
-        {
-          guess.draw(drawImg, 0, ".");
-          Mat temp, small;
-          drawImg.copyTo(temp);
-          resize(temp, small, Size(640, 480), CV_INTER_LINEAR);
-          small.copyTo(drawImg);
-          imshow("proj", drawImg);
-          guess.draw(correspondence, 1, opts.baseDirectory);
-          if (!correspondence.empty())
-            imshow("correspondence", correspondence);
-          waitKey(0);
-        }
-}
-
 int main(int argc, char *argv[])
 {
     Options opts;
@@ -199,6 +190,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // If --storeDirectory is specified, all and as many results as possible
+    // are to be written to that folder.
+    if (opts.storeDirectory != "") {
+        opts.resultFilename = opts.storeDirectory + "/results.txt";
+        opts.statsFilename = opts.storeDirectory + "/stats.txt";
+        opts.rocFilename = opts.storeDirectory + "/roc.gnuplot";
+        opts.logFilename = opts.storeDirectory + "/log.txt";
+        opts.tableFilename = opts.storeDirectory + "/table.csv";
+    }
+
     TestDesc testdesc = loadTestDesc(opts.testdescFilename);
 
     FileStorage fs;
@@ -207,6 +208,8 @@ int main(int argc, char *argv[])
     fs << "test1" << "{";
     fs << "testFolder" << opts.imageDirectory;
     fs << "objects" << "{";
+
+    int objectIndex = 1;
 
     bool writeR = (opts.resultFilename != "");
     fstream r;
@@ -226,6 +229,23 @@ int main(int argc, char *argv[])
     int fn_acc = 0;
     int p_acc = 0;
     int n_acc = 0;
+
+    bool writeD = (opts.storeDirectory != "");
+
+    bool writeT = (opts.tableFilename != "");
+    fstream t;
+    if (writeT) {
+        t.open(opts.tableFilename.c_str(), ios_base::out);
+        t << boost::format("%-15s %-25s %-5s %-3s %-7s "
+                           "%-10s %-10s %-10s %-10s %-10s %-10s "
+                           "%-10s %-10s %-10s %-10s %-10s %-10s "
+                           "%-10s %-10s") 
+                            % "image" % "object" % "guess" % "hit" % "inliers"
+                            % "guess_tx" % "guess_ty" % "guess_tz" % "guess_rx" % "guess_ry" % "guess_rz"
+                            % "est_tx" % "est_ty" % "est_tz" % "est_rx" % "est_ry" % "est_rz" 
+                            % "max_rerr_t" % "max_rerr_r" << endl;
+    }
+
     bool writeS = (opts.statsFilename != "");
     fstream s;
     if (writeS) {
@@ -250,8 +270,6 @@ int main(int argc, char *argv[])
         roc << "set pointsize 2 " << endl;
         roc << "plot x with lines, '-' with points" << endl;
     }
-
-    int objectIndex = 1;
 
     for (TestDesc::iterator it = testdesc.begin(), end = testdesc.end();
          it != end; it++) {
@@ -299,13 +317,15 @@ int main(int argc, char *argv[])
             fs << nodeName << "{";
             fs << "id" << guess.getObject()->id;
             fs << "name" << name;
-            //fs << "r" << guess.aligned_pose().r();
-            //fs << "t" << guess.aligned_pose().t();
+            // fs << "r" << guess.aligned_pose().r();
+            // fs << "t" << guess.aligned_pose().t();
 #if 0
             int index = atoi((image_name.substr(0, position)).c_str());
             fs << "imageIndex" << index;
 #endif
             fs << "imageName" << image_name;
+            fs << Pose::YAML_NODE_NAME;
+            guess.aligned_pose().write(fs);
             // damn nasty bug
             //fs << "idx" <<  guess.image_indices_;
             fs << "}";
@@ -315,10 +335,44 @@ int main(int argc, char *argv[])
             } else {
                 guessCount[name] += 1;
             }
+
+            Pose guess_pose = guess.aligned_pose();
+            if (writeD) {
+                // Write guessed pose to file
+                FileStorage pout;
+                pout.open(str(boost::format("%s/%s.%s.%d.guessed.pose.yaml") % opts.storeDirectory % image_name % name % guessCount[name]), FileStorage::WRITE);
+                pout << Pose::YAML_NODE_NAME;
+                guess_pose.write(pout);
+                pout.release();
+            }
+
+            if (writeT) {
+                PoseRT guess_posert;
+                poseToPoseRT(guess_pose, guess_posert);
+                float guess_tx = guess_posert.tvec.at<float>(0, 0);
+                float guess_ty = guess_posert.tvec.at<float>(1, 0);
+                float guess_tz = guess_posert.tvec.at<float>(2, 0);
+                float guess_rx = guess_posert.rvec.at<float>(0, 0);
+                float guess_ry = guess_posert.rvec.at<float>(1, 0);
+                float guess_rz = guess_posert.rvec.at<float>(2, 0);
+                t << boost::format("%-15s %-25s %5d %3d %7d "
+                           "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
+                           "%-10s %-10s %-10s %-10s %-10s %-10s "
+                           "%-10s %-10s") 
+                            % image_name % name % guessCount[name]  % (it->second.find(name) == it->second.end() ? 0 : 1) % guess.inliers.size()
+                            % guess_tx % guess_ty % guess_tz % guess_rx % guess_ry % guess_rz
+                            % "-" % "-" % "-" % "-" % "-" % "-" 
+                            % "-" % "-" << endl;
+            }
         }
 
         if (opts.verbose >= 2) {
-           drawProjections(test.image, -1, guesses, base, opts);
+            foreach(const Guess & guess, guesses) {
+                Mat canvas = test.image.clone();
+                drawPose(guess.aligned_pose(), test.image, objects[0]->observations[0].camera(), canvas);
+                imshow("Guess", canvas);
+                waitKey(0);
+            }
         }
 
         foreach(string name, found) {
@@ -422,6 +476,10 @@ int main(int argc, char *argv[])
         roc << "## fp_rate = fall-out" << endl;
         roc << "# fp_rate = " << fp_acc / (double) n_acc << endl;
         roc.close();
+    }
+
+    if (writeT) {
+        t.close();
     }
 
     return 0;
