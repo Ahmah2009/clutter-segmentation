@@ -6,6 +6,7 @@
 
 #include <gtest/gtest.h>
 #include <map>
+#include <algorithm>
 
 using namespace std;
 
@@ -66,6 +67,6 @@ TEST(Containers, FindMax) {
     v.push_back(3);
     v.push_back(42);
     float max_v = *max_element(v.begin(), v.end());
-    EXPECT_DOUBLE_EQ(42, v); 
+    EXPECT_FLOAT_EQ(42.0f, max_v); 
 }
 

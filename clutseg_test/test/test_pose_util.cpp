@@ -5,7 +5,7 @@
 #include "test.h"
 
 #include <gtest/gtest.h>
-#include "drawpose.h"
+#include "pose_util.h"
 #include <fiducial/fiducial.h>
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>
@@ -16,7 +16,7 @@ using namespace cv;
 using namespace opencv_candidate;
 using namespace fiducial;
 
-TEST(PoseDrawer, PoseDrawer) {
+TEST(PoseUtil, PoseDrawer) {
     PoseRT pose;
     FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
     pose.read(in[PoseRT::YAML_NODE_NAME]);
@@ -28,7 +28,7 @@ TEST(PoseDrawer, PoseDrawer) {
     waitKey(0);
 }
 
-TEST(PoseDrawer, PoseDrawerFunction) {
+TEST(PoseUtil, PoseDrawerFunction) {
     PoseRT pose;
     FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
     pose.read(in[PoseRT::YAML_NODE_NAME]);
@@ -40,7 +40,7 @@ TEST(PoseDrawer, PoseDrawerFunction) {
     waitKey(0);
 }
 
-TEST(PoseDrawer, PoseToPoseRT) {
+TEST(PoseUtil, PoseToPoseRT) {
     PoseRT posert;
     FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
     posert.read(in[PoseRT::YAML_NODE_NAME]);
@@ -63,5 +63,15 @@ TEST(PoseDrawer, PoseToPoseRT) {
     drawPose(pose, img, camera, canvas);
     imshow("PoseToPoseRT", canvas);
     waitKey(0);
+}
+
+TEST(PoseUtil, WritePoseRT) {
+    PoseRT posert;
+    writePose("./data/writeposert.yaml", posert);
+}
+
+TEST(PoseUtil, WritePose) {
+    Pose pose;
+    writePose("./data/writepose.yaml", pose);
 }
 

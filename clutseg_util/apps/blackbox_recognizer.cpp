@@ -30,7 +30,7 @@
 #include "tod/detecting/Recognizer.h"
 #include "testdesc.h"
 #include "mute.h"
-#include "drawpose.h"
+#include "pose_util.h"
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
 
     if (write_table) {
         table.open(opts.tableFilename.c_str(), ios_base::out);
-        table << boost::format("%-15s %-25s %-5s %-3s %-7s "
+        table << boost::format("%-30s %-25s %-5s %-3s %-7s "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
                            "%-10s %-10s") 
@@ -340,10 +340,7 @@ int main(int argc, char *argv[])
             string ground_pose_path = str(boost::format("%s/%s.%s.ground.pose.yaml") % opts.imageDirectory % img_name % name);
             bool ground_pose_available = filesystem::exists(ground_pose_path);
             if (ground_pose_available) {
-                FileStorage p_in;
-                p_in.open(ground_pose_path, FileStorage::READ);
-                ground_posert.read(p_in[PoseRT::YAML_NODE_NAME]);
-                p_in.release();
+                readPose(ground_pose_path, ground_posert);
             }
 
             if (write_log) {
@@ -365,23 +362,16 @@ int main(int argc, char *argv[])
                 string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % mapped_img_name % name % guess_count[name]);
                 string guessed_pose_path = test_basename + ".guessed.pose.yaml";
                 // Write guessed and ground-truth pose to file
-                FileStorage guess_out;
-                guess_out.open(guessed_pose_path, FileStorage::WRITE);
-                guess_out << PoseRT::YAML_NODE_NAME;
-                guess_posert.write(guess_out);
-                guess_out.release();
+                writePose(guessed_pose_path, guess_posert);
                 if (ground_pose_available) {
-                    // TODO: extract methods writePose(filename, pose) readPose(filename, pose)
                     ground_pose_path = test_basename + ".ground.pose.yaml";
-                    FileStorage ground_out;
-                    ground_out.open(ground_pose_path, FileStorage::WRITE);
-                    ground_out << PoseRT::YAML_NODE_NAME;
-                    ground_posert.write(ground_out);
-                    ground_out.release();
+                    writePose(ground_pose_path, ground_posert);
                 }
                 // Write image with pose drawn to file
+                // TODO: draw number of inliers on image
                 Mat canvas = test.image.clone();
                 drawPose(guess_pose, test.image, guess.getObject()->observations[0].camera(), canvas);
+                putText(canvas, str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()), Point(100, 10), FONT_HERSHEY_SIMPLEX, 0.5, 200, 2);
                 imwrite(test_basename + ".guessed.pose.png", canvas);
                 if (ground_pose_available) {
                     canvas = test.image.clone();
@@ -391,41 +381,42 @@ int main(int argc, char *argv[])
             }
 
             if (write_table) {
+                // there is a fuckup with mixing up doubles and floats
                 // guessed pose
-                float guess_tx = guess_posert.tvec.at<float>(0, 0);
-                float guess_ty = guess_posert.tvec.at<float>(1, 0);
-                float guess_tz = guess_posert.tvec.at<float>(2, 0);
-                float guess_rx = guess_posert.rvec.at<float>(0, 0);
-                float guess_ry = guess_posert.rvec.at<float>(1, 0);
-                float guess_rz = guess_posert.rvec.at<float>(2, 0);
+                double guess_tx = guess_posert.tvec.at<double>(0, 0);
+                double guess_ty = guess_posert.tvec.at<double>(1, 0);
+                double guess_tz = guess_posert.tvec.at<double>(2, 0);
+                double guess_rx = guess_posert.rvec.at<double>(0, 0);
+                double guess_ry = guess_posert.rvec.at<double>(1, 0);
+                double guess_rz = guess_posert.rvec.at<double>(2, 0);
                 // ground-truth pose
-                float ground_tx = numeric_limits<float>::quiet_NaN();
-                float ground_ty = numeric_limits<float>::quiet_NaN();
-                float ground_tz = numeric_limits<float>::quiet_NaN();
-                float ground_rx = numeric_limits<float>::quiet_NaN();
-                float ground_ry = numeric_limits<float>::quiet_NaN();
-                float ground_rz = numeric_limits<float>::quiet_NaN();
+                double ground_tx = numeric_limits<double>::quiet_NaN();
+                double ground_ty = numeric_limits<double>::quiet_NaN();
+                double ground_tz = numeric_limits<double>::quiet_NaN();
+                double ground_rx = numeric_limits<double>::quiet_NaN();
+                double ground_ry = numeric_limits<double>::quiet_NaN();
+                double ground_rz = numeric_limits<double>::quiet_NaN();
                 if (ground_pose_available) {
-                    ground_tx = ground_posert.tvec.at<float>(0, 0);
-                    ground_ty = ground_posert.tvec.at<float>(1, 0);
-                    ground_tz = ground_posert.tvec.at<float>(2, 0);
-                    ground_rx = ground_posert.rvec.at<float>(0, 0);
-                    ground_ry = ground_posert.rvec.at<float>(1, 0);
-                    ground_rz = ground_posert.rvec.at<float>(2, 0);
+                    ground_tx = ground_posert.tvec.at<double>(0, 0);
+                    ground_ty = ground_posert.tvec.at<double>(1, 0);
+                    ground_tz = ground_posert.tvec.at<double>(2, 0);
+                    ground_rx = ground_posert.rvec.at<double>(0, 0);
+                    ground_ry = ground_posert.rvec.at<double>(1, 0);
+                    ground_rz = ground_posert.rvec.at<double>(2, 0);
                 }
                 // relative errors
-                vector<float> rerr_t(3); 
-                vector<float> rerr_r(3); 
+                vector<double> rerr_t(3); 
+                vector<double> rerr_r(3); 
                 rerr_t.push_back(abs(guess_tx - ground_tx) / ground_tx);
                 rerr_t.push_back(abs(guess_ty - ground_ty) / ground_ty);
                 rerr_t.push_back(abs(guess_tz - ground_tz) / ground_tz);
                 rerr_r.push_back(abs(guess_rx - ground_rx) / ground_rx);
                 rerr_r.push_back(abs(guess_ry - ground_ry) / ground_ry);
                 rerr_r.push_back(abs(guess_rz - ground_rz) / ground_rz);
-                float max_rerr_t = *max_element(rerr_t.begin(), rerr_t.end());
-                float max_rerr_r = *max_element(rerr_r.begin(), rerr_r.end());
+                double max_rerr_t = *max_element(rerr_t.begin(), rerr_t.end());
+                double max_rerr_r = *max_element(rerr_r.begin(), rerr_r.end());
 
-                table << boost::format("%-15s %-25s %5d %3d %7d "
+                table << boost::format("%-30s %-25s %5d %3d %7d "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%10.7f %10.7f") 

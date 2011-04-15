@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <boost/format.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "drawpose.h"
+#include "pose_util.h"
 
 #include "tod/detecting/Loader.h"
 #include "tod/detecting/Parameters.h"

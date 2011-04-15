@@ -29,6 +29,8 @@ void poseToPoseRT(const Pose & src, PoseRT & dst) {
     eigen2cv(src.t(), dst.tvec);
     eigen2cv(src.r(), R);
     Rodrigues(R, dst.rvec);
+    dst.tvec.convertTo(dst.tvec, CV_64F);
+    dst.rvec.convertTo(dst.rvec, CV_64F);
 }
 
 void poseRtToPose(const PoseRT & src, Pose & dst) {
@@ -40,5 +42,36 @@ void poseRtToPose(const PoseRT & src, Pose & dst) {
     Rodrigues(src.rvec, R);
     cv2eigen(R, Re);
     dst.setR(R);
+}
+
+void writePose(const string & filename, const PoseRT & pose) {
+    FileStorage f;
+    f.open(filename, FileStorage::WRITE);
+    f << PoseRT::YAML_NODE_NAME;
+    pose.write(f);
+    f.release();
+}
+
+void readPose(const string & filename, PoseRT & dst) {
+    FileStorage f;
+    f.open(filename, FileStorage::READ);
+    dst.read(f[PoseRT::YAML_NODE_NAME]);
+    f.release();
+}
+
+// TODO: use template or remove one of these methods
+void writePose(const string & filename, const Pose & pose) {
+    FileStorage f;
+    f.open(filename, FileStorage::WRITE);
+    f << PoseRT::YAML_NODE_NAME;
+    pose.write(f);
+    f.release();
+}
+
+void readPose(const string & filename, Pose & dst) {
+    FileStorage f;
+    f.open(filename, FileStorage::READ);
+    dst.read(f[PoseRT::YAML_NODE_NAME]);
+    f.release();
 }
 
