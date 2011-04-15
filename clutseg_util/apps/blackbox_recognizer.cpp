@@ -384,15 +384,6 @@ int main(int argc, char *argv[])
                 }
             }
 
-            if (write_store && found.empty()) {
-                // Make sure that there is also a picture that denotes that no guess has been
-                // made on a certain picture
-                string none_name = str(boost::format("%s/%s.%s.none.png") % opts.storeDirectory % mapped_img_name);
-                Mat noCanvas = test.image.clone();
-                putText(noCanvas, "No subjects detected!", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
-                imwrite(none_name, noCanvas);
-            }
-
             if (write_table) {
                 // there is a fuckup with mixing up doubles and floats
                 // guessed pose
@@ -439,6 +430,15 @@ int main(int argc, char *argv[])
                             % max_rerr_t % max_rerr_r << endl;
             }
             objectIndex++;
+        }
+
+        if (write_store && found.empty()) {
+            // Make sure that there is also a picture that denotes that no guess has been
+            // made on a certain picture
+            string none_name = str(boost::format("%s/%s.%s.none.png") % opts.storeDirectory % mapped_img_name);
+            Mat noCanvas = test.image.clone();
+            putText(noCanvas, "No subjects detected!", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
+            imwrite(none_name, noCanvas);
         }
 
         if (opts.verbose >= 2) {
