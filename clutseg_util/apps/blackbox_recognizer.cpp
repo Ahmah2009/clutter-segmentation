@@ -36,6 +36,7 @@
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv_candidate/PoseRT.h>
 #include <iostream>
@@ -210,6 +211,7 @@ int main(int argc, char *argv[])
     // If --storeDirectory is specified, all and as many results as possible
     // are to be written to that folder.
     if (write_store) {
+        assert(filesystem::exists(opts.storeDirectory));
         opts.resultFilename = opts.storeDirectory + "/results.txt";
         opts.statsFilename = opts.storeDirectory + "/stats.txt";
         opts.rocFilename = opts.storeDirectory + "/roc.gnuplot";
@@ -228,7 +230,6 @@ int main(int argc, char *argv[])
     fstream roc;
     fstream stats;
     fstream table;
-
 
     if (write_log) {
         log.open(opts.logFilename, FileStorage::WRITE);
@@ -328,13 +329,13 @@ int main(int argc, char *argv[])
 
             // Try whether there is ground-truth on the object pose in the test
             // images.  The pose is stored in files named
-            // <image_name>.<name>.pose.yaml, such as
-            // image_00123.png.odwalla_lime.pose.yaml or
-            // image_00123.png.tide.pose.yaml It is not possible to specify
-            // different poses for items that appear more than one time on the
-            // test image, but that leads to much more complex questions.  The
-            // following code assumes that there is only one instance of every
-            // training subject on a test image.
+            // <image_name>.<name>.ground.pose.yaml, such as
+            // image_00123.png.odwalla_lime.ground.pose.yaml or
+            // image_00123.png.tide.ground.pose.yaml It is not possible to
+            // specify different poses for items that appear more than one time
+            // on the test image, but that leads to much more complex
+            // questions.  The following code assumes that there is only one
+            // instance of every training subject on a test image.
             PoseRT ground_posert;
             string ground_pose_path = str(boost::format("%s/%s.%s.ground.pose.yaml") % opts.imageDirectory % img_name % name);
             bool ground_pose_available = filesystem::exists(ground_pose_path);
@@ -359,16 +360,21 @@ int main(int argc, char *argv[])
             }
            
             if (write_store) {
-                string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % img_name % name % guess_count[name]);
+                string mapped_img_name(img_name);
+                algorithm::replace_all(mapped_img_name, "/", "__");
+                string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % mapped_img_name % name % guess_count[name]);
+                string guessed_pose_path = test_basename + ".guessed.pose.yaml";
                 // Write guessed and ground-truth pose to file
                 FileStorage guess_out;
-                guess_out.open(test_basename + ".guessed.pose.yaml", FileStorage::WRITE);
+                guess_out.open(guessed_pose_path, FileStorage::WRITE);
                 guess_out << PoseRT::YAML_NODE_NAME;
                 guess_posert.write(guess_out);
                 guess_out.release();
                 if (ground_pose_available) {
+                    // TODO: extract methods writePose(filename, pose) readPose(filename, pose)
+                    ground_pose_path = test_basename + ".ground.pose.yaml";
                     FileStorage ground_out;
-                    ground_out.open(test_basename + ".ground.pose.yaml", FileStorage::WRITE);
+                    ground_out.open(ground_pose_path, FileStorage::WRITE);
                     ground_out << PoseRT::YAML_NODE_NAME;
                     ground_posert.write(ground_out);
                     ground_out.release();
