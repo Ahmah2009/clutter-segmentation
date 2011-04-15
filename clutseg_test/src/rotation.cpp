@@ -6,9 +6,7 @@
 
 #include <math.h>
 
-using namespace cv;
-
-cv::Mat generateXRotationMatrix(double angle) {
+Mat generateXRotationMatrix(double angle) {
     Mat rot = Mat(3, 3, CV_64F);
     rot.at<double>(0, 0) = 1;
     rot.at<double>(0, 1) = 0;
@@ -22,7 +20,7 @@ cv::Mat generateXRotationMatrix(double angle) {
     return rot;
 }
 
-cv::Mat generateYRotationMatrix(double angle) {
+Mat generateYRotationMatrix(double angle) {
     Mat rot = Mat(3, 3, CV_64F);
     rot.at<double>(0, 0) = cos(angle);
     rot.at<double>(0, 1) = 0;
@@ -36,7 +34,7 @@ cv::Mat generateYRotationMatrix(double angle) {
     return rot;
 }
 
-cv::Mat generateZRotationMatrix(double angle) {
+Mat generateZRotationMatrix(double angle) {
     Mat rot = Mat(3, 3, CV_64F);
     rot.at<double>(0, 0) = cos(angle);
     rot.at<double>(0, 1) = -sin(angle);

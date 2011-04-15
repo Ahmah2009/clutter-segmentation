@@ -4,7 +4,6 @@
 
 #include "test.h"
 
-#include <gtest/gtest.h>
 #include "pose_util.h"
 #include <fiducial/fiducial.h>
 #include <cv.h>

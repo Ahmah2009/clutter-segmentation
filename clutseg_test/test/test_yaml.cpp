@@ -4,7 +4,6 @@
 
 #include "test.h"
 
-#include <gtest/gtest.h>
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>
 #include <boost/filesystem.hpp>

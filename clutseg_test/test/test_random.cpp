@@ -4,7 +4,6 @@
 
 #include "test.h"
 
-#include <gtest/gtest.h>
 #include <iostream>
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>

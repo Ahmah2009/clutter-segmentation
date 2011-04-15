@@ -4,13 +4,17 @@
 
 #include <cv.h>
 
-// TODO: are cv::Mat objects automatically placed on the heap, or can
-// we just return them as references like in Java??? The operators on
-// matrices might give clues.
+using namespace cv;
 
-cv::Mat generateXRotationMatrix(double angle);
+/** Generates a rotation matrix R such that Rv is the vector v rotated about
+ * the x-axis. */
+Mat generateXRotationMatrix(double angle);
 
-cv::Mat generateYRotationMatrix(double angle);
+/** Generates a rotation matrix R such that Rv is the vector v rotated about
+ * the y-axis. */
+Mat generateYRotationMatrix(double angle);
 
-cv::Mat generateZRotationMatrix(double angle);
+/** Generates a rotation matrix R such that Rv is the vector v rotated about
+ * the z-axis. */
+Mat generateZRotationMatrix(double angle);
 

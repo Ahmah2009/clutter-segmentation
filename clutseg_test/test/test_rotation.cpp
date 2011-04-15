@@ -4,7 +4,6 @@
 
 #include "test.h"
 
-#include <gtest/gtest.h>
 #include <cv.h>
 #include <math.h>
 #include <opencv2/calib3d/calib3d.hpp>

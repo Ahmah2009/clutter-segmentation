@@ -4,7 +4,6 @@
 
 #include "test.h"
 
-#include <gtest/gtest.h>
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <boost/filesystem.hpp>

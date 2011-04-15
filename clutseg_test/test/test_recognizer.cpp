@@ -7,7 +7,7 @@
  */
 
 #include "test.h"
-#include <gtest/gtest.h>
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <boost/format.hpp>

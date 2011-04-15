@@ -4,7 +4,6 @@
 
 #include "test.h"
 
-#include <gtest/gtest.h>
 #include <iostream>
 #include <fstream>
 #include <boost/program_options.hpp>

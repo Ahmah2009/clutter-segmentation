@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include <gtest/gtest.h>
+#include "test.h"
 
 int main(int argc, char **argv){
     testing::InitGoogleTest(&argc, argv);
