@@ -21,6 +21,8 @@ TestDesc loadTestDesc(const string & filename) {
     size_t s = 1024;
     char cline[1024];
     while (!f.eof()) {
+        // getline stops on eof, no character will be
+        // read twice.
         f.getline(cline, s);
         string line(cline);
         size_t offs = line.find_first_of('='); 
