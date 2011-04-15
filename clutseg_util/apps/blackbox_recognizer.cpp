@@ -226,10 +226,10 @@ int main(int argc, char *argv[])
     bool write_roc = (opts.rocFilename != "");
 
     FileStorage log;
-    fstream result;
-    fstream roc;
-    fstream stats;
-    fstream table;
+    ofstream result;
+    ofstream roc;
+    ofstream stats;
+    ofstream table;
 
     if (write_log) {
         log.open(opts.logFilename, FileStorage::WRITE);
@@ -240,12 +240,12 @@ int main(int argc, char *argv[])
     }
 
     if (write_result) {
-        result.open(opts.resultFilename.c_str(), ios_base::out);
+        result.open(opts.resultFilename.c_str());
         result << "[predictions]" << endl;
     }
  
     if (write_roc) {
-        roc.open(opts.rocFilename.c_str(), ios_base::out);
+        roc.open(opts.rocFilename.c_str());
         roc << "set size .75,1" << endl;
         roc << "set size ratio 1" << endl;
         roc << "set xtics .1" << endl;
@@ -261,12 +261,12 @@ int main(int argc, char *argv[])
     }
 
     if (write_stats) {
-        stats.open(opts.statsFilename.c_str(), ios_base::out);
+        stats.open(opts.statsFilename.c_str());
         stats << "[statistics]" << endl;
     }
 
     if (write_table) {
-        table.open(opts.tableFilename.c_str(), ios_base::out);
+        table.open(opts.tableFilename.c_str());
         table << boost::format("%-45s %-25s %-5s %-3s %-7s "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
@@ -380,6 +380,7 @@ int main(int argc, char *argv[])
                 if (ground_pose_available) {
                     canvas = test.image.clone();
                     drawPose(ground_posert, test.image, guess.getObject()->observations[0].camera(), canvas);
+                    putText(canvas, "Ground truth", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
                     imwrite(test_basename + ".ground.pose.png", canvas);
                 }
             }
@@ -400,6 +401,8 @@ int main(int argc, char *argv[])
                 double ground_rx = numeric_limits<double>::quiet_NaN();
                 double ground_ry = numeric_limits<double>::quiet_NaN();
                 double ground_rz = numeric_limits<double>::quiet_NaN();
+                double max_rerr_t = numeric_limits<double>::quiet_NaN();
+                double max_rerr_r = numeric_limits<double>::quiet_NaN();
                 if (ground_pose_available) {
                     ground_tx = ground_posert.tvec.at<double>(0, 0);
                     ground_ty = ground_posert.tvec.at<double>(1, 0);
@@ -407,18 +410,19 @@ int main(int argc, char *argv[])
                     ground_rx = ground_posert.rvec.at<double>(0, 0);
                     ground_ry = ground_posert.rvec.at<double>(1, 0);
                     ground_rz = ground_posert.rvec.at<double>(2, 0);
+
+                    // relative errors
+                    vector<double> rerr_t(3); 
+                    vector<double> rerr_r(3); 
+                    rerr_t.push_back(abs(guess_tx - ground_tx) / ground_tx);
+                    rerr_t.push_back(abs(guess_ty - ground_ty) / ground_ty);
+                    rerr_t.push_back(abs(guess_tz - ground_tz) / ground_tz);
+                    rerr_r.push_back(abs(guess_rx - ground_rx) / ground_rx);
+                    rerr_r.push_back(abs(guess_ry - ground_ry) / ground_ry);
+                    rerr_r.push_back(abs(guess_rz - ground_rz) / ground_rz);
+                    max_rerr_t = *max_element(rerr_t.begin(), rerr_t.end());
+                    max_rerr_r = *max_element(rerr_r.begin(), rerr_r.end());
                 }
-                // relative errors
-                vector<double> rerr_t(3); 
-                vector<double> rerr_r(3); 
-                rerr_t.push_back(abs(guess_tx - ground_tx) / ground_tx);
-                rerr_t.push_back(abs(guess_ty - ground_ty) / ground_ty);
-                rerr_t.push_back(abs(guess_tz - ground_tz) / ground_tz);
-                rerr_r.push_back(abs(guess_rx - ground_rx) / ground_rx);
-                rerr_r.push_back(abs(guess_ry - ground_ry) / ground_ry);
-                rerr_r.push_back(abs(guess_rz - ground_rz) / ground_rz);
-                double max_rerr_t = *max_element(rerr_t.begin(), rerr_t.end());
-                double max_rerr_r = *max_element(rerr_r.begin(), rerr_r.end());
 
                 table << boost::format("%-45s %-25s %5d %3d %7d "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
@@ -435,7 +439,7 @@ int main(int argc, char *argv[])
         if (write_store && found.empty()) {
             // Make sure that there is also a picture that denotes that no guess has been
             // made on a certain picture
-            string none_name = str(boost::format("%s/%s.%s.none.png") % opts.storeDirectory % mapped_img_name);
+            string none_name = str(boost::format("%s/%s.none.png") % opts.storeDirectory % mapped_img_name);
             Mat noCanvas = test.image.clone();
             putText(noCanvas, "No subjects detected!", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
             imwrite(none_name, noCanvas);
