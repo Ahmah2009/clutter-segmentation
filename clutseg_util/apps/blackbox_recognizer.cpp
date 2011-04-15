@@ -48,6 +48,7 @@
 using namespace cv;
 using namespace tod;
 using namespace std;
+using namespace boost;
 namespace po = boost::program_options;
 
 namespace {
@@ -271,7 +272,7 @@ int main(int argc, char *argv[])
                            "%-10s %-10s") 
                             % "image" % "object" % "guess" % "hit" % "inliers"
                             % "guess_tx" % "guess_ty" % "guess_tz" % "guess_rx" % "guess_ry" % "guess_rz"
-                            % "est_tx" % "est_ty" % "est_tz" % "est_rx" % "est_ry" % "est_rz" 
+                            % "ground_tx" % "ground_ty" % "ground_tz" % "ground_rx" % "ground_ry" % "ground_rz" 
                             % "max_rerr_t" % "max_rerr_r" << endl;
     }
   
@@ -319,9 +320,30 @@ int main(int argc, char *argv[])
         foreach(const Guess & guess, guesses) {
             string name = guess.getObject()->name;
             Pose guess_pose = guess.aligned_pose();
+            PoseRT guess_posert;
+            poseToPoseRT(guess_pose, guess_posert);
             
             found.insert(name);
             guess_count[name] += 1;
+
+            // Try whether there is ground-truth on the object pose in the test
+            // images.  The pose is stored in files named
+            // <image_name>.<name>.pose.yaml, such as
+            // image_00123.png.odwalla_lime.pose.yaml or
+            // image_00123.png.tide.pose.yaml It is not possible to specify
+            // different poses for items that appear more than one time on the
+            // test image, but that leads to much more complex questions.  The
+            // following code assumes that there is only one instance of every
+            // training subject on a test image.
+            PoseRT ground_posert;
+            string ground_pose_path = str(boost::format("%s/%s.%s.ground.pose.yaml") % opts.imageDirectory % img_name % name);
+            bool ground_pose_available = filesystem::exists(ground_pose_path);
+            if (ground_pose_available) {
+                FileStorage p_in;
+                p_in.open(ground_pose_path, FileStorage::READ);
+                ground_posert.read(p_in[PoseRT::YAML_NODE_NAME]);
+                p_in.release();
+            }
 
             if (write_log) {
                 stringstream nodeIndex;
@@ -331,37 +353,80 @@ int main(int argc, char *argv[])
                 log << "id" << guess.getObject()->id;
                 log << "name" << name;
                 log << "imageName" << img_name;
-                log << Pose::YAML_NODE_NAME;
-                guess_pose.write(log);
+                log << PoseRT::YAML_NODE_NAME;
+                guess_posert.write(log);
                 log << "}";
             }
            
             if (write_store) {
-                // Write guessed pose to file
-                FileStorage p_out;
-                p_out.open(str(boost::format("%s/%s.%s.%d.guessed.pose.yaml") % opts.storeDirectory % img_name % name % guess_count[name]), FileStorage::WRITE);
-                p_out << Pose::YAML_NODE_NAME;
-                guess_pose.write(p_out);
-                p_out.release();
+                string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % img_name % name % guess_count[name]);
+                // Write guessed and ground-truth pose to file
+                FileStorage guess_out;
+                guess_out.open(test_basename + ".guessed.pose.yaml", FileStorage::WRITE);
+                guess_out << PoseRT::YAML_NODE_NAME;
+                guess_posert.write(guess_out);
+                guess_out.release();
+                if (ground_pose_available) {
+                    FileStorage ground_out;
+                    ground_out.open(test_basename + ".ground.pose.yaml", FileStorage::WRITE);
+                    ground_out << PoseRT::YAML_NODE_NAME;
+                    ground_posert.write(ground_out);
+                    ground_out.release();
+                }
+                // Write image with pose drawn to file
+                Mat canvas = test.image.clone();
+                drawPose(guess_pose, test.image, guess.getObject()->observations[0].camera(), canvas);
+                imwrite(test_basename + ".guessed.pose.png", canvas);
+                if (ground_pose_available) {
+                    canvas = test.image.clone();
+                    drawPose(ground_posert, test.image, guess.getObject()->observations[0].camera(), canvas);
+                    imwrite(test_basename + ".ground.pose.png", canvas);
+                }
             }
 
             if (write_table) {
-                PoseRT guess_posert;
-                poseToPoseRT(guess_pose, guess_posert);
+                // guessed pose
                 float guess_tx = guess_posert.tvec.at<float>(0, 0);
                 float guess_ty = guess_posert.tvec.at<float>(1, 0);
                 float guess_tz = guess_posert.tvec.at<float>(2, 0);
                 float guess_rx = guess_posert.rvec.at<float>(0, 0);
                 float guess_ry = guess_posert.rvec.at<float>(1, 0);
                 float guess_rz = guess_posert.rvec.at<float>(2, 0);
+                // ground-truth pose
+                float ground_tx = numeric_limits<float>::quiet_NaN();
+                float ground_ty = numeric_limits<float>::quiet_NaN();
+                float ground_tz = numeric_limits<float>::quiet_NaN();
+                float ground_rx = numeric_limits<float>::quiet_NaN();
+                float ground_ry = numeric_limits<float>::quiet_NaN();
+                float ground_rz = numeric_limits<float>::quiet_NaN();
+                if (ground_pose_available) {
+                    ground_tx = ground_posert.tvec.at<float>(0, 0);
+                    ground_ty = ground_posert.tvec.at<float>(1, 0);
+                    ground_tz = ground_posert.tvec.at<float>(2, 0);
+                    ground_rx = ground_posert.rvec.at<float>(0, 0);
+                    ground_ry = ground_posert.rvec.at<float>(1, 0);
+                    ground_rz = ground_posert.rvec.at<float>(2, 0);
+                }
+                // relative errors
+                vector<float> rerr_t(3); 
+                vector<float> rerr_r(3); 
+                rerr_t.push_back(abs(guess_tx - ground_tx) / ground_tx);
+                rerr_t.push_back(abs(guess_ty - ground_ty) / ground_ty);
+                rerr_t.push_back(abs(guess_tz - ground_tz) / ground_tz);
+                rerr_r.push_back(abs(guess_rx - ground_rx) / ground_rx);
+                rerr_r.push_back(abs(guess_ry - ground_ry) / ground_ry);
+                rerr_r.push_back(abs(guess_rz - ground_rz) / ground_rz);
+                float max_rerr_t = *max_element(rerr_t.begin(), rerr_t.end());
+                float max_rerr_r = *max_element(rerr_r.begin(), rerr_r.end());
+
                 table << boost::format("%-15s %-25s %5d %3d %7d "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
-                           "%-10s %-10s %-10s %-10s %-10s %-10s "
-                           "%-10s %-10s") 
+                           "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
+                           "%10.7f %10.7f") 
                             % img_name % name % guess_count[name]  % (expected.find(name) == expected.end() ? 0 : 1) % guess.inliers.size()
                             % guess_tx % guess_ty % guess_tz % guess_rx % guess_ry % guess_rz
-                            % "-" % "-" % "-" % "-" % "-" % "-" 
-                            % "-" % "-" << endl;
+                            % ground_tx % ground_ty % ground_tz % ground_rx % ground_ry % ground_rz 
+                            % max_rerr_t % max_rerr_r << endl;
             }
             objectIndex++;
         }

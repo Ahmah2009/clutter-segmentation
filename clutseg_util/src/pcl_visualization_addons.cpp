@@ -7,6 +7,7 @@
 #include <opencv_candidate/PoseRT.h>
 #include <pcl_visualization/pcl_visualizer.h>
 #include <cv.h>
+#include <assert.h>
 
 using namespace pcl;
 using namespace pcl_visualization;
@@ -16,20 +17,21 @@ using namespace cv;
 void addPose(PCLVisualizer & visualizer, PoseRT & pose, string id_prefix) {
     int axlength = 1;
 
-    Mat rot = Mat(3, 3, CV_64F);
+    Mat rot;
     Rodrigues(pose.rvec, rot);
     // Unit vectors, rotated and translated according to pose
-    Mat xpose = Mat(3, 1, CV_64F);
+    Mat xpose(3, 1, CV_64FC1);
     xpose.at<double>(0, 0) = axlength;
     xpose.at<double>(1, 0) = 0;
     xpose.at<double>(2, 0) = 0;
-    xpose = rot * xpose + pose.tvec;
-    Mat ypose = Mat(3, 1, CV_64F);
+    xpose = rot * xpose;
+    xpose = xpose + pose.tvec;
+    Mat ypose = Mat(3, 1, CV_64FC1);
     ypose.at<double>(0, 0) = 0;
     ypose.at<double>(1, 0) = axlength;
     ypose.at<double>(2, 0) = 0;
     ypose = rot * ypose + pose.tvec;
-    Mat zpose = Mat(3, 1, CV_64F);
+    Mat zpose = Mat(3, 1, CV_64FC1);
     zpose.at<double>(0, 0) = 0;
     zpose.at<double>(1, 0) = 0;
     zpose.at<double>(2, 0) = axlength;

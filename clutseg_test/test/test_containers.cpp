@@ -59,3 +59,13 @@ TEST(Containers, IterateOverMap) {
     EXPECT_TRUE(str.find("delta") != string::npos);
     EXPECT_EQ(10, sum);
 }
+
+TEST(Containers, FindMax) {
+    vector<float> v(3); 
+    v.push_back(-10.2);
+    v.push_back(3);
+    v.push_back(42);
+    float max_v = *max_element(v.begin(), v.end());
+    EXPECT_DOUBLE_EQ(42, v); 
+}
+

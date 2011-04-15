@@ -11,6 +11,7 @@
 #include <opencv_candidate/Camera.h>
 
 using namespace cv;
+using namespace opencv_candidate;
 
 TEST(Yaml, ReadYaml) {
     FileStorage fs("./data/config.yaml", FileStorage::READ);
@@ -25,7 +26,6 @@ TEST(Yaml, ExtractDetectorType) {
 
 /** Read pose estimation from YAML file */
 TEST(Yaml, DeserializePoseFromYAML) {
-    using namespace opencv_candidate;
     FileStorage in("./data/pose.yaml", FileStorage::READ);
     PoseRT act_pose;
     act_pose.read(in[PoseRT::YAML_NODE_NAME]);
@@ -39,7 +39,6 @@ TEST(Yaml, DeserializePoseFromYAML) {
 
 /** Serialize pose estimation to YAML file */
 TEST(Yaml, SerializePoseToYAML) {
-    using namespace opencv_candidate;
     using namespace boost::filesystem;
     PoseRT pose;
     pose.rvec = Mat::zeros(3, 1, 1); 
@@ -53,10 +52,8 @@ TEST(Yaml, SerializePoseToYAML) {
 }
 
 TEST(Yaml, ReadCameraFromYaml) {
-    using namespace opencv_candidate;
     Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
     EXPECT_TRUE(CV_IS_MAT(&(camera.D)));
     EXPECT_TRUE(CV_IS_MAT(&(camera.K)));
 }
-
 
