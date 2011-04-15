@@ -16,10 +16,10 @@ if [ ! "$CLUTSEG_PATH" ] ; then
 fi
 
 pushd $CLUTSEG_PATH > /dev/null
-    mkdir tod_kinect_test_train_20/result
-    rm tod_kinect_test_train_20/result/*
+    mkdir -p tod_kinect_test_train_20/result
+    rm -f tod_kinect_test_train_20/result/*
     blackbox_recognizer \
-        -B tod_kinect_train \
+        -B tod_kinect_train_15 \
         -I tod_kinect_test_train_20 \
         --store=tod_kinect_test_train_20/result \
         --testdesc=tod_kinect_test_train_20/testdesc.txt \

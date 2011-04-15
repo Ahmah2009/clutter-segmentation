@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
 
     if (write_table) {
         table.open(opts.tableFilename.c_str(), ios_base::out);
-        table << boost::format("%-30s %-25s %-5s %-3s %-7s "
+        table << boost::format("%-45s %-25s %-5s %-3s %-7s "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
                            "%-10s %-10s %-10s %-10s %-10s %-10s "
                            "%-10s %-10s") 
@@ -301,6 +301,12 @@ int main(int argc, char *argv[])
         int p = expected.size();
 
         string img_name = it->first;
+        // In case the images are in subfolders of the test directory, we either
+        // have to replicate that layout in the result folder or flatten the filename.
+        // Decided for the latter approach since it simplifies browsing through the 
+        // results with eog or other tools.
+        string mapped_img_name(img_name);
+        algorithm::replace_all(mapped_img_name, "/", "__");
         Features2d test;
         
         string path = opts.imageDirectory + "/" + img_name;
@@ -357,8 +363,6 @@ int main(int argc, char *argv[])
             }
            
             if (write_store) {
-                string mapped_img_name(img_name);
-                algorithm::replace_all(mapped_img_name, "/", "__");
                 string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % mapped_img_name % name % guess_count[name]);
                 string guessed_pose_path = test_basename + ".guessed.pose.yaml";
                 // Write guessed and ground-truth pose to file
@@ -371,13 +375,22 @@ int main(int argc, char *argv[])
                 // TODO: draw number of inliers on image
                 Mat canvas = test.image.clone();
                 drawPose(guess_pose, test.image, guess.getObject()->observations[0].camera(), canvas);
-                putText(canvas, str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()), Point(100, 10), FONT_HERSHEY_SIMPLEX, 0.5, 200, 2);
+                putText(canvas, str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()), Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
                 imwrite(test_basename + ".guessed.pose.png", canvas);
                 if (ground_pose_available) {
                     canvas = test.image.clone();
                     drawPose(ground_posert, test.image, guess.getObject()->observations[0].camera(), canvas);
                     imwrite(test_basename + ".ground.pose.png", canvas);
                 }
+            }
+
+            if (write_store && found.empty()) {
+                // Make sure that there is also a picture that denotes that no guess has been
+                // made on a certain picture
+                string none_name = str(boost::format("%s/%s.%s.none.png") % opts.storeDirectory % mapped_img_name);
+                Mat noCanvas = test.image.clone();
+                putText(noCanvas, "No subjects detected!", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
+                imwrite(none_name, noCanvas);
             }
 
             if (write_table) {
@@ -416,7 +429,7 @@ int main(int argc, char *argv[])
                 double max_rerr_t = *max_element(rerr_t.begin(), rerr_t.end());
                 double max_rerr_r = *max_element(rerr_r.begin(), rerr_r.end());
 
-                table << boost::format("%-30s %-25s %5d %3d %7d "
+                table << boost::format("%-45s %-25s %5d %3d %7d "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%10.7f %10.7f") 
