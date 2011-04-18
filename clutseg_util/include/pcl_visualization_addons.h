@@ -9,5 +9,9 @@ using namespace std;
 using namespace pcl_visualization;
 using namespace opencv_candidate;
 
-void addPose(PCLVisualizer & visualizer, PoseRT & pose, string id_prefix = string(""));
+namespace clutseg {
+
+    void addPose(PCLVisualizer & visualizer, PoseRT & pose, string id_prefix = string(""));
+
+}
 

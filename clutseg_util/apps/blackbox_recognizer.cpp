@@ -29,7 +29,6 @@
 #include "tod/detecting/Loader.h"
 #include "tod/detecting/Recognizer.h"
 #include "testdesc.h"
-#include "mute.h"
 #include "pose_util.h"
 
 #include <boost/foreach.hpp>
@@ -50,6 +49,7 @@ using namespace cv;
 using namespace tod;
 using namespace std;
 using namespace boost;
+using namespace clutseg;
 namespace po = boost::program_options;
 
 namespace {

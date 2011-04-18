@@ -10,6 +10,7 @@
 #include "rotation.h"
 
 using namespace cv;
+using namespace clutseg;
 
 TEST(Rotation, RotateAroundXAxis) {
     Mat rx = generateXRotationMatrix(M_PI / 2);

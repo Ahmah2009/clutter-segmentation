@@ -9,24 +9,28 @@
 using namespace cv;
 using namespace opencv_candidate;
 
-// TODO: use template or remove one of these methods
-/** Draws a given pose. The pose is projected on the canvas using
- * the camera information. The result shows a coordinate system that
- * visualizes the pose on the image. */
-void drawPose(const PoseRT & pose, const Mat & image, const Camera & camera, Mat & canvas);
+namespace clutseg {
 
-void drawPose(const Pose & pose, const Mat & image, const Camera & camera, Mat & canvas);
+    // TODO: use template or remove one of these methods
+    /** Draws a given pose. The pose is projected on the canvas using
+     * the camera information. The result shows a coordinate system that
+     * visualizes the pose on the image. */
+    void drawPose(const PoseRT & pose, const Mat & image, const Camera & camera, Mat & canvas);
 
-void poseToPoseRT(const Pose & src, PoseRT & dst);
+    void drawPose(const Pose & pose, const Mat & image, const Camera & camera, Mat & canvas);
 
-void poseRtToPose(const PoseRT & src, Pose & dst);
+    void poseToPoseRT(const Pose & src, PoseRT & dst);
 
-// TODO: use template or remove one of these methods
-void writePose(const string & filename, const PoseRT & pose);
+    void poseRtToPose(const PoseRT & src, Pose & dst);
 
-void readPose(const string & filename, PoseRT & dst);
+    // TODO: use template or remove one of these methods
+    void writePose(const string & filename, const PoseRT & pose);
 
-void writePose(const string & filename, const Pose & pose);
+    void readPose(const string & filename, PoseRT & dst);
 
-void readPose(const string & filename, Pose & dst);
+    void writePose(const string & filename, const Pose & pose);
+
+    void readPose(const string & filename, Pose & dst);
+
+}
 

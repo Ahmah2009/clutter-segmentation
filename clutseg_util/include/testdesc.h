@@ -8,7 +8,11 @@
 
 using namespace std;
 
-typedef map<string, set<string> > TestDesc;
+namespace clutseg {
 
-TestDesc loadTestDesc(const string & filename);
+    typedef map<string, set<string> > TestDesc;
+
+    TestDesc loadTestDesc(const string & filename);
+
+}
 
