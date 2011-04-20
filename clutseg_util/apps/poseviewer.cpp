@@ -11,12 +11,14 @@
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include "pcl_visualization_addons.h"
+#include "pose_util.h"
 
 using namespace std;
 using namespace cv;
 using namespace opencv_candidate;
 using namespace pcl;
 using namespace pcl_visualization;
+using namespace clutseg;
 
 int main(int argc, char *argv[]) {
     // Read arguments
