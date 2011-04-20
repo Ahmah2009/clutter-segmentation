@@ -2,7 +2,7 @@
 
 if [ "$1" = "--help" ] ; then
     cat <<HELP
-Usage: ias-kinect-train
+Usage: ias-kinect-train [--no-dump]
 
 Creates a training base from IAS kinect bags.
 HELP
@@ -14,8 +14,9 @@ if [ ! "$CLUTSEG_PATH" ] ; then
     exit
 fi
 
-
-rosrun tod_training dump_all.py $CLUTSEG_PATH/ias_kinect_bags/ $CLUTSEG_PATH/ias_kinect_train/
+if [ ! "$1" = "--no-dump" ] ; then
+    rosrun tod_training dump_all.py $CLUTSEG_PATH/ias_kinect_bags/ $CLUTSEG_PATH/ias_kinect_train/
+fi
 pushd $CLUTSEG_PATH/ias_kinect_train > /dev/null
     rosrun tod_training train_all.sh
 popd > /dev/null
