@@ -218,7 +218,6 @@ def replace_data(yaml, vec, new):
     return yaml[:s+1] + str(new[0]) + ", " + str(new[1]) + ", " + str(new[2]) + yaml[e:]
    
 def blackbox_recognizer(init_cfg, base_dir, stats_file):
-    (h, tmpdevnull) = tempfile.mkstemp()
     p = subprocess.Popen(
         ("rosrun",
          "clutseg_util",
@@ -227,12 +226,10 @@ def blackbox_recognizer(init_cfg, base_dir, stats_file):
          "--tod_config=%s" % os.path.join(base_dir, "config.yaml"),
         "--image=%s" % init_cfg.test_dir,
         "--testdesc=%s" % init_cfg.testdesc_file,
-        "--log=%s" % tmpdevnull,
         "--mode=%s" % init_cfg.mode,
         "--verbose=%d" % 0,
         "--stats=%s" % stats_file), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
-    os.remove(tmpdevnull)
 
 def evaluate(init_cfg, stddev_t, stddev_r):
     # run blackbox_recognizer

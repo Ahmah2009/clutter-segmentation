@@ -24,18 +24,11 @@
  * This implementation fixes some of the issues. Also, it tries to collect as
  * much information about the performance and output of the classifier on a
  * given testing set.
- *
- * This recognizer allows to track the matching and recognition process in
- * order to collect statistics and data for manual review. There are 
- * recorder objects that are fed with the results of the experiment. Various
- * kind of recorders can be plugged in and thus enabling the experimenter to
- * collect exactly the data of interest.
  */
 
 #include "testdesc.h"
 #include "guess_util.h"
 #include "pose_util.h"
-#include "recorder.h"
 
 #include <tod/detecting/Loader.h>
 #include <tod/detecting/Recognizer.h>
@@ -63,6 +56,21 @@ using namespace boost;
 using namespace clutseg;
 namespace po = boost::program_options;
 
+struct Options {
+    string imageDirectory;
+    string baseDirectory;
+    string config;
+    string testdescFilename;
+    string resultFilename;
+    string statsFilename;
+    string rocFilename;
+    string tableFilename;
+    string storeDirectory;
+    TODParameters params;
+    int verbose;
+    int mode;
+};
+
 int options(int ac, char **av, Options & opts)
 {
 
@@ -80,11 +88,6 @@ int options(int ac, char **av, Options & opts)
                        "The directory that the training base is in.");
     desc.add_options()("tod_config,f", po::value < string > (&opts.config),
                        "The name of the configuration file");
-    desc.add_options()("log,l", po::value < string > (&opts.logFilename),
-                       "The name "
-                       "of the log file where results are written to in YAML format. Cannot be written "
-                       "to standard output because standard output seems to serve debugging "
-                       "purposes...");
     desc.add_options()("result,r",
                        po::value < string > (&opts.resultFilename),
                        "Result file using INI-style/Python config file syntax. This one is optional.");
@@ -235,27 +238,18 @@ int main(int argc, char *argv[])
         opts.resultFilename = opts.storeDirectory + "/results.txt";
         opts.statsFilename = opts.storeDirectory + "/stats.txt";
         opts.rocFilename = opts.storeDirectory + "/roc.gnuplot";
-        opts.logFilename = opts.storeDirectory + "/log.txt";
         opts.tableFilename = opts.storeDirectory + "/table.csv";
     }
 
-    bool write_log = (opts.logFilename != "");
     bool write_result = (opts.resultFilename != "");
     bool write_table = (opts.tableFilename != "");
     bool write_stats = (opts.statsFilename != "");
     bool write_roc = (opts.rocFilename != "");
 
-    FileStorage log;
     ofstream result;
     ofstream roc;
     ofstream stats;
     ofstream table;
-
-    vector<Recorder*> recs;
-
-    if (write_log) {
-        recs.push_back(new LogRecorder(opts.logFilename, opts));
-    }
 
     if (write_result) {
         result.open(opts.resultFilename.c_str());
@@ -508,18 +502,8 @@ int main(int argc, char *argv[])
         foreach (string obj, found) {
             cout << (boost::format("Detected %15s (%d different guesses)") % obj % guess_count[obj]) << endl;
         }
-
-        TestResult result(img_name, test, guesses);
-        BOOST_FOREACH(Recorder* r, recs) {
-            r->testFinished(result);
-        }
     }
     
-    BOOST_FOREACH(Recorder* r, recs) {
-        r->finalize();
-        delete r;
-    }
-
     if (write_result) {
         result.close();
     }

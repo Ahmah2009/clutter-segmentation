@@ -38,7 +38,6 @@ pushd $CLUTSEG_PATH > /dev/null
         --tod_config=tod_kinect_train_9/config.yaml \
         --image=tod_kinect_test_27 \
         --testdesc=tod_kinect_test_27/testdesc-9.txt \
-        --log=tod_kinect_test_27/blackbox_recognizer-demo.log \
         --result=tod_kinect_test_27/blackbox_recognizer-demo.result.txt \
         --stats=tod_kinect_test_27/blackbox_recognizer-demo.stats.txt \
         --roc=tod_kinect_test_27/blackbox_recognizer-demo.roc.gnuplot \
