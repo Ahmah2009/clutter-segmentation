@@ -43,6 +43,9 @@ target_link_libraries(blackbox_recognizer tod_detecting ${PROJECT_NAME})
 rosbuild_add_executable(keypoints_viewer apps/keypoints_viewer.cpp)
 target_link_libraries(keypoints_viewer tod_training ${PROJECT_NAME})
 
+rosbuild_add_executable(posetester apps/posetester.cpp)
+target_link_libraries(posetester ${PROJECT_NAME})
+
 rosbuild_add_executable(poseviewer apps/poseviewer.cpp)
 target_link_libraries(poseviewer ${PROJECT_NAME})
 
