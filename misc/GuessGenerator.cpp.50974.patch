@@ -1,0 +1,11 @@
+83c83
+<       cv::projectPoints(cv::Mat(aligned_points_), rvec, aligned_pose_.t<cv::Mat> (), k_, d_,
+---
+>       cv::projectPoints(cv::Mat(aligned_points_), rvec, aligned_pose_.t<cv::Mat> (), K, D,
+437,438c437,439
+<       solvePnPRansac(object_points, image_points, features_2d.camera.K, features_2d.camera.D, rvec, tvec, false,
+<                      params.ransacIterationsCount, params.maxProjectionError, -1, &inliers);
+---
+>       solvePnPRansac(object_points, image_points,
+>             object->observations[0].camera().K, object->observations[0].camera().D,
+>             rvec, tvec, false, params.ransacIterationsCount, params.maxProjectionError, -1, &inliers);
