@@ -26,11 +26,15 @@
  * given testing set.
  */
 
-#include "tod/detecting/Loader.h"
-#include "tod/detecting/Recognizer.h"
 #include "testdesc.h"
+#include "guess_util.h"
 #include "pose_util.h"
 
+#include <tod/detecting/Loader.h>
+#include <tod/detecting/Recognizer.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
@@ -372,7 +376,7 @@ int main(int argc, char *argv[])
                     writePose(ground_pose_path, ground_posert);
                 }
                 // Write image with pose drawn to file
-                // TODO: draw number of inliers on image
+                // TODO: extract method
                 Mat canvas = test.image.clone();
                 drawPose(guess_pose, test.image, guess.getObject()->observations[0].camera(), canvas);
                 putText(canvas, str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()), Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
@@ -383,6 +387,28 @@ int main(int argc, char *argv[])
                     putText(canvas, "Ground truth", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
                     imwrite(test_basename + ".ground.pose.png", canvas);
                 }
+                // Write image with correspondences for this guess
+                // TODO: extract method
+                canvas = test.image.clone();
+                guess.draw(canvas, 1, opts.baseDirectory);
+                imwrite(test_basename + ".matches.1.png", canvas);
+                // this is another mode 
+                // TODO: extract method
+                canvas = test.image.clone();
+                guess.draw(canvas, 0, opts.baseDirectory);
+                imwrite(test_basename + ".matches.0.png", canvas);
+                // this is the attempted fix 
+                // TODO: extract method
+                Mat canvas_corr;
+                canvas_corr = drawAllMatches(canvas_corr, base, rtMatcher, test.image, test.keypoints, opts.baseDirectory);
+                imwrite(test_basename + ".matches.png", canvas_corr);
+                // write aligned points to point cloud file
+                // TODO: extract method
+                pcl::PointCloud<pcl::PointXYZ> aligned_cloud;
+                foreach (const Point3f & p, guess.aligned_points_) {
+                    aligned_cloud.push_back(pcl::PointXYZ(p.x, p.y, p.z));
+                }
+                pcl::io::savePCDFileASCII(test_basename + ".pcd", aligned_cloud);
             }
 
             if (write_table) {

@@ -5,17 +5,17 @@
 #include "test.h"
 
 #include <limits>
-#include "pcl/io/pcd_io.h"
-#include "pcl/point_types.h"
-#include "cv.h"
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+#include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "fiducial/fiducial.h"
-#include "tod/core/Features3d.h"
-#include "tod/training/masking.h"
-#include "tod/training/clouds.h"
-#include "tod/training/Opts.h"
-#include "opencv_candidate/Camera.h"
+#include <fiducial/fiducial.h>
+#include <tod/core/Features3d.h>
+#include <tod/training/masking.h>
+#include <tod/training/clouds.h>
+#include <tod/training/Opts.h>
+#include <opencv_candidate/Camera.h>
 
 
 using namespace std;
