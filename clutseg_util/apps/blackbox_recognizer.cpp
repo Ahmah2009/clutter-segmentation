@@ -24,11 +24,18 @@
  * This implementation fixes some of the issues. Also, it tries to collect as
  * much information about the performance and output of the classifier on a
  * given testing set.
+ *
+ * This recognizer allows to track the matching and recognition process in
+ * order to collect statistics and data for manual review. There are 
+ * recorder objects that are fed with the results of the experiment. Various
+ * kind of recorders can be plugged in and thus enabling the experimenter to
+ * collect exactly the data of interest.
  */
 
 #include "testdesc.h"
 #include "guess_util.h"
 #include "pose_util.h"
+#include "recorder.h"
 
 #include <tod/detecting/Loader.h>
 #include <tod/detecting/Recognizer.h>
@@ -55,25 +62,6 @@ using namespace std;
 using namespace boost;
 using namespace clutseg;
 namespace po = boost::program_options;
-
-namespace {
-    struct Options
-    {
-        std::string imageDirectory;
-        std::string baseDirectory;
-        std::string config;
-        std::string testdescFilename;
-        std::string resultFilename;
-        std::string statsFilename;
-        std::string logFilename;
-        std::string rocFilename;
-        std::string tableFilename;
-        std::string storeDirectory;
-        TODParameters params;
-        int verbose;
-        int mode;
-    };
-}
 
 int options(int ac, char **av, Options & opts)
 {
@@ -263,12 +251,10 @@ int main(int argc, char *argv[])
     ofstream stats;
     ofstream table;
 
+    vector<Recorder*> recs;
+
     if (write_log) {
-        log.open(opts.logFilename, FileStorage::WRITE);
-        log << "trainFolder" << opts.baseDirectory;
-        log << "test1" << "{";
-        log << "testFolder" << opts.imageDirectory;
-        log << "objects" << "{";
+        recs.push_back(new LogRecorder(opts.logFilename, opts));
     }
 
     if (write_result) {
@@ -379,19 +365,6 @@ int main(int argc, char *argv[])
             bool ground_pose_available = filesystem::exists(ground_pose_path);
             if (ground_pose_available) {
                 readPose(ground_pose_path, ground_posert);
-            }
-
-            if (write_log) {
-                stringstream nodeIndex;
-                nodeIndex << objectIndex;
-                string nodeName = "object" + nodeIndex.str();
-                log << nodeName << "{";
-                log << "id" << guess.getObject()->id;
-                log << "name" << name;
-                log << "imageName" << img_name;
-                log << PoseRT::YAML_NODE_NAME;
-                guess_posert.write(log);
-                log << "}";
             }
            
             if (write_store) {
@@ -535,12 +508,16 @@ int main(int argc, char *argv[])
         foreach (string obj, found) {
             cout << (boost::format("Detected %15s (%d different guesses)") % obj % guess_count[obj]) << endl;
         }
-    }
 
-    if (write_log) {
-        log << "objectsCount" << objectIndex - 1;
-        log << "}" << "}";
-        log.release();
+        TestResult result(img_name, test, guesses);
+        BOOST_FOREACH(Recorder* r, recs) {
+            r->testFinished(result);
+        }
+    }
+    
+    BOOST_FOREACH(Recorder* r, recs) {
+        r->finalize();
+        delete r;
     }
 
     if (write_result) {
