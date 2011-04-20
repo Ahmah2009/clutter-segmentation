@@ -54,6 +54,64 @@ namespace clutseg {
         log_.release();
     }
 
+    /* ConfusionRecorder */
+
+    void ConfusionRecorder::ConfusionRecorder(const string & fname) {
+        roc_.open(fname.c_str());
+    }
+
+    void ConfusionRecorder::init() {
+
+    }
+
+    void ConfusionRecorder::testFinished(const TestResult & result) {
+        set<string> found;
+        BOOST_FOREACH(const Guess & guess, result.guesses) {
+            found.insert(guess.getObject()->name);
+        }
+
+        BOOST_FOREACH(string subject, found) {
+            // Check for true or false positive.
+            if (result.expected.find(subject) == result.expected.end()) {
+                fp += 1;
+            } else {
+                tp += 1;
+            }
+        }
+
+        int n = objects.size() - p;
+        int fn = p - tp;
+        int tn = n - fp;
+
+    }
+
+    int ConfusionRecorder::tp() const {
+        return tp_;
+    }
+
+    int ConfusionRecorder::fp() const {
+        return fp_;
+    }
+
+    int ConfusionRecorder::tn() const {
+        return n_ - fp_;
+    }
+
+    int ConfusionRecorder::fn() const {
+        return p_ - tp_;
+    }
+
+    float ConfusionRecorder::tp_rate() const {
+        return tp_ / (float) p_;
+    }
+
+    float ConfusionRecorder::fp_rate() const {
+        return fp_ / (float) n;
+    }
+
+    void ConfusionRecorder::finalize() {
+        roc_.close();
+    }
 
 }
 

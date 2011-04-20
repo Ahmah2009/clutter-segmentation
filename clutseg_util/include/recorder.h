@@ -40,5 +40,27 @@ namespace clutseg {
             int objectIndex_;
     };
 
+    class ConfusionRecorder : public Recorder {
+        public:
+            ConfusionRecorder(const string & fname);
+            virtual void init();
+            virtual void testFinished(const TestResult & result);
+            virtual void finalize();
+            int tp() const;
+            int fp() const;
+            int tn() const;
+            int fn() const;
+            int n() const;
+            int p() const;
+            float tp_rate() const;
+            float fp_rate() const;
+        private:
+            ofstream roc_;
+            int tp_;
+            int fp_;
+            int p_;
+            int n_;
+    };
+
 }
 
