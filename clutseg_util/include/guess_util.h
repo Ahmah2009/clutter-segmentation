@@ -16,7 +16,7 @@ namespace clutseg {
     // TODO: populate canvas instead of returning Matrix
     Mat drawAllMatches(Mat canvas, const TrainingBase & base,
                             const Ptr<Matcher> matcher, const Mat& testImage,
-                            const KeypointVector & testKeypoints, std::string baseDirectory);
+                            const KeypointVector & testKeypoints, const string & baseDirectory);
 
 }
 

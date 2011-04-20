@@ -171,6 +171,34 @@ bool readImage(Features2d & test, const string & path) {
     return true;
 }
 
+void storeGuessDrawing(const string & filename, const Guess & guess, const string & baseDirectory, int flags) {
+    Mat canvas;
+    guess.draw(canvas, flags, baseDirectory);
+    imwrite(filename, canvas);
+}
+
+void storeAllMatchesDrawing(const string & filename, const TrainingBase & base,
+        const Ptr<Matcher> & rtMatcher, const Features2d & test, const string & baseDirectory) {
+    Mat canvas;
+    canvas = drawAllMatches(canvas, base, rtMatcher, test.image, test.keypoints, baseDirectory);
+    imwrite(filename, canvas);
+}
+
+void storeAlignedPoints(const string & filename, const Guess & guess) {
+    pcl::PointCloud<pcl::PointXYZ> aligned_cloud;
+    BOOST_FOREACH(const Point3f & p, guess.aligned_points_) {
+        aligned_cloud.push_back(pcl::PointXYZ(p.x, p.y, p.z));
+    }
+    pcl::io::savePCDFileASCII(filename, aligned_cloud);
+}
+
+void storePoseDrawing(const string & filename, const PoseRT & pose, const Mat & testImage, const Camera & camera, const string & title) {
+    Mat canvas = testImage.clone();
+    drawPose(pose, testImage, camera, canvas);
+    putText(canvas, title, Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
+    imwrite(filename, canvas);
+}
+
 int main(int argc, char *argv[])
 {
     Options opts;
@@ -367,48 +395,22 @@ int main(int argc, char *argv[])
             }
            
             if (write_store) {
+                const Camera & trainingCamera = guess.getObject()->observations[0].camera();
                 string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % mapped_img_name % name % guess_count[name]);
                 string guessed_pose_path = test_basename + ".guessed.pose.yaml";
-                // Write guessed and ground-truth pose to file
+                string ground_pose_path = test_basename + ".ground.pose.yaml";
                 writePose(guessed_pose_path, guess_posert);
+                storePoseDrawing(test_basename + ".guessed.pose.png",
+                                guess_posert, test.image, trainingCamera,
+                                str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()));
                 if (ground_pose_available) {
-                    ground_pose_path = test_basename + ".ground.pose.yaml";
                     writePose(ground_pose_path, ground_posert);
+                    storePoseDrawing(test_basename + ".ground.pose.png", ground_posert, test.image, trainingCamera, "Ground truth");
                 }
-                // Write image with pose drawn to file
-                // TODO: extract method
-                Mat canvas = test.image.clone();
-                drawPose(guess_pose, test.image, guess.getObject()->observations[0].camera(), canvas);
-                putText(canvas, str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()), Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
-                imwrite(test_basename + ".guessed.pose.png", canvas);
-                if (ground_pose_available) {
-                    canvas = test.image.clone();
-                    drawPose(ground_posert, test.image, guess.getObject()->observations[0].camera(), canvas);
-                    putText(canvas, "Ground truth", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
-                    imwrite(test_basename + ".ground.pose.png", canvas);
-                }
-                // Write image with correspondences for this guess
-                // TODO: extract method
-                canvas = test.image.clone();
-                guess.draw(canvas, 1, opts.baseDirectory);
-                imwrite(test_basename + ".matches.1.png", canvas);
-                // this is another mode 
-                // TODO: extract method
-                canvas = test.image.clone();
-                guess.draw(canvas, 0, opts.baseDirectory);
-                imwrite(test_basename + ".matches.0.png", canvas);
-                // this is the attempted fix 
-                // TODO: extract method
-                Mat canvas_corr;
-                canvas_corr = drawAllMatches(canvas_corr, base, rtMatcher, test.image, test.keypoints, opts.baseDirectory);
-                imwrite(test_basename + ".matches.png", canvas_corr);
-                // write aligned points to point cloud file
-                // TODO: extract method
-                pcl::PointCloud<pcl::PointXYZ> aligned_cloud;
-                foreach (const Point3f & p, guess.aligned_points_) {
-                    aligned_cloud.push_back(pcl::PointXYZ(p.x, p.y, p.z));
-                }
-                pcl::io::savePCDFileASCII(test_basename + ".pcd", aligned_cloud);
+                storeGuessDrawing(test_basename + ".matches.0.png", guess, opts.baseDirectory, 0);
+                storeGuessDrawing(test_basename + ".matches.1.png", guess, opts.baseDirectory, 1);
+                storeAllMatchesDrawing(test_basename + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
+                storeAlignedPoints(test_basename + ".pcd", guess);
             }
 
             if (write_table) {

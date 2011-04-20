@@ -9,7 +9,7 @@ namespace clutseg {
 
     Mat drawAllMatches(Mat canvas, const TrainingBase & base,
                             const Ptr<Matcher> matcher, const Mat& testImage,
-                            const KeypointVector & testKeypoints, std::string baseDirectory) {
+                            const KeypointVector & testKeypoints, const string & baseDirectory) {
       namedWindow("matches", CV_WINDOW_KEEPRATIO);
       vector<Mat> match_images;
       int scaled_width = 1000;
