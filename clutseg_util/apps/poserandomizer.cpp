@@ -12,6 +12,7 @@
 #include <cv.h>
 
 #include "pcl_visualization_addons.h"
+#include "pose_util.h"
 
 using namespace std;
 using namespace pcl;
@@ -19,6 +20,8 @@ using namespace cv;
 using namespace boost;
 using namespace boost::filesystem;
 using namespace boost::algorithm;
+
+using namespace clutseg;
 
 void randomize(PoseRT & pose, double stddev_t, double stddev_r) {
     mt19937 twister; 
