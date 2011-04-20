@@ -397,6 +397,7 @@ int main(int argc, char *argv[])
             if (write_store) {
                 const Camera & trainingCamera = guess.getObject()->observations[0].camera();
                 string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % mapped_img_name % name % guess_count[name]);
+                string test_obj_basename = str(boost::format("%s/%s.%s") % opts.storeDirectory % mapped_img_name % name);
                 string guessed_pose_path = test_basename + ".guessed.pose.yaml";
                 string ground_pose_path = test_basename + ".ground.pose.yaml";
                 writePose(guessed_pose_path, guess_posert);
@@ -410,7 +411,9 @@ int main(int argc, char *argv[])
                 storeGuessDrawing(test_basename + ".matches.0.png", guess, opts.baseDirectory, 0);
                 storeGuessDrawing(test_basename + ".matches.1.png", guess, opts.baseDirectory, 1);
                 storeAllMatchesDrawing(test_basename + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
-                storeAlignedPoints(test_basename + ".pcd", guess);
+                // this is a cloud stored on a per-object basis, so it 
+                // might be rewritten some times in this loop
+                storeAlignedPoints(test_obj_basename + ".pcd", guess);
             }
 
             if (write_table) {
