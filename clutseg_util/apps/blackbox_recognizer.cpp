@@ -176,9 +176,11 @@ void storeAllMatchesDrawing(const string & fname, const TrainingBase & base,
     imwrite(fname, canvas);
 }
 
-/*void storeQueryKeypointsDrawing(const string & fname, const Ptr<Matcher> & rtMatcher, const Features2d & test) {
-
-}*/
+void storeQueryKeypointsDrawing(const string & fname, const Features2d & test) {
+    Mat canvas;
+    drawKeypoints(test.image, test.keypoints, canvas, Scalar(0, 0, 255));
+    imwrite(fname, canvas);
+}
 
 void storeAlignedPoints(const string & fname, const Guess & guess) {
     pcl::PointCloud<pcl::PointXYZ> aligned_cloud;
@@ -194,7 +196,7 @@ void storeInliersDrawing(const string & fname, const Guess & guess, const Mat & 
     imwrite(fname, canvas);
 }
 
-void storePoseDrawing(const string & fname, const PoseRT & pose, const Mat & testImage, const Camera & camera, const string & title, const Guess & guess = Guess(), bool inclInliers = false) {
+/*void storePoseDrawing(const string & fname, const PoseRT & pose, const Mat & testImage, const Camera & camera, const string & title, const Guess & guess = Guess(), bool inclInliers = false) {
     Mat canvas = testImage.clone();
     if (inclInliers) {
        drawInliers(canvas, guess, testImage);
@@ -202,7 +204,7 @@ void storePoseDrawing(const string & fname, const PoseRT & pose, const Mat & tes
     drawPose(canvas, pose, camera);
     putText(canvas, title, Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, Scalar::all(255), 2);
     imwrite(fname, canvas);
-}
+}*/
 
 /** Draws guessed pose and ground pose (if available), inliers and aligned
  * points into one single image. It will also show a legend and the number of
@@ -376,7 +378,7 @@ int main(int argc, char *argv[])
         recognizer->match(test, guesses);
 
         storeAllMatchesDrawing(test_name + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
-        //storeQueryKeypointsDrawing(test_name + ".keypoints.png", rtMatcher, test);
+        storeQueryKeypointsDrawing(test_name + ".keypoints.png", test);
 
         // The set of detected objects on the query image.
         set<string> found;
@@ -416,13 +418,6 @@ int main(int argc, char *argv[])
                 string guessed_pose_path = test_guess_name + ".guessed.pose.yaml";
                 string ground_pose_path = test_guess_name + ".ground.pose.yaml";
                 writePose(guessed_pose_path, guess_posert);
-                storePoseDrawing(test_guess_name + ".guessed.pose.png",
-                                guess_posert, test.image, trainingCamera,
-                                str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()), guess, true);
-                if (ground_pose_available) {
-                    writePose(ground_pose_path, ground_posert);
-                    storePoseDrawing(test_guess_name + ".ground.pose.png", ground_posert, test.image, trainingCamera, "Ground truth");
-                }
                 storeGuessDrawing(test_guess_name + ".matches.0.png", guess, opts.baseDirectory, 0);
                 storeGuessDrawing(test_guess_name + ".matches.1.png", guess, opts.baseDirectory, 1);
                 storeGuessDrawing2(test_guess_name + ".png", guess, test.image, trainingCamera, ground_posert);
