@@ -15,9 +15,22 @@ namespace clutseg {
     /** Draws a given pose. The pose is projected on the canvas using
      * the camera information. The result shows a coordinate system that
      * visualizes the pose on the image. */
-    void drawPose(const PoseRT & pose, const Mat & image, const opencv_candidate::Camera & camera, Mat & canvas);
+    void drawPose(Mat & canvas, const PoseRT & pose, const opencv_candidate::Camera & camera,
+                  const Scalar & colorX = Scalar(255, 0,0),
+                  const Scalar & colorY = Scalar(0, 255, 0),
+                  const Scalar & colorZ = Scalar(0, 0, 255),
+                  const string & labelX = "X",
+                  const string & labelY = "Y",
+                  const string & labelZ = "Z");
 
-    void drawPose(const Pose & pose, const Mat & image, const opencv_candidate::Camera & camera, Mat & canvas);
+    void drawPose(Mat & canvas, const Pose & pose, const Mat & image,
+                  const opencv_candidate::Camera & camera,
+                  const Scalar & colorX = Scalar(255, 0,0),
+                  const Scalar & colorY = Scalar(0, 255, 0),
+                  const Scalar & colorZ = Scalar(0, 0, 255),
+                  const string & labelX = "X",
+                  const string & labelY = "Y",
+                  const string & labelZ = "Z");
 
     void poseToPoseRT(const Pose & src, PoseRT & dst);
 

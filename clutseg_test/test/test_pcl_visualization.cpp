@@ -44,6 +44,7 @@ using namespace pcl;
 using namespace pcl_visualization;
 using namespace cv;
 using namespace opencv_candidate;
+using namespace clutseg;
 
 TEST(PclVisualization, ShowPointCloud) {
     // TODO: Getting X error when not calling visualizer.spin()

@@ -29,6 +29,7 @@
 #include "testdesc.h"
 #include "guess_util.h"
 #include "pose_util.h"
+#include "cv_util.h"
 
 #include <tod/detecting/Loader.h>
 #include <tod/detecting/Recognizer.h>
@@ -162,32 +163,71 @@ bool readImage(Features2d & test, const string & path) {
     return true;
 }
 
-void storeGuessDrawing(const string & filename, const Guess & guess, const string & baseDirectory, int flags) {
+void storeGuessDrawing(const string & fname, const Guess & guess, const string & baseDirectory, int flags) {
     Mat canvas;
     guess.draw(canvas, flags, baseDirectory);
-    imwrite(filename, canvas);
+    imwrite(fname, canvas);
 }
 
-void storeAllMatchesDrawing(const string & filename, const TrainingBase & base,
+void storeAllMatchesDrawing(const string & fname, const TrainingBase & base,
         const Ptr<Matcher> & rtMatcher, const Features2d & test, const string & baseDirectory) {
     Mat canvas;
     canvas = drawAllMatches(canvas, base, rtMatcher, test.image, test.keypoints, baseDirectory);
-    imwrite(filename, canvas);
+    imwrite(fname, canvas);
 }
 
-void storeAlignedPoints(const string & filename, const Guess & guess) {
+/*void storeQueryKeypointsDrawing(const string & fname, const Ptr<Matcher> & rtMatcher, const Features2d & test) {
+
+}*/
+
+void storeAlignedPoints(const string & fname, const Guess & guess) {
     pcl::PointCloud<pcl::PointXYZ> aligned_cloud;
     BOOST_FOREACH(const Point3f & p, guess.aligned_points_) {
         aligned_cloud.push_back(pcl::PointXYZ(p.x, p.y, p.z));
     }
-    pcl::io::savePCDFileASCII(filename, aligned_cloud);
+    pcl::io::savePCDFileASCII(fname, aligned_cloud);
 }
 
-void storePoseDrawing(const string & filename, const PoseRT & pose, const Mat & testImage, const Camera & camera, const string & title) {
+void storeInliersDrawing(const string & fname, const Guess & guess, const Mat & testImage) {
+    Mat canvas;
+    drawInliers(canvas, guess, testImage);
+    imwrite(fname, canvas);
+}
+
+void storePoseDrawing(const string & fname, const PoseRT & pose, const Mat & testImage, const Camera & camera, const string & title, const Guess & guess = Guess(), bool inclInliers = false) {
     Mat canvas = testImage.clone();
-    drawPose(pose, testImage, camera, canvas);
-    putText(canvas, title, Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
-    imwrite(filename, canvas);
+    if (inclInliers) {
+       drawInliers(canvas, guess, testImage);
+    }
+    drawPose(canvas, pose, camera);
+    putText(canvas, title, Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, Scalar::all(255), 2);
+    imwrite(fname, canvas);
+}
+
+/** Draws guessed pose and ground pose (if available), inliers and aligned
+ * points into one single image. It will also show a legend and the number of
+ * inliers. The resulting image shall give an all-in-one visualization of a
+ * specific guess.
+ */
+void storeGuessDrawing2(const string & fname, const Guess & guess, const Mat & testImage, const Camera & camera, const PoseRT & ground_posert = PoseRT()) {
+    Mat canvas;
+    drawInliers(canvas, guess, testImage);
+    drawPose(canvas, guess.aligned_pose(), camera);
+    if (ground_posert.estimated) {
+        drawPose(canvas, ground_posert, camera,
+            Scalar(0, 0, 0), Scalar(125, 125, 125), Scalar(255, 255, 255),
+            "ground.x", "ground.y", "ground.z");
+    }
+
+    // Add legend and statistics
+    vector<string> legend;
+    legend.push_back(str(boost::format("Subject: %s") % guess.getObject()->name)); 
+    legend.push_back(str(boost::format("Inliers: %d (green)") % guess.inliers.size())); 
+    legend.push_back(str(boost::format("Object matches: %d") % guess.image_points_.size())); 
+
+    putMultilineText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(255));
+
+    imwrite(fname, canvas);
 }
 
 int main(int argc, char *argv[])
@@ -319,6 +359,9 @@ int main(int argc, char *argv[])
         // results with eog or other tools.
         string mapped_img_name(img_name);
         algorithm::replace_all(mapped_img_name, "/", "__");
+        // Prefix identifying the test image
+        string test_name = str(boost::format("%s/%s") % opts.storeDirectory % mapped_img_name);
+
         Features2d test;
         
         string path = opts.imageDirectory + "/" + img_name;
@@ -331,6 +374,9 @@ int main(int argc, char *argv[])
 
         vector<Guess> guesses;
         recognizer->match(test, guesses);
+
+        storeAllMatchesDrawing(test_name + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
+        //storeQueryKeypointsDrawing(test_name + ".keypoints.png", rtMatcher, test);
 
         // The set of detected objects on the query image.
         set<string> found;
@@ -363,24 +409,28 @@ int main(int argc, char *argv[])
            
             if (write_store) {
                 const Camera & trainingCamera = guess.getObject()->observations[0].camera();
-                string test_basename = str(boost::format("%s/%s.%s.%d") % opts.storeDirectory % mapped_img_name % name % guess_count[name]);
-                string test_obj_basename = str(boost::format("%s/%s.%s") % opts.storeDirectory % mapped_img_name % name);
-                string guessed_pose_path = test_basename + ".guessed.pose.yaml";
-                string ground_pose_path = test_basename + ".ground.pose.yaml";
+                // Prefix identifying a certain subject on a test image
+                string test_subj_name = str(boost::format("%s.%s") % test_name % name);
+                // Prefix identifying a certain guess for a specific subject on a test image
+                string test_guess_name = str(boost::format("%s.%d") % test_subj_name % guess_count[name]);
+                string guessed_pose_path = test_guess_name + ".guessed.pose.yaml";
+                string ground_pose_path = test_guess_name + ".ground.pose.yaml";
                 writePose(guessed_pose_path, guess_posert);
-                storePoseDrawing(test_basename + ".guessed.pose.png",
+                storePoseDrawing(test_guess_name + ".guessed.pose.png",
                                 guess_posert, test.image, trainingCamera,
-                                str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()));
+                                str(boost::format("Subject: %s, Inliers: %d") % name % guess.inliers.size()), guess, true);
                 if (ground_pose_available) {
                     writePose(ground_pose_path, ground_posert);
-                    storePoseDrawing(test_basename + ".ground.pose.png", ground_posert, test.image, trainingCamera, "Ground truth");
+                    storePoseDrawing(test_guess_name + ".ground.pose.png", ground_posert, test.image, trainingCamera, "Ground truth");
                 }
-                storeGuessDrawing(test_basename + ".matches.0.png", guess, opts.baseDirectory, 0);
-                storeGuessDrawing(test_basename + ".matches.1.png", guess, opts.baseDirectory, 1);
-                storeAllMatchesDrawing(test_basename + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
+                storeGuessDrawing(test_guess_name + ".matches.0.png", guess, opts.baseDirectory, 0);
+                storeGuessDrawing(test_guess_name + ".matches.1.png", guess, opts.baseDirectory, 1);
+                storeGuessDrawing2(test_guess_name + ".png", guess, test.image, trainingCamera, ground_posert);
                 // this is a cloud stored on a per-object basis, so it 
                 // might be rewritten some times in this loop
-                storeAlignedPoints(test_obj_basename + ".pcd", guess);
+                storeAlignedPoints(test_subj_name + ".pcd", guess);
+                // TODO: store inliers as keypoint vector
+                storeInliersDrawing(test_guess_name + ".inliers.png", guess, test.image);
             }
 
             if (write_table) {
@@ -446,7 +496,7 @@ int main(int argc, char *argv[])
         if (opts.verbose >= 2) {
             foreach(const Guess & guess, guesses) {
                 Mat canvas = test.image.clone();
-                drawPose(guess.aligned_pose(), test.image, objects[0]->observations[0].camera(), canvas);
+                drawPose(canvas, guess.aligned_pose(), objects[0]->observations[0].camera());
                 imshow("Guess", canvas);
                 waitKey(0);
             }

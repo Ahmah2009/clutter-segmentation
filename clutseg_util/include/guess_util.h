@@ -18,7 +18,6 @@ namespace clutseg {
                             const Ptr<Matcher> matcher, const Mat& testImage,
                             const KeypointVector & testKeypoints, const string & baseDirectory);
 
-    Mat drawGuess(const Guess & guess, string & baseDirectory);
-
+    void drawInliers(Mat & outImg, const Guess & guess, const Mat & testImage);
 }
 

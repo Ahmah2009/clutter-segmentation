@@ -14,6 +14,7 @@
 using namespace cv;
 using namespace opencv_candidate;
 using namespace fiducial;
+using namespace clutseg;
 
 TEST(PoseUtil, PoseDrawer) {
     PoseRT pose;

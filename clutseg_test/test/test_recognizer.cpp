@@ -30,6 +30,7 @@ using std::istream;
 using namespace cv;
 using namespace tod;
 using namespace std;
+using namespace clutseg;
 
 namespace po = boost::program_options;
 

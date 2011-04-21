@@ -18,6 +18,7 @@
 using namespace cv;
 using namespace pcl;
 using namespace opencv_candidate;
+using namespace clutseg;
 
 // ||rvec|| is the angle, and rvec is the axis of rotation
 TEST(PclVisualization, ShowFiducialPoseEstimate) {
