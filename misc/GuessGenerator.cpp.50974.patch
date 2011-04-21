@@ -1,8 +1,42 @@
-83c83
+6a7
+> #include <opencv_candidate/PoseRT.h>
+83c84
 <       cv::projectPoints(cv::Mat(aligned_points_), rvec, aligned_pose_.t<cv::Mat> (), k_, d_,
 ---
 >       cv::projectPoints(cv::Mat(aligned_points_), rvec, aligned_pose_.t<cv::Mat> (), K, D,
-437,438c437,439
+224a226,230
+>       vector<Point3f> cloud, rotatedPoints;
+>       int trainImgIdx = image_indices_[0];
+>       opencv_candidate::PoseRT pose = object_->observations[trainImgIdx].camera().pose;
+>       project3dPoints(Mat(aligned_points_), pose.rvec, pose.tvec, rotatedPoints);
+> 
+226,228c232,234
+<       projectPoints(Mat(aligned_points_), Mat::zeros(3, 1, CV_64F), Mat::zeros(3, 1, CV_64F),
+<                     object_->observations[image_indices_[0]].camera().K,
+<                     object_->observations[image_indices_[0]].camera().D, oppoints);
+---
+>       projectPoints(Mat(rotatedPoints), Mat(3, 1, CV_64F, Scalar(0.0)), Mat(3, 1, CV_64F, Scalar(0.0)),
+>       		 object_->observations[trainImgIdx].camera().K, object_->observations[trainImgIdx].camera().D,
+>       		oppoints);
+233,234d238
+<       // KeyPoint::convert(imagePoints,kpts_query,0,0,0,0);
+<       // KeyPoint::convert(oppoints,kpts_train,0,0,0,0);
+242,245c246,248
+<       foreach(int inlier,inliers)
+<             {
+<               mask[inlier] = 1;
+<             }
+---
+>       foreach(int inlier,inliers) {
+>           mask[inlier] = 1;
+>       }
+247,248c250,251
+<       cv::drawMatches(f2d.image, kpts_train, query_, kpts_query, matches, out, Scalar(255, 0, 0), Scalar(0, 0, 255),
+<                       mask);
+---
+>       cv::drawMatches(f2d.image, kpts_train, query_, kpts_query, matches, out,
+>                       Scalar(255, 0, 0), Scalar(0, 0, 255), mask);
+437,438c440,442
 <       solvePnPRansac(object_points, image_points, features_2d.camera.K, features_2d.camera.D, rvec, tvec, false,
 <                      params.ransacIterationsCount, params.maxProjectionError, -1, &inliers);
 ---
