@@ -196,16 +196,6 @@ void storeInliersDrawing(const string & fname, const Guess & guess, const Mat & 
     imwrite(fname, canvas);
 }
 
-/*void storePoseDrawing(const string & fname, const PoseRT & pose, const Mat & testImage, const Camera & camera, const string & title, const Guess & guess = Guess(), bool inclInliers = false) {
-    Mat canvas = testImage.clone();
-    if (inclInliers) {
-       drawInliers(canvas, guess, testImage);
-    }
-    drawPose(canvas, pose, camera);
-    putText(canvas, title, Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, Scalar::all(255), 2);
-    imwrite(fname, canvas);
-}*/
-
 /** Draws guessed pose and ground pose (if available), inliers and aligned
  * points into one single image. It will also show a legend and the number of
  * inliers. The resulting image shall give an all-in-one visualization of a
@@ -317,6 +307,11 @@ int main(int argc, char *argv[])
     if (write_stats) {
         stats.open(opts.statsFilename.c_str());
         stats << "[statistics]" << endl;
+    }
+
+    if (write_store) {
+        filesystem::copy_file(opts.baseDirectory + "/config.yaml", opts.storeDirectory + "/features.config.yaml");
+        filesystem::copy_file(opts.config, opts.storeDirectory + "/config.yaml");
     }
 
     if (write_table) {
