@@ -1,0 +1,49 @@
+111,112d110
+<   TrainingBase base(objects);
+<   Ptr<FeatureExtractor> extractor = FeatureExtractor::create(opts.params.feParams);
+124,142d121
+<   cv::Ptr<Matcher> rtMatcher = Matcher::create(opts.params.matcherParams);
+<   rtMatcher->add(base);
+< 
+<   cv::Ptr<Recognizer> recognizer;
+<   if (opts.mode == TOD)
+<   {
+<     recognizer = new TODRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory,
+<                                    opts.params.clusterParams.maxDistance);
+<   }
+<   else if (opts.mode == KINECT)
+<   {
+<     recognizer = new KinectRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory);
+<   }
+<   else
+<   {
+<     cout << "Invalid mode option!" << endl;
+<     return 1;
+<   }
+< 
+144a124
+> 
+146a127,149
+>       TrainingBase base(objects);
+>       Ptr<FeatureExtractor> extractor = FeatureExtractor::create(opts.params.feParams);
+> 
+>       cv::Ptr<Matcher> rtMatcher = Matcher::create(opts.params.matcherParams);
+>       rtMatcher->add(base);
+> 
+>       cv::Ptr<Recognizer> recognizer;
+>       if (opts.mode == TOD)
+>       {
+>         recognizer = new TODRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory,
+>                                        opts.params.clusterParams.maxDistance);
+>       }
+>       else if (opts.mode == KINECT)
+>       {
+>         recognizer = new KinectRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory);
+>       }
+>       else
+>       {
+>         cout << "Invalid mode option!" << endl;
+>         return 1;
+>       }
+> 
+> 
