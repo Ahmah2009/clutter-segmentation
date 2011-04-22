@@ -235,30 +235,7 @@ int main(int argc, char *argv[])
     if (!objects.size()) {
         cout << "Empty base\n" << endl;
     }
-
-    TrainingBase base(objects);
-    Ptr < FeatureExtractor > extractor =
-        FeatureExtractor::create(opts.params.feParams);
-
-    cv::Ptr < Matcher > rtMatcher =
-        Matcher::create(opts.params.matcherParams);
-    rtMatcher->add(base);
-
-    cv::Ptr < Recognizer > recognizer;
-    if (opts.mode == TOD) {
-        recognizer =
-            new TODRecognizer(&base, rtMatcher, &opts.params.guessParams,
-                              opts.verbose, opts.baseDirectory,
-                              opts.params.clusterParams.maxDistance);
-    } else if (opts.mode == KINECT) {
-        recognizer =
-            new KinectRecognizer(&base, rtMatcher, &opts.params.guessParams,
-                                 opts.verbose, opts.baseDirectory);
-    } else {
-        cout << "Invalid mode option!" << endl;
-        return 1;
-    }
-
+    
     TestDesc testdesc = loadTestDesc(opts.testdescFilename);
 
     bool write_store = (opts.storeDirectory != "");
@@ -342,6 +319,36 @@ int main(int argc, char *argv[])
     int n_acc = 0;
 
     for (TestDesc::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
+        // Actually, the following lines of code could probably be moved out of
+        // the loop again, and can be reused. I just want to make sure that
+        // there is independence between test runs and that there is no way
+        // that any result of previous test image runs will influence the
+        // result of succeeding tests (silly keypoints problem). Yet, IMHO it's
+        // highly unlikely that there is any dependence between the results.
+        // In anyway, it's cheap to recreate those instances.
+        TrainingBase base(objects);
+        Ptr < FeatureExtractor > extractor =
+            FeatureExtractor::create(opts.params.feParams);
+
+        cv::Ptr < Matcher > rtMatcher =
+            Matcher::create(opts.params.matcherParams);
+        rtMatcher->add(base);
+
+        cv::Ptr < Recognizer > recognizer;
+        if (opts.mode == TOD) {
+            recognizer =
+                new TODRecognizer(&base, rtMatcher, &opts.params.guessParams,
+                                  opts.verbose, opts.baseDirectory,
+                                  opts.params.clusterParams.maxDistance);
+        } else if (opts.mode == KINECT) {
+            recognizer =
+                new KinectRecognizer(&base, rtMatcher, &opts.params.guessParams,
+                                     opts.verbose, opts.baseDirectory);
+        } else {
+            cout << "Invalid mode option!" << endl;
+            return 1;
+        } // end of block that could probably be moved out of the loop 
+
         set<string> expected = it->second; 
         // true positives
         int tp = 0;
@@ -471,6 +478,8 @@ int main(int argc, char *argv[])
                             % guess_tx % guess_ty % guess_tz % guess_rx % guess_ry % guess_rz
                             % ground_tx % ground_ty % ground_tz % ground_rx % ground_ry % ground_rz 
                             % max_rerr_t % max_rerr_r << endl;
+
+                cout << boost::format("Detected %s (%d inliers)") % name % guess.inliers.size() << endl;
             }
             objectIndex++;
         }
