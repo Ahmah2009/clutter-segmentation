@@ -207,7 +207,7 @@ void storeGuessDrawing2(const string & fname, const Guess & guess, const Mat & t
     drawPose(canvas, guess.aligned_pose(), camera);
     if (ground_posert.estimated) {
         drawPose(canvas, ground_posert, camera,
-            Scalar(0, 0, 0), Scalar(125, 125, 125), Scalar(255, 255, 255),
+            Scalar(20, 20, 20), Scalar(125, 125, 125), Scalar(235, 235, 235),
             "ground.x", "ground.y", "ground.z");
     }
 
@@ -217,7 +217,7 @@ void storeGuessDrawing2(const string & fname, const Guess & guess, const Mat & t
     legend.push_back(str(boost::format("Inliers: %d (green)") % guess.inliers.size())); 
     legend.push_back(str(boost::format("Object matches: %d") % guess.image_points_.size())); 
 
-    putMultilineText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(255));
+    putMultilineText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(204));
 
     imwrite(fname, canvas);
 }
@@ -312,6 +312,7 @@ int main(int argc, char *argv[])
     if (write_store) {
         filesystem::copy_file(opts.baseDirectory + "/config.yaml", opts.storeDirectory + "/features.config.yaml");
         filesystem::copy_file(opts.config, opts.storeDirectory + "/config.yaml");
+        filesystem::copy_file(opts.testdescFilename, opts.storeDirectory + "/testdesc.txt");
     }
 
     if (write_table) {

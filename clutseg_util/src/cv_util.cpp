@@ -14,9 +14,9 @@ namespace clutseg {
                         const Scalar & color) {
         int baseline = 0;
         for (size_t i = 0; i < lines.size(); i++) {
-            Size sz = getTextSize(lines[i], fontFace, fontScale, 1, &baseline);
+            Size sz = getTextSize(lines[i], fontFace, fontScale, 2, &baseline);
             putText(outImg, lines[i], org + Point(0, 1.7*(i+1)*sz.height),
-                    fontFace, fontScale, Scalar(255, 255, 255), 1, CV_AA, false);
+                    fontFace, fontScale, color, 2, CV_AA, false);
         }
     }
 
