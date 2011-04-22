@@ -17,8 +17,8 @@ using namespace tod;
 using namespace boost;
 
 int main(int argc, char **argv) {
-    if (argc != 4) {
-        cerr << "Usage: keypoints_viewer <base> <subject> <view-number>" << endl;
+    if (argc != 4 && argc != 5) {
+        cerr << "Usage: keypoints_viewer <base> <subject> <view-number> [<outfile>]" << endl;
         return -1;
     }
     // string base = "/home/julius/Studium/BA/tod_kinect_train_15/fat_free_milk/";
@@ -26,6 +26,10 @@ int main(int argc, char **argv) {
     string base(argv[1]);
     string subject(argv[2]);
     int view = lexical_cast<int>(argv[3]);
+    string outfile("");
+    if (argc == 5) {
+        outfile = argv[4];
+    }
 
     string imgp = str(boost::format("%s/%s/image_%05d.png") % base % subject % view);
     string f2dp = imgp + ".features.yaml.gz";
@@ -48,6 +52,9 @@ int main(int argc, char **argv) {
 
     // draw image and keypoints
     f2d.draw(canvas, 0);
+    if (outfile != "") {
+        imwrite(outfile, canvas);
+    }
     imshow("features", canvas);
     waitKey(-1);
     return 0;
