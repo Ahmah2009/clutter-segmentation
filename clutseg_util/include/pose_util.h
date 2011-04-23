@@ -23,7 +23,7 @@ namespace clutseg {
                   const string & labelY = "Y",
                   const string & labelZ = "Z");
 
-    void drawPose(Mat & canvas, const Pose & pose, const Mat & image,
+    void drawPose(Mat & canvas, const Pose & pose,
                   const opencv_candidate::Camera & camera,
                   const Scalar & colorX = Scalar(255, 0,0),
                   const Scalar & colorY = Scalar(0, 255, 0),

@@ -35,7 +35,7 @@ TEST(PoseUtil, PoseDrawerFunction) {
     Mat img = imread("./data/fat_free_milk_image_00000.png");
     Mat canvas = img.clone();
     Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
-    drawPose(pose, img, camera, canvas);
+    drawPose(canvas, pose, camera);
     imshow("PoseDrawerFunction", canvas);
     waitKey(0);
 }
@@ -60,7 +60,7 @@ TEST(PoseUtil, PoseToPoseRT) {
     Mat img = imread("./data/fat_free_milk_image_00000.png");
     Mat canvas = img.clone();
     Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
-    drawPose(pose, img, camera, canvas);
+    drawPose(canvas, pose, camera);
     imshow("PoseToPoseRT", canvas);
     waitKey(0);
 }

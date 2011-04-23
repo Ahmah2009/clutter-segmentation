@@ -183,7 +183,7 @@ TEST(Recognizer, TestRun)
         cout << std::endl;
 
         Mat canvas = test.image.clone();
-        drawPose(guess.aligned_pose(), test.image, guess.getObject()->observations[0].camera(), canvas);
+        drawPose(canvas, guess.aligned_pose(), guess.getObject()->observations[0].camera());
         imshow(guess.getObject()->name, canvas);
         waitKey(0);
     }
