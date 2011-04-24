@@ -7,6 +7,9 @@
 #include <opencv_candidate/PoseRT.h>
 #include <opencv/cxeigen.hpp>
 #include <tod/detecting/GuessGenerator.h>
+#include <tod/core/TrainingBase.h>
+#include <tod/core/Features2d.h>
+#include <tod/detecting/Matcher.h>
 
 using namespace cv;
 using namespace opencv_candidate;
@@ -62,6 +65,10 @@ namespace clutseg {
     Rect drawText(Mat& outImg, const vector<string> & lines,
                     const Point & topleft, int fontFace, double fontScale,
                     const Scalar & color);
+
+    void drawAllMatches(Mat & canvas, const TrainingBase & base,
+                            const Ptr<Matcher> matcher, const Mat& testImage,
+                            const KeypointVector & testKeypoints, const string & baseDirectory);
 
 }
 

@@ -27,7 +27,6 @@
  */
 
 #include "testdesc.h"
-#include "guess_util.h"
 #include "pose_util.h"
 #include "viz.h"
 
@@ -172,13 +171,17 @@ void storeGuessDrawing(const string & fname, const Guess & guess, const string &
 void storeAllMatchesDrawing(const string & fname, const TrainingBase & base,
         const Ptr<Matcher> & rtMatcher, const Features2d & test, const string & baseDirectory) {
     Mat canvas;
-    canvas = drawAllMatches(canvas, base, rtMatcher, test.image, test.keypoints, baseDirectory);
+    drawAllMatches(canvas, base, rtMatcher, test.image, test.keypoints, baseDirectory);
     imwrite(fname, canvas);
 }
 
+
+// TODO: create folders with symbolic links
+
 void storeQueryKeypointsDrawing(const string & fname, const Features2d & test) {
     Mat canvas;
-    drawKeypoints(test.image, test.keypoints, canvas, Scalar(0, 0, 255));
+    cvtColor(test.image, canvas, CV_GRAY2BGR);
+    clutseg::drawKeypoints(canvas, test.keypoints);
     imwrite(fname, canvas);
 }
 
@@ -192,6 +195,7 @@ void storeAlignedPoints(const string & fname, const Guess & guess) {
 
 void storeInliersDrawing(const string & fname, const Guess & guess, const Mat & testImage) {
     Mat canvas;
+    cvtColor(testImage, canvas, CV_GRAY2BGR);
     drawInliers(canvas, guess);
     imwrite(fname, canvas);
 }
