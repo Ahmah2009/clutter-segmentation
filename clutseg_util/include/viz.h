@@ -59,16 +59,31 @@ namespace clutseg {
                   const string & labelY = "Y",
                   const string & labelZ = "Z");
 
+    /** \brief Draws guesses onto the canvas. The inliers will be drawn as well
+     * as the guessed poses and the labels. If ground truth is available, the true
+     * poses for the tagged subject will also be visualized. For every guess, the
+     * same color will be used for the label, pose and inliers. Ground truth will
+     * be drawn in shades of gray for all guesses but those will be easily
+     * distinguishable anyway.
+     */
+    void drawGuesses(Mat & canvas, const vector<Guess> & guesses,
+                        const Camera & camera, const vector<PoseRT> & ground_poses);
+
     /** \brief Prints a multiline text onto the canvas and returns a bounding
      * rectangle. 
      */
-    Rect drawText(Mat& outImg, const vector<string> & lines,
+    Rect drawText(Mat& canvas, const vector<string> & lines,
                     const Point & topleft, int fontFace, double fontScale,
                     const Scalar & color);
 
+    // TODO: draw matches for individual objects
+
+    /** \brief Draws matches from query image to all training images and puts
+     * them together in a big collage. */
     void drawAllMatches(Mat & canvas, const TrainingBase & base,
                             const Ptr<Matcher> matcher, const Mat& testImage,
-                            const KeypointVector & testKeypoints, const string & baseDirectory);
+                            const KeypointVector & testKeypoints,
+                            const string & baseDirectory);
 
 }
 

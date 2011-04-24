@@ -4,6 +4,7 @@
 
 #include "test.h"
 #include "viz.h"
+#include "pose_util.h"
 
 #include <tod/core/Features2d.h>
 #include <gtest/gtest.h>
@@ -68,6 +69,11 @@ class Viz : public ::testing::Test {
             sampleFeatures(f2d);
             sampleColorImage(colorImage);
             sampleText(text);
+            // wiring
+            Pose p;
+            poseRtToPose(pose, p);
+            guess1.set_aligned_pose(p);
+            guess2.set_aligned_pose(p);
         }
 
         Camera camera;
@@ -93,6 +99,21 @@ TEST_F(Viz, DrawInliers) {
     Mat canvas = colorImage; 
     drawInliers(canvas, guess1); 
     imshow("DrawInliers", canvas);
+    waitKey(-1);
+}
+
+TEST_F(Viz, DrawInliersBlue) {
+    Mat canvas = colorImage; 
+    drawInliers(canvas, guess1, Scalar(255, 0, 0)); 
+    imshow("DrawInliersBlue", canvas);
+    waitKey(-1);
+}
+
+TEST_F(Viz, DrawInliersRandomColor) {
+    Mat canvas = colorImage; 
+    Scalar color = Scalar(rand() % 256, rand() % 256, rand() % 256);
+    drawInliers(canvas, guess1, color); 
+    imshow("DrawInliersRandomColor", canvas);
     waitKey(-1);
 }
 
@@ -145,3 +166,15 @@ TEST_F(Viz, DrawText) {
     waitKey(0);
 }
 
+TEST_F(Viz, DrawGuesses) {
+    Mat canvas = colorImage;
+    vector<Guess> guesses;
+    vector<PoseRT> poses;
+    guesses.push_back(guess1);
+    guesses.push_back(guess2);
+    poses.push_back(pose);
+    poses.push_back(pose);
+    drawGuesses(canvas, guesses, camera, poses);
+    imshow("DrawGuesses", canvas);
+    waitKey(0);
+}

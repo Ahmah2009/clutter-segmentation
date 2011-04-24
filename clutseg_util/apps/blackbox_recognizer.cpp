@@ -240,8 +240,9 @@ int main(int argc, char *argv[])
     vector < cv::Ptr < TexturedObject > >objects;
     loader.readTexturedObjects(objects);
 
-    if (!objects.size()) {
+    if (objects.empty()) {
         cout << "Empty base\n" << endl;
+        throw std::runtime_error("Empty training base.");
     }
     
     TestDesc testdesc = loadTestDesc(opts.testdescFilename);
@@ -326,6 +327,9 @@ int main(int argc, char *argv[])
     int p_acc = 0;
     int n_acc = 0;
 
+    assert(!objects.empty());
+    const Camera & trainingCamera = objects[0]->observations[0].camera();
+
     for (TestDesc::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
         // Actually, the following lines of code could probably be moved out of
         // the loop again, and can be reused. I just want to make sure that
@@ -391,13 +395,14 @@ int main(int argc, char *argv[])
         storeAllMatchesDrawing(test_name + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
         storeQueryKeypointsDrawing(test_name + ".keypoints.png", test);
 
-        // Draw all guesses on one single image
-        Mat allGuessesImg = test.image.clone();
-
         // The set of detected objects on the query image.
         set<string> found;
         // The number of guesses per detected object.
         map<string, int> guess_count;
+        // The vector of ground poses, if one pose is not available or for
+        // false alarms, this vector will have a pose with pose.estimated =
+        // false.
+        vector<PoseRT> ground_poses;
         foreach(const Guess & guess, guesses) {
             string name = guess.getObject()->name;
             Pose guess_pose = guess.aligned_pose();
@@ -422,9 +427,9 @@ int main(int argc, char *argv[])
             if (ground_pose_available) {
                 readPose(ground_pose_path, ground_posert);
             }
+            ground_poses.push_back(ground_posert);
            
-            const Camera & trainingCamera = guess.getObject()->observations[0].camera();
-            drawGuess2(allGuessesImg, guess, test.image, trainingCamera, false, ground_posert);
+            //  drawGuess2(allGuessesImg, guess, test.image, trainingCamera, false, ground_posert);
 
             if (write_store) {
                 // Prefix identifying a certain subject on a test image
@@ -508,8 +513,12 @@ int main(int argc, char *argv[])
 
         if (write_store) {
             string all_guesses_name = str(boost::format("%s/%s.guesses.png") % opts.storeDirectory % mapped_img_name);
+            Mat canvas;
+            cvtColor(test.image, canvas, CV_GRAY2BGR);
             // TODO: coherent naming style
-            imwrite(all_guesses_name, allGuessesImg);
+            // TODO: BGR or RGB
+            drawGuesses(canvas, guesses, trainingCamera, ground_poses);
+            imwrite(all_guesses_name, canvas);
         }
 
         if (opts.verbose >= 2) {

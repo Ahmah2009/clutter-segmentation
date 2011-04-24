@@ -5,6 +5,8 @@
 #include "viz.h"
 
 #include <boost/foreach.hpp>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace cv;
 using namespace opencv_candidate;
@@ -76,6 +78,43 @@ namespace clutseg {
         drawPose(canvas, posert, camera, colorX, colorY, colorZ, labelX, labelY, labelZ);
     }
 
+    void drawGuesses(Mat & canvas, const vector<Guess> & guesses, const Camera & camera, const vector<PoseRT> & ground_poses) {
+        vector<Scalar> colors; 
+        srand(time(NULL));
+        for (size_t i = 0; i < guesses.size(); i++) {
+            Scalar c = Scalar(rand() % 256, rand() % 256, rand() % 256);
+            if (i > 0) {
+                Scalar prev = colors[i-1];
+                for (int j = 0; j < 10 && norm(prev - c) < 100; j++) {
+                    c = Scalar(rand() % 256, rand() % 256, rand() % 256);
+                }
+            }
+            colors.push_back(c);
+        }
+        // Draw inliers first
+        for (size_t i = 0; i < guesses.size(); i++) {
+            drawInliers(canvas, guesses[i], colors[i]);
+        }
+        // Draw ground poses
+        for (size_t i = 0; i < ground_poses.size(); i++) {
+            if (ground_poses[i].estimated) {
+                drawPose(canvas, ground_poses[i], camera,
+                    Scalar(20, 20, 20), Scalar(125, 125, 125), Scalar(235, 235, 235),
+                    "ground.x", "ground.y", "ground.z");
+            }
+        }
+        // Draw guessed poses
+        for (size_t i = 0; i < guesses.size(); i++) {
+            drawPose(canvas, guesses[i].aligned_pose(), camera, colors[i], colors[i], colors[i]);
+        }
+    /* FIXME:
+        // Draw labels
+        for (int i = 0; i < guesses.size(); i++) {
+            // get projected origin of guessed pose
+            drawText(canvas, legend, camera, colors[i], colors[i], colors[i]);
+        }*/
+    }
+
     Rect drawText(Mat & outImg, const vector<string> & lines,
                         const Point & topleft, int fontFace, double fontScale,
                         const Scalar & color) {
@@ -101,7 +140,8 @@ namespace clutseg {
     void drawAllMatches(Mat & canvas, const TrainingBase & base,
                             const Ptr<Matcher> matcher, const Mat& testImage,
                             const KeypointVector & testKeypoints, const string & baseDirectory) {
-      namedWindow("matches", CV_WINDOW_KEEPRATIO);
+      // This method has been copied from tod_detecting, and has been changed not
+      // to display the image but pass it to the caller.
       vector<Mat> match_images;
       int scaled_width = 1000;
       int scaled_height = 0;
