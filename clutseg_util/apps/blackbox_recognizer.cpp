@@ -201,9 +201,8 @@ void storeInliersDrawing(const string & fname, const Guess & guess, const Mat & 
  * inliers. The resulting image shall give an all-in-one visualization of a
  * specific guess.
  */
-void storeGuessDrawing2(const string & fname, const Guess & guess, const Mat & testImage, const Camera & camera, const PoseRT & ground_posert = PoseRT()) {
-    Mat canvas;
-    drawInliers(canvas, guess, testImage);
+void drawGuess2(Mat & canvas, const Guess & guess, const Mat & testImage, const Camera & camera, bool showLegend, const PoseRT & ground_posert = PoseRT()) {
+    // drawInliers(canvas, guess, testImage); // FIXME: improve me!
     drawPose(canvas, guess.aligned_pose(), camera);
     if (ground_posert.estimated) {
         drawPose(canvas, ground_posert, camera,
@@ -211,16 +210,21 @@ void storeGuessDrawing2(const string & fname, const Guess & guess, const Mat & t
             "ground.x", "ground.y", "ground.z");
     }
 
-    // Add legend and statistics
-    vector<string> legend;
-    legend.push_back(str(boost::format("Subject: %s") % guess.getObject()->name)); 
-    legend.push_back(str(boost::format("Inliers: %d (green)") % guess.inliers.size())); 
-    legend.push_back(str(boost::format("Object matches: %d") % guess.image_points_.size())); 
+    if (showLegend) {
+        vector<string> legend;
+        legend.push_back(str(boost::format("Subject: %s") % guess.getObject()->name)); 
+        legend.push_back(str(boost::format("Inliers: %d (green)") % guess.inliers.size())); 
+        legend.push_back(str(boost::format("Object matches: %d") % guess.image_points_.size())); 
+        putMultilineText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(204));
+    }
+}
 
-    putMultilineText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(204));
-
+void storeGuessDrawing2(const string & fname, const Guess & guess, const Mat & testImage, const Camera & camera, bool showLegend = true, const PoseRT & ground_posert = PoseRT()) {
+    Mat canvas = testImage.clone();
+    drawGuess2(canvas, guess, testImage, camera, showLegend, ground_posert);
     imwrite(fname, canvas);
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -383,6 +387,9 @@ int main(int argc, char *argv[])
         storeAllMatchesDrawing(test_name + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
         storeQueryKeypointsDrawing(test_name + ".keypoints.png", test);
 
+        // Draw all guesses on one single image
+        Mat allGuessesImg = test.image.clone();
+
         // The set of detected objects on the query image.
         set<string> found;
         // The number of guesses per detected object.
@@ -412,8 +419,10 @@ int main(int argc, char *argv[])
                 readPose(ground_pose_path, ground_posert);
             }
            
+            const Camera & trainingCamera = guess.getObject()->observations[0].camera();
+            drawGuess2(allGuessesImg, guess, test.image, trainingCamera, false, ground_posert);
+
             if (write_store) {
-                const Camera & trainingCamera = guess.getObject()->observations[0].camera();
                 // Prefix identifying a certain subject on a test image
                 string test_subj_name = str(boost::format("%s.%s") % test_name % name);
                 // Prefix identifying a certain guess for a specific subject on a test image
@@ -423,7 +432,7 @@ int main(int argc, char *argv[])
                 writePose(guessed_pose_path, guess_posert);
                 storeGuessDrawing(test_guess_name + ".matches.0.png", guess, opts.baseDirectory, 0);
                 storeGuessDrawing(test_guess_name + ".matches.1.png", guess, opts.baseDirectory, 1);
-                storeGuessDrawing2(test_guess_name + ".png", guess, test.image, trainingCamera, ground_posert);
+                storeGuessDrawing2(test_guess_name + ".png", guess, test.image, trainingCamera, true, ground_posert);
                 // this is a cloud stored on a per-object basis, so it 
                 // might be rewritten some times in this loop
                 storeAlignedPoints(test_subj_name + ".pcd", guess);
@@ -491,6 +500,12 @@ int main(int argc, char *argv[])
             Mat noCanvas = test.image.clone();
             putText(noCanvas, "No subjects detected!", Point(150, 100), FONT_HERSHEY_SIMPLEX, 1.25, 200, 2);
             imwrite(none_name, noCanvas);
+        }
+
+        if (write_store) {
+            string all_guesses_name = str(boost::format("%s/%s.guesses.png") % opts.storeDirectory % mapped_img_name);
+            // TODO: coherent naming style
+            imwrite(all_guesses_name, allGuessesImg);
         }
 
         if (opts.verbose >= 2) {
