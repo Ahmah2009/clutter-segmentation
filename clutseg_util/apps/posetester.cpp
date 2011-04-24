@@ -13,6 +13,8 @@
  * it prints the observed success rate.
  */
 
+#include "pose_util.h"
+
 #include <iostream>
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
@@ -26,6 +28,7 @@ using namespace std;
 using namespace cv;
 using namespace opencv_candidate;
 using namespace fiducial;
+using namespace clutseg;
 
 int main(int argc, char **argv) {
     string camera_file = "camera.yml";
@@ -51,6 +54,9 @@ int main(int argc, char **argv) {
         if (pose.estimated) {
             cout << "[SUCCESS] " << argv[i] << endl;
             success_cnt += 1;
+            Mat imgout = imread(string(argv[i]) + ".pose.png");
+            drawPose(imgout, pose, camera);
+            imwrite(string(argv[i]) + ".pose.png", imgout); // TODO: extract variable
         } else {
            cout << "[FAILURE] " << argv[i] << endl;
         }
