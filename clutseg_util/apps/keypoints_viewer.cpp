@@ -41,17 +41,18 @@ int main(int argc, char **argv) {
     cout << "f2d path: " << f2dp << endl;
 
     // load image
-    Mat img = imread(imgp, 0); 
-    Mat canvas = img.clone();
+    Mat gray = imread(imgp, 0); 
+    Mat canvas = imread(imgp);
 
     // load keypoints 
     FileStorage fs(f2dp, FileStorage::READ);
     Features2d f2d;
     f2d.read(fs[Features2d::YAML_NODE_NAME]);
-    f2d.image = img;
+    f2d.image = gray;
 
     // draw image and keypoints
-    f2d.draw(canvas, 0);
+    //f2d.draw(canvas, 0);
+    drawKeypoints(f2d.image, f2d.keypoints, canvas, Scalar(0, 0, 255)); 
     if (outfile != "") {
         imwrite(outfile, canvas);
     }
