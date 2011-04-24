@@ -4,7 +4,9 @@
 
 #include "test.h"
 
-#include "cv_util.h"
+// TODO: migrate to clutseg_util
+
+#include "viz.h"
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <boost/format.hpp>
@@ -25,18 +27,6 @@ TEST(CvDraw, TestCoordinates) {
     putText(canvas, "10, 100", Point(10, 100), CV_FONT_HERSHEY_SIMPLEX, 0.2, Scalar(255, 255, 255), 1, CV_AA, false);
     putText(canvas, "10, -100", Point(10, -100), CV_FONT_HERSHEY_SIMPLEX, 0.2, Scalar(255, 255, 255), 1, CV_AA, false);
     imshow("TestCoordinates", canvas);
-    waitKey(0);
-}
-
-TEST(CvDraw, DrawMultilineText) {
-    Mat canvas(500, 500, CV_8UC3);
-    // Add legend and statistics
-    vector<string> legend;
-    legend.push_back(str(boost::format("Subject: %s") % "campbells_chicken_noodle")); 
-    legend.push_back(str(boost::format("Inliers: %s") % 153)); 
-    legend.push_back(str(boost::format("Matches: %s") % 224)); 
-    putMultilineText(canvas, legend, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 0.4, Scalar::all(255));
-    imshow("DrawMultilineText", canvas);
     waitKey(0);
 }
 

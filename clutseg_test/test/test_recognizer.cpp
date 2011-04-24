@@ -8,16 +8,18 @@
 
 #include "test.h"
 
+#include "pose_util.h"
+#include "viz.h"
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <boost/format.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "pose_util.h"
 
-#include "tod/detecting/Loader.h"
-#include "tod/detecting/Parameters.h"
-#include "tod/detecting/Recognizer.h"
-#include "tod/training/feature_extraction.h"
+#include <tod/detecting/Loader.h>
+#include <tod/detecting/Parameters.h>
+#include <tod/detecting/Recognizer.h>
+#include <tod/training/feature_extraction.h>
 
 #include <boost/foreach.hpp>
 #include <boost/program_options.hpp>

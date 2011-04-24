@@ -56,6 +56,12 @@ namespace clutseg {
                   const string & labelY = "Y",
                   const string & labelZ = "Z");
 
+    /** \brief Prints a multiline text onto the canvas and returns a bounding
+     * rectangle. 
+     */
+    Rect drawText(Mat& outImg, const vector<string> & lines,
+                    const Point & topleft, int fontFace, double fontScale,
+                    const Scalar & color);
 
 }
 

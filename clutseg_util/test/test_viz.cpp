@@ -51,6 +51,13 @@ void sampleCamera(Camera & camera) {
     camera = Camera("./data/camera.yml", Camera::TOD_YAML);
 }
 
+void sampleText(vector<string> & text) {
+    text.push_back("this is the first line");
+    text.push_back("this is the second line");
+    text.push_back("and the third line");
+}
+
+
 class Viz : public ::testing::Test {
     public:
         virtual void SetUp() {
@@ -60,6 +67,7 @@ class Viz : public ::testing::Test {
             sampleGuess(guess2);
             sampleFeatures(f2d);
             sampleColorImage(colorImage);
+            sampleText(text);
         }
 
         Camera camera;
@@ -68,6 +76,7 @@ class Viz : public ::testing::Test {
         Guess guess2;
         Features2d f2d;
         Mat colorImage;
+        vector<string> text;
 };
 
 TEST_F(Viz, DrawKeypoints) {
@@ -125,6 +134,48 @@ TEST_F(Viz, DrawPoseInliersKeypoints) {
     drawInliers(canvas, guess1);
     drawPose(canvas, pose, camera);
     imshow("DrawPoseInliersKeypoints", canvas);
+    waitKey(0);
+}
+
+TEST_F(Viz, DrawText) {
+    Mat canvas = Mat::zeros(800, 600, CV_8UC3);
+    Rect rect = drawText(canvas, text, Point(200, 200), FONT_HERSHEY_PLAIN, 1.0, Scalar::all(255));
+    rectangle(canvas, rect.tl(), rect.br(), Scalar::all(204));
+    imshow("DrawText", canvas);
+    waitKey(0);
+}
+
+TEST_F(Viz, LearnPutText) {
+    // Use "y" to show that the baseLine is about
+    string text = "Funny text inside the box";
+    int fontFace = FONT_HERSHEY_PLAIN;
+    double fontScale = 2;
+    int thickness = 2;
+
+    Mat img(600, 800, CV_8UC3, Scalar::all(0));
+
+    int baseline=0;
+    Size textSize = getTextSize(text, fontFace,
+                                fontScale, thickness, &baseline);
+    baseline += thickness;
+
+    // center the text
+    Point textOrg((img.cols - textSize.width)/2,
+                  (img.rows + textSize.height)/2);
+
+    // draw the box
+    rectangle(img, textOrg + Point(0, baseline),
+              textOrg + Point(textSize.width, -textSize.height),
+              Scalar(0,0,255));
+    // ... and the baseline first
+    line(img, textOrg + Point(0, thickness),
+         textOrg + Point(textSize.width, thickness),
+         Scalar(0, 0, 255));
+
+    // then put the text itself
+    putText(img, text, textOrg, fontFace, fontScale,
+            Scalar::all(255), thickness, 8);
+    imshow("LearnPutText", img);
     waitKey(0);
 }
 

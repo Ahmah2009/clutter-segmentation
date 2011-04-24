@@ -29,7 +29,6 @@
 #include "testdesc.h"
 #include "guess_util.h"
 #include "pose_util.h"
-#include "cv_util.h"
 #include "viz.h"
 
 #include <tod/detecting/Loader.h>
@@ -216,7 +215,7 @@ void drawGuess2(Mat & canvas, const Guess & guess, const Mat & testImage, const 
         legend.push_back(str(boost::format("Subject: %s") % guess.getObject()->name)); 
         legend.push_back(str(boost::format("Inliers: %d (green)") % guess.inliers.size())); 
         legend.push_back(str(boost::format("Object matches: %d") % guess.image_points_.size())); 
-        putMultilineText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(204));
+        drawText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(204));
     }
 }
 

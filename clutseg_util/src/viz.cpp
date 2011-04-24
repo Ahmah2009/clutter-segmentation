@@ -56,8 +56,8 @@ namespace clutseg {
         int baseline = 0;
         Size sz = getTextSize(scaleText, CV_FONT_HERSHEY_SIMPLEX, 1, 1, &baseline);
         rectangle(canvas, Point(10, 30 + 5), Point(10, 30) + Point(sz.width, -sz.height - 5), Scalar::all(0), -1);
-        */
         putText(canvas, scaleText, Point(10, 30), CV_FONT_HERSHEY_SIMPLEX, 1.0, c[0], 1, CV_AA, false);
+        */
         putText(canvas, labelZ, ip[3], CV_FONT_HERSHEY_SIMPLEX, 0.5, c[3], 1, CV_AA, false);
         putText(canvas, labelY, ip[2], CV_FONT_HERSHEY_SIMPLEX, 0.5, c[2], 1, CV_AA, false);
         putText(canvas, labelX, ip[1], CV_FONT_HERSHEY_SIMPLEX, 0.5, c[1], 1, CV_AA, false);
@@ -73,6 +73,29 @@ namespace clutseg {
         Rodrigues(R, posert.rvec);
         drawPose(canvas, posert, camera, colorX, colorY, colorZ, labelX, labelY, labelZ);
     }
+
+    Rect drawText(Mat & outImg, const vector<string> & lines,
+                        const Point & topleft, int fontFace, double fontScale,
+                        const Scalar & color) {
+        int baseline = 0;
+        // bottom right corner, is "pushed" down and right as appropriate
+        Point br = topleft;
+        // bottom left corner, is "pushed" down as appropriate
+        Point bl;
+        bl.x = topleft.x;
+        for (size_t i = 0; i < lines.size(); i++) {
+            Size sz = getTextSize(lines[i], fontFace, fontScale, 1, &baseline);
+            // calculate in absolute frame, avoid to cumulate errors
+            bl.y = topleft.y + 1.7*(i+1)*sz.height;
+            putText(outImg, lines[i], bl, fontFace, fontScale, color, 1, CV_AA, false);
+            br.y = bl.y;
+            if (bl.x + sz.width > br.x) {
+                br.x = bl.x + sz.width;
+            }
+        }
+        return Rect(topleft, br);
+    }
+
 
 }
 

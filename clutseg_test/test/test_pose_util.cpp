@@ -5,6 +5,7 @@
 #include "test.h"
 
 #include "pose_util.h"
+#include "viz.h"
 #include <fiducial/fiducial.h>
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>
