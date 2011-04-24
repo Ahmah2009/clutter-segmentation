@@ -84,14 +84,5 @@ namespace clutseg {
         }
     }
 
-    void drawInliers(Mat & outImg, const Guess & guess, const Mat & testImage) {
-        vector<KeyPoint> kpts;
-        for (size_t i = 0; i < guess.inliers.size(); i++) {
-            Point2f kp = guess.image_points_[guess.inliers[i]];
-            kpts.push_back(KeyPoint(kp, 0));
-        }
-        drawKeypoints(testImage, kpts, outImg, Scalar(0, 255, 0));    
-    }
-
 }
 

@@ -30,6 +30,7 @@
 #include "guess_util.h"
 #include "pose_util.h"
 #include "cv_util.h"
+#include "viz.h"
 
 #include <tod/detecting/Loader.h>
 #include <tod/detecting/Recognizer.h>
@@ -192,7 +193,7 @@ void storeAlignedPoints(const string & fname, const Guess & guess) {
 
 void storeInliersDrawing(const string & fname, const Guess & guess, const Mat & testImage) {
     Mat canvas;
-    drawInliers(canvas, guess, testImage);
+    drawInliers(canvas, guess);
     imwrite(fname, canvas);
 }
 

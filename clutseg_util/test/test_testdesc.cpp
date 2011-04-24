@@ -10,6 +10,7 @@
 #include <string>
 
 using namespace std;
+using namespace clutseg;
 
 TEST(Testdesc, LoadTestDesc) {
     TestDesc m = loadTestDesc("./data/testdesc.txt");

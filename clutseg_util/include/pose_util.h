@@ -11,27 +11,6 @@ using namespace opencv_candidate;
 
 namespace clutseg {
 
-    // TODO: use template or remove one of these methods
-    /** Draws a given pose. The pose is projected on the canvas using
-     * the camera information. The result shows a coordinate system that
-     * visualizes the pose on the image. */
-    void drawPose(Mat & canvas, const PoseRT & pose, const opencv_candidate::Camera & camera,
-                  const Scalar & colorX = Scalar(255, 0,0),
-                  const Scalar & colorY = Scalar(0, 255, 0),
-                  const Scalar & colorZ = Scalar(0, 0, 255),
-                  const string & labelX = "X",
-                  const string & labelY = "Y",
-                  const string & labelZ = "Z");
-
-    void drawPose(Mat & canvas, const Pose & pose,
-                  const opencv_candidate::Camera & camera,
-                  const Scalar & colorX = Scalar(255, 0,0),
-                  const Scalar & colorY = Scalar(0, 255, 0),
-                  const Scalar & colorZ = Scalar(0, 0, 255),
-                  const string & labelX = "X",
-                  const string & labelY = "Y",
-                  const string & labelZ = "Z");
-
     void poseToPoseRT(const Pose & src, PoseRT & dst);
 
     void poseRtToPose(const PoseRT & src, Pose & dst);
