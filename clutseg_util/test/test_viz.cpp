@@ -145,37 +145,3 @@ TEST_F(Viz, DrawText) {
     waitKey(0);
 }
 
-TEST_F(Viz, LearnPutText) {
-    // Use "y" to show that the baseLine is about
-    string text = "Funny text inside the box";
-    int fontFace = FONT_HERSHEY_PLAIN;
-    double fontScale = 2;
-    int thickness = 2;
-
-    Mat img(600, 800, CV_8UC3, Scalar::all(0));
-
-    int baseline=0;
-    Size textSize = getTextSize(text, fontFace,
-                                fontScale, thickness, &baseline);
-    baseline += thickness;
-
-    // center the text
-    Point textOrg((img.cols - textSize.width)/2,
-                  (img.rows + textSize.height)/2);
-
-    // draw the box
-    rectangle(img, textOrg + Point(0, baseline),
-              textOrg + Point(textSize.width, -textSize.height),
-              Scalar(0,0,255));
-    // ... and the baseline first
-    line(img, textOrg + Point(0, thickness),
-         textOrg + Point(textSize.width, thickness),
-         Scalar(0, 0, 255));
-
-    // then put the text itself
-    putText(img, text, textOrg, fontFace, fontScale,
-            Scalar::all(255), thickness, 8);
-    imshow("LearnPutText", img);
-    waitKey(0);
-}
-
