@@ -4,7 +4,10 @@
 
 #include "viz.h"
 
+#include "pose_util.h"
+
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <stdlib.h>
 #include <time.h>
 
@@ -12,6 +15,25 @@ using namespace cv;
 using namespace opencv_candidate;
 
 namespace clutseg {
+
+    vector<Scalar> predefColors;
+    
+    void initPredefColors() {
+        if (predefColors.empty()) {
+            predefColors.push_back(Scalar(0, 0, 255));
+            predefColors.push_back(Scalar(0, 255, 0));
+            predefColors.push_back(Scalar(255, 0, 0));
+            predefColors.push_back(Scalar(255, 0, 255));
+            predefColors.push_back(Scalar(0, 255, 255));
+            predefColors.push_back(Scalar(255, 255, 0));
+            predefColors.push_back(Scalar(125, 0, 204));
+            predefColors.push_back(Scalar(125, 204, 0));
+            predefColors.push_back(Scalar(204, 0, 125));
+            predefColors.push_back(Scalar(204, 125, 0));
+            predefColors.push_back(Scalar(0, 204, 125));
+            predefColors.push_back(Scalar(0, 125, 204));
+        }
+    }
 
     void drawKeypoints(Mat & canvas, const vector<KeyPoint> & keypoints,
                         const Scalar & color) { 
@@ -79,17 +101,15 @@ namespace clutseg {
     }
 
     void drawGuesses(Mat & canvas, const vector<Guess> & guesses, const Camera & camera, const vector<PoseRT> & ground_poses) {
-        vector<Scalar> colors; 
         srand(time(NULL));
-        for (size_t i = 0; i < guesses.size(); i++) {
-            Scalar c = Scalar(rand() % 256, rand() % 256, rand() % 256);
-            if (i > 0) {
-                Scalar prev = colors[i-1];
-                for (int j = 0; j < 10 && norm(prev - c) < 100; j++) {
-                    c = Scalar(rand() % 256, rand() % 256, rand() % 256);
-                }
-            }
-            colors.push_back(c);
+        initPredefColors();
+        vector<Scalar> colors(predefColors.size());
+        copy(predefColors.begin(), predefColors.end(), colors.begin());
+        for (size_t i = predefColors.size(); i < guesses.size(); i++) {
+            colors.push_back(Scalar(
+                50 + rand() % 206,
+                50 + rand() % 206,
+                50 + rand() % 206));
         }
         // Draw inliers first
         for (size_t i = 0; i < guesses.size(); i++) {
@@ -107,12 +127,16 @@ namespace clutseg {
         for (size_t i = 0; i < guesses.size(); i++) {
             drawPose(canvas, guesses[i].aligned_pose(), camera, colors[i], colors[i], colors[i]);
         }
-    /* FIXME:
+        
         // Draw labels
-        for (int i = 0; i < guesses.size(); i++) {
-            // get projected origin of guessed pose
-            drawText(canvas, legend, camera, colors[i], colors[i], colors[i]);
-        }*/
+        for (size_t i = 0; i < guesses.size(); i++) {
+            Point topleft = projectOrigin(guesses[i].aligned_pose(), camera); 
+            vector<string> legend(1);
+            legend.push_back(str(boost::format("%s (%d/%d)") %
+                guesses[i].getObject()->name % guesses[i].inliers.size() %
+                guesses[i].image_points_.size()));
+            drawText(canvas, legend, topleft, FONT_HERSHEY_SIMPLEX, 0.5, colors[i]);
+        }
     }
 
     Rect drawText(Mat & outImg, const vector<string> & lines,
@@ -122,12 +146,14 @@ namespace clutseg {
         // bottom right corner, is "pushed" down and right as appropriate
         Point br = topleft;
         // bottom left corner, is "pushed" down as appropriate
-        Point bl;
-        bl.x = topleft.x;
+        Point bl = topleft;
         for (size_t i = 0; i < lines.size(); i++) {
             Size sz = getTextSize(lines[i], fontFace, fontScale, 1, &baseline);
-            // calculate in absolute frame, avoid to cumulate errors
-            bl.y = topleft.y + 1.7*(i+1)*sz.height;
+            if (i == 0) {
+                bl.y += sz.height;
+            } else {
+                bl.y += 1.7*sz.height;
+            }
             putText(outImg, lines[i], bl, fontFace, fontScale, color, 1, CV_AA, false);
             br.y = bl.y;
             if (bl.x + sz.width > br.x) {

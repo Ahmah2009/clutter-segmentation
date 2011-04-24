@@ -23,20 +23,6 @@ using namespace boost::algorithm;
 
 using namespace clutseg;
 
-void randomize(PoseRT & pose, double stddev_t, double stddev_r) {
-    mt19937 twister; 
-    normal_distribution<> n_t(0, stddev_t);
-    variate_generator<mt19937&, normal_distribution<> > noise_t(twister, n_t);
-    pose.tvec.at<double>(0, 0) += noise_t();
-    pose.tvec.at<double>(1, 0) += noise_t();
-    pose.tvec.at<double>(2, 0) += noise_t();
-    normal_distribution<> n_r(0, stddev_r);
-    variate_generator<mt19937&, normal_distribution<> > noise_r(twister, n_r);
-    pose.rvec.at<double>(0, 0) += noise_r();
-    pose.rvec.at<double>(1, 0) += noise_r();
-    pose.rvec.at<double>(2, 0) += noise_r();
-}
-
 void randomize(string path, double stddev_t, double stddev_r, bool serialize, bool visualize) {
         FileStorage in(path, FileStorage::READ);
         PoseRT pose;
@@ -46,7 +32,7 @@ void randomize(string path, double stddev_t, double stddev_r, bool serialize, bo
         PoseRT rpose;
         rpose.tvec = pose.tvec.clone();
         rpose.rvec = pose.rvec.clone();
-        randomize(rpose, stddev_t, stddev_r);
+        randomizePose(rpose, stddev_t, stddev_r);
         cout << "tvec[0] --- original: " << pose.tvec.at<double>(0, 0) << ", randomized: " << rpose.tvec.at<double>(0, 0) << endl;
         cout << "tvec[1] --- original: " << pose.tvec.at<double>(1, 0) << ", randomized: " << rpose.tvec.at<double>(1, 0) << endl;
         cout << "tvec[2] --- original: " << pose.tvec.at<double>(2, 0) << ", randomized: " << rpose.tvec.at<double>(2, 0) << endl;

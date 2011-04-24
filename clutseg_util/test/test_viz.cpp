@@ -63,21 +63,28 @@ class Viz : public ::testing::Test {
     public:
         virtual void SetUp() {
             sampleCamera(camera);
-            samplePose(pose);
-            sampleGuess(guess1);
-            sampleGuess(guess2);
+            samplePose(pose1);
+            samplePose(pose2);
             sampleFeatures(f2d);
             sampleColorImage(colorImage);
             sampleText(text);
-            // wiring
-            Pose p;
-            poseRtToPose(pose, p);
-            guess1.set_aligned_pose(p);
-            guess2.set_aligned_pose(p);
+            randomizePose(pose2, 0.1, 0.1);
+            object = new TexturedObject();
+            object->name = "haltbare_milch";
+            Pose p1;
+            Pose p2;
+            poseRtToPose(pose1, p1);
+            poseRtToPose(pose2, p2);
+            guess1 = Guess(object, p1, camera.K, camera.D, f2d.image);
+            guess2 = Guess(object, p2, camera.K, camera.D, f2d.image);
+            sampleGuess(guess1);
+            sampleGuess(guess2);
         }
 
         Camera camera;
-        PoseRT pose;
+        PoseRT pose1;
+        PoseRT pose2;
+        cv::Ptr<TexturedObject> object;
         Guess guess1;
         Guess guess2;
         Features2d f2d;
@@ -135,7 +142,7 @@ TEST_F(Viz, DrawInliersAndKeypoints) {
 
 TEST_F(Viz, DrawPose) {
     Mat canvas = colorImage; 
-    drawPose(canvas, pose, camera);
+    drawPose(canvas, pose1, camera);
     imshow("DrawPose", canvas);
     waitKey(0);
 }
@@ -143,7 +150,7 @@ TEST_F(Viz, DrawPose) {
 TEST_F(Viz, DrawPoseOnWhiteCanvas) {
     Mat canvas = Mat::zeros(1024, 1280, CV_8UC3);
     canvas = Scalar(255, 255, 255);
-    drawPose(canvas, pose, camera);
+    drawPose(canvas, pose1, camera);
     imshow("DrawPoseOnWhiteCanvas", canvas);
     waitKey(0);
 }
@@ -153,14 +160,14 @@ TEST_F(Viz, DrawPoseInliersKeypoints) {
     canvas = Scalar(255, 255, 255);
     drawKeypoints(canvas, f2d.keypoints);
     drawInliers(canvas, guess1);
-    drawPose(canvas, pose, camera);
+    drawPose(canvas, pose1, camera);
     imshow("DrawPoseInliersKeypoints", canvas);
     waitKey(0);
 }
 
 TEST_F(Viz, DrawText) {
-    Mat canvas = Mat::zeros(800, 600, CV_8UC3);
-    Rect rect = drawText(canvas, text, Point(200, 200), FONT_HERSHEY_PLAIN, 1.0, Scalar::all(255));
+    Mat canvas = Mat::zeros(300, 300, CV_8UC3);
+    Rect rect = drawText(canvas, text, Point(0, 0), FONT_HERSHEY_PLAIN, 1.0, Scalar::all(255));
     rectangle(canvas, rect.tl(), rect.br(), Scalar::all(204));
     imshow("DrawText", canvas);
     waitKey(0);
@@ -172,9 +179,24 @@ TEST_F(Viz, DrawGuesses) {
     vector<PoseRT> poses;
     guesses.push_back(guess1);
     guesses.push_back(guess2);
-    poses.push_back(pose);
-    poses.push_back(pose);
+    poses.push_back(pose1);
     drawGuesses(canvas, guesses, camera, poses);
     imshow("DrawGuesses", canvas);
     waitKey(0);
 }
+
+TEST_F(Viz, DrawManyGuesses) {
+    // check whether we're running out of colors
+    Mat canvas = colorImage;
+    vector<Guess> guesses;
+    vector<PoseRT> poses;
+    for (int i = 0; i < 30; i++) {
+        guesses.push_back(guess1);
+        guesses.push_back(guess2);
+    }
+    poses.push_back(pose1);
+    drawGuesses(canvas, guesses, camera, poses);
+    imshow("DrawManyGuesses", canvas);
+    waitKey(0);
+}
+

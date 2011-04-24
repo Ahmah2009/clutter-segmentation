@@ -11,7 +11,9 @@ using namespace opencv_candidate;
 
 namespace clutseg {
 
-    //Point projectOrigin(const PoseRT & pose);
+    Point projectOrigin(const PoseRT & pose, const opencv_candidate::Camera & camera);
+
+    void randomizePose(PoseRT & pose, double stddev_t, double stddev_r);
 
     void poseToPoseRT(const Pose & src, PoseRT & dst);
 
