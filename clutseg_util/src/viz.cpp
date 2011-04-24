@@ -51,10 +51,12 @@ namespace clutseg {
         line(canvas, ip[0], ip[1], c[1]);
         line(canvas, ip[0], ip[2], c[2]);
         line(canvas, ip[0], ip[3], c[3]);
+        /* see question on answers.ros.org
         string scaleText = "scale 0.25 meters";
         int baseline = 0;
         Size sz = getTextSize(scaleText, CV_FONT_HERSHEY_SIMPLEX, 1, 1, &baseline);
         rectangle(canvas, Point(10, 30 + 5), Point(10, 30) + Point(sz.width, -sz.height - 5), Scalar::all(0), -1);
+        */
         putText(canvas, scaleText, Point(10, 30), CV_FONT_HERSHEY_SIMPLEX, 1.0, c[0], 1, CV_AA, false);
         putText(canvas, labelZ, ip[3], CV_FONT_HERSHEY_SIMPLEX, 0.5, c[3], 1, CV_AA, false);
         putText(canvas, labelY, ip[2], CV_FONT_HERSHEY_SIMPLEX, 0.5, c[2], 1, CV_AA, false);

@@ -28,17 +28,6 @@ TEST(PoseUtil, PoseDrawer) {
     waitKey(0);
 }
 
-TEST(PoseUtil, PoseDrawerFunction) {
-    PoseRT pose;
-    FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
-    pose.read(in[PoseRT::YAML_NODE_NAME]);
-    Mat img = imread("./data/fat_free_milk_image_00000.png");
-    Mat canvas = img.clone();
-    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
-    drawPose(canvas, pose, camera);
-    imshow("PoseDrawerFunction", canvas);
-    waitKey(0);
-}
 
 TEST(PoseUtil, PoseToPoseRT) {
     PoseRT posert;
