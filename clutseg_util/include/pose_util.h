@@ -2,6 +2,9 @@
  * Author: Julius Adorf
  */
 
+#ifndef _POSE_UTIL_H_
+#define _POSE_UTIL_H_
+
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>
 #include <opencv_candidate/Camera.h>
@@ -30,3 +33,4 @@ namespace clutseg {
 
 }
 
+#endif

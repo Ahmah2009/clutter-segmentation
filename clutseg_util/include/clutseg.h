@@ -1,6 +1,8 @@
 /*
  * Author: Julius Adorf
  */
+#ifndef _CLUTSEG_H_
+#define _CLUTSEG_H_
 
 #include "options.h"
 
@@ -11,7 +13,6 @@
 
 using namespace cv;
 using namespace pcl;
-using namespace tod;
 
 namespace clutseg {
 
@@ -20,13 +21,14 @@ namespace clutseg {
     class ClutSegmenter {
         public:
             ClutSegmenter(const string & baseDirectory, const string & config);
-            bool recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud);
+            bool recognize(const Mat & queryImage, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud);
         private:
             void loadParams();
             void loadBase();
             Options opts_; 
-            TrainingBase base_;
+            tod::TrainingBase base_;
     };
 
 }
 
+#endif

@@ -21,10 +21,6 @@ void sampleFeatures(Features2d & f2d) {
     f2d.image = imread("./data/image_00000.png", 0);
 }
 
-void sampleColorImage(Mat & img) {
-    img = imread("./data/image_00000.png");
-}
-
 void sampleGuess(Guess & guess, Features2d & f2d) {
     sampleFeatures(f2d);
     vector<int> selection(f2d.keypoints.size());
@@ -43,10 +39,6 @@ void sampleGuess(Guess & guess) {
     sampleGuess(guess, f2d);
 }
 
-void samplePose(PoseRT & pose) {
-    FileStorage in("./data/image_00000.png.pose.yaml", FileStorage::READ);
-    pose.read(in[PoseRT::YAML_NODE_NAME]);
-}
 
 void sampleCamera(Camera & camera) {
     camera = Camera("./data/camera.yml", Camera::TOD_YAML);
@@ -167,7 +159,7 @@ TEST_F(Viz, DrawPoseInliersKeypoints) {
 
 TEST_F(Viz, DrawText) {
     Mat canvas = Mat::zeros(300, 300, CV_8UC3);
-    Rect rect = drawText(canvas, text, Point(0, 0), FONT_HERSHEY_PLAIN, 1.0, Scalar::all(255));
+    Rect rect = drawText(canvas, text, Point(0, 0), FONT_HERSHEY_PLAIN, 1.0, 2, Scalar::all(255));
     rectangle(canvas, rect.tl(), rect.br(), Scalar::all(204));
     imshow("DrawText", canvas);
     waitKey(0);

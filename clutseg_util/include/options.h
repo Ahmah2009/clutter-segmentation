@@ -1,3 +1,9 @@
+/*
+ * Author: Julius Adorf
+ */
+
+#ifndef _CONN_COMP_H_
+#define _CONN_COMP_H_
 
 #include <tod/detecting/Parameters.h>
 
@@ -23,3 +29,5 @@ namespace clutseg {
     int options(int ac, char **av, Options & opts);
 
 }
+
+#endif

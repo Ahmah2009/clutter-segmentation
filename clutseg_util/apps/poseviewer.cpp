@@ -36,6 +36,12 @@ int main(int argc, char *argv[]) {
         if (boost::algorithm::ends_with(arg, ".pcd")) {
             PointCloud<PointXYZ> cloud;
             io::loadPCDFile(arg, cloud);
+            cout << boost::format("%10s: %s") % "file" % arg << endl; 
+            cout << boost::format("%10s: %8d") % "width" % cloud.width << endl; 
+            cout << boost::format("%10s: %8d") % "height" % cloud.height << endl; 
+            cout << boost::format("%10s: %8d") % "size" % cloud.size() << endl; 
+            cout << boost::format("%10s: %8s") % "is_dense" % !cloud.is_dense << endl; 
+            cout << endl;
             visualizer.addPointCloud(cloud, str(boost::format("cloud-%d") % i));
         } else if (boost::algorithm::ends_with(arg, ".yaml")) {
             PoseRT pose;

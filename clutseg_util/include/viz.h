@@ -2,6 +2,9 @@
  * Author: Julius Adorf
  */
 
+#ifndef _VIZ_H_
+#define _VIZ_H_
+
 #include <cv.h>
 #include <opencv_candidate/Camera.h>
 #include <opencv_candidate/PoseRT.h>
@@ -91,3 +94,4 @@ namespace clutseg {
 
 }
 
+#endif

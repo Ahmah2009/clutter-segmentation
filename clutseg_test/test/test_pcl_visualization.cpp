@@ -61,7 +61,7 @@ TEST(PclVisualization, ShowPointCloud) {
     }
 }
 
-TEST(PclVisualization, ShowCircle) {
+TEST(PclVisualization, ShowSphere) {
     // TODO: Getting X error when not calling visualizer.spin()
     if (enableUI) {
         PCLVisualizer visualizer;

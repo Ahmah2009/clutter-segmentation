@@ -14,6 +14,7 @@
  */
 
 #include "pose_util.h"
+#include "viz.h"
 
 #include <iostream>
 #include <cv.h>

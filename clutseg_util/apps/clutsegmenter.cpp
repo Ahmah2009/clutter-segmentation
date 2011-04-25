@@ -28,7 +28,7 @@ void readInput(int argc, char **argv, Mat & queryImage, PointCloudT & queryCloud
     }
 }
 
-void processOutput(int argc, char **argv, bool positive, Guess & guess, PointCloudT & inlierCloud) {
+void processOutput(int argc, char **argv, bool positive, tod::Guess & guess, PointCloudT & inlierCloud) {
     // Process result
     if (positive) {
         cout << "Recognized " << guess.getObject()->name << endl;
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     // Output: whether an object has been detected
     bool positive;
     // Output: aligned pose, subject name and inliers
-    Guess guess;
+    tod::Guess guess;
     // Output: 3d points corresponding to inliers
     PointCloudT inlierCloud;
 

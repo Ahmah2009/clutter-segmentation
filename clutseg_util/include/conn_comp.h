@@ -2,6 +2,9 @@
  * Author: Julius Adorf
  */
 
+#ifndef _CONN_COMP_H_
+#define _CONN_COMP_H_
+
 #include <cv.h>
 
 using namespace cv;
@@ -11,3 +14,4 @@ using namespace cv;
  * white. See method cv::findContours for what type of images are accepted. */
 void largestConnectedComponent(Mat& img);
 
+#endif
