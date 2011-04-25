@@ -18,16 +18,14 @@ namespace clutseg {
     typedef pcl::PointCloud<PointXYZ> PointCloudT;
 
     class ClutSegmenter {
-
         public:
-
-            ClutSegmenter();
-            ClutSegmenter(Options & _opts, TrainingBase & _base); // : opts(_opts), base(_base);
-
+            ClutSegmenter(const string & baseDirectory, const string & config);
             bool recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud);
-           
-            Options opts; 
-            TrainingBase base;
+        private:
+            void loadParams();
+            void loadBase();
+            Options opts_; 
+            TrainingBase base_;
     };
 
 }

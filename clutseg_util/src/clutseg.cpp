@@ -5,21 +5,41 @@
 #include "clutseg.h"
 
 #include <boost/foreach.hpp>
+#include <tod/detecting/Loader.h>
 
 namespace clutseg {
         
-    ClutSegmenter::ClutSegmenter() {}
+    ClutSegmenter::ClutSegmenter(const string & baseDirectory, const string & config) {
+        opts_.config = config;
+        opts_.baseDirectory = baseDirectory;
+        loadParams();
+        loadBase();
+    }
 
-    ClutSegmenter::ClutSegmenter(Options & _opts, TrainingBase & _base) : opts(_opts), base(_base) {}
+    void ClutSegmenter::loadParams() {
+        FileStorage fs(opts_.config, FileStorage::READ);
+        if (!fs.isOpened()) {
+            throw ios_base::failure("Cannot read configuration file '" + opts_.config + "'");
+        }
+        opts_.params.read(fs[tod::TODParameters::YAML_NODE_NAME]);
+        fs.release();
+    }
+
+    void ClutSegmenter::loadBase() {
+        tod::Loader loader(opts_.baseDirectory);
+        vector<Ptr<TexturedObject> > objects;
+        loader.readTexturedObjects(objects);
+        base_ = TrainingBase(objects);
+    }
 
     bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
         // Initialize matcher and recognizer. This must be done prior to every
         // query,
-        Ptr<FeatureExtractor> extractor = FeatureExtractor::create(opts.params.feParams);
-        Ptr<Matcher> rtMatcher = Matcher::create(opts.params.matcherParams);
-        rtMatcher->add(base);
-        cv::Ptr<Recognizer> recognizer = new KinectRecognizer(&base, rtMatcher,
-                                &opts.params.guessParams, 0 /* verbose */, opts.baseDirectory);
+        Ptr<FeatureExtractor> extractor = FeatureExtractor::create(opts_.params.feParams);
+        Ptr<Matcher> rtMatcher = Matcher::create(opts_.params.matcherParams);
+        rtMatcher->add(base_);
+        cv::Ptr<Recognizer> recognizer = new KinectRecognizer(&base_, rtMatcher,
+                                &opts_.params.guessParams, 0 /* verbose */, opts_.baseDirectory);
 
         Features2d test;
         test.image = queryImage;
@@ -56,8 +76,8 @@ namespace clutseg {
             float scaleW = float(queryCloud.width) / queryImage.cols;
             float scaleH = float(queryCloud.height) / queryImage.rows;
             BOOST_FOREACH(int idx, resultingGuess.inliers) {
-                int u = int(resultingGuess.image_points_[idx].x * scaleW);
-                int v = int(resultingGuess.image_points_[idx].y * scaleH);
+                size_t u = size_t(resultingGuess.image_points_[idx].x * scaleW);
+                size_t v = size_t(resultingGuess.image_points_[idx].y * scaleH);
                 if (u < queryCloud.width && v < queryCloud.height) {
                     inliersCloud.push_back(queryCloud(u, v));
                 } else {

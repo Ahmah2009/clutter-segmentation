@@ -15,35 +15,12 @@
 using namespace clutseg;
 using namespace std;
 
-void loadParams(ClutSegmenter & segmenter) {
-    FileStorage fs(segmenter.opts.config, FileStorage::READ);
-    if (!fs.isOpened()) {
-        throw ios_base::failure("Cannot read configuration file '" + segmenter.opts.config + "'");
-    }
-    segmenter.opts.params.read(fs[tod::TODParameters::YAML_NODE_NAME]);
-    fs.release();
-}
-
-void loadBase(ClutSegmenter & segmenter) {
-    tod::Loader loader(segmenter.opts.baseDirectory);
-    vector<Ptr<TexturedObject> > objects;
-    loader.readTexturedObjects(objects);
-    segmenter.base = TrainingBase(objects);
-}
-
-void createSegmenter(const string & baseDirectory, const string & config, ClutSegmenter & segmenter) {
-    segmenter.opts.config = config;
-    segmenter.opts.baseDirectory = baseDirectory;
-    loadParams(segmenter);
-    loadBase(segmenter);
-}
-
 int main(int argc, char **argv) {
-    // Creating segmenter
-    ClutSegmenter segmenter;
-    createSegmenter(
+    // Create segmenter
+    ClutSegmenter segmenter(
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml", segmenter);
+        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
+    );
 
     // Input values
     Mat queryImage;
@@ -66,6 +43,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Actual recognition 
     positive = segmenter.recognize(queryImage, queryCloud, guess, inlierCloud);
 
     if (positive) {
