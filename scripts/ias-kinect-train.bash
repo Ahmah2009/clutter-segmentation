@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
 
-if [ "$1" = "--help" ] ; then
-    cat <<HELP
+function usage() {
+    cat <<USAGE
 Usage: ias-kinect-train [--no-dump]
 
 Creates a training base from IAS kinect bags.
-HELP
-    exit
-fi
+USAGE
+}
 
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
-if [ ! "$1" = "--no-dump" ] ; then
+if has_no_arg --no-dump $*; then
     rosrun tod_training dump_all.py $CLUTSEG_PATH/ias_kinect_bags/ $CLUTSEG_PATH/ias_kinect_train/
 fi
 pushd $CLUTSEG_PATH/ias_kinect_train > /dev/null

@@ -1,21 +1,18 @@
 #!/usr/bin/env bash
 
 function usage() {
-    cat <<HELP
+    cat <<USAGE
 Usage: montage-test-results <test-base>
 
 Creates montages using imagemagick for a test result
-HELP
+USAGE
 }
 
-source "$CLUTSEG_PATH/clutter-segmentation/scripts/base.bash" $*
+source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 testbase=$CLUTSEG_PATH/$1
 
-if [ "$testbase" = "" ] ; then
-    usage
-    exit
-fi
+expect_arg $1 
 
 function do_montage() {
     pushd $testbase/result > /dev/null

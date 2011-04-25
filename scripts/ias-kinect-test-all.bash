@@ -17,13 +17,15 @@ fi
 
 pushd $CLUTSEG_PATH > /dev/null
     mkdir -p ias_kinect_test_all/result
+    link-test-results -u ias_kinect_test_all
     rm -f ias_kinect_test_all/result/*
-    gdb --args blackbox_recognizer \
+    blackbox_recognizer \
         -B ias_kinect_train \
         -I ias_kinect_test_all \
         --store=ias_kinect_test_all/result \
         --testdesc=ias_kinect_test_all/testdesc.txt \
         --mode=1 \
         --verbose=0 \
-        -f ias_kinect_train/config.yaml
+        -f configs/config.minInliersCount_25.maxProjectionError_12.yaml
+    link-test-results ias_kinect_test_all
 popd > /dev/null

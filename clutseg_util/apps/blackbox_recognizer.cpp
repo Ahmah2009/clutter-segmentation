@@ -175,9 +175,6 @@ void storeAllMatchesDrawing(const string & fname, const TrainingBase & base,
     imwrite(fname, canvas);
 }
 
-
-// TODO: create folders with symbolic links
-
 void storeQueryKeypointsDrawing(const string & fname, const Features2d & test) {
     Mat canvas;
     cvtColor(test.image, canvas, CV_GRAY2BGR);
@@ -370,7 +367,7 @@ int main(int argc, char *argv[])
         vector<Guess> guesses;
         recognizer->match(test, guesses);
 
-        storeAllMatchesDrawing(test_name + ".matches.png", base, rtMatcher, test, opts.baseDirectory);
+        storeAllMatchesDrawing(test_name + ".all.matches.png", base, rtMatcher, test, opts.baseDirectory);
         storeQueryKeypointsDrawing(test_name + ".keypoints.png", test);
 
         // The set of detected objects on the query image.

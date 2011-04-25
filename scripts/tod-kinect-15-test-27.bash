@@ -15,8 +15,11 @@ if [ ! "$CLUTSEG_PATH" ] ; then
     exit
 fi
 
+# TODO: extract method
+
 pushd $CLUTSEG_PATH > /dev/null
     mkdir -p tod_kinect_test_27/result
+    link-test-results -u tod_kinect_test_27
     rm -f tod_kinect_test_27/result/*
     blackbox_recognizer \
         -B tod_kinect_train_15 \
@@ -25,5 +28,6 @@ pushd $CLUTSEG_PATH > /dev/null
         --testdesc=tod_kinect_test_27/testdesc-15.txt \
         --mode=1 \
         --verbose=0 \
-        -f tod_kinect_train/config.yaml
+        -f configs/config.minInliersCount_15.yaml
+    link-test-results tod_kinect_test_27
 popd > /dev/null

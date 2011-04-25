@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
 
-if [ "$1" = "--help" ] ; then
-    cat <<HELP
-Usage: train.bash [--no-dump]
+function usage() {
+    cat <<USAGE
+Usage: tod-kinect-train [--no-dump]
 
 Dumps the downloaded tod kinect training bag files and constructs
 a training base using tod_training. This process takes some time.
 --no-dump suppresses the bag dumping stage."
-HELP
-    exit
-fi
+USAGE
+}
 
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 pushd $CLUTSEG_PATH > /dev/null
     if [ "$1" != "--no-dump" ] ; then

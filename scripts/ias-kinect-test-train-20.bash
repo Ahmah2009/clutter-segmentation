@@ -15,8 +15,11 @@ if [ ! "$CLUTSEG_PATH" ] ; then
     exit
 fi
 
+# TODO: extract method
+
 pushd $CLUTSEG_PATH > /dev/null
     mkdir -p ias_kinect_test_train_20/result
+    link-test-results -u ias_kinect_test_train_20
     rm -f ias_kinect_test_train_20/result/*
     blackbox_recognizer \
         -B ias_kinect_train \
@@ -25,5 +28,6 @@ pushd $CLUTSEG_PATH > /dev/null
         --testdesc=ias_kinect_test_train_20/testdesc.txt \
         --mode=1 \
         --verbose=0 \
-        -f ias_kinect_train/config.yaml
+        -f configs/config.minInliersCount_25.yaml
+    link-test-results ias_kinect_test_train_20
 popd > /dev/null
