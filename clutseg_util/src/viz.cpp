@@ -100,8 +100,14 @@ namespace clutseg {
         drawPose(canvas, posert, camera, colorX, colorY, colorZ, labelX, labelY, labelZ);
     }
 
-    void drawGuesses(Mat & canvas, const vector<Guess> & guesses, const Camera & camera, const vector<PoseRT> & ground_poses) {
-        srand(time(NULL));
+    void drawGuess(Mat & canvas, const Guess & guess, const Camera & camera, const PoseRT ground_pose) {
+        vector<Guess> guesses(1, guess);
+        vector<PoseRT> ground_poses(1, ground_pose);
+        drawGuesses(canvas, guesses, camera, ground_poses);
+    }
+
+    void drawGuesses(Mat & canvas, const vector<Guess> & guesses,
+                        const Camera & camera, const vector<PoseRT> & ground_poses) { srand(time(NULL));
         initPredefColors();
         vector<Scalar> colors(predefColors.size());
         copy(predefColors.begin(), predefColors.end(), colors.begin());
@@ -135,12 +141,12 @@ namespace clutseg {
             legend.push_back(str(boost::format("%s (%d/%d)") %
                 guesses[i].getObject()->name % guesses[i].inliers.size() %
                 guesses[i].image_points_.size()));
-            drawText(canvas, legend, topleft, FONT_HERSHEY_SIMPLEX, 0.5, colors[i]);
+            drawText(canvas, legend, topleft, FONT_HERSHEY_SIMPLEX, 1.2, 2, colors[i]);
         }
     }
 
     Rect drawText(Mat & outImg, const vector<string> & lines,
-                        const Point & topleft, int fontFace, double fontScale,
+                        const Point & topleft, int fontFace, double fontScale, int thickness,
                         const Scalar & color) {
         int baseline = 0;
         // bottom right corner, is "pushed" down and right as appropriate
@@ -148,13 +154,13 @@ namespace clutseg {
         // bottom left corner, is "pushed" down as appropriate
         Point bl = topleft;
         for (size_t i = 0; i < lines.size(); i++) {
-            Size sz = getTextSize(lines[i], fontFace, fontScale, 1, &baseline);
+            Size sz = getTextSize(lines[i], fontFace, fontScale, thickness, &baseline);
             if (i == 0) {
                 bl.y += sz.height;
             } else {
                 bl.y += 1.7*sz.height;
             }
-            putText(outImg, lines[i], bl, fontFace, fontScale, color, 1, CV_AA, false);
+            putText(outImg, lines[i], bl, fontFace, fontScale, color, thickness, CV_AA, false);
             br.y = bl.y;
             if (bl.x + sz.width > br.x) {
                 br.x = bl.x + sz.width;

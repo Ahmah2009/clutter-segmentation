@@ -162,7 +162,7 @@ bool readImage(Features2d & test, const string & path) {
     return true;
 }
 
-void storeGuessDrawing(const string & fname, const Guess & guess, const string & baseDirectory, int flags) {
+void storeMatchDrawing(const string & fname, const Guess & guess, const string & baseDirectory, int flags) {
     Mat canvas;
     guess.draw(canvas, flags, baseDirectory);
     imwrite(fname, canvas);
@@ -200,32 +200,10 @@ void storeInliersDrawing(const string & fname, const Guess & guess, const Mat & 
     imwrite(fname, canvas);
 }
 
-/** Draws guessed pose and ground pose (if available), inliers and aligned
- * points into one single image. It will also show a legend and the number of
- * inliers. The resulting image shall give an all-in-one visualization of a
- * specific guess.
- */
-void drawGuess2(Mat & canvas, const Guess & guess, const Mat & testImage, const Camera & camera, bool showLegend, const PoseRT & ground_posert = PoseRT()) {
-    // drawInliers(canvas, guess, testImage); // FIXME: improve me!
-    drawPose(canvas, guess.aligned_pose(), camera);
-    if (ground_posert.estimated) {
-        drawPose(canvas, ground_posert, camera,
-            Scalar(20, 20, 20), Scalar(125, 125, 125), Scalar(235, 235, 235),
-            "ground.x", "ground.y", "ground.z");
-    }
-
-    if (showLegend) {
-        vector<string> legend;
-        legend.push_back(str(boost::format("Subject: %s") % guess.getObject()->name)); 
-        legend.push_back(str(boost::format("Inliers: %d (green)") % guess.inliers.size())); 
-        legend.push_back(str(boost::format("Object matches: %d") % guess.image_points_.size())); 
-        drawText(canvas, legend, Point(10, 50), CV_FONT_HERSHEY_SIMPLEX, 1.2, Scalar::all(204));
-    }
-}
-
-void storeGuessDrawing2(const string & fname, const Guess & guess, const Mat & testImage, const Camera & camera, bool showLegend = true, const PoseRT & ground_posert = PoseRT()) {
+void storeGuessDrawing(const string & fname, const Guess & guess, const Mat & testImage, const Camera & camera, const PoseRT & ground_posert = PoseRT()) {
     Mat canvas = testImage.clone();
-    drawGuess2(canvas, guess, testImage, camera, showLegend, ground_posert);
+    cvtColor(testImage, canvas, CV_GRAY2BGR);
+    drawGuess(canvas, guess, camera, ground_posert);
     imwrite(fname, canvas);
 }
 
@@ -436,12 +414,12 @@ int main(int argc, char *argv[])
                 string test_subj_name = str(boost::format("%s.%s") % test_name % name);
                 // Prefix identifying a certain guess for a specific subject on a test image
                 string test_guess_name = str(boost::format("%s.%d") % test_subj_name % guess_count[name]);
-                string guessed_pose_path = test_guess_name + ".guessed.pose.yaml";
+                string guessed_pose_path = test_guess_name + ".guess.pose.yaml";
                 string ground_pose_path = test_guess_name + ".ground.pose.yaml";
                 writePose(guessed_pose_path, guess_posert);
-                storeGuessDrawing(test_guess_name + ".matches.0.png", guess, opts.baseDirectory, 0);
-                storeGuessDrawing(test_guess_name + ".matches.1.png", guess, opts.baseDirectory, 1);
-                storeGuessDrawing2(test_guess_name + ".png", guess, test.image, trainingCamera, true, ground_posert);
+                storeMatchDrawing(test_guess_name + ".projection.png", guess, opts.baseDirectory, 0);
+                storeMatchDrawing(test_guess_name + ".merged.matches.png", guess, opts.baseDirectory, 1);
+                storeGuessDrawing(test_guess_name + ".guess.png", guess, test.image, trainingCamera, ground_posert);
                 // this is a cloud stored on a per-object basis, so it 
                 // might be rewritten some times in this loop
                 storeAlignedPoints(test_subj_name + ".pcd", guess);
@@ -516,7 +494,6 @@ int main(int argc, char *argv[])
             Mat canvas;
             cvtColor(test.image, canvas, CV_GRAY2BGR);
             // TODO: coherent naming style
-            // TODO: BGR or RGB
             drawGuesses(canvas, guesses, trainingCamera, ground_poses);
             imwrite(all_guesses_name, canvas);
         }

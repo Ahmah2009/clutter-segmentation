@@ -69,12 +69,16 @@ namespace clutseg {
     void drawGuesses(Mat & canvas, const vector<Guess> & guesses,
                         const Camera & camera, const vector<PoseRT> & ground_poses);
 
+    /** \brief Convenience method, just delegates to drawGuesses */
+    void drawGuess(Mat & canvas, const Guess & guess,
+                    const Camera & camera, const PoseRT ground_pose);
+
     /** \brief Prints a multiline text onto the canvas and returns a bounding
      * rectangle. 
      */
     Rect drawText(Mat& canvas, const vector<string> & lines,
                     const Point & topleft, int fontFace, double fontScale,
-                    const Scalar & color);
+                    int thickness, const Scalar & color);
 
     // TODO: draw matches for individual objects
 
