@@ -11,16 +11,15 @@
 #include <boost/random.hpp>
 #include <cv.h>
 
-#include "pcl_visualization_addons.h"
-#include "pose_util.h"
+#include "clutseg/pcl_visualization_addons.h"
+#include "clutseg/pose_util.h"
 
 using namespace std;
 using namespace pcl;
+using namespace pcl_visualization;
 using namespace cv;
+using namespace opencv_candidate;
 using namespace boost;
-using namespace boost::filesystem;
-using namespace boost::algorithm;
-
 using namespace clutseg;
 
 void randomize(string path, double stddev_t, double stddev_r, bool serialize, bool visualize) {

@@ -1,4 +1,8 @@
-#include "options.h"
+/*
+ * Author: Julius Adorf
+ */
+
+#include "clutseg/options.h"
 
 #include <boost/program_options.hpp>
 #include <opencv2/highgui/highgui.hpp>

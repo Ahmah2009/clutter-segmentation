@@ -2,15 +2,19 @@
  * Author: Julius Adorf
  */
 
-#include "map.h"
+#include "clutseg/map.h"
 
 #include <cv.h>
 #include <boost/foreach.hpp>
 
+using namespace cv;
+using namespace std;
+using namespace pcl;
+
 namespace clutseg {
 
-    void mapToCloud(PointCloudT & keypoints3d, const vector<Point> keypoints2d,
-                    const Mat & scene2d, const PointCloudT & scene3d) {
+    void mapToCloud(PointCloud<PointXYZ> & keypoints3d, const vector<Point> keypoints2d,
+                    const Mat & scene2d, const PointCloud<PointXYZ> & scene3d) {
         // Find inlier points in query cloud. Note that we do not use
         // camera information here. Instead we assume that indices in query
         // cloud correspond to the 2d indices. This makes sense especially
@@ -35,8 +39,8 @@ namespace clutseg {
         }
     }
 
-    void mapInliersToCloud(PointCloudT & keypoints3d, const Guess & guess,
-                    const Mat & scene2d, const PointCloudT & scene3d) {
+    void mapInliersToCloud(PointCloud<PointXYZ> & keypoints3d, const tod::Guess & guess,
+                    const Mat & scene2d, const PointCloud<PointXYZ> & scene3d) {
         vector<Point> inliers(guess.inliers.size());
         BOOST_FOREACH(int idx, guess.inliers) {
             inliers.push_back(guess.image_points_[idx]);

@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "pcl_visualization_addons.h"
+#include "clutseg/pcl_visualization_addons.h"
 
 #include <opencv_candidate/PoseRT.h>
 #include <pcl_visualization/pcl_visualizer.h>
@@ -16,28 +16,32 @@ using namespace cv;
 
 namespace clutseg {
 
-    void addPose(PCLVisualizer & visualizer, PoseRT & pose, string id_prefix) {
+    void addPose(PCLVisualizer & visualizer, const PoseRT & pose, const string & id_prefix) {
         int axlength = 1;
 
         Mat rot;
         Rodrigues(pose.rvec, rot);
+        rot.convertTo(rot, CV_64FC1);
+        Mat t;
+        pose.tvec.convertTo(t, CV_64FC1);
+
         // Unit vectors, rotated and translated according to pose
         Mat xpose(3, 1, CV_64FC1);
         xpose.at<double>(0, 0) = axlength;
         xpose.at<double>(1, 0) = 0;
         xpose.at<double>(2, 0) = 0;
         xpose = rot * xpose;
-        xpose = xpose + pose.tvec;
+        xpose = xpose + t;
         Mat ypose = Mat(3, 1, CV_64FC1);
         ypose.at<double>(0, 0) = 0;
         ypose.at<double>(1, 0) = axlength;
         ypose.at<double>(2, 0) = 0;
-        ypose = rot * ypose + pose.tvec;
+        ypose = rot * ypose + t;
         Mat zpose = Mat(3, 1, CV_64FC1);
         zpose.at<double>(0, 0) = 0;
         zpose.at<double>(1, 0) = 0;
         zpose.at<double>(2, 0) = axlength;
-        zpose = rot * zpose + pose.tvec;
+        zpose = rot * zpose + t;
         // the tip of the x-axis drawn in the pose
         PointXYZ xtip;
         xtip.x = xpose.at<double>(0, 0);
@@ -55,13 +59,18 @@ namespace clutseg {
         ztip.z = zpose.at<double>(2, 0);
         // Just pose.tvec as PointXYZ
         PointXYZ tvec;
-        tvec.x = pose.tvec.at<double>(0, 0);
-        tvec.y = pose.tvec.at<double>(1, 0);
-        tvec.z = pose.tvec.at<double>(2, 0);
+        tvec.x = t.at<double>(0, 0);
+        tvec.y = t.at<double>(1, 0);
+        tvec.z = t.at<double>(2, 0);
         // Draw pose
         visualizer.addLine(tvec, xtip, 1, 0, 0, id_prefix + "tvec-xtip");
         visualizer.addLine(tvec, ytip, 0, 1, 0, id_prefix + "tvec-ytip");
         visualizer.addLine(tvec, ztip, 0, 0, 1, id_prefix + "tvec-ztip");
+    }
+
+    void addMarker3d(PCLVisualizer & visualizer, const PointXYZ & p, const string & id_prefix) {
+        visualizer.addSphere(p, 0.01, 1.0, 0.0, 0.0, id_prefix + "sphere");
+        visualizer.addText(id_prefix, p.x, p.y, 255, 0, 0, id_prefix + "text");
     }
 
 }

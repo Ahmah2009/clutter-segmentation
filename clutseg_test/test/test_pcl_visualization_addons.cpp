@@ -13,10 +13,11 @@
 #include <boost/format.hpp>
 #include <tod/detecting/Tools.h>
 
-#include <pcl_visualization_addons.h>
+#include <clutseg/pcl_visualization_addons.h>
 
 using namespace cv;
 using namespace pcl;
+using namespace pcl_visualization;
 using namespace opencv_candidate;
 using namespace clutseg;
 

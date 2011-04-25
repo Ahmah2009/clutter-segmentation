@@ -9,13 +9,11 @@
 #include <map>
 #include <set>
 
-using namespace std;
-
 namespace clutseg {
 
-    typedef map<string, set<string> > TestDesc;
+    typedef std::map<std::string, std::set<std::string> > TestDesc;
 
-    TestDesc loadTestDesc(const string & filename);
+    TestDesc loadTestDesc(const std::string & filename);
 
 }
 

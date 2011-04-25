@@ -8,8 +8,8 @@
 
 #include "test.h"
 
-#include "pose_util.h"
-#include "viz.h"
+#include "clutseg/pose_util.h"
+#include "clutseg/viz.h"
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -76,12 +76,9 @@ TEST(Recognizer, TestRun)
 {
     string p(getenv("CLUTSEG_PATH"));
     Options opts;
-    //opts.baseDirectory = p + "/ias_kinect_train";
-    //opts.imageFile = p + "/ias_kinect_test_all/all01/image_00014.jpg";
-    //opts.config = p + "/ias_kinect_train/config.yaml";
-    opts.baseDirectory = p + "/tod_kinect_train_15";
-    opts.imageFile = p + "/tod_kinect_test_27/t0020.png";
-    opts.config = p + "/tod_kinect_train/config.yaml";
+    opts.baseDirectory = p + "/ias_kinect_train";
+    opts.imageFile = p + "/ias_kinect_test_all/all01/image_00014.jpg";
+    opts.config = p + "/ias_kinect_train/config.yaml";
     opts.verbose = 0;
     opts.mode = KINECT;
 

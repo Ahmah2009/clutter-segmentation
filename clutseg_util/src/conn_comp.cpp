@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "conn_comp.h"
+#include "clutseg/conn_comp.h"
 
 #include <cv.h>
 #include <stdint.h>

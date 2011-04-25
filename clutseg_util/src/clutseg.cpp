@@ -2,10 +2,13 @@
  * Author: Julius Adorf
  */
 
-#include "clutseg.h"
-
-#include <boost/foreach.hpp>
+#include "clutseg/clutseg.h"
+#include "clutseg/map.h"
 #include <tod/detecting/Loader.h>
+
+using namespace std;
+using namespace cv;
+using namespace pcl;
 
 namespace clutseg {
         
@@ -27,23 +30,23 @@ namespace clutseg {
 
     void ClutSegmenter::loadBase() {
         tod::Loader loader(opts_.baseDirectory);
-        vector<Ptr<TexturedObject> > objects;
+        vector<Ptr<tod::TexturedObject> > objects;
         loader.readTexturedObjects(objects);
-        base_ = TrainingBase(objects);
+        base_ = tod::TrainingBase(objects);
     }
 
-    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
+    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloud<PointXYZ> & queryCloud, tod::Guess & resultingGuess, PointCloud<PointXYZ> & inliersCloud) {
         // Initialize matcher and recognizer. This must be done prior to every
         // query,
-        Ptr<FeatureExtractor> extractor = FeatureExtractor::create(opts_.params.feParams);
-        Ptr<Matcher> rtMatcher = Matcher::create(opts_.params.matcherParams);
+        Ptr<tod::FeatureExtractor> extractor = tod::FeatureExtractor::create(opts_.params.feParams);
+        Ptr<tod::Matcher> rtMatcher = tod::Matcher::create(opts_.params.matcherParams);
         rtMatcher->add(base_);
-        cv::Ptr<Recognizer> recognizer = new KinectRecognizer(&base_, rtMatcher,
+        cv::Ptr<tod::Recognizer> recognizer = new tod::KinectRecognizer(&base_, rtMatcher,
                                 &opts_.params.guessParams, 0 /* verbose */, opts_.baseDirectory);
 
-        Features2d test;
+        tod::Features2d test;
         test.image = queryImage;
-        vector<Guess> guesses;
+        vector<tod::Guess> guesses;
         extractor->detectAndExtract(test);
         recognizer->match(test, guesses);
         if (guesses.empty()) {
@@ -61,29 +64,11 @@ namespace clutseg {
                 }
             }
             resultingGuess = guesses[max_i];
+          
+            mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
 
-            // Find inlier points in query cloud. Note that we do not use
-            // camera information here. Instead we assume that indices in query
-            // cloud correspond to the 2d indices. This makes sense especially
-            // when both 2d and 3d data has been taken from a Kinect camera.
-            // Nevertheless, this assumption has to be verified. Also, it seems
-            // that in tod_training, tod::PCLToPoints is solving the same task.
-            // thing. Yet I think either my code has a bug or there code which
-            // maps 2d to 3d points. This has to be investigated. See line 117
-            // of clouds.h in tod_training. Why is the x-scale factor used for
-            // y-scaling?
-            // TODO: is this code snippet correct?
-            float scaleW = float(queryCloud.width) / queryImage.cols;
-            float scaleH = float(queryCloud.height) / queryImage.rows;
-            BOOST_FOREACH(int idx, resultingGuess.inliers) {
-                size_t u = size_t(resultingGuess.image_points_[idx].x * scaleW);
-                size_t v = size_t(resultingGuess.image_points_[idx].y * scaleH);
-                if (u < queryCloud.width && v < queryCloud.height) {
-                    inliersCloud.push_back(queryCloud(u, v));
-                } else {
-                    cerr << "WARNING: cannot find 3d point for inlier, outside of point cloud" << endl; 
-                }
-            }
+            // FIXME: remove outliers?
+
             return true;
         }
     }

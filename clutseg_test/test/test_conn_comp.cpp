@@ -1,10 +1,11 @@
 /*
  * Author: Julius Adorf
  */
+// TODO: migrate to clutseg_util
 
 #include "test.h"
 
-#include <conn_comp.h>
+#include <clutseg/conn_comp.h>
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>

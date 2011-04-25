@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "testdesc.h"
+#include "clutseg/testdesc.h"
 
 #include <iostream>
 #include <fstream>

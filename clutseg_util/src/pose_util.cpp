@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "pose_util.h"
+#include "clutseg/pose_util.h"
 
 #include <fiducial/fiducial.h>
 #include <opencv/cxeigen.hpp>

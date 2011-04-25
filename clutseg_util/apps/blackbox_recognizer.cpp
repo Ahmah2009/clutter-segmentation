@@ -26,10 +26,10 @@
  * given testing set.
  */
 
-#include "testdesc.h"
-#include "pose_util.h"
-#include "options.h"
-#include "viz.h"
+#include "clutseg/testdesc.h"
+#include "clutseg/pose_util.h"
+#include "clutseg/options.h"
+#include "clutseg/viz.h"
 
 #include <tod/detecting/Loader.h>
 #include <tod/detecting/Recognizer.h>
@@ -50,6 +50,7 @@
 #define foreach BOOST_FOREACH
 
 using namespace cv;
+using namespace opencv_candidate;
 using namespace tod;
 using namespace std;
 using namespace boost;

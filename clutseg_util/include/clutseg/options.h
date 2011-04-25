@@ -7,7 +7,7 @@
 
 #include <tod/detecting/Parameters.h>
 
-using namespace std;
+
 
 namespace clutseg {
 

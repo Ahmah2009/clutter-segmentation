@@ -2,9 +2,9 @@
  * Author: Julius Adorf
  */
 
-#include "viz.h"
+#include "clutseg/viz.h"
 
-#include "pose_util.h"
+#include "clutseg/pose_util.h"
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
@@ -12,6 +12,8 @@
 #include <time.h>
 
 using namespace cv;
+using namespace std;
+using namespace tod;
 using namespace opencv_candidate;
 
 namespace clutseg {

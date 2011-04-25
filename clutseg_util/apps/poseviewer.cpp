@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "clutseg/pcl_visualization_addons.h"
+#include "clutseg/pose_util.h"
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
@@ -10,8 +12,6 @@
 #include <cv.h>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
-#include "pcl_visualization_addons.h"
-#include "pose_util.h"
 
 using namespace std;
 using namespace cv;

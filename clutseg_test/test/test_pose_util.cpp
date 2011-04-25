@@ -4,8 +4,8 @@
 
 #include "test.h"
 
-#include "pose_util.h"
-#include "viz.h"
+#include "clutseg/pose_util.h"
+#include "clutseg/viz.h"
 #include <fiducial/fiducial.h>
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>

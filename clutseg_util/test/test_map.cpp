@@ -3,7 +3,7 @@
  */
 
  #include <gtest/gtest.h>
-#include "pcl_visualization_addons.h"
+#include "clutseg/pcl_visualization_addons.h"
 #include "test.h"
 #include <cv.h>
 
@@ -12,6 +12,9 @@
 
 using namespace std;
 using namespace cv;
+using namespace opencv_candidate;
+using namespace pcl;
+using namespace pcl_visualization;
 using namespace clutseg;
 
 class Map : public ::testing::Test {

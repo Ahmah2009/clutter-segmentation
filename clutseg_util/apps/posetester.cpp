@@ -13,8 +13,8 @@
  * it prints the observed success rate.
  */
 
-#include "pose_util.h"
-#include "viz.h"
+#include "clutseg/pose_util.h"
+#include "clutseg/viz.h"
 
 #include <iostream>
 #include <cv.h>

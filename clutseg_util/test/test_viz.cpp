@@ -3,8 +3,8 @@
  */
 
 #include "test.h"
-#include "viz.h"
-#include "pose_util.h"
+#include "clutseg/viz.h"
+#include "clutseg/pose_util.h"
 
 #include <tod/core/Features2d.h>
 #include <gtest/gtest.h>
@@ -13,7 +13,9 @@
 
 using namespace tod;
 using namespace cv;
+using namespace opencv_candidate;
 using namespace clutseg;
+using namespace std;
 
 void sampleFeatures(Features2d & f2d) {
     FileStorage fs("./data/image_00000.png.features.yaml.gz", FileStorage::READ);

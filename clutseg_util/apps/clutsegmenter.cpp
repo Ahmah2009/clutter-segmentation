@@ -2,19 +2,21 @@
  * Author: Julius Adorf
  */
 
-#include "clutseg.h"
+#include "clutseg/clutseg.h"
 
-#include "pose_util.h"
+#include "clutseg/pose_util.h"
 
 #include <pcl/io/pcd_io.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
 
-using namespace clutseg;
 using namespace std;
+using namespace cv;
+using namespace pcl;
+using namespace clutseg;
 
-void readInput(int argc, char **argv, Mat & queryImage, PointCloudT & queryCloud) {
+void readInput(int argc, char **argv, Mat & queryImage, PointCloud<PointXYZ> & queryCloud) {
     // Read input
     if (argc <= 2) {
         cerr << "Usage: clutsegmenter <query-image> <query-cloud> [<inlier-cloud-out>] [<pose-out>]" << endl;
@@ -28,7 +30,7 @@ void readInput(int argc, char **argv, Mat & queryImage, PointCloudT & queryCloud
     }
 }
 
-void processOutput(int argc, char **argv, bool positive, tod::Guess & guess, PointCloudT & inlierCloud) {
+void processOutput(int argc, char **argv, bool positive, tod::Guess & guess, PointCloud<PointXYZ> & inlierCloud) {
     // Process result
     if (positive) {
         cout << "Recognized " << guess.getObject()->name << endl;
@@ -55,7 +57,7 @@ int main(int argc, char **argv) {
     // Input: test image
     Mat queryImage;
     // Input: corresponding point cloud
-    PointCloudT queryCloud;
+    PointCloud<PointXYZ> queryCloud;
 
     readInput(argc, argv, queryImage, queryCloud);
 
@@ -64,7 +66,7 @@ int main(int argc, char **argv) {
     // Output: aligned pose, subject name and inliers
     tod::Guess guess;
     // Output: 3d points corresponding to inliers
-    PointCloudT inlierCloud;
+    PointCloud<PointXYZ> inlierCloud;
 
     // Actual recognition 
     positive = segmenter.recognize(queryImage, queryCloud, guess, inlierCloud);

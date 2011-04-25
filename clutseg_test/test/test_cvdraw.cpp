@@ -6,7 +6,7 @@
 
 // TODO: migrate to clutseg_util
 
-#include "viz.h"
+#include "clutseg/viz.h"
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <boost/format.hpp>

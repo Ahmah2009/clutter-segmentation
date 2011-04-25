@@ -8,15 +8,14 @@
 #include <pcl/point_types.h>
 #include <tod/detecting/GuessGenerator.h>
 
-using namespace pcl;
-using namespace cv;
-
 namespace clutseg {
 
-    void mapToCloud(pcl::PointCloud<PointXYZ> & keypoints3d, const vector<Point> keypoints2d,
-                    const Mat & scene2d, const PointCloud<PointXYZ> & scene3d);
+    void mapToCloud(pcl::PointCloud<pcl::PointXYZ> & keypoints3d,
+                    const std::vector<cv::Point> keypoints2d,
+                    const cv::Mat & scene2d,
+                    const pcl::PointCloud<pcl::PointXYZ> & scene3d);
 
-    void mapInliersToCloud(PointCloud<PointXYZ> & keypoints3d, const tod::Guess & guess,
-                    const Mat & scene2d, const PointCloud<PointXYZ> & scene3d);
+    void mapInliersToCloud(pcl::PointCloud<pcl::PointXYZ> & keypoints3d, const tod::Guess & guess,
+                    const cv::Mat & scene2d, const pcl::PointCloud<pcl::PointXYZ> & scene3d);
 }
 
