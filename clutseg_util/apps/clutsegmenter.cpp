@@ -52,15 +52,18 @@ int main(int argc, char **argv) {
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
     );
 
-    // Input values
+    // Input: test image
     Mat queryImage;
+    // Input: corresponding point cloud
     PointCloudT queryCloud;
 
     readInput(argc, argv, queryImage, queryCloud);
 
-    // Output values
+    // Output: whether an object has been detected
     bool positive;
+    // Output: aligned pose, subject name and inliers
     Guess guess;
+    // Output: 3d points corresponding to inliers
     PointCloudT inlierCloud;
 
     // Actual recognition 
