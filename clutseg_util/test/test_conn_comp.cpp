@@ -4,6 +4,7 @@
 
 #include "test.h"
 
+#include <gtest/gtest.h>
 #include <clutseg/conn_comp.h>
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
