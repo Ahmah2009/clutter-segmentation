@@ -43,6 +43,9 @@ target_link_libraries(blackbox_recognizer tod_detecting ${PROJECT_NAME})
 rosbuild_add_executable(clutsegmenter apps/clutsegmenter.cpp)
 target_link_libraries(clutsegmenter tod_detecting ${PROJECT_NAME})
 
+rosbuild_add_executable(fixmask apps/fixmask.cpp)
+target_link_libraries(fixmask ${PROJECT_NAME})
+
 rosbuild_add_executable(keypoints_viewer apps/keypoints_viewer.cpp)
 target_link_libraries(keypoints_viewer tod_training ${PROJECT_NAME})
 

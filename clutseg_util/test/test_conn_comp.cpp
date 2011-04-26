@@ -1,7 +1,6 @@
 /*
  * Author: Julius Adorf
  */
-// TODO: migrate to clutseg_util
 
 #include "test.h"
 
