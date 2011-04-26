@@ -25,10 +25,10 @@ void sampleFeatures(Features2d & f2d) {
 
 void sampleGuess(Guess & guess, Features2d & f2d) {
     sampleFeatures(f2d);
-    vector<int> selection(f2d.keypoints.size());
+    vector<int> selection;
     for (size_t i = 0; i < f2d.keypoints.size(); i++) {
         guess.image_points_.push_back(f2d.keypoints[i].pt);
-        selection.push_back(i);
+        selection[i] = i; // shuffle and truncate later
     }
     random_shuffle(selection.begin(), selection.end()); 
     for (size_t i = 0; i < f2d.keypoints.size() / 3; i ++) {

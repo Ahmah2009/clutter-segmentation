@@ -19,6 +19,10 @@ namespace clutseg {
                     const pcl::PointXYZ & p,
                     const std::string & id_prefix = std::string("")); 
 
+    void addMarker3d(pcl_visualization::PCLVisualizer & visualizer,
+                    const pcl::PointCloud<pcl::PointXYZ> & cloud,
+                    const std::string & id_prefix = std::string("")); 
+
 }
 
 #endif

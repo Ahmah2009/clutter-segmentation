@@ -41,7 +41,7 @@ namespace clutseg {
 
     void mapInliersToCloud(PointCloud<PointXYZ> & keypoints3d, const tod::Guess & guess,
                     const Mat & scene2d, const PointCloud<PointXYZ> & scene3d) {
-        vector<Point> inliers(guess.inliers.size());
+        vector<Point> inliers;
         BOOST_FOREACH(int idx, guess.inliers) {
             inliers.push_back(guess.image_points_[idx]);
         }

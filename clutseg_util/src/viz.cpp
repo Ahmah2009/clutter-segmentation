@@ -111,8 +111,8 @@ namespace clutseg {
     void drawGuesses(Mat & canvas, const vector<Guess> & guesses,
                         const Camera & camera, const vector<PoseRT> & ground_poses) { srand(time(NULL));
         initPredefColors();
-        vector<Scalar> colors(predefColors.size());
-        copy(predefColors.begin(), predefColors.end(), colors.begin());
+        vector<Scalar> colors;
+        colors.assign(predefColors.begin(), predefColors.end());
         for (size_t i = predefColors.size(); i < guesses.size(); i++) {
             colors.push_back(Scalar(
                 50 + rand() % 206,
@@ -139,11 +139,11 @@ namespace clutseg {
         // Draw labels
         for (size_t i = 0; i < guesses.size(); i++) {
             Point topleft = projectOrigin(guesses[i].aligned_pose(), camera); 
-            vector<string> legend(1);
+            vector<string> legend;
             legend.push_back(str(boost::format("%s (%d/%d)") %
                 guesses[i].getObject()->name % guesses[i].inliers.size() %
                 guesses[i].image_points_.size()));
-            drawText(canvas, legend, topleft, FONT_HERSHEY_SIMPLEX, 1.2, 2, colors[i]);
+            drawText(canvas, legend, topleft + Point(20, 20), FONT_HERSHEY_SIMPLEX, 1.2, 2, colors[i]);
         }
     }
 

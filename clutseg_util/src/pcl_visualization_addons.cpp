@@ -8,6 +8,7 @@
 #include <pcl_visualization/pcl_visualizer.h>
 #include <cv.h>
 #include <assert.h>
+#include <boost/format.hpp>
 
 using namespace pcl;
 using namespace pcl_visualization;
@@ -72,6 +73,14 @@ namespace clutseg {
         visualizer.addSphere(p, 0.01, 1.0, 0.0, 0.0, id_prefix + "sphere");
         visualizer.addText(id_prefix, p.x, p.y, 255, 0, 0, id_prefix + "text");
     }
+
+    void addMarker3d(PCLVisualizer & visualizer, const PointCloud<PointXYZ> & cloud, const string & id_prefix) {
+        for (size_t i = 0; i < cloud.size(); i++) {
+            PointXYZ p = *(cloud.begin() + i);
+            addMarker3d(visualizer, p, str(boost::format("%s-%d") % id_prefix % i));
+        }
+    }
+
 
 }
 

@@ -355,16 +355,16 @@ int main(int argc, char *argv[])
                     ground_rz = ground_posert.rvec.at<double>(2, 0);
 
                     // relative errors
-                    vector<double> rerr_t(3); 
-                    vector<double> rerr_r(3); 
-                    rerr_t.push_back(abs(guess_tx - ground_tx) / ground_tx);
-                    rerr_t.push_back(abs(guess_ty - ground_ty) / ground_ty);
-                    rerr_t.push_back(abs(guess_tz - ground_tz) / ground_tz);
-                    rerr_r.push_back(abs(guess_rx - ground_rx) / ground_rx);
-                    rerr_r.push_back(abs(guess_ry - ground_ry) / ground_ry);
-                    rerr_r.push_back(abs(guess_rz - ground_rz) / ground_rz);
-                    max_rerr_t = *max_element(rerr_t.begin(), rerr_t.end());
-                    max_rerr_r = *max_element(rerr_r.begin(), rerr_r.end());
+                    double rerr_t[3];
+                    double rerr_r[3];
+                    rerr_t[0] = abs(guess_tx - ground_tx) / ground_tx;
+                    rerr_t[1] = abs(guess_ty - ground_ty) / ground_ty;
+                    rerr_t[2] = abs(guess_tz - ground_tz) / ground_tz;
+                    rerr_r[0] = abs(guess_rx - ground_rx) / ground_rx;
+                    rerr_r[1] = abs(guess_ry - ground_ry) / ground_ry;
+                    rerr_r[2] = abs(guess_rz - ground_rz) / ground_rz;
+                    max_rerr_t = *max_element(rerr_t, rerr_t + 3);
+                    max_rerr_r = *max_element(rerr_r, rerr_r + 3);
                 }
 
                 table << boost::format("%-45s %-25s %5d %3d %7d "
