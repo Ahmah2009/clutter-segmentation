@@ -112,6 +112,9 @@ TEST_F(Map, MapMarkers) {
     EXPECT_EQ(yellow2d.size(), yellow3d_hscaled.size());
     EXPECT_EQ(blue2d.size(), blue3d_hscaled.size());
 
+    EXPECT_EQ(640, cloud.width);
+    EXPECT_EQ(480, cloud.height);
+
     imshow("MapMarkers", markerImg);
     waitKey(-1);
 

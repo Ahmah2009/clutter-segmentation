@@ -15,15 +15,11 @@ namespace clutseg {
 
     void mapToCloud(PointCloud<PointXYZ> & keypoints3d, const vector<Point> keypoints2d,
                     const Mat & scene2d, const PointCloud<PointXYZ> & scene3d, bool sameScaleH) {
-        // Find inlier points in query cloud. Note that we do not use camera
-        // information here. Instead we assume that indices in query cloud
-        // correspond to the 2d indices. This makes sense especially when both
-        // 2d and 3d data has been taken from a Kinect camera.  Nevertheless,
-        // this assumption has to be verified. Also, it seems that in
-        // tod_training, tod::PCLToPoints is solving the same task. Yet I think
-        // either my code has a bug or there code which maps 2d to 3d points.
-        // This has to be investigated. See line 117 of clouds.h in
-        // tod_training. Why is the x-scale factor used for y-scaling?
+        // See also tod::PCLToPoints, line 117 of clouds.h in tod:training. I wanted a method
+        // that can be tested with different parameters, since I am not sure how to interprete
+        // cloud.width and cloud.height. Tests (see test_map.cpp) show that scaling with the
+        // width ratio is necessary and the width ratio should better also be used as a scaling
+        // factor for y-indices.
         float scaleW = float(scene3d.width) / scene2d.cols;
         float scaleH = (sameScaleH ? scaleW : float(scene3d.height) / scene2d.rows);
         BOOST_FOREACH(Point p, keypoints2d) {
@@ -32,7 +28,7 @@ namespace clutseg {
             if (u < scene3d.width && v < scene3d.height) {
                 keypoints3d.push_back(scene3d(u, v));
             } else {
-                cerr << "WARNING: cannot find 3d point for inlier, outside of point cloud" << endl; 
+                keypoints3d.push_back(PointXYZ(NAN, NAN, NAN));
             }
         }
     }
