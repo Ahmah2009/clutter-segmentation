@@ -69,18 +69,28 @@ namespace clutseg {
         visualizer.addLine(tvec, ztip, 0, 0, 1, id_prefix + "tvec-ztip");
     }
 
-    void addMarker3d(PCLVisualizer & visualizer, const PointXYZ & p, const string & id_prefix) {
-        visualizer.addSphere(p, 0.01, 1.0, 0.0, 0.0, id_prefix + "sphere");
-        visualizer.addText(id_prefix, p.x, p.y, 255, 0, 0, id_prefix + "text");
+    void addMarker3d(PCLVisualizer & visualizer, const PointXYZ & marker, int r, int g, int b, const string & id_prefix) {
+        visualizer.addSphere(marker, 0.01, r / 255.0, g / 255.0, b / 255.0, id_prefix + "sphere");
     }
 
-    void addMarker3d(PCLVisualizer & visualizer, const PointCloud<PointXYZ> & cloud, const string & id_prefix) {
-        for (size_t i = 0; i < cloud.size(); i++) {
-            PointXYZ p = *(cloud.begin() + i);
-            addMarker3d(visualizer, p, str(boost::format("%s-%d") % id_prefix % i));
+    void addMarker3d(PCLVisualizer & visualizer, const PointCloud<PointXYZ> & markers, int r, int g, int b,const string & id_prefix) {
+        for (size_t i = 0; i < markers.size(); i++) {
+            PointXYZ p = *(markers.begin() + i);
+            addMarker3d(visualizer, p, r, g, b, str(boost::format("%s-%d") % id_prefix % i));
         }
     }
 
+    void addMarkerPolygon3d(PCLVisualizer & visualizer,
+                            const PointCloud<PointXYZ> & markers,
+                            int r, int g, int b,
+                            const string & id_prefix) {
+        addMarker3d(visualizer, markers, r, g, b, id_prefix);
+        for (PointCloud<PointXYZ>::const_iterator it = markers.begin(),
+             end = markers.end(); it != end; it++) {
+            string id = str(boost::format("%s-%d-line") % id_prefix % (it - markers.begin()));
+            visualizer.addLine(*it, *(it == (end-1) ? markers.begin() : it+1), r, g, b, id);
+        }
+    }
 
 }
 
