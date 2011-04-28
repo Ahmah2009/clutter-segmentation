@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
     }
 
     if (write_store) {
-        filesystem::copy_file(opts.baseDirectory + "/config.yaml", opts.storeDirectory + "/features.config.yaml");
+        filesystem::copy_file(opts.baseDirectory + "/features.config.yaml", opts.storeDirectory + "/features.config.yaml");
         filesystem::copy_file(opts.config, opts.storeDirectory + "/config.yaml");
         filesystem::copy_file(opts.testdescFilename, opts.storeDirectory + "/testdesc.txt");
     }

@@ -4,7 +4,7 @@ function usage() {
     cat <<USAGE
 Usage: train-detect <base>
 
-Detects features from training images given pose and masks.
+Maps 2d keypoints to their corresponding 3d points in training image.
 USAGE
 }
 
@@ -14,14 +14,14 @@ expect_arg 0
 base=$(get_arg 0)
 
 pushd $CLUTSEG_PATH/$base > /dev/null
-    assert_training_base
+    assert_base
     for d in *; do
         if [ -d $d ]; then
             subj=$(basename $d)
-            echo "Detecting features $subj"
+            echo "Mapping 2d-3d: $subj"
             echo "--------------------------------------------------------"
-            echo "Running tod_training detector..."
-            rosrun tod_training detector -d $subj -j$JOBS
+            echo "Running tod_training f3d_creator ..."
+            rosrun tod_training f3d_creator -d $subj -j8
         fi
     done
 popd > /dev/null

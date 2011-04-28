@@ -18,10 +18,10 @@ pushd $CLUTSEG_PATH/$base > /dev/null
     for d in *; do
         if [ -d $d ]; then
             subj=$(basename $d)
-            echo "Generate 2d-3d mapping for $subj"
+            echo "Extract features for $subj"
             echo "--------------------------------------------------------"
-            echo "Running tod_training f3d_creator ..."
-            rosrun tod_training f3d_creator -d $subj -j$JOBS
+            echo "Running tod_training detector ..."
+            rosrun tod_training detector -d $subj -j8
         fi
     done
 popd > /dev/null

@@ -19,9 +19,9 @@ expect_arg 0
 base=$(get_arg 0)
 
 pushd $CLUTSEG_PATH/$base > /dev/null
-    assert_training_base
+    assert_base_
     for d in *; do
-        assert_training_base
+        assert_base
         if [ -d $d ]; then
             subj=$(basename $d)
             echo "Estimating poses for $subj"

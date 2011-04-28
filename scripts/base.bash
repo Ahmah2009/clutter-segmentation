@@ -2,7 +2,6 @@
 
 function script_init() {
     if has_opt -h || has_opt --help ; then
-        echo "help requested"
         usage
         exit
     fi
@@ -43,9 +42,13 @@ function get_arg() {
 
  # generic helpers
 
-function assert_training_base() {
+function assert_base() {
     if ! [ -f fiducial.yml ] ; then
-        echo "No fiducial.yml in training base. Exiting for safety reasons."
+        cat <<ERROR
+No fiducial.yml in training/testing base. Exiting for safety reasons. Notev
+that the existence of this file just shows that flags this a training or
+testing directory.
+ERROR
         exit
     fi
 }
