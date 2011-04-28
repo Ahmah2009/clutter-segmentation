@@ -51,6 +51,7 @@ int main(int argc, char **argv) {
     int success_cnt = 0;
     for (int i = 1; i < argc; i++) {
         Mat img = imread(argv[i]);
+        posest.current_image_name = string(argv[i]);
         PoseRT pose = posest.estimatePose(img);
         if (pose.estimated) {
             cout << "[SUCCESS] " << argv[i] << endl;

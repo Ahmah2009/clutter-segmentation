@@ -12,7 +12,7 @@ else
 Usage: test.bash TARGET
 Available targets:
     tests -- compile and link tests
-    test  -- run tests"
+    test  -- run tests
 HELP
 fi
 
