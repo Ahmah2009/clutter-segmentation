@@ -10,10 +10,11 @@ USAGE
 
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
-expect_arg $1
+expect_arg 0
+base=$(get_arg 0)
 
-base=$1
 pushd $CLUTSEG_PATH/$base > /dev/null
+    assert_training_base
     for d in *; do
         if [ -d $d ]; then
             subj=$(basename $d)

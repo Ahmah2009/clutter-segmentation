@@ -11,10 +11,11 @@ USAGE
 
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
-expect_arg $1
+expect_arg 0
+base=$(get_arg 0)
 
-base=$1
 pushd $CLUTSEG_PATH/$base > /dev/null
+    assert_training_base
     for d in *; do
         if [ -d $d ]; then
             subj=$(basename $d)
@@ -24,7 +25,7 @@ pushd $CLUTSEG_PATH/$base > /dev/null
             rosrun tod_training masker -d $subj -M 1 -j8
             if has_opt "--fix" ; then
                 pushd $subj >/dev/null
-                    for mask in *.mask.png ; do
+                    for mask in image_?????.png.mask.png ; do
                         echo "Fixing $subj/$mask ..."
                         convert $mask -morphology Open Disk:10.3 $mask
                         fixmask $mask $mask

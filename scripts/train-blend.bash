@@ -21,7 +21,7 @@ pushd $CLUTSEG_PATH/$base > /dev/null
             echo "Generating blend images for $subj"
             echo "--------------------------------------------------------"
             pushd $subj >/dev/null
-                for img in image_*.png ; do
+                for img in image_?????.png ; do
                     if [ -f $img.mask.png ] ; then
                         echo "Creating blend image for $subj/$img ..."
                         composite $img $img.mask.png -blend %60 $img.mask.blend.png
