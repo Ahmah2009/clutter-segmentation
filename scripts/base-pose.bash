@@ -2,14 +2,14 @@
 
 function usage() {
     cat <<USAGE
-Usage: train-pose <base> [--no-fix] [--leave-fix]
+Usage: base-pose <base> [--no-fix] [--leave-fix]
 
-Performs pose estimation on the training image. If flag '--no-fix' is given no
-pre-processed alternative training images will provided and existing
-alternative training image for pose estimations will be removed. Flag
---leave-fix will not create alternative training images but leave existing
-untouched. An alternative training image especially designed as a fallback for
-tod_training pose_estimator has the name <training-image>.pre.pose.png. 
+Performs pose estimation on images with fiducial markers. If flag '--no-fix' is
+given no pre-processed alternative images will provided and existing
+alternative image for pose estimations will be removed. Flag --leave-fix will
+not create alternative images but leave existing untouched. An alternative
+image especially designed as a fallback for tod_training pose_estimator has the
+name <image>.pre.pose.png. 
 USAGE
 }
 

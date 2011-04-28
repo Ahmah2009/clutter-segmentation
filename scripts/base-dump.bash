@@ -2,10 +2,10 @@
 
 function usage() {
     cat <<USAGE
-Usage: train-dump <base>
+Usage: base-dump <base>
 
 Dumps image and point clouds from bags. Besides, no other files will be deleted
-or replaced in the training base.
+or replaced in the training or testing base.
 USAGE
 }
 
