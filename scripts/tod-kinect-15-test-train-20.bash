@@ -25,5 +25,5 @@ pushd $CLUTSEG_PATH > /dev/null
         --testdesc=tod_kinect_test_train_20/testdesc.txt \
         --mode=1 \
         --verbose=0 \
-        -f tod_kinect_train/config.yaml
+        -f configs/config.minInliersCount_25.yaml
 popd > /dev/null

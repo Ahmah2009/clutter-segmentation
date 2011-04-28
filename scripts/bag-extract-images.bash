@@ -9,7 +9,8 @@ import cv
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-	print "Usage: bag-extract-images.py <bag-file> <target-dir> [<topic>]"
+        print "Usage: bag-extract-images.py <bag-file> <target-dir>"
+        sys.exit(1) 
     i = 0
     pano_links = []
     file = sys.argv[1]
@@ -19,6 +20,7 @@ if __name__ == '__main__':
     i = 0
     for topic, msg, t in bag.read_messages(topics=['image']):
         try:
+            print "***"
             cv_image = bridge.imgmsg_to_cv(msg, "bgr8")
             image_name = os.path.join(targetdir, "image_%05d.jpg" % i)
             cv.SaveImage(image_name, cv_image)

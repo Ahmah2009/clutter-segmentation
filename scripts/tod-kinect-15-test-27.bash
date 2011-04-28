@@ -19,9 +19,8 @@ fi
 
 pushd $CLUTSEG_PATH > /dev/null
     mkdir -p tod_kinect_test_27/result
-    link-test-results -u tod_kinect_test_27
-    rm -f tod_kinect_test_27/result/*
-    blackbox_recognizer \
+    rm -rf tod_kinect_test_27/result/*
+    time blackbox_recognizer \
         -B tod_kinect_train_15 \
         -I tod_kinect_test_27 \
         --store=tod_kinect_test_27/result \
