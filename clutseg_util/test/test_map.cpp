@@ -3,9 +3,12 @@
  */
 
 #include "test.h"
- #include <gtest/gtest.h>
+
+#include "clutseg/common.h"
 #include "clutseg/pcl_visualization_addons.h"
 #include "clutseg/map.h"
+
+#include <gtest/gtest.h>
 #include <cv.h>
 #include <boost/format.hpp>
 

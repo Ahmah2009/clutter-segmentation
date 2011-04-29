@@ -4,6 +4,8 @@
 
 #include "test.h"
 
+#include "clutseg/common.h"
+
 #include <gtest/gtest.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <pcl/io/pcd_io.h>
@@ -26,7 +28,7 @@ void samplePose(PoseRT & pose) {
     pose.read(in[PoseRT::YAML_NODE_NAME]);
 }
 
-void sampleCloud(pcl::PointCloud<pcl::PointXYZ> & cloud) {
+void sampleCloud(PointCloudT & cloud) {
     pcl::io::loadPCDFile("./data/cloud_00000.pcd", cloud);
 }
 

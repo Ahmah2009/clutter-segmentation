@@ -3,7 +3,10 @@
  */
 
 #include "clutseg/clutseg.h"
+
+#include "clutseg/common.h"
 #include "clutseg/map.h"
+
 #include <tod/detecting/Loader.h>
 
 using namespace std;
@@ -35,7 +38,7 @@ namespace clutseg {
         base_ = tod::TrainingBase(objects);
     }
 
-    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloud<PointXYZ> & queryCloud, tod::Guess & resultingGuess, PointCloud<PointXYZ> & inliersCloud) {
+    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud) {
         // Initialize matcher and recognizer. This must be done prior to every
         // query,
         Ptr<tod::FeatureExtractor> extractor = tod::FeatureExtractor::create(opts_.params.feParams);

@@ -13,8 +13,8 @@ using namespace pcl;
 
 namespace clutseg {
 
-    void mapToCloud(PointCloud<PointXYZ> & keypoints3d, const vector<Point> keypoints2d,
-                    const Mat & scene2d, const PointCloud<PointXYZ> & scene3d, bool sameScaleH) {
+    void mapToCloud(PointCloudT & keypoints3d, const vector<Point> keypoints2d,
+                    const Mat & scene2d, const PointCloudT & scene3d, bool sameScaleH) {
         // See also tod::PCLToPoints, line 117 of clouds.h in tod:training. I wanted a method
         // that can be tested with different parameters, since I am not sure how to interprete
         // cloud.width and cloud.height. Tests (see test_map.cpp) show that scaling with the
@@ -33,8 +33,8 @@ namespace clutseg {
         }
     }
 
-    void mapInliersToCloud(PointCloud<PointXYZ> & keypoints3d, const tod::Guess & guess,
-                    const Mat & scene2d, const PointCloud<PointXYZ> & scene3d, bool sameScaleH) {
+    void mapInliersToCloud(PointCloudT & keypoints3d, const tod::Guess & guess,
+                    const Mat & scene2d, const PointCloudT & scene3d, bool sameScaleH) {
         vector<Point> inliers;
         BOOST_FOREACH(int idx, guess.inliers) {
             inliers.push_back(guess.image_points_[idx]);

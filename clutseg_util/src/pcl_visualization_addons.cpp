@@ -4,6 +4,8 @@
 
 #include "clutseg/pcl_visualization_addons.h"
 
+#include "clutseg/common.h"
+
 #include <opencv_candidate/PoseRT.h>
 #include <pcl_visualization/pcl_visualizer.h>
 #include <cv.h>
@@ -73,7 +75,7 @@ namespace clutseg {
         visualizer.addSphere(marker, 0.01, r / 255.0, g / 255.0, b / 255.0, id_prefix + "sphere");
     }
 
-    void addMarker3d(PCLVisualizer & visualizer, const PointCloud<PointXYZ> & markers, int r, int g, int b,const string & id_prefix) {
+    void addMarker3d(PCLVisualizer & visualizer, const PointCloudT & markers, int r, int g, int b,const string & id_prefix) {
         for (size_t i = 0; i < markers.size(); i++) {
             PointXYZ p = *(markers.begin() + i);
             addMarker3d(visualizer, p, r, g, b, str(boost::format("%s-%d") % id_prefix % i));
@@ -81,11 +83,11 @@ namespace clutseg {
     }
 
     void addMarkerPolygon3d(PCLVisualizer & visualizer,
-                            const PointCloud<PointXYZ> & markers,
+                            const PointCloudT & markers,
                             int r, int g, int b,
                             const string & id_prefix) {
         addMarker3d(visualizer, markers, r, g, b, id_prefix);
-        for (PointCloud<PointXYZ>::const_iterator it = markers.begin(),
+        for (PointCloudT::const_iterator it = markers.begin(),
              end = markers.end(); it != end; it++) {
             string id = str(boost::format("%s-%d-line") % id_prefix % (it - markers.begin()));
             visualizer.addLine(*it, *(it == (end-1) ? markers.begin() : it+1), r, g, b, id);
