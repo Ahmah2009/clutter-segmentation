@@ -1,2 +1,2 @@
-main.pdf:
+main: main.tex
 	pdflatex main.tex
