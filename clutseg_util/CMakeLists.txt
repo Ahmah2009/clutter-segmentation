@@ -49,6 +49,9 @@ target_link_libraries(fixmask ${PROJECT_NAME})
 rosbuild_add_executable(keypoints_viewer apps/keypoints_viewer.cpp)
 target_link_libraries(keypoints_viewer tod_training ${PROJECT_NAME})
 
+rosbuild_add_executable(keypoints_image apps/keypoints_image.cpp)
+target_link_libraries(keypoints_image tod_training ${PROJECT_NAME})
+
 rosbuild_add_executable(posetester apps/posetester.cpp)
 target_link_libraries(posetester ${PROJECT_NAME})
 

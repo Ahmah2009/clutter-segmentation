@@ -2,27 +2,27 @@
 
 function usage() {
     cat <<USAGE
-Usage: link-test-results <test-base>
+Usage: test-symlink <test-result>
 
-Creates folders with symlinks to selected artifacts in a
-test result directory.
+Creates folders with symlinks to selected artifacts in a test result directory.
+The <test-result> parameter shall point to a test result directory, see also
+option --store in blackbox_recognizer.
 USAGE
 }
 
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
-expect_arg $1 
+expect_arg 0
 
-testbase=$CLUTSEG_PATH/$1
-
+result=$CLUTSEG_PATH/$(get_arg 0)
 
 # create_symlinks <folder-name> <glob-suffix-pattern>
 function create_symlinks() {
-    pushd $testbase/result > /dev/null
+    pushd $result > /dev/null
         mkdir -p $1
         pushd $1 > /dev/null
            echo "Creating symlinks $1 ..."
-           ls -1 $testbase/result/*$2 | xargs -l ln -f -s 
+           ls -1 ../*$2 | xargs -l ln -f -s 
         popd > /dev/null
     popd > /dev/null
 }
