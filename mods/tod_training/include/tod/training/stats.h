@@ -1,3 +1,5 @@
+#include "tod/training/feature_extraction.h"
+
 #include <time.h>
 #include <ostream>
 
@@ -120,7 +122,7 @@ struct detector_stats {
     bool pm_octaves_used;
 
     /** the parameter configuration used for feature extraction */
-    // FeatureExtractionParams params;
+    tod::FeatureExtractionParams params;
 
     // TODO: extract super-class
     float avg_time() const { return time / img_cnt; }

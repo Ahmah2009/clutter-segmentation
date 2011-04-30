@@ -1,4 +1,4 @@
-#include "tod/core/stats.h"
+#include "tod/training/stats.h"
 
 #include <boost/format.hpp>
 
@@ -76,10 +76,10 @@ void detector_stats::print(ostream & out) const {
     out << format("    %-22s: %5s") % "pm_min_features_used" % pm_min_features_used << endl;
     out << format("    %-22s: %5s") % "pm_max_features_used" % pm_max_features_used << endl;
     out << format("    %-22s: %5s") % "pm_octaves_used" % pm_octaves_used << endl;
-    /* out << endl; // TODO: include feature extraction params
+    out << endl;
     out << format("    %-22s: %5s") % "detector_type" % params.detector_type << endl;
     out << format("    %-22s: %5s") % "descriptor_type" % params.descriptor_type << endl;
-    out << format("    %-22s: %5s") % "extractor_type" % params.extractor_type << endl; */
+    out << format("    %-22s: %5s") % "extractor_type" % params.extractor_type << endl;
     // TODO: include detector_params and extractor_params
     out << endl;
     out << "}" << endl;

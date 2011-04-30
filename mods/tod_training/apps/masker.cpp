@@ -5,7 +5,7 @@
  *      Author: erublee
  */
 
-#include <tod/core/stats.h>
+#include "tod/training/stats.h"
 #include <tod/core/Features3d.h>
 
 #include <tod/training/file_io.h>

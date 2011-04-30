@@ -5,7 +5,7 @@
  *      Author: erublee
  */
 
-#include <tod/core/stats.h>
+#include <tod/training/stats.h>
 
 #include "tod/training/feature_extraction.h"
 #include "tod/training/masking.h"

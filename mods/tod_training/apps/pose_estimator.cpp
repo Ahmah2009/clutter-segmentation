@@ -1,7 +1,7 @@
 /* pose_estimator
  */
 
-#include <tod/core/stats.h>
+#include <tod/training/stats.h>
 
 #include <boost/thread.hpp>
 #include <boost/shared_ptr.hpp>
