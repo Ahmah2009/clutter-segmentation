@@ -3,9 +3,11 @@ fiducial/src/fiducial.cpp
 tod_training/apps/masker.cpp
 tod_training/apps/detector.cpp
 tod_training/apps/pose_estimator.cpp
+tod_training/include/tod/training/feature_extraction.h
 tod_training/include/tod/training/stats.h
 tod_training/scripts/dump_all.py
 tod_training/scripts/train_object.sh
+tod_training/src/feature_extraction.cpp
 tod_training/src/stats.cpp
 tod_detecting/apps/folder_recognizer.cpp
 tod_detecting/src/GuessGenerator.cpp
