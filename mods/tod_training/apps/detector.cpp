@@ -145,10 +145,14 @@ struct features_worker
             fiducial::KnownPoseEstimator pose_est(filename(x + ".pose.yaml")); //load pose from file
             f2d.camera.pose = pose_est.estimatePose(Mat());
 
-            std::string features_file = filename(x + ".features.yaml.gz");
-
             extractor->detectAndExtract(f2d);
+
+            mout("keypoints detected: " << f2d.keypoints.size() << endl);
+            mout("descriptors: " << f2d.descriptors.rows << "x" << f2d.descriptors.cols << endl);
             sync(stats_lock, stats.success_cnt++);
+            sync(stats_lock, stats.tot_keypoint_cnt += f2d.keypoints.size());
+            sync(stats_lock, stats.min_keypoint_cnt = std::min((int) f2d.keypoints.size(), stats.min_keypoint_cnt);
+                             stats.max_keypoint_cnt = std::max((int) f2d.keypoints.size(), stats.max_keypoint_cnt));
 
             if(verbose){
               boost::mutex::scoped_lock sl(imshow_lock);
@@ -157,6 +161,8 @@ struct features_worker
               // imshow("mask",f2d.mask);
               waitKey(0);
             }
+
+            std::string features_file = filename(x + ".features.yaml.gz");
 
             FileStorage fs(features_file, FileStorage::WRITE);
             fs << FeatureExtractionParams::YAML_NODE_NAME;

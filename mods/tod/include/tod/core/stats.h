@@ -98,8 +98,18 @@ struct detector_stats {
     /** the number of times feature extraction has failed. */
     int failure_cnt;
 
+    /** the number of keypoints extracted in total from all images */
+    int tot_keypoint_cnt;
+
+    /** the minimum number of keypoints extracted in total from any image */
+    int min_keypoint_cnt;
+
+    /** the maximum number of keypoints extracted from any image */
+    int max_keypoint_cnt;
+
     // TODO: extract super-class
     float avg_time() const { return time / img_cnt; }
+    float avg_keypoint_cnt() const { return float(tot_keypoint_cnt) / img_cnt; }
     float success_rate() const { return float(success_cnt) / img_cnt; }
     float failure_rate() const { return float(failure_cnt) / img_cnt; }
 
