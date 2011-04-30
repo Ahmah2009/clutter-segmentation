@@ -107,6 +107,21 @@ struct detector_stats {
     /** the maximum number of keypoints extracted from any image */
     int max_keypoint_cnt;
 
+    /** whether this parameter was actually considered when extracting features */
+    bool pm_threshold_used;
+    
+    /** whether this parameter was actually considered when extracting features */
+    bool pm_min_features_used;
+
+    /** whether this parameter was actually considered when extracting features */
+    bool pm_max_features_used;
+
+    /** whether this parameter was actually considered when extracting features */
+    bool pm_octaves_used;
+
+    /** the parameter configuration used for feature extraction */
+    // FeatureExtractionParams params;
+
     // TODO: extract super-class
     float avg_time() const { return time / img_cnt; }
     float avg_keypoint_cnt() const { return float(tot_keypoint_cnt) / img_cnt; }
