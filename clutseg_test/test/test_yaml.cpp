@@ -56,3 +56,21 @@ TEST(Yaml, ReadCameraFromYaml) {
     EXPECT_TRUE(CV_IS_MAT(&(camera.K)));
 }
 
+TEST(Yaml, ReadPosestStatsFromYaml) {
+    FileStorage fs("./data/posest_stats.yaml", FileStorage::READ);
+    EXPECT_TRUE(fs.isOpened());
+    float success_rate;
+    FileNode fn = fs["posest_stats"];
+    read(fn["success_rate"], success_rate, 0.0);
+    EXPECT_EQ(1.0, success_rate);
+}
+
+TEST(Yaml, YamlToStandardOutput) {
+    FileStorage out("/dev/stdout", FileStorage::WRITE);
+    EXPECT_TRUE(out.isOpened());
+    out << "foo" << "baz";
+    out.release();
+}
+
+
+

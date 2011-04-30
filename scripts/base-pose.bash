@@ -2,7 +2,7 @@
 
 function usage() {
     cat <<USAGE
-Usage: base-pose <base> [--no-fix] [--leave-fix]
+Usage: base-pose <base> [--no-fix] [--leave-fix] [--debug]
 
 Performs pose estimation on images with fiducial markers. If flag '--no-fix' is
 given no pre-processed alternative images will provided and existing
@@ -18,8 +18,12 @@ source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 expect_arg 0
 base=$(get_arg 0)
 
+if has_opt --debug ; then
+    debug="gdb --args "
+fi
+
 pushd $CLUTSEG_PATH/$base > /dev/null
-    assert_base_
+    assert_base
     for d in *; do
         assert_base
         if [ -d $d ]; then
@@ -32,14 +36,15 @@ pushd $CLUTSEG_PATH/$base > /dev/null
                         echo "Generating alternative training image for $subj/$img ..."
                         convert -monochrome $img $img.pre.pose.png
                     done
-                elif ! [ has_opt --leave-fix ] ; then
+                elif ! has_opt --leave-fix ; then
                     rm *.pre.pose.png
                 fi
             popd > /dev/null
             echo "Running tod_training pose estimator..."
             # only run with one job, seems to be some racing condition
             # but I did not attempt to find the bug
-            rosrun tod_training pose_estimator -d $subj -j1
+            # rosrun tod_training pose_estimator -d $subj -j1
+            $debug $(rospack find tod_training)/bin/pose_estimator -d $subj -j1
        fi
     done
 popd > /dev/null

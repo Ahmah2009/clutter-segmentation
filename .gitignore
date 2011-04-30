@@ -5,4 +5,10 @@ tags
 *.swp
 *.swo
 *.pyc
+thesis/*.aux
+thesis/*.pdf
+thesis/*.glo
+thesis/*.toc
+thesis/*.log
+thesis/*.out
 *~

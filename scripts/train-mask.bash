@@ -4,7 +4,7 @@ function usage() {
     cat <<USAGE
 Usage: train-mask <base> [--fix] 
 
-Performs masking. If flag '--fix' is given the masks are preprocessed, an
+Performs masking. If flag '--fix' is given the masks are postprocessed, an
 attempt to remove areas in the mask outside of the actual region of interest.
 USAGE
 }

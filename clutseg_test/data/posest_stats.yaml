@@ -1,0 +1,17 @@
+%YAML:1.0
+posest_stats:
+    time                  : 19.8
+    avg_time              :  4.0
+    img_cnt               :    5
+    success_cnt           :    5
+    success_rate          : 1.00
+    failure_cnt           :    0
+    failure_rate          : 0.00
+    orig_success_cnt      :    2
+    orig_success_rate     : 0.40
+    orig_failure_cnt      :    3
+    orig_failure_rate     : 0.60
+    fallback_success_cnt  :    3
+    fallback_success_rate : 1.00
+    fallback_failure_cnt  :    0
+    fallback_failure_rate : 0.00

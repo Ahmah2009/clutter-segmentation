@@ -1,0 +1,23 @@
+The files in this directories are all files that have been adapted to our
+needs, or were being patched. The following lists the SVN revisions from which
+the adaptations have been derived.
+
+item                revision
+------------------------------------------------------------------------------
+tod_detecting       50974
+tod_training        50974
+fiducial            50974
+
+All modified files can be hardlinked using the script mods-link, thus after
+linking, changes to patches in this repository will be automatically reflected
+in their respective source repo (and the other way round). A list of patches
+in place can be retrieved by issuing 'svn status object_recognition' and a list
+of ready patches should be maintained in mods.txt
+
+Adding a new patch
+------------------
+1. Create new patch
+2. Update mods.txt
+3. Remove file to patch
+4. Call mods-link
+
