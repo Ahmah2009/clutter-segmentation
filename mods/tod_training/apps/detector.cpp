@@ -147,8 +147,6 @@ struct features_worker
 
             extractor->detectAndExtract(f2d);
 
-            mout("keypoints detected: " << f2d.keypoints.size() << endl);
-            mout("descriptors: " << f2d.descriptors.rows << "x" << f2d.descriptors.cols << endl);
             sync(stats_lock, stats.success_cnt++);
             sync(stats_lock, stats.tot_keypoint_cnt += f2d.keypoints.size());
             sync(stats_lock, stats.min_keypoint_cnt = std::min((int) f2d.keypoints.size(), stats.min_keypoint_cnt);
@@ -201,6 +199,8 @@ int main(int argc, char *argv[])
   std::vector<std::list<std::string> > vlist = splitList(images, opts.common.n_threads);
 
   detector_stats stats;
+  stats.params= opts.fe_params;
+
   clock_t before = clock();
 
   //create a thread for each sublist

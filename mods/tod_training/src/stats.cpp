@@ -14,17 +14,21 @@ void posest_stats::print(ostream & out) const {
     // TODO: use YAML persistence module
     out << "%YAML:1.0" << endl;
     out << "posest_stats" << " {" << endl;
+    out << endl;
     out << format("    %-22s: %5.1f") % "time" % time << endl;
     out << format("    %-22s: %5.1f") % "avg_time" % avg_time() << endl;
     out << format("    %-22s: %5d") % "img_cnt" % img_cnt << endl;
+    out << endl;
     out << format("    %-22s: %5d") % "success_cnt" % success_cnt << endl;
     out << format("    %-22s: %5d") % "failure_cnt" % failure_cnt << endl;
     out << format("    %-22s: %5.2f") % "success_rate" % success_rate() << endl;
     out << format("    %-22s: %5.2f") % "failure_rate" % failure_rate() << endl;
+    out << endl;
     out << format("    %-22s: %5d") % "orig_success_cnt" % orig_success_cnt << endl;
     out << format("    %-22s: %5d") % "orig_failure_cnt" % orig_failure_cnt << endl;
     out << format("    %-22s: %5.2f") % "orig_success_rate" % orig_success_rate() << endl;
     out << format("    %-22s: %5.2f") % "orig_failure_rate" % orig_failure_rate() << endl;
+    out << endl;
     out << format("    %-22s: %5d") % "fallback_success_cnt" % fallback_success_cnt  << endl;
     out << format("    %-22s: %5d") % "fallback_failure_cnt" % fallback_failure_cnt  << endl;
     out << format("    %-22s: %5.2f") % "fallback_success_rate" % fallback_success_rate()  << endl;
@@ -38,13 +42,16 @@ masker_stats::masker_stats() :
 void masker_stats::print(ostream & out) const {
     out << "%YAML:1.0" << endl;
     out << "masker_stats" << " {" << endl;
+    out << endl;
     out << format("    %-22s: %5.1f") % "time" % time << endl;
     out << format("    %-22s: %5.1f") % "avg_time" % avg_time() << endl;
     out << format("    %-22s: %5d") % "img_cnt" % img_cnt << endl;
+    out << endl;
     out << format("    %-22s: %5d") % "success_cnt" % success_cnt << endl;
     out << format("    %-22s: %5d") % "failure_cnt" % failure_cnt << endl;
     out << format("    %-22s: %5.2f") % "success_rate" % success_rate() << endl;
     out << format("    %-22s: %5.2f") % "failure_rate" % failure_rate() << endl;
+    out << endl;
     out << "}" << endl;
 }
 
@@ -58,6 +65,7 @@ detector_stats::detector_stats() :
 void detector_stats::print(ostream & out) const {
     out << "%YAML:1.0" << endl;
     out << "detector_stats" << " {" << endl;
+    out << endl;
     out << format("    %-22s: %5.1f") % "time" % time << endl;
     out << format("    %-22s: %5.1f") % "avg_time" % avg_time() << endl;
     out << format("    %-22s: %5d") % "img_cnt" % img_cnt << endl;
