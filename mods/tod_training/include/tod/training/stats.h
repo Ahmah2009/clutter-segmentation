@@ -1,4 +1,7 @@
-#include "tod/training/feature_extraction.h"
+#ifndef STATS_H_TOD_
+#define STATS_H_TOD_
+
+#include "tod/training/feature_params.h"
 
 #include <time.h>
 #include <ostream>
@@ -48,10 +51,7 @@ struct posest_stats {
 
 };
 
-std::ostream & operator<<(std::ostream & out, const posest_stats & s) {
-    s.print(out);
-    return out;
-}
+std::ostream & operator<<(std::ostream & out, const posest_stats & s);
 
 /** Statistics for tod_training/apps/masker.cpp */
 struct masker_stats {
@@ -78,10 +78,7 @@ struct masker_stats {
 
 };
 
-std::ostream & operator<<(std::ostream & out, const masker_stats & s) {
-    s.print(out);
-    return out;
-}
+std::ostream & operator<<(std::ostream & out, const masker_stats & s);
 
 /** Statistics for tod_training/apps/detector.cpp */
 struct detector_stats {
@@ -121,6 +118,22 @@ struct detector_stats {
     /** whether this parameter was actually considered when extracting features */
     bool pm_octaves_used;
 
+    /** Class name of the used OpenCV cv::FeatureDetector instance. */
+    std::string internal_detector;
+
+    /** Class name of an internal extractor used by an upper-level extractor
+     * (yes, the naming scheme is kind of unfortunate. Anyways,
+     * tod::MultiscaleExtractor and tod::SequentialExtractor will take a
+     * cv::DescriptorExtractor as a parameter. internal_extractor will name
+     * the type of this parameter. If not used at all, it will be "<none>".
+     */
+    std::string internal_extractor;
+
+    /** Class name of the used extractor, such as "MultiscaleExtractor",
+     * "SequentialExtractor" or "OrbExtractor". The name "extractor" is weird,
+     * anyway stick to it for at least keeping code consistent. */
+    std::string extractor;
+
     /** the parameter configuration used for feature extraction */
     tod::FeatureExtractionParams params;
 
@@ -134,9 +147,7 @@ struct detector_stats {
 
 };
 
-std::ostream & operator<<(std::ostream & out, const detector_stats & s) {
-    s.print(out);
-    return out;
-}
+std::ostream & operator<<(std::ostream & out, const detector_stats & s);
 
+#endif
 

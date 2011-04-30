@@ -8,6 +8,9 @@
 #ifndef FEATURES_H_TOD_
 #define FEATURES_H_TOD_
 
+#include "tod/training/feature_params.h"
+#include "tod/training/stats.h"
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
@@ -17,23 +20,7 @@
 #include "rbrief/RBrief.h"
 #include "rbrief/StopWatch.h"
 
-namespace tod
-{
-struct FeatureExtractionParams : public Serializable
-{
-
-  std::string detector_type;
-  std::string descriptor_type;
-  std::string extractor_type;
-  std::map<std::string, double> detector_params;
-  std::map<std::string, double> extractor_params;
-  //serialization
-  virtual void write(cv::FileStorage& fs) const;
-  virtual void read(const cv::FileNode& fn);
-
-  static FeatureExtractionParams CreateSampleParams();
-  static const std::string YAML_NODE_NAME;
-};
+namespace tod {
 /** \brief interface to fill out a Features2d object with keypoints and descriptors
  */
 class FeatureExtractor
@@ -43,6 +30,10 @@ public:
   {
   }
   virtual void detectAndExtract(Features2d& features) const = 0;
+  static FeatureExtractor* create(FeatureExtractionParams params, detector_stats & stats);
+  static cv::FeatureDetector* createDetector(const std::string& detectorType, float threshold, detector_stats & stats);
+  
+  // for backwards compatibility
   static FeatureExtractor* create(FeatureExtractionParams params);
   static cv::FeatureDetector* createDetector(const std::string& detectorType, float threshold);
 };

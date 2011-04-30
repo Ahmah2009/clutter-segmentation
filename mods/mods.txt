@@ -4,6 +4,7 @@ tod_training/apps/masker.cpp
 tod_training/apps/detector.cpp
 tod_training/apps/pose_estimator.cpp
 tod_training/include/tod/training/feature_extraction.h
+tod_training/include/tod/training/feature_params.h
 tod_training/include/tod/training/stats.h
 tod_training/scripts/dump_all.py
 tod_training/scripts/train_object.sh

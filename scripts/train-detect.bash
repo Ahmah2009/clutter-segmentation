@@ -2,7 +2,7 @@
 
 function usage() {
     cat <<USAGE
-Usage: train-detect <base> [--verbose]
+Usage: train-detect <base> [--verbose] [--debug] [--serial}
 
 Detects features from training images given pose and masks.
 USAGE
@@ -17,6 +17,15 @@ if has_opt --verbose ; then
     verbose="--verbose=1"
 fi
 
+if has_opt --debug ; then
+    debug="gdb --args "
+fi
+
+jobs=8
+if has_opt --serial ; then
+    jobs=1
+fi
+
 pushd $CLUTSEG_PATH/$base > /dev/null
     assert_base
     for d in *; do
@@ -25,7 +34,7 @@ pushd $CLUTSEG_PATH/$base > /dev/null
             echo "Extract features for $subj"
             echo "--------------------------------------------------------"
             echo "Running tod_training detector ..."
-            rosrun tod_training detector -d $subj -j8 $verbose
+            $debug $(rospack find tod_training)/bin/detector -d $subj -j$jobs $verbose
         fi
     done
 popd > /dev/null

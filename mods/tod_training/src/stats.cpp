@@ -10,6 +10,11 @@ posest_stats::posest_stats() :
     orig_success_cnt(0), orig_failure_cnt(0), fallback_success_cnt(0),
     fallback_failure_cnt(0) { }
 
+std::ostream & operator<<(std::ostream & out, const posest_stats & s) {
+    s.print(out);
+    return out;
+}
+
 void posest_stats::print(ostream & out) const {
     // TODO: use YAML persistence module
     out << "%YAML:1.0" << endl;
@@ -39,6 +44,11 @@ void posest_stats::print(ostream & out) const {
 masker_stats::masker_stats() : 
     time(0.0), img_cnt(0), success_cnt(0), failure_cnt(0) { }
 
+std::ostream & operator<<(std::ostream & out, const masker_stats & s) {
+    s.print(out);
+    return out;
+}
+
 void masker_stats::print(ostream & out) const {
     out << "%YAML:1.0" << endl;
     out << "masker_stats" << " {" << endl;
@@ -58,9 +68,15 @@ void masker_stats::print(ostream & out) const {
 detector_stats::detector_stats() : 
     time(0.0), img_cnt(0), success_cnt(0), failure_cnt(0), tot_keypoint_cnt(0),
     min_keypoint_cnt(numeric_limits<int>::max()),
-    max_keypoint_cnt(numeric_limits<int>::min()), pm_threshold_used(true),
-    pm_min_features_used(true), pm_max_features_used(true),
-    pm_octaves_used(true)  { }
+    max_keypoint_cnt(numeric_limits<int>::min()), pm_threshold_used(false),
+    pm_min_features_used(false), pm_max_features_used(false),
+    pm_octaves_used(false), internal_detector(""), internal_extractor(""),
+    extractor("") { }
+
+std::ostream & operator<<(std::ostream & out, const detector_stats & s) {
+    s.print(out);
+    return out;
+}
 
 void detector_stats::print(ostream & out) const {
     out << "%YAML:1.0" << endl;
@@ -88,6 +104,10 @@ void detector_stats::print(ostream & out) const {
     out << format("    %-22s: %5s") % "detector_type" % params.detector_type << endl;
     out << format("    %-22s: %5s") % "descriptor_type" % params.descriptor_type << endl;
     out << format("    %-22s: %5s") % "extractor_type" % params.extractor_type << endl;
+    out << endl;
+    out << format("    %-22s: %5s") % "internal_detector" % internal_detector << endl;
+    out << format("    %-22s: %5s") % "internal_extractor" % internal_extractor << endl;
+    out << format("    %-22s: %5s") % "extractor" % extractor << endl;
     // TODO: include detector_params and extractor_params
     out << endl;
     out << "}" << endl;

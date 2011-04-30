@@ -114,7 +114,8 @@ struct features_worker
   void operator()()
   {
 
-    Ptr<FeatureExtractor> extractor(FeatureExtractor::create(fe_params));
+    Ptr<FeatureExtractor> extractor;
+    sync(stats_lock, extractor = FeatureExtractor::create(fe_params, stats));
     if (extractor.empty())
       throw std::runtime_error("bad FeatureExtractorParams!");
     Mat features_draw;
@@ -199,7 +200,7 @@ int main(int argc, char *argv[])
   std::vector<std::list<std::string> > vlist = splitList(images, opts.common.n_threads);
 
   detector_stats stats;
-  stats.params= opts.fe_params;
+  stats.params = opts.fe_params;
 
   clock_t before = clock();
 
