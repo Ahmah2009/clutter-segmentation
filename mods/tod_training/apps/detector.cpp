@@ -4,6 +4,9 @@
  *  Created on: Nov 17, 2010
  *      Author: erublee
  */
+
+#include <tod/core/stats.h>
+
 #include "tod/training/feature_extraction.h"
 #include "tod/training/masking.h"
 #include "tod/training/file_io.h"
@@ -28,6 +31,7 @@ using namespace cv;
 
 #define foreach         BOOST_FOREACH
 #define reverse_foreach BOOST_REVERSE_FOREACH
+#define sync(lock, code) { boost::mutex::scoped_lock sl(lock); code; }
 
 namespace po = boost::program_options;
 
@@ -102,8 +106,8 @@ int options(int ac, char ** av, detector_options& opts)
 struct features_worker
 {
   features_worker(const std::string& directory, const list<string>& images, FeatureExtractionParams fe_params,
-                  Camera camera,bool verbose) :
-    directory(directory), images(images), fe_params(fe_params), camera(camera),verbose(verbose)
+                  Camera camera,bool verbose, detector_stats & stats) :
+    directory(directory), images(images), fe_params(fe_params), camera(camera),verbose(verbose), stats(stats)
   {
   }
 
@@ -118,6 +122,8 @@ struct features_worker
     //given an image and mask detect and extract
     foreach(string x,images)
           {
+            sync(stats_lock, stats.img_cnt++);
+
             string maskfile = filename(x + ".mask.png");
             FileMasker masker(maskfile);
 
@@ -130,6 +136,7 @@ struct features_worker
             if (f2d.mask.empty())
             {
               std::cout << "[DETECTOR] FAILED to detect features (no mask): " << x << std::endl;
+            sync(stats_lock, stats.failure_cnt++);
              // mout("\nno mask for file: " << x << endl);
               continue;
             }
@@ -141,13 +148,14 @@ struct features_worker
             std::string features_file = filename(x + ".features.yaml.gz");
 
             extractor->detectAndExtract(f2d);
+            sync(stats_lock, stats.success_cnt++);
 
             if(verbose){
               boost::mutex::scoped_lock sl(imshow_lock);
               f2d.draw(features_draw, 0);
               imshow("features", features_draw);
               // imshow("mask",f2d.mask);
-              waitKey(5);
+              waitKey(0);
             }
 
             FileStorage fs(features_file, FileStorage::WRITE);
@@ -160,16 +168,19 @@ struct features_worker
   }
 
   static boost::mutex cout_lock;
+  static boost::mutex stats_lock;
   static boost::mutex imshow_lock;
   string directory;
   list<string> images;
   FeatureExtractionParams fe_params;
   Camera camera;
   bool verbose;
+  detector_stats & stats;
 
 };
 
 boost::mutex features_worker::cout_lock;
+boost::mutex features_worker::stats_lock;
 boost::mutex features_worker::imshow_lock;
 int main(int argc, char *argv[])
 {
@@ -183,15 +194,27 @@ int main(int argc, char *argv[])
   //first split the image list into the number of threads that we want
   std::vector<std::list<std::string> > vlist = splitList(images, opts.common.n_threads);
 
+  detector_stats stats;
+  clock_t before = clock();
+
   //create a thread for each sublist
   boost::thread_group threads;
   foreach(const std::list<std::string>& x,vlist)
         {
-          threads.create_thread(features_worker(opts.common.directory, x, opts.fe_params, camera,opts.common.verbose));
+          threads.create_thread(features_worker(opts.common.directory, x, opts.fe_params, camera,opts.common.verbose, stats));
         }
 
   //join all the threads that we spawned
   threads.join_all();
+    
+  clock_t after = clock();
+  stats.time = float (after - before) / CLOCKS_PER_SEC;
+  cout << stats;
+
+  ofstream stats_out((opts.common.directory + "/detector_stats.yaml").c_str());
+  stats_out << stats;
+  stats_out.close();
+
 
   return 0;
 }

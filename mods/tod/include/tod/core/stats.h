@@ -51,7 +51,6 @@ std::ostream & operator<<(std::ostream & out, const posest_stats & s) {
     return out;
 }
 
-
 /** Statistics for tod_training/apps/masker.cpp */
 struct masker_stats {
 
@@ -81,4 +80,36 @@ std::ostream & operator<<(std::ostream & out, const masker_stats & s) {
     s.print(out);
     return out;
 }
+
+/** Statistics for tod_training/apps/detector.cpp */
+struct detector_stats {
+
+    detector_stats();
+
+    /** time (in seconds) necessary for extracting features from all given images */
+    float time;
+
+    /** the number of images for feature extraction */
+    int img_cnt;
+
+    /** the number of times features have been successfully extracted. */
+    int success_cnt;
+
+    /** the number of times feature extraction has failed. */
+    int failure_cnt;
+
+    // TODO: extract super-class
+    float avg_time() const { return time / img_cnt; }
+    float success_rate() const { return float(success_cnt) / img_cnt; }
+    float failure_rate() const { return float(failure_cnt) / img_cnt; }
+
+    void print(std::ostream & out) const;
+
+};
+
+std::ostream & operator<<(std::ostream & out, const detector_stats & s) {
+    s.print(out);
+    return out;
+}
+
 

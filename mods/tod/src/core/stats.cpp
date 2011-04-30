@@ -48,4 +48,19 @@ void masker_stats::print(ostream & out) const {
     out << "}" << endl;
 }
 
+detector_stats::detector_stats() : 
+    time(0.0), img_cnt(0), success_cnt(0), failure_cnt(0) { }
+
+void detector_stats::print(ostream & out) const {
+    out << "%YAML:1.0" << endl;
+    out << "detector_stats" << " {" << endl;
+    out << format("    %-22s: %4.1f") % "time" % time << endl;
+    out << format("    %-22s: %4.1f") % "avg_time" % avg_time() << endl;
+    out << format("    %-22s: %4d") % "img_cnt" % img_cnt << endl;
+    out << format("    %-22s: %4d") % "success_cnt" % success_cnt << endl;
+    out << format("    %-22s: %4d") % "failure_cnt" % failure_cnt << endl;
+    out << format("    %-22s: %4.2f") % "success_rate" % success_rate() << endl;
+    out << format("    %-22s: %4.2f") % "failure_rate" % failure_rate() << endl;
+    out << "}" << endl;
+}
 

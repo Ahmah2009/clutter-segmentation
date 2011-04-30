@@ -50,6 +50,7 @@ using namespace cv;
 
 namespace po = boost::program_options;
 
+// TODO: extract to some header
 #define sync(lock, code) { boost::mutex::scoped_lock sl(lock); code; }
 
 namespace {
@@ -267,6 +268,7 @@ int main(int argc, char *argv[])
     if (pcds.size())
         plist = splitList(pcds, opts.common.n_threads);
 
+    // TODO: move to stats, e.g. stats.start() and stats.stop()
     masker_stats stats;
     clock_t before = clock();
 
@@ -287,6 +289,7 @@ int main(int argc, char *argv[])
     stats.time = float (after - before) / CLOCKS_PER_SEC;
 
     cout << stats;
+    // TODO: extract method
     ofstream stats_out((opts.common.directory + "/masker_stats.yaml").c_str());
     stats_out << stats;
     stats_out.close();
