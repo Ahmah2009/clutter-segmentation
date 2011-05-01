@@ -244,10 +244,10 @@ namespace clutseg {
               }
             }
       if (canvas.empty()) {
-            canvas.create(200, 200);
+            canvas.create(400, 400, CV_8UC3);
             vector<string> info;
             info.push_back(str(boost::format("No training image having more than %d matches") % match_threshold));
-            drawText(canvas, info, Point(50, 50), FONT_HERSHEY_SIMPLEX, 1.2, 2, Scalar::all(255));
+            drawText(canvas, info, Point(50, 50), FONT_HERSHEY_SIMPLEX, 0.7, 2, Scalar::all(255));
             cout << "[WARNING] Big image is empty!" << endl;
       }
     }

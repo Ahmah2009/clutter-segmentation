@@ -173,7 +173,9 @@ int main(int argc, char *argv[])
 
     if (write_stats) {
         stats.open(opts.statsFilename.c_str());
-        stats << boost::format("# date: %s") % time() << endl;
+        time_t today;
+        time(&today);
+        stats << boost::format("# date: %s") % today << endl;
         stats << boost::format("# training base: %s") % opts.baseDirectory << endl;
         stats << "[statistics]" << endl;
     }
