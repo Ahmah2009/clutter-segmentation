@@ -137,6 +137,11 @@ namespace tod
         return fd;
     }
 
+    FeatureExtractor *FeatureExtractor::create(FeatureExtractionParams params) {
+        detector_stats stats;
+        return create(params, stats);
+    }
+
     FeatureExtractor *FeatureExtractor::create(FeatureExtractionParams params,
                                                detector_stats & stats)
     {

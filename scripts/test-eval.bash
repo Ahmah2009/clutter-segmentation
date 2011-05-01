@@ -19,10 +19,7 @@ testbase=$(get_arg 2)
 
 pushd $CLUTSEG_PATH > /dev/null
     mkdir -p $testbase/result
-    rm -f $testbase/result/*
-    echo "trainbase=$trainbase"
-    echo "config=$config"
-    echo "testbase=$testbase"
+    rm -rf $testbase/result/*
     blackbox_recognizer \
         -B $trainbase \
         -I $testbase \
@@ -31,5 +28,5 @@ pushd $CLUTSEG_PATH > /dev/null
         --mode=1 \
         --verbose=0 \
         -f $config
-    link-test-results $testbase 
+    test-symlink $testbase/result
 popd > /dev/null

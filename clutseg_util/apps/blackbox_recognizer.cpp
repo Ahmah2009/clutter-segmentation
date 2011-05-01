@@ -31,6 +31,7 @@
 #include "clutseg/options.h"
 #include "clutseg/viz.h"
 
+#include <tod/training/stats.h>
 #include <tod/detecting/Loader.h>
 #include <tod/detecting/Recognizer.h>
 #include <pcl/point_cloud.h>
@@ -46,6 +47,7 @@
 #include <fstream>
 #include <set>
 #include <string>
+#include <time.h>
 
 #define foreach BOOST_FOREACH
 
@@ -171,6 +173,8 @@ int main(int argc, char *argv[])
 
     if (write_stats) {
         stats.open(opts.statsFilename.c_str());
+        stats << boost::format("# date: %s") % time() << endl;
+        stats << boost::format("# training base: %s") % opts.baseDirectory << endl;
         stats << "[statistics]" << endl;
     }
 
@@ -218,8 +222,9 @@ int main(int argc, char *argv[])
         // highly unlikely that there is any dependence between the results.
         // In anyway, it's cheap to recreate those instances.
         TrainingBase base(objects);
+        detector_stats detector_stats;
         Ptr < FeatureExtractor > extractor =
-            FeatureExtractor::create(opts.params.feParams);
+            FeatureExtractor::create(opts.params.feParams, detector_stats);
 
         cv::Ptr < Matcher > rtMatcher =
             Matcher::create(opts.params.matcherParams);

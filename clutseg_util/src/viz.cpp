@@ -179,6 +179,7 @@ namespace clutseg {
       vector<Mat> match_images;
       int scaled_width = 1000;
       int scaled_height = 0;
+      int match_threshold = 7;
 
       // Build the individual matches
       for (size_t objectInd = 0; objectInd < base.size(); objectInd++)
@@ -187,7 +188,7 @@ namespace clutseg {
         {
           tod::Matches imageMatches;
           matcher->getImageMatches(objectInd, imageInd, imageMatches);
-          if (imageMatches.size() > 7)
+          if (imageMatches.size() > match_threshold)
           {
             Features3d f3d = base.getObject(objectInd)->observations[imageInd];
             Features2d f2d = f3d.features();
@@ -243,6 +244,10 @@ namespace clutseg {
               }
             }
       if (canvas.empty()) {
+            canvas.create(200, 200);
+            vector<string> info;
+            info.push_back(str(boost::format("No training image having more than %d matches") % match_threshold));
+            drawText(canvas, info, Point(50, 50), FONT_HERSHEY_SIMPLEX, 1.2, 2, Scalar::all(255));
             cout << "[WARNING] Big image is empty!" << endl;
       }
     }
