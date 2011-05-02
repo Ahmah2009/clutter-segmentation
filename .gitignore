@@ -11,4 +11,9 @@ thesis/*.glo
 thesis/*.toc
 thesis/*.log
 thesis/*.out
-*~
+thesis/components/*.log
+thesis/*.glg
+thesis/*.gls
+thesis/*.ilg
+thesis/*.ind
+thesis/*.ist
