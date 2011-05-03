@@ -1,0 +1,58 @@
+% \chapter{Implementation}
+% \label{chapter:implementation}
+
+\section{Model Learning}
+
+\section{Object Recognition}
+
+\section{Parameter Selection}
+
+% see: Alpaydin: Introduction to Machine Learning
+As we had the choice between several keypoint detection algorithms, matching
+algorithms and each algorithm coming with a set of controllable parameters, we
+were facing the difficulty of choosing a configuration that serves our purpose.
+The way we look at the problem and the terminology used was heavily influenced
+by "Decision and Estimation Theory" (Melsa and Cohn) and by "Introduction to
+Machine Learning" (Alpaydin).
+
+In order to do the parameter selection properly, we have to fit our problem
+into a mathematical model. This turned out to be more difficult than expected.
+Both recognizing an object and correctly locating it within a scene is no
+longer a pure classification task. It is not a regression task either. Yet, it
+turned out that it is possible to view this problem as an estimation problem,
+where we want to estimate the 6 degrees of freedom that uniquely define
+location and orientation of an object in space. We follow the model introduced
+in Melsa \& Cohn. Let us first consider one object in a scene only (e.g. we
+know it's haltbare\_milch). The object and its pose form a {\it message}. There
+are infinitely many poses and therefore the {\it message space} is infinite. If
+we had access to the full undistorted {\it signal}, there would be absolutely
+zero difficulty in estimating the pose.  When we try to find its pose, we have
+to derive an estimation based on our {\it observation}. This observation
+represents only distorted parts of the signal due to occlusion, perspective,
+noise introduced by sensors and unknown variables such as lighting conditions.
+\begin{itemize}
+\item multiple objects?
+\item background?
+\item what is the signal exactly?
+\item what is the observation exactly?
+\end{itemize}
+It was therefore natural to define a measure that allowed us to compare
+different configurations. This measure is called {\it response}. We defined the
+response to depend on the error between estimated pose and ground truth. We
+chose to incorporate the notion of approximately correct pose estimates into
+the response. That way we avoid having to make a binary choice between correct
+and wrong estimate, and leads to more fine-grained responses that retain more
+information about test results.
+
+Consider a set of scenes $S$ for which ground truth is available. Given k
+parameters $\theta_1, ..., \theta_k$ that represent our choice of algorithms
+and the parameters of these algorithms, we define the response for a given set
+as a function $r: S \mapsto r (S|\theta)$. In the next step, we can maximize
+the response for a given set by altering the parameters $\theta$.
+
+
+
+% Note that the problem of detecting an object in the scene by just tagging the
+% image is a pure classification task. 
+
+

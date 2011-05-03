@@ -1,0 +1,28 @@
+\chapter{Terms}
+\label{chapter:terms}
+
+\begin{description}
+    \item[template object] an object used for learning the classifier
+    \item[template view] a 2d image and a point cloud that show a template object from a certain camera viewpoint
+    \item[template image] a 2d image showing the object from a certain viewpoint
+    \item[template cloud] a point cloud showing the object from a certain viewpoint
+    \item[template keypoint] a 2d keypoint from a template image
+    \item[template feature] a 2d keypoint, a descriptor vector, and a
+        corresponding 3d point from a template view
+    \item[template frame] a coordinate system attached to the template object 
+    \item[template coordinates] coordinates relative to the template frame 
+    \item[template origin] origin of template frame 
+    \item[camera frame] a coordinate system attached to the camera 
+    \item[camera coordinates] coordinates relative to the camera frame 
+    \item[camera origin] origin of camera frame 
+    \item[template pose] Defines the transformation of template coordinates into
+        camera coordinates in a given template view. 
+    \item[estimated pose] Estimate for an object's pose in the query image. The
+        translation vector of the estimated pose is equal to the template origin
+        relative to the camera frame.
+    \item[query image] a test image on which objects are to be recognized 
+    \item[query keypoint] a 2d keypoint in the query image
+    \item[query feature] a 2d keypoint and a descriptor vector in the query image
+\end{description}
+
+

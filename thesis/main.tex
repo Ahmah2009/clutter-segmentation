@@ -74,26 +74,30 @@
 	
 	
 		% ---------------------------------------------------------------------------
-		%
-		%Introduction and Background Theory
-		%
-		% ---------------------------------------------------------------------------
-		\part[Introduction and Theory]{Introduction and Theory}
-		\label{part:introAndBackgroundTheory}
-		\input{chapters/Introduction}
+		% \part[Introduction]{Introduction}
+		\chapter[Introduction]{Introduction}
+		\label{chapter:introduction}
+		\input{chapters/introduction}
 		
-		%
-		%% ---------------------------------------------------------------------------
-		%%
-		%% Fully Automated Calibration for Ultrasound
-		%%
-		%%% ---------------------------------------------------------------------------
-		\part[Implementation and Results]{Implementation and Results}
-		\label{part:secondP}
+		% ---------------------------------------------------------------------------
+		\chapter[Theory]{Theory}
+		\label{chapter:theory}
+        \input{chapters/theory}
 	
+		% ---------------------------------------------------------------------------
+		\chapter[Implementation]{Implementation}
+		\label{chapter:implementation}
+        \input{chapters/implementation}
 
-		\part[Bonanza]{Bonanza}
-        \input{chapters/bonanza}	
+		% ---------------------------------------------------------------------------
+		\chapter[Results]{Results}
+		\label{chapter:results}
+        \input{chapters/results}
+
+		% ---------------------------------------------------------------------------
+		\chapter[Bonanza]{Bonanza}
+		\label{chapter:bonanza}
+        \input{chapters/bonanza}
 		
 		% ---------------------------------------------------------------------------
 		%
@@ -106,9 +110,7 @@
 		
 		\appendix %---------------------------------------
 		
-		\input{chapters/oneAppendix}
-
-		\input{components/glossary}
+		\input{components/terms}
 
         \printglossary 
 

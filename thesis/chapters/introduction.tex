@@ -1,0 +1,57 @@
+%\chapter{Introduction}
+%\label{chapter:introduction}
+
+\section{Intended Purpose}
+
+Recognition of objects is a fundamental problem in computer vision. We present
+a system that detects a textured object and finds its pose in a cluttered
+scene. A cluttered scene is formed by multiple textured objects that often
+partially occlude each other and are only partially visible to the observer.
+The intended purpose of this system is to allow a robot to find the pose of an
+object pose such that a robot can then resolve the clutter by scene
+manipulation. We assume that objects are removed by the robot from the scene
+one-by-one, thus our system focuses on robustly finding the pose of a single
+object rather than attempting to recognize all objects in the cluttered scene
+at once.
+
+The challenges of solving such a task are plenty. Partial occlusion renders the 
+task of detecting objects difficult. The objects in the cluttered scene might
+be arbitrarily rotated, and we cannot make any prior assumption about their
+principal axes.
+
+A possible application of the system is in household environments, such as a
+kitchen.  Let us assume that a robot is given the task to go shopping and that
+it will empty the shopping bag onto a kitchen table. Cans, bottles and boxes
+and many other items from supermarkets are all textured objects. The next step
+for the robot is to move all shopping items to appropriate locations in the
+kitchen. The shopping items are assumed to be textured objects and they form a
+cluttered scene on the kitchen table. Our system will then provide the robot
+with sufficient information to remove one of the items from the cluttered
+scene. Multiple iterations will allow the robot to fully resolve the scene.
+
+The actual manipulation of the scene by a robot is not part of this work, but
+the application provides the constraints and the assumptions of our system. A
+textured object shall be recognized with high and measurable confidence, and
+also be correctly located within tolerable error bounds.
+
+\section{Related Work}
+
+... xyz did that ... z means this is difficult ... a chose this .. b did something
+similar but based on different assumptions ... 
+
+\section{Selected Approach}
+
+Our approach is based on constructing 3d models and extracting local 2d
+features from template objects. Local features have significant advantage over
+template matching when objects are partially occluded. % TODO: citation Every
+Given a query image, we then match local 2d features to obtain a mapping
+between 2d keypoints that belong to the query image and 3d points from the
+previously learned template model. We then generate estimates for the object
+poses on the query image based on Random Sample Consensus (RANSAC). The pose
+that is supported by the highest number of matches is then refined by a second
+cascaded classifier that has only been trained on the single object. Each
+estimate is assigned a confidence probability that has been learned on ground
+truth data. In case the ground truth data is sufficiently similar to the data
+encountered in applications, this confidence probability might be used for
+selecting a trade-off between true and false positive rates.% TODO: Zitat Fawcett 2006
+

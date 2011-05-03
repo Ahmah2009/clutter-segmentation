@@ -18,22 +18,24 @@
 
 Recognition of textured objects is fundamental to many robotic applications in
 household environments. This work addresses the perception task of robustly
-recognizing textured objects in a cluttered scene such that the cluttered scene
-can then be resolved by successive removal of objects by a robot.
+finding a textured object and its pose in a cluttered scene such that the
+cluttered scene can then be resolved by successive removal of objects by a
+robot.
 
 A system is presented that learns 3d models and local 2d features from
 templates and is then able to recognize objects in cluttered scenes by matching
 observed local 2d features against the learned templates and then running a
 randomized algorithm to estimate the poses of objects in the scene. Confidence
 probabilities learned from ground truth data provide a measure of goodness for
-all estimated object poses.  The estimated pose is then refined for the object
-with the highest confidence probability, and that estimate shall provide a
-basis for the grasping pipeline of a robot. The system is based on the existing
-textured object recognition stack in the Robot Operating System, which has been
-specifically enhanced to better solve the task at hand.
+all estimated object poses. For the object with the highest confidence
+probability, the pose is re-computed in order to reduce error, and that
+estimate shall provide a basis for the grasping pipeline of a robot. The system
+is based on the existing textured object recognition stack in the Robot
+Operating System, which has been specifically enhanced to better solve the task
+at hand.
 
 Experiments on testing data have shown that in XX percent of cluttered scenes
-an object is correctly located in a cluttered scene with a confidence
+an object is correctly recognized in a cluttered scene with a confidence
 probability of higher than YY percent and a margin for rotational error of ZZ
 percent and translational error of UU percent.
 
