@@ -6,6 +6,7 @@
 
 #include "clutseg/pose_util.h"
 #include "clutseg/viz.h"
+
 #include <fiducial/fiducial.h>
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>
@@ -63,5 +64,11 @@ TEST(PoseUtil, WritePoseRT) {
 TEST(PoseUtil, WritePose) {
     Pose pose;
     writePose("./data/writepose.yaml", pose);
+}
+
+TEST(PoseUtil, TestTripleGroundPose) {
+    PoseRT pose_minus_15;
+    PoseRT pose_zero;
+    PoseRT pose_plus_13;
 }
 
