@@ -7,7 +7,7 @@ if [ "$1" = "tests" ]; then
     make tests
 elif [ "$1" = "test" ]; then
     shift 1
-    gdb --args ./bin/utest $*
+    ./bin/utest $*
 else
     cat <<HELP
 Usage: test.bash TARGET
