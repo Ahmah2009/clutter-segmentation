@@ -17,7 +17,9 @@
 #include <tod/core/Features2d.h>
 #include <tod/training/feature_extraction.h>
 #include <boost/foreach.hpp>
+#include <string>
 
+using namespace std;
 using namespace tod;
 using namespace cv;
 
@@ -63,14 +65,45 @@ class ExtractorTest : public ::testing::Test {
             }
 
             {
+                // This is the configuration  I have used in the first
+                // experiments with tod_kinect and ias_kinect training data.
                 dynamicfast_multiscale_rbrief.detector_type = "DynamicFAST";
                 dynamicfast_multiscale_rbrief.extractor_type = "multi-scale";
                 dynamicfast_multiscale_rbrief.descriptor_type = "rBRIEF";
 
                 dynamicfast_multiscale_rbrief.extractor_params["octaves"] = 3;
-                dynamicfast_multiscale_rbrief.detector_params["min_features"] = 300;
-                dynamicfast_multiscale_rbrief.detector_params["max_features"] = 400;
+                dynamicfast_multiscale_rbrief.detector_params["min_features"] = 500;
+                dynamicfast_multiscale_rbrief.detector_params["max_features"] = 700;
             }
+
+            {
+                // This is kind of a weird configuration I have evaluated very
+                // quickly without much thinking. It most probably does not
+                // make sense to wrap SIFT with yet another multiscale
+                // extractor. Anyways, for sake of understanding, see what 
+                // happens...
+                sift_multiscale_rbrief.detector_type = "SIFT";
+                sift_multiscale_rbrief.extractor_type = "multi-scale";
+                sift_multiscale_rbrief.descriptor_type = "rBRIEF";
+
+                sift_multiscale_rbrief.extractor_params["octaves"] = 3;
+                sift_multiscale_rbrief.detector_params["min_features"] = 600;
+                sift_multiscale_rbrief.detector_params["max_features"] = 900;
+            }
+ 
+            {
+                // This is a new configuration (2011-05-04) I haven't tried
+                // before on any training sense. It seems to make sense to me
+                // though and there is the question where it really detects
+                // keypoints only within the mask.
+                sift_sequential_rbrief.detector_type = "SIFT";
+                sift_sequential_rbrief.extractor_type = "sequential";
+                sift_sequential_rbrief.descriptor_type = "rBRIEF";
+
+                sift_sequential_rbrief.extractor_params["octaves"] = 3;
+                sift_sequential_rbrief.detector_params["min_features"] = 500;
+                sift_sequential_rbrief.detector_params["max_features"] = 700;
+            } 
         }
 
         void expectMaskingWorks(const FeatureExtractionParams & params) {
@@ -81,13 +114,13 @@ class ExtractorTest : public ::testing::Test {
             // of interest.
             vector<KeyPoint> outside;
             keypointsOutsideMask(f2d_masked.keypoints, f2d_masked.mask, outside);
-            EXPECT_EQ(0, outside.size());
             Mat canvas;
             cvtColor(f2d_masked.mask, canvas, CV_GRAY2BGR);
-            clutseg::drawKeypoints(canvas, f2d_masked.keypoints, Scalar(255, 0, 0));
+            clutseg::drawKeypoints(canvas, f2d_masked.keypoints, Scalar::all(-1));
             clutseg::drawKeypoints(canvas, outside, Scalar(0, 0, 255));
             imshow("keypoints inside and outside of the mask", canvas);
             waitKey(-1);
+            EXPECT_EQ(0, outside.size());
         }
 
         Features2d f2d;
@@ -95,6 +128,8 @@ class ExtractorTest : public ::testing::Test {
         detector_stats stats;
         FeatureExtractionParams orb_harrisfast;
         FeatureExtractionParams dynamicfast_multiscale_rbrief;
+        FeatureExtractionParams sift_multiscale_rbrief;
+        FeatureExtractionParams sift_sequential_rbrief;
 };
 
 
@@ -134,6 +169,47 @@ TEST_F(ExtractorTest, orb_harrisfast_masking_works) {
 }
 
 TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_masking_works) {
+    // This is a bug in OpenCV. The masking parameter is useless.
     expectMaskingWorks(dynamicfast_multiscale_rbrief);
+}
+
+TEST_F(ExtractorTest, sift_multiscale_rbrief_stats) {
+    Ptr<FeatureExtractor> extractor = FeatureExtractor::create(sift_multiscale_rbrief, stats);
+    EXPECT_TRUE(stats.internal_detector.find("SiftFeatureDetector") != string::npos);
+    EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
+    EXPECT_EQ("tod::MultiscaleExtractor", stats.extractor);
+}
+
+TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_works) {
+    // This is a bug in OpenCV. The masking parameter is useless.
+    expectMaskingWorks(sift_multiscale_rbrief);
+}
+
+TEST_F(ExtractorTest, sift_sequential_rbrief_stats) {
+    Ptr<FeatureExtractor> extractor = FeatureExtractor::create(sift_sequential_rbrief, stats);
+    EXPECT_TRUE(stats.internal_detector.find("SiftFeatureDetector") != string::npos);
+    EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
+    EXPECT_EQ("tod::SequentialExtractor", stats.extractor);
+}
+
+TEST_F(ExtractorTest, sift_sequential_rbrief_masking_works) {
+    expectMaskingWorks(sift_sequential_rbrief);
+}
+
+TEST_F(ExtractorTest, SiftFeatureDetectorIgnoresMask) {
+    // I expect having found an annoying bug in OpenCV
+    // SiftFeatureDetector does not use the mask.
+    // see http://opencv-users.1802565.n2.nabble.com/Problems-about-the-OpenCV-SIFT-feature-detector-td6084481.html
+    // see https://code.ros.org/trac/opencv/ticket/1029
+    SiftFeatureDetector fd = SiftFeatureDetector(SIFT::DetectorParams::
+                                         GET_DEFAULT_THRESHOLD(),
+                                         SIFT::DetectorParams::
+                                         GET_DEFAULT_EDGE_THRESHOLD());
+    fd.detect(f2d_masked.image, f2d_masked.keypoints, f2d_masked.mask);
+    vector<KeyPoint> outside;
+    keypointsOutsideMask(f2d_masked.keypoints, f2d_masked.mask, outside);
+    // If this test passes, then OpenCV SiftFeatureDetector::detect is buggy
+    // and ignores the mask.
+    EXPECT_GT(outside.size(), 0);
 }
 
