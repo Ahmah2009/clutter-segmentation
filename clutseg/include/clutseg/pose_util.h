@@ -28,6 +28,12 @@ namespace clutseg {
 
     void readPose(const std::string & filename, opencv_candidate::Pose & dst);
 
+    void modelToView(const cv::Mat & mvtrans, const cv::Mat & mvrot, const cv::Mat & mpt, cv::Mat & vpt);
+
+    void modelToView(const opencv_candidate::PoseRT & pose, const cv::Point3d & mpt, cv::Point3d & vpt);
+
+    void translatePose(const opencv_candidate::PoseRT & src, const cv::Mat & model_tvec, opencv_candidate::PoseRT & dst);
+
 }
 
 #endif

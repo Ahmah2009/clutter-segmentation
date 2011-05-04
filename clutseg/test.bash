@@ -6,7 +6,8 @@ cp CMakeListsTest.txt CMakeLists.txt
 if [ "$1" = "tests" ]; then
     make tests
 elif [ "$1" = "test" ]; then
-    make test
+    shift 1
+    gdb --args ./bin/utest $*
 else
     cat <<HELP
 Usage: test.bash TARGET

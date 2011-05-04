@@ -13,7 +13,7 @@
 
 void sampleColorImage(cv::Mat & img);
 void samplePose(opencv_candidate::PoseRT & pose);
-void sampleCloud(PointCloudT & cloud);
+void sampleCloud(clutseg::PointCloudT & cloud);
 
 #define __TEST_H__ __TEST_H__
 #endif

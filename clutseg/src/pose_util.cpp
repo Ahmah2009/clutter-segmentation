@@ -9,6 +9,7 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random.hpp>
+#include <boost/foreach.hpp>
 
 using namespace fiducial;
 using namespace cv;
@@ -90,6 +91,27 @@ namespace clutseg {
         f.open(filename, FileStorage::READ);
         dst.read(f[PoseRT::YAML_NODE_NAME]);
         f.release();
+    }
+
+    void modelToView(const Mat & mvtrans, const Mat & mvrot, const Mat & mpt, Mat & vpt) {
+        vpt = mvrot * mpt + mvtrans;
+    }
+
+    void modelToView(const PoseRT & pose, const Point3d & mpt, Point3d & vpt) {
+        vector<Point3d> op(1, mpt);
+        Mat mop(op);
+        Mat R;
+        Rodrigues(pose.rvec, R);
+        transform(mop, mop, R);
+        op[0] += pose.tvec.at<Point3d>();
+        vpt = op[0];
+    }
+
+    void translatePose(const opencv_candidate::PoseRT & src, const Mat & model_tvec, opencv_candidate::PoseRT & dst) {
+        dst.rvec = src.rvec.clone(); 
+        Mat mvrot;
+        Rodrigues(src.rvec, mvrot);
+        modelToView(src.tvec, mvrot, model_tvec, dst.tvec);
     }
 
 }

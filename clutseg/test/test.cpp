@@ -13,6 +13,7 @@
 using namespace pcl;
 using namespace cv;
 using namespace opencv_candidate;
+using namespace clutseg;
 
 int main(int argc, char **argv){
     testing::InitGoogleTest(&argc, argv);

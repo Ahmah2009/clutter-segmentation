@@ -4,11 +4,12 @@
 
 #include "test.h"
 
+#include <gtest/gtest.h>
+
 #include "clutseg/common.h"
 #include "clutseg/pcl_visualization_addons.h"
 #include "clutseg/map.h"
 
-#include <gtest/gtest.h>
 #include <cv.h>
 #include <boost/format.hpp>
 
@@ -33,7 +34,8 @@ class Map : public ::testing::Test {
         Mat img;
         Mat markerImg;
         PoseRT pose;
-        PointCloud<PointXYZ> cloud;
+        //PointCloud<PointXYZ> cloud;
+        PointCloudT cloud;
 };
 
 // TODO: move to test_pcl_visualization_addons
@@ -53,12 +55,12 @@ TEST_F(Map, MapImageCorners) {
     corners.push_back(Point(img.cols - margin, margin));
     corners.push_back(Point(img.cols - margin, img.rows - margin));
     corners.push_back(Point(margin, img.rows - margin));
-    PointCloud<PointXYZ> corners3d;
+    PointCloudT corners3d;
     mapToCloud(corners3d, corners, img, cloud); 
     EXPECT_EQ(corners.size(), corners3d.size());
     EXPECT_EQ(4, corners.size());
     EXPECT_EQ(4, corners3d.size());
-    for (PointCloud<PointXYZ>::iterator it = corners3d.begin(),
+    for (PointCloudT::iterator it = corners3d.begin(),
          end = corners3d.end(); it != end; it++) {
         cout << boost::format("%d: %8f,%8f,%8f") % (it - corners3d.begin()) % (*it).x % (*it).y % (*it).z << endl;
     }
@@ -90,20 +92,20 @@ TEST_F(Map, MapMarkers) {
     blue2d.push_back(Point(697, 86)); 
     blue2d.push_back(Point(371, 92)); 
     
-    PointCloud<PointXYZ> red3d;
-    PointCloud<PointXYZ> green3d;
-    PointCloud<PointXYZ> yellow3d;
-    PointCloud<PointXYZ> blue3d;
+    PointCloudT red3d;
+    PointCloudT green3d;
+    PointCloudT yellow3d;
+    PointCloudT blue3d;
 
     mapToCloud(red3d, red2d, markerImg, cloud); 
     mapToCloud(green3d, green2d, markerImg, cloud); 
     mapToCloud(yellow3d, yellow2d, markerImg, cloud); 
     mapToCloud(blue3d, blue2d, markerImg, cloud); 
     
-    PointCloud<PointXYZ> red3d_hscaled;
-    PointCloud<PointXYZ> green3d_hscaled;
-    PointCloud<PointXYZ> yellow3d_hscaled;
-    PointCloud<PointXYZ> blue3d_hscaled;
+    PointCloudT red3d_hscaled;
+    PointCloudT green3d_hscaled;
+    PointCloudT yellow3d_hscaled;
+    PointCloudT blue3d_hscaled;
 
     mapToCloud(red3d_hscaled, red2d, markerImg, cloud, false); 
     mapToCloud(green3d_hscaled, green2d, markerImg, cloud, false); 
