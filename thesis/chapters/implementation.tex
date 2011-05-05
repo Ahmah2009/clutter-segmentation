@@ -3,6 +3,43 @@
 
 \section{Model Learning}
 
+An {\it estimator} is learned on training data. It is based on a set of {\it
+models}. These models ${M_1, M_2, ..., M_k}$ represent the objects we want to
+be able to locate in cluttered scenes. Each model $M_i$ is a set of {\it
+features}, where a feature is a 3-tuple consisting of a view-specific {\it 2D
+keypoint}, a corresponding {\it 3D keypoint} and a {\it feature descriptor}.
+
+We construct a 3-dimensional point-cloud representation of the template object
+by merging segmented point clouds obtained from several different viewpoints.
+The 3D points from all views are brought into a common coordinate frame, we
+call this the {\it model frame}. This model is attached to the template object.
+% We decided to attach it the bottom-most corners of the mostly
+% rectangularly-shaped template objects.
+% We have drawn the model coordinate axes
+% onto the real-world template objects with a pencil, which was extremely useful
+% in later experimentation.
+
+We capture depth and grayscale image information from several different views.
+In each {\it model view}, we gain partial information about the template
+object. 3D points can be expressed in {\it view coordinates}, where the {\it
+view frame} is attached to the camera \footnote{tod\_* developers often refer
+to the view frame as camera frame}. To register the point clouds from different
+point clouds, we need to be able to transform {\it view coordinates} into
+{\it model coordinates} and vice-versa.
+
+% picture showing
+
+Given a scene that shows a template object. We define a model-view
+transformation $_{xyz}H^{uvw}$ that brings model coordinates denoted by $x,y,z$
+into view coordinates denoted by $u,v,w$. For example, we can express the model origin
+in view coordinates by computing $_{xyz}H^{uvw}[(0, 0, 0)^T]$
+
+There is also a coordinate frame attached to the fiducial markers, such that
+corners of the chessboard share coordinates for all training images. Therefore,
+we get a view-independent reference frame. To keep things simple, we make sure
+that the model frame and the frame attached to the fiducial markers are always
+the same.
+
 \section{Object Recognition}
 
 \section{Parameter Selection}
