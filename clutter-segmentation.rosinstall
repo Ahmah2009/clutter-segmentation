@@ -40,6 +40,11 @@
     uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_core',
     version: '-r 36588'
 }
+# Get latest OpenCV
+- svn: {
+    local-name: opencv,
+    uri: 'https://code.ros.org/svn/opencv/trunk',
+}
 - other: {local-name: /opt/ros/diamondback/ros}
 - other: {local-name: /opt/ros/diamondback/stacks}
 
