@@ -6,21 +6,20 @@
 #define _CONN_COMP_H_
 
 #include <tod/detecting/Parameters.h>
-
-
+#include <string>
 
 namespace clutseg {
 
     struct Options {
-        string imageDirectory;
-        string baseDirectory;
-        string config;
-        string testdescFilename;
-        string resultFilename;
-        string statsFilename;
-        string rocFilename;
-        string tableFilename;
-        string storeDirectory;
+        std::string imageDirectory;
+        std::string baseDirectory;
+        std::string config;
+        std::string testdescFilename;
+        std::string resultFilename;
+        std::string statsFilename;
+        std::string rocFilename;
+        std::string tableFilename;
+        std::string storeDirectory;
         tod::TODParameters params;
         int verbose;
         int mode;
