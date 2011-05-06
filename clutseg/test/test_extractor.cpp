@@ -27,7 +27,9 @@
 #include <tod/core/Features2d.h>
 #include <tod/training/feature_extraction.h>
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <string>
+#include <iostream>
 
 using namespace std;
 using namespace tod;
@@ -238,15 +240,27 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_masking_works) {
     expectMaskingWorks(dynamicfast_multiscale_rbrief);
 }
 
-TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_fails) {
-    // expect to fail because of OpenCV 1044
-    expectMaskingWorks(sift_multiscale_rbrief, false);
-}
+// See OpenCV ticket 1044
+#ifdef OPENCV_R5024 
+    TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_works) {
+        expectMaskingWorks(sift_multiscale_rbrief);
+    }
+#else
+    TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_fails) {
+        expectMaskingWorks(sift_multiscale_rbrief, false);
+    }
+#endif
 
-TEST_F(ExtractorTest, sift_sequential_rbrief_masking_fails) {
-    // expect to fail because of OpenCV 1044
-    expectMaskingWorks(sift_sequential_rbrief, false);
-}
+#ifdef OPENCV_R5024 
+    TEST_F(ExtractorTest, sift_sequential_rbrief_masking_works) {
+        expectMaskingWorks(sift_sequential_rbrief);
+    }
+#else
+    TEST_F(ExtractorTest, sift_sequential_rbrief_masking_fails) {
+        // expect to fail because of OpenCV 1044
+        expectMaskingWorks(sift_sequential_rbrief, false);
+    }
+#endif
 
 TEST_F(ExtractorTest, surf_sequential_rbrief_masking_works) {
     expectMaskingWorks(surf_sequential_rbrief);
@@ -306,29 +320,58 @@ TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_config) {
 // Miscellaneous other tests
 // ---------------------------------------------------------------------------
 
-TEST_F(ExtractorTest, SiftFeatureDetectorIgnoresMask) {
-    // I expect having found an annoying bug in OpenCV
-    // SiftFeatureDetector does not use the mask.
-    // see http://opencv-users.1802565.n2.nabble.com/Problems-about-the-OpenCV-SIFT-feature-detector-td6084481.html
-    // see https://code.ros.org/trac/opencv/ticket/1029
-    SiftFeatureDetector fd = SiftFeatureDetector(SIFT::DetectorParams::
-                                         GET_DEFAULT_THRESHOLD(),
-                                         SIFT::DetectorParams::
-                                         GET_DEFAULT_EDGE_THRESHOLD());
-    fd.detect(f2d_masked.image, f2d_masked.keypoints, f2d_masked.mask);
-    vector<KeyPoint> outside;
-    keypointsOutsideMask(f2d_masked.keypoints, f2d_masked.mask, outside);
-    // If this test passes, then OpenCV SiftFeatureDetector::detect is buggy
-    // and ignores the mask.
-    EXPECT_GT(outside.size(), 0);
-}
+#ifndef OPENCV_R5024 
+    TEST_F(ExtractorTest, SiftFeatureDetectorIgnoresMask) {
+        // I expect having found an annoying bug in OpenCV
+        // SiftFeatureDetector does not use the mask.
+        // see http://opencv-users.1802565.n2.nabble.com/Problems-about-the-OpenCV-SIFT-feature-detector-td6084481.html
+        // see https://code.ros.org/trac/opencv/ticket/1029
+        SiftFeatureDetector fd = SiftFeatureDetector(SIFT::DetectorParams::
+                                             GET_DEFAULT_THRESHOLD(),
+                                             SIFT::DetectorParams::
+                                             GET_DEFAULT_EDGE_THRESHOLD());
+        fd.detect(f2d_masked.image, f2d_masked.keypoints, f2d_masked.mask);
+        vector<KeyPoint> outside;
+        keypointsOutsideMask(f2d_masked.keypoints, f2d_masked.mask, outside);
+        // If this test passes, then OpenCV SiftFeatureDetector::detect is buggy
+        // and ignores the mask.
+        EXPECT_GT(outside.size(), 0);
+    }
+#endif
 
 // Finding [min_features, max_features] windows that are worth trying for
 // feature extractors
 // ---------------------------------------------------------------------------
 
 /*
+struct min_max_features_win {
+
+    min_max_features_win(int midpoint, int width) : midpoint(midpoint), width(width) {}
+
+    int midpoint;
+    int width;
+
+}; comparable?!
+
 TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_windows) {
-    // TODO:
-}
-*/
+    // Take a single image and a mask and detect features using different [min_features, max_features]
+    // windows. Collect results in a map.
+    map<min_max_features_win, int> res;
+    for (int w = 0; w < 500; w += 50) {
+        for (int m = 0; m < 1500; m += 50) {
+            f2d_masked.keypoints.clear();
+            min_max_features_win win(m, w);
+            dynamic_surf_sequential_rbrief.detector_params["min_features"] = win.midpoint - win.width / 2;
+            dynamic_surf_sequential_rbrief.detector_params["max_features"] = win.midpoint + win.width / 2;
+            FeatureExtractor::create(dynamic_surf_sequential_rbrief)->detectAndExtract(f2d_masked);
+            res[win] = (int) f2d_masked.keypoints.size(); 
+        }
+    }
+
+    map<min_max_features_win, int>::iterator it = res.begin();
+    map<min_max_features_win, int>::iterator end;
+    while (it != end) {
+        cout << boost::format("midpoint: %4d, width: %4d, keypoints: %4d") % (it->first).midpoint % (it->first).width % it->second << endl;
+        it++;
+    }
+}*/
