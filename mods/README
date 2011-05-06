@@ -2,11 +2,14 @@ The files in this directories are all files that have been adapted to our
 needs, or were being patched. The following lists the SVN revisions from which
 the adaptations have been derived.
 
-item                revision
+stack                           package             revision
 ------------------------------------------------------------------------------
-tod_detecting       50974
-tod_training        50974
-fiducial            50974
+object_recognition              tod_detecting       50974
+object_recognition              tod_training        50974
+object_recognition              fiducial            50974
+object_recognition_experimental rbrief              50974
+                                opencv_candidate    50974
+vision_opencv                   opencv2             diamondback
 
 All modified files can be hardlinked using the script mods-link, thus after
 linking, changes to patches in this repository will be automatically reflected
@@ -20,4 +23,35 @@ Adding a new patch
 2. Update mods.txt
 3. Remove file to patch
 4. Call mods-link
+
+Integrating OpenCV from trunk into ROS
+--------------------------------------
+
+OpenCV 1044 was blocking the usage of SiftFeatureDetector. Therefore, the
+latest OpenCV version (svn rev 5024) containing the bug fix has been backported
+and integrated into the diamondback release version. Several smaller changes
+had to be made to make this possible. Here is a rough guide of what was done
+for switching from OpenCV 2.2. Basically, switching from
+https://code.ros.org/trac/opencv/browser/branches/2.2/) to
+https://code.ros.org/trac/opencv/browser/trunk
+
+See also http://answers.ros.org/question/867/how-to-use-very-latest-opencv-version-in-ros
+
+1. Change <diamondback>/stacks/vision_opencv/opencv2/Makefile
+    - adapt SVN_URL, set to "https://code.ros.org/svn/opencv/trunk"
+    - adapt SVN_REVISION, set to "-r5024"
+    - disable this patch "# SVN_PATCH = pythontest.patch"
+    - FIXME change directories properly
+2. Change permissions of <diamondback>/stacks/vision_opencv/opencv2>
+    - either by chown or chmod
+3. Change permissions of <diamondback>/stacks/vision_opencv/cv_bridge>
+    - either by chown or chmod
+4. Remove ROS_NOBUILD files
+    - in cv_bridge and opencv2
+5. Remake ROS packages opencv2 and cv_bridge
+    - watch out for errors
+6. Fix issues with missing includes
+
+This recipe might not be complete, since haven't traced every single
+step. But roughly, it finally worked.
 
