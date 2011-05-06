@@ -238,12 +238,12 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_masking_works) {
     expectMaskingWorks(dynamicfast_multiscale_rbrief);
 }
 
-TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_works) {
+TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_fails) {
     // expect to fail because of OpenCV 1044
     expectMaskingWorks(sift_multiscale_rbrief, false);
 }
 
-TEST_F(ExtractorTest, sift_sequential_rbrief_masking_works) {
+TEST_F(ExtractorTest, sift_sequential_rbrief_masking_fails) {
     // expect to fail because of OpenCV 1044
     expectMaskingWorks(sift_sequential_rbrief, false);
 }
@@ -297,7 +297,7 @@ TEST_F(ExtractorTest, surf_sequential_rbrief_config) {
 
 TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_config) {
     FeatureExtractor::create(dynamic_surf_sequential_rbrief, stats);
-    EXPECT_TRUE("cv::DynamicAdaptedFeatureDetector with cv::SurfAdjuster", stats.internal_detector);
+    EXPECT_EQ("cv::DynamicAdaptedFeatureDetector with cv::SurfAdjuster", stats.internal_detector);
     EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
     EXPECT_EQ("tod::SequentialExtractor", stats.extractor);
 }
@@ -323,3 +323,12 @@ TEST_F(ExtractorTest, SiftFeatureDetectorIgnoresMask) {
     EXPECT_GT(outside.size(), 0);
 }
 
+// Finding [min_features, max_features] windows that are worth trying for
+// feature extractors
+// ---------------------------------------------------------------------------
+
+/*
+TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_windows) {
+    // TODO:
+}
+*/
