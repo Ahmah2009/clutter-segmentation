@@ -37,21 +37,19 @@ https://code.ros.org/trac/opencv/browser/trunk
 
 See also http://answers.ros.org/question/867/how-to-use-very-latest-opencv-version-in-ros
 
-1. Change <diamondback>/stacks/vision_opencv/opencv2/Makefile
+1. Change permissions of <diamondback>/stacks/vision_opencv/opencv2>
+    - either by chown or chmod
+2. Change permissions of <diamondback>/stacks/vision_opencv/cv_bridge>
+    - either by chown or chmod
+3. Remove ROS_NOBUILD files in <diamondback>/stacks/vision_opencv/cv_bridge>
+4. Remove ROS_NOBUILD files in <diamondback>/stacks/vision_opencv/opencv2>
+5. Change <diamondback>/stacks/vision_opencv/opencv2/Makefile
     - adapt SVN_URL, set to "https://code.ros.org/svn/opencv/trunk"
     - adapt SVN_REVISION, set to "-r5024"
     - disable this patch "# SVN_PATCH = pythontest.patch"
-    - FIXME change directories properly
-2. Change permissions of <diamondback>/stacks/vision_opencv/opencv2>
-    - either by chown or chmod
-3. Change permissions of <diamondback>/stacks/vision_opencv/cv_bridge>
-    - either by chown or chmod
-4. Remove ROS_NOBUILD files
-    - in cv_bridge and opencv2
-5. Remake ROS packages opencv2 and cv_bridge
-    - watch out for errors
-6. Fix issues with missing includes
+6. Remake ROS packages opencv2 and cv_bridge
+(Maybe 7. Fix issues with missing includes)
 
-This recipe might not be complete, since haven't traced every single
-step. But roughly, it finally worked.
+This recipe might not be complete, since haven't traced every single step. But
+it's a rough guideline and it finally worked.
 

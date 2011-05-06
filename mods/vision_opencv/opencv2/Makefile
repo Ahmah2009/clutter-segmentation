@@ -5,7 +5,7 @@ all: installed
 SVN_DIR = build/opencv-svn
 # SVN_URL = https://code.ros.org/svn/opencv/branches/2.2/opencv
 # SVN_REVISION = -r4812
-SVN_URL = https://code.ros.org/svn/opencv/trunk
+SVN_URL = https://code.ros.org/svn/opencv/trunk/opencv
 SVN_REVISION = -r5024
 #SVN_PATCH = pythontest.patch
 include $(shell rospack find mk)/svn_checkout.mk
@@ -24,9 +24,9 @@ CMAKE_ARGS = -D CMAKE_BUILD_TYPE=RELEASE \
              -D BUILD_DOXYGEN_DOCS=OFF
 
 installed: wiped $(SVN_DIR) patched
-	mkdir -p $(SVN_DIR)/opencv/build
-	cd $(SVN_DIR)/opencv/build && $(CMAKE) $(CMAKE_ARGS) ..
-	cd $(SVN_DIR)/opencv/build && make $(ROS_PARALLEL_JOBS) && make install
+	mkdir -p $(SVN_DIR)/build
+	cd $(SVN_DIR)/build && $(CMAKE) $(CMAKE_ARGS) ..
+	cd $(SVN_DIR)/build && make $(ROS_PARALLEL_JOBS) && make install
 	@echo "patch opencv.pc to pass -Wl,-rpath,-L{libdir}"
 	-mv `rospack find opencv2`/$(INSTALL_DIR)/lib/pkgconfig/opencv.pc $(CURDIR)/$(INSTALL_DIR)/lib/pkgconfig/opencv.bak
 	sed 's%Libs: -L$${libdir} -lcxcore%Libs: -Wl,-rpath,$${libdir} -L$${libdir} -lcxcore%g' `rospack find opencv2`/$(INSTALL_DIR)/lib/pkgconfig/opencv.bak > `rospack find opencv2`/$(INSTALL_DIR)/lib/pkgconfig/opencv.pc
