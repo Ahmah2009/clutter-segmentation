@@ -114,7 +114,7 @@ class ExtractorTest : public ::testing::Test {
             }
  
             {
-                dynamic_surf_sequential_rbrief.detector_type = "SURF";
+                dynamic_surf_sequential_rbrief.detector_type = "DynamicSURF";
                 dynamic_surf_sequential_rbrief.extractor_type = "sequential";
                 dynamic_surf_sequential_rbrief.descriptor_type = "rBRIEF";
 
