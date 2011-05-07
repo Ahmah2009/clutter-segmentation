@@ -299,11 +299,44 @@ void RBriefDescriptorExtractor::write(FileStorage&) const
   //todo: rbrief write
 }
 
-void RBriefDescriptorExtractor::removeBorderKeyPoints(std::vector<cv::KeyPoint>& keypoints, cv::Size image_size) const
-{
-  //Remove keypoints very close to the border
-  // removeBorderKeypoints(keypoints, image_size, patch_size + KERNEL_SIZE / 2 + 2);
-}
+#ifdef OPENCV_R5024
+    struct RoiPredicate
+    {
+        RoiPredicate(float _minX, float _minY, float _maxX, float _maxY)
+            : minX(_minX), minY(_minY), maxX(_maxX), maxY(_maxY)
+        {}
+
+        bool operator()( const KeyPoint& keyPt) const
+        {
+            Point2f pt = keyPt.pt;
+            return (pt.x < minX) || (pt.x >= maxX) || (pt.y < minY) || (pt.y >= maxY);
+        }
+
+        float minX, minY, maxX, maxY;
+    };
+
+    void RBriefDescriptorExtractor::removeBorderKeyPoints(std::vector<cv::KeyPoint>& keypoints, cv::Size image_size) const
+    {
+        int borderSize = patch_size + KERNEL_SIZE / 2 + 2;
+        if( borderSize > 0)
+        {
+            keypoints.erase( remove_if(keypoints.begin(), keypoints.end(),
+                                       RoiPredicate((float)borderSize, (float)borderSize,
+                                                    (float)(image_size.width - borderSize),
+                                                    (float)(image_size.height - borderSize))),
+                             keypoints.end() );
+        }
+    }
+
+#else
+
+    void RBriefDescriptorExtractor::removeBorderKeyPoints(std::vector<cv::KeyPoint>& keypoints, cv::Size image_size) const
+    {
+      //Remove keypoints very close to the border
+      removeBorderKeypoints(keypoints, image_size, patch_size + KERNEL_SIZE / 2 + 2);
+    }
+
+#endif
 
 void RBriefDescriptorExtractor::setPatchSize(PatchSize sz)
 {
