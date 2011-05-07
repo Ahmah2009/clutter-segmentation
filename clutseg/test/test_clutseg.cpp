@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 #include <pcl/io/pcd_io.h>
 #include <iostream>
+#include <stdlib.h>
 
 using namespace clutseg;
 using namespace cv;
@@ -32,5 +33,10 @@ TEST(ClutsegTest, DetectionWorks) {
     EXPECT_TRUE(positive);
     EXPECT_EQ("haltbare_milch", guess.getObject()->name);
     cout << "detected: " << guess.getObject()->name << endl;
+}
+
+TEST(ClutsegTest, ias_kinect_1) {
+    int c = system("test-eval ias_kinect_train ias_kinect_train/config.yaml ias_kinect_test_train_20");
+    EXPECT_EQ(0, c);
 }
 

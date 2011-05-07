@@ -69,7 +69,7 @@ namespace clutseg {
         vector<Point3f> op(4);
         op[1] = x, op[2] = y, op[3] = z, op[0] = o;
         vector<Point2f> ip;
-        projectPoints(Mat(op), pose.rvec, pose.tvec, camera.K, Mat(), ip);
+        projectPoints(Mat(op), pose.rvec, pose.tvec, camera.K, camera.D, ip);
 
         vector<Scalar> c(4); //colors
         c[0] = Scalar(255, 255, 255);
@@ -95,6 +95,7 @@ namespace clutseg {
                 const Scalar & colorX, const Scalar & colorY, const Scalar & colorZ,
                 const string & labelX, const string & labelY, const string & labelZ) {
         PoseRT posert;
+        // TODO: use poseToPoseRT
         Mat R;
         eigen2cv(pose.t(), posert.tvec);
         eigen2cv(pose.r(), R);

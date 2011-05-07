@@ -2,7 +2,7 @@
 
 function usage() {
     cat <<USAGE
-Usage: test-eval <train-base> <test-config> <test-base>
+Usage: test-eval <train-base> <test-config> <test-base> [--debug]
 
 Runs the given classifier on a testing set.
 USAGE
@@ -17,10 +17,14 @@ trainbase=$(get_arg 0)
 config=$(get_arg 1)
 testbase=$(get_arg 2)
 
+if has_opt --debug ; then
+    debug="gdb --args"
+fi
+
 pushd $CLUTSEG_PATH > /dev/null
     mkdir -p $testbase/result
     rm -rf $testbase/result/*
-    blackbox_recognizer \
+    $debug blackbox_recognizer \
         -B $trainbase \
         -I $testbase \
         --store=$testbase/result \
