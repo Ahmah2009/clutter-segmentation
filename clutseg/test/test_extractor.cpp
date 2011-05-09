@@ -63,7 +63,22 @@ class ExtractorTest : public ::testing::Test {
             f2d_masked.image = f2d.image.clone(); 
             f2d_masked.mask = imread("./data/image_00000.png.mask.png", 0);
 
+            string p(getenv("CLUTSEG_PATH"));
+
+            // TODO: these train images are not included in repository
+            train_images.push_back(imread(p + "/ias_kinect_train_v2/assam_tea/image_00000.png", 0));
+            train_images.push_back(imread(p + "/ias_kinect_train_v2/haltbare_milch/image_00000.png", 0));
+            train_images.push_back(imread(p + "/ias_kinect_train_v2/icedtea/image_00000.png", 0));
+            train_images.push_back(imread(p + "/ias_kinect_train_v2/jacobs_coffee/image_00000.png", 0));
+
+            // TODO: these test images are not included in repository
+            test_images.push_back(imread(p + "/ias_kinect_test_all/all01/image_00000.jpg", 0));
+            test_images.push_back(imread(p + "/ias_kinect_test_all/all02/image_00000.jpg", 0));
+            test_images.push_back(imread(p + "/ias_kinect_test_all/all03/image_00000.jpg", 0));
+            test_images.push_back(imread(p + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png", 0));
+
             {
+                feparams["orb_harrisfast"] = &orb_harrisfast;
                 orb_harrisfast.detector_type = "ORB";
                 orb_harrisfast.extractor_type = "ORB";
                 orb_harrisfast.descriptor_type = "ORB";
@@ -74,6 +89,16 @@ class ExtractorTest : public ::testing::Test {
             }
 
             {
+                feparams["fast_multiscale_rbrief"] = &fast_multiscale_rbrief;
+                fast_multiscale_rbrief.detector_type = "FAST";
+                fast_multiscale_rbrief.extractor_type = "multi-scale";
+                fast_multiscale_rbrief.descriptor_type = "rBRIEF";
+
+                fast_multiscale_rbrief.extractor_params["octaves"] = 3;
+            }
+
+            {
+                feparams["dynamicfast_multiscale_rbrief"] = &dynamicfast_multiscale_rbrief;
                 dynamicfast_multiscale_rbrief.detector_type = "DynamicFAST";
                 dynamicfast_multiscale_rbrief.extractor_type = "multi-scale";
                 dynamicfast_multiscale_rbrief.descriptor_type = "rBRIEF";
@@ -84,16 +109,7 @@ class ExtractorTest : public ::testing::Test {
             }
 
             {
-                sift_multiscale_rbrief.detector_type = "SIFT";
-                sift_multiscale_rbrief.extractor_type = "multi-scale";
-                sift_multiscale_rbrief.descriptor_type = "rBRIEF";
-
-                sift_multiscale_rbrief.extractor_params["octaves"] = 3;
-                sift_multiscale_rbrief.detector_params["min_features"] = 600;
-                sift_multiscale_rbrief.detector_params["max_features"] = 900;
-            }
- 
-            {
+                feparams["sift_sequential_rbrief"] = &sift_sequential_rbrief;
                 sift_sequential_rbrief.detector_type = "SIFT";
                 sift_sequential_rbrief.extractor_type = "sequential";
                 sift_sequential_rbrief.descriptor_type = "rBRIEF";
@@ -104,6 +120,7 @@ class ExtractorTest : public ::testing::Test {
             } 
  
             {
+                feparams["surf_sequential_rbrief"] = &surf_sequential_rbrief;
                 surf_sequential_rbrief.detector_type = "SURF";
                 surf_sequential_rbrief.extractor_type = "sequential";
                 surf_sequential_rbrief.descriptor_type = "rBRIEF";
@@ -114,13 +131,50 @@ class ExtractorTest : public ::testing::Test {
             }
  
             {
-                dynamic_surf_sequential_rbrief.detector_type = "DynamicSURF";
-                dynamic_surf_sequential_rbrief.extractor_type = "sequential";
-                dynamic_surf_sequential_rbrief.descriptor_type = "rBRIEF";
+                feparams["dynamicsurf_sequential_rbrief"] = &dynamicsurf_sequential_rbrief;
+                dynamicsurf_sequential_rbrief.detector_type = "DynamicSURF";
+                dynamicsurf_sequential_rbrief.extractor_type = "sequential";
+                dynamicsurf_sequential_rbrief.descriptor_type = "rBRIEF";
 
-                dynamic_surf_sequential_rbrief.extractor_params["octaves"] = 3;
-                dynamic_surf_sequential_rbrief.detector_params["min_features"] = 600;
-                dynamic_surf_sequential_rbrief.detector_params["max_features"] = 900;
+                dynamicsurf_sequential_rbrief.extractor_params["octaves"] = 3;
+                dynamicsurf_sequential_rbrief.detector_params["min_features"] = 600;
+                dynamicsurf_sequential_rbrief.detector_params["max_features"] = 900;
+            }
+
+            {
+                feparams["star_sequential_rbrief"] = &star_sequential_rbrief;
+                star_sequential_rbrief.detector_type = "STAR";
+                star_sequential_rbrief.extractor_type = "sequential";
+                star_sequential_rbrief.descriptor_type = "rBRIEF";
+
+                star_sequential_rbrief.extractor_params["octaves"] = 3;
+            }
+
+            {
+                feparams["dynamicstar_sequential_rbrief"] = &dynamicstar_sequential_rbrief;
+                dynamicstar_sequential_rbrief.detector_type = "DynamicSTAR";
+                dynamicstar_sequential_rbrief.extractor_type = "sequential";
+                dynamicstar_sequential_rbrief.descriptor_type = "rBRIEF";
+
+                dynamicstar_sequential_rbrief.extractor_params["octaves"] = 3;
+            }
+
+            {
+                feparams["mser_multiscale_rbrief"] = &mser_multiscale_rbrief;
+                mser_multiscale_rbrief.detector_type = "MSER";
+                mser_multiscale_rbrief.extractor_type = "multi-scale";
+                mser_multiscale_rbrief.descriptor_type = "rBRIEF";
+
+                mser_multiscale_rbrief.extractor_params["octaves"] = 3;
+            }
+
+            {
+                feparams["gftt_multiscale_rbrief"] = &gftt_multiscale_rbrief;
+                gftt_multiscale_rbrief.detector_type = "GFTT";
+                gftt_multiscale_rbrief.extractor_type = "multi-scale";
+                gftt_multiscale_rbrief.descriptor_type = "rBRIEF";
+
+                gftt_multiscale_rbrief.extractor_params["octaves"] = 3;
             }
         }
 
@@ -170,6 +224,24 @@ class ExtractorTest : public ::testing::Test {
             EXPECT_TRUE(stats.pm_min_features_used);
         }
 
+        int expectRunsWithin(const FeatureExtractionParams & params, const vector<Mat> & images, int ms) {
+            Ptr<FeatureExtractor> e = FeatureExtractor::create(params);
+            clock_t before = clock();
+            Features2d f;
+            for (size_t i = 0; i < images.size(); i++) {
+                f.image = images[i];
+                e->detectAndExtract(f);
+            }
+            // Mat outImg;
+            // drawKeypoints(f.image, f.keypoints, outImg);
+            // imshow("keypoints", outImg);
+            // waitKey(-1);
+            clock_t after = clock();
+            int avg = 1000 * (after - before) / CLOCKS_PER_SEC / images.size();
+            EXPECT_LT(avg, ms);
+            return avg;
+        }
+
         Features2d f2d;
         Features2d f2d_masked;
         detector_stats stats;
@@ -178,15 +250,10 @@ class ExtractorTest : public ::testing::Test {
         // that max_features is taken into account but it is not an invariant,
         // just a guideline.
         FeatureExtractionParams orb_harrisfast;
+        FeatureExtractionParams fast_multiscale_rbrief;
         // This is the configuration  I have used in the first experiments with
         // tod_kinect and ias_kinect training data.
         FeatureExtractionParams dynamicfast_multiscale_rbrief;
-        // This is kind of a weird configuration I have evaluated very quickly
-        // without much thinking. It most probably does not make sense to wrap
-        // SIFT with yet another multiscale extractor. Anyways, for sake of
-        // understanding, see what happens... See ticket 1044 in OpenCV.
-        // Requires post-processing.
-        FeatureExtractionParams sift_multiscale_rbrief;
         // This is a new configuration (2011-05-04) I haven't tried before on
         // any training basee. It seems to be a viable option though. Keypoints
         // are detected outside of the mask, thus this requires post-processing
@@ -197,9 +264,31 @@ class ExtractorTest : public ::testing::Test {
         FeatureExtractionParams surf_sequential_rbrief;
         // This is a new configuration (2011-05-04) I haven't tried it before
         // on any training base.
-        FeatureExtractionParams dynamic_surf_sequential_rbrief;
+        FeatureExtractionParams dynamicsurf_sequential_rbrief;
+        FeatureExtractionParams star_sequential_rbrief;
+        FeatureExtractionParams dynamicstar_sequential_rbrief;
+        FeatureExtractionParams mser_multiscale_rbrief;
+        FeatureExtractionParams gftt_multiscale_rbrief;
+    
+        map<const string, FeatureExtractionParams*> feparams;
+
+        vector<Mat> train_images;
+        vector<Mat> test_images;
 };
 
+// Validate test data
+// ---------------------------------------------------------------------------
+TEST_F(ExtractorTest, validate_train_images) {
+    BOOST_FOREACH(const Mat & img, train_images) {
+        EXPECT_FALSE(img.empty());
+    }
+}
+
+TEST_F(ExtractorTest, validate_test_images) {
+    BOOST_FOREACH(const Mat & img, test_images) {
+        EXPECT_FALSE(img.empty());
+    }
+}
 
 // Check which combinations are definitely influenced by min_features 
 // ---------------------------------------------------------------------------
@@ -212,8 +301,12 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_uses_max_features) {
     expectUsesMaxFeatures(dynamicfast_multiscale_rbrief, 0, 1000, 100);
 }
 
-TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_uses_max_features) {
-    expectUsesMaxFeatures(dynamic_surf_sequential_rbrief, 0, 1000, 100);
+TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_max_features) {
+    expectUsesMaxFeatures(dynamicsurf_sequential_rbrief, 0, 1000, 100);
+}
+
+TEST_F(ExtractorTest, dynamicstar_sequential_rbrief_uses_max_features) {
+    expectUsesMaxFeatures(dynamicstar_sequential_rbrief, 0, 1000, 100);
 }
 
 // Check which combinations are definitely influenced by min_features. Whether
@@ -224,8 +317,8 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_uses_min_features) {
     expectUsesMinFeatures(dynamicfast_multiscale_rbrief, 1200, 1000, 500);
 }
 
-TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_uses_min_features) {
-    expectUsesMinFeatures(dynamic_surf_sequential_rbrief, 1200, 1000, 500);
+TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_min_features) {
+    expectUsesMinFeatures(dynamicsurf_sequential_rbrief, 1200, 1000, 500);
 }
 
 
@@ -240,16 +333,9 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_masking_works) {
     expectMaskingWorks(dynamicfast_multiscale_rbrief);
 }
 
-// See OpenCV ticket 1044
-#ifdef OPENCV_R5024 
-    TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_works) {
-        expectMaskingWorks(sift_multiscale_rbrief);
-    }
-#else
-    TEST_F(ExtractorTest, sift_multiscale_rbrief_masking_fails) {
-        expectMaskingWorks(sift_multiscale_rbrief, false);
-    }
-#endif
+TEST_F(ExtractorTest, fast_multiscale_rbrief_masking_works) {
+    expectMaskingWorks(fast_multiscale_rbrief);
+}
 
 #ifdef OPENCV_R5024 
     TEST_F(ExtractorTest, sift_sequential_rbrief_masking_works) {
@@ -266,8 +352,24 @@ TEST_F(ExtractorTest, surf_sequential_rbrief_masking_works) {
     expectMaskingWorks(surf_sequential_rbrief);
 }
 
-TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_masking_works) {
-    expectMaskingWorks(dynamic_surf_sequential_rbrief);
+TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_masking_works) {
+    expectMaskingWorks(dynamicsurf_sequential_rbrief);
+}
+
+TEST_F(ExtractorTest, star_sequential_rbrief_masking_works) {
+    expectMaskingWorks(star_sequential_rbrief);
+}
+
+TEST_F(ExtractorTest, dynamicstar_sequential_rbrief_masking_works) {
+    expectMaskingWorks(dynamicstar_sequential_rbrief);
+}
+
+TEST_F(ExtractorTest, mser_multiscale_rbrief_masking_works) {
+    expectMaskingWorks(mser_multiscale_rbrief);
+}
+
+TEST_F(ExtractorTest, gftt_multiscale_rbrief_masking_works) {
+    expectMaskingWorks(gftt_multiscale_rbrief);
 }
 
 // Check whether expectations on the resulting configuration are met
@@ -288,13 +390,6 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_config) {
     EXPECT_EQ("tod::MultiscaleExtractor", stats.extractor);
 }
  
-TEST_F(ExtractorTest, sift_multiscale_rbrief_config) {
-    FeatureExtractor::create(sift_multiscale_rbrief, stats);
-    EXPECT_TRUE(stats.internal_detector.find("SiftFeatureDetector") != string::npos);
-    EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
-    EXPECT_EQ("tod::MultiscaleExtractor", stats.extractor);
-}
-
 TEST_F(ExtractorTest, sift_sequential_rbrief_config) {
     FeatureExtractor::create(sift_sequential_rbrief, stats);
     EXPECT_TRUE(stats.internal_detector.find("SiftFeatureDetector") != string::npos);
@@ -309,13 +404,30 @@ TEST_F(ExtractorTest, surf_sequential_rbrief_config) {
     EXPECT_EQ("tod::SequentialExtractor", stats.extractor);
 }
 
-TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_config) {
-    FeatureExtractor::create(dynamic_surf_sequential_rbrief, stats);
+TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_config) {
+    FeatureExtractor::create(dynamicsurf_sequential_rbrief, stats);
     EXPECT_EQ("cv::DynamicAdaptedFeatureDetector with cv::SurfAdjuster", stats.internal_detector);
     EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
     EXPECT_EQ("tod::SequentialExtractor", stats.extractor);
 }
 
+// Check whether certain configurations run within time bounds, and also write
+// down statistics.
+// ---------------------------------------------------------------------------
+
+TEST_F(ExtractorTest, times) {
+    map<const string, FeatureExtractionParams*>::iterator it = feparams.begin();
+    map<const string, FeatureExtractionParams*>::iterator end = feparams.end();
+    ofstream out("build/ExtractorTest.times");
+    out << boost::format("%35s %5s %5s") % "feparams" % "ttrain" % "ttest" << endl;
+    while (it != end) {
+        int t1 = expectRunsWithin(*(it->second), train_images, 5000);
+        int t2 = expectRunsWithin(*(it->second), test_images, 5000);
+        out << boost::format("%35s %5d %5d") % it->first % t1 % t2 << endl;
+        it++;
+    }
+    out.close();
+}
 
 // Miscellaneous other tests
 // ---------------------------------------------------------------------------
@@ -353,7 +465,7 @@ struct min_max_features_win {
 
 }; comparable?!
 
-TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_windows) {
+TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_windows) {
     // Take a single image and a mask and detect features using different [min_features, max_features]
     // windows. Collect results in a map.
     map<min_max_features_win, int> res;
@@ -361,9 +473,9 @@ TEST_F(ExtractorTest, dynamic_surf_sequential_rbrief_windows) {
         for (int m = 0; m < 1500; m += 50) {
             f2d_masked.keypoints.clear();
             min_max_features_win win(m, w);
-            dynamic_surf_sequential_rbrief.detector_params["min_features"] = win.midpoint - win.width / 2;
-            dynamic_surf_sequential_rbrief.detector_params["max_features"] = win.midpoint + win.width / 2;
-            FeatureExtractor::create(dynamic_surf_sequential_rbrief)->detectAndExtract(f2d_masked);
+            dynamicsurf_sequential_rbrief.detector_params["min_features"] = win.midpoint - win.width / 2;
+            dynamicsurf_sequential_rbrief.detector_params["max_features"] = win.midpoint + win.width / 2;
+            FeatureExtractor::create(dynamicsurf_sequential_rbrief)->detectAndExtract(f2d_masked);
             res[win] = (int) f2d_masked.keypoints.size(); 
         }
     }
