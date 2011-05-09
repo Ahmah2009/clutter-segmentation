@@ -176,9 +176,11 @@ Matcher* Matcher::create(MatcherParameters& params)
   cv::Ptr<DescriptorMatcher> matcher;
   if (params.type == "FLANN")
   {
-    // FIXME: insert switch
-    // cvflann::set_distance_type(cvflann::MANHATTAN, 0);
-    cvflann::set_distance_type(cvflann::FLANN_DIST_MANHATTAN, 0);
+    #ifdef OPENCV_R5024
+        cvflann::set_distance_type(cvflann::FLANN_DIST_MANHATTAN, 0);
+    #else
+        cvflann::set_distance_type(cvflann::MANHATTAN, 0);
+    #endif
     matcher = new FlannBasedMatcher(new cv::flann::KDTreeIndexParams(4), new cv::flann::SearchParams(64));
   }
   else if (params.type == "BF")

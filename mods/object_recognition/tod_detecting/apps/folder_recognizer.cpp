@@ -122,31 +122,32 @@ int main(int argc, char* argv[])
   boost::filesystem::directory_iterator end_itr;
   int objectIndex = 1;
 
+
+  TrainingBase base(objects);
+  Ptr<FeatureExtractor> extractor = FeatureExtractor::create(opts.params.feParams);
+
+  cv::Ptr<Matcher> rtMatcher = Matcher::create(opts.params.matcherParams);
+  rtMatcher->add(base);
+
+  cv::Ptr<Recognizer> recognizer;
+  if (opts.mode == TOD)
+  {
+    recognizer = new TODRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory,
+                                   opts.params.clusterParams.maxDistance);
+  }
+  else if (opts.mode == KINECT)
+  {
+    recognizer = new KinectRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory);
+  }
+  else
+  {
+    cout << "Invalid mode option!" << endl;
+    return 1;
+  }
+
+
   for (boost::filesystem::directory_iterator itr(opts.imageDirectory); itr != end_itr; ++itr)
   {
-      TrainingBase base(objects);
-      Ptr<FeatureExtractor> extractor = FeatureExtractor::create(opts.params.feParams);
-
-      cv::Ptr<Matcher> rtMatcher = Matcher::create(opts.params.matcherParams);
-      rtMatcher->add(base);
-
-      cv::Ptr<Recognizer> recognizer;
-      if (opts.mode == TOD)
-      {
-        recognizer = new TODRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory,
-                                       opts.params.clusterParams.maxDistance);
-      }
-      else if (opts.mode == KINECT)
-      {
-        recognizer = new KinectRecognizer(&base, rtMatcher, &opts.params.guessParams, opts.verbose, opts.baseDirectory);
-      }
-      else
-      {
-        cout << "Invalid mode option!" << endl;
-        return 1;
-      }
-
-
     size_t position = itr->leaf().rfind(".png");
     if (position != string::npos)
     {
@@ -170,6 +171,7 @@ int main(int argc, char* argv[])
     Mat canvas;
     drawKeypoints(test.image, test.keypoints, canvas, Scalar(0, 0, 255));
     imwrite(path + ".keypoints.png", canvas);
+    cout << "Keypoints: " << test.keypoints.size() << endl;
 
       foreach(const Guess& guess, foundObjects)
             {
