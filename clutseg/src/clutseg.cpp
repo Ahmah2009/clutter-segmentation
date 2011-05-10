@@ -17,10 +17,10 @@ using namespace tod;
 
 namespace clutseg {
         
-    ClutSegmenter::ClutSegmenter(const string & baseDirectory, const string & detect_config, const string & refine_config) {
+    ClutSegmenter::ClutSegmenter(const string & baseDirectory, const string & detect_config, const string & locate_config) {
         baseDirectory_ = baseDirectory;
         loadParams(detect_config, detect_params_);
-        loadParams(refine_config, refine_params_);
+        loadParams(locate_config, locate_params_);
         loadBase();
     }
 
@@ -43,8 +43,8 @@ namespace clutseg {
         return detect_params_;
     }
 
-    TODParameters & ClutSegmenter::getRefineParams() {
-        return refine_params_;
+    TODParameters & ClutSegmenter::getLocateParams() {
+        return locate_params_;
     }
 
     void initRecognizer(Ptr<Recognizer> & recognizer, TrainingBase & base, TODParameters params, const string & baseDirectory) {
@@ -86,16 +86,16 @@ namespace clutseg {
             mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
 
             cout << "inliers before: " << resultingGuess.inliers.size() << endl;
-            refine(test, queryCloud, resultingGuess, inliersCloud);
+            locate(test, queryCloud, resultingGuess, inliersCloud);
             cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
 
             return true;
         }
     }
 
-    bool ClutSegmenter::refine(const tod::Features2d & query, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud) {
-        if (refine_params_.matcherParams.doRatioTest) {
-            cerr << "[WARNING] RatioTest enabled for refinement" << endl;
+    bool ClutSegmenter::locate(const tod::Features2d & query, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud) {
+        if (locate_params_.matcherParams.doRatioTest) {
+            cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
         vector<Ptr<tod::TexturedObject> > so;
         BOOST_FOREACH(const Ptr<tod::TexturedObject> & obj, objects_) {
@@ -117,7 +117,7 @@ namespace clutseg {
         TrainingBase single(so);
 
         Ptr<Recognizer> recognizer;
-        initRecognizer(recognizer, single, refine_params_, baseDirectory_);
+        initRecognizer(recognizer, single, locate_params_, baseDirectory_);
 
         vector<tod::Guess> guesses;
         recognizer->match(query, guesses); 

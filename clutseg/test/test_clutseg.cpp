@@ -27,9 +27,9 @@ TEST(ClutsegTest, ChangeOptionsOnline) {
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
     );
 
-    EXPECT_TRUE(segmenter.getRefineParams().matcherParams.doRatioTest);
-    segmenter.getRefineParams().matcherParams.doRatioTest = false;
-    EXPECT_FALSE(segmenter.getRefineParams().matcherParams.doRatioTest);
+    EXPECT_TRUE(segmenter.getLocateParams().matcherParams.doRatioTest);
+    segmenter.getLocateParams().matcherParams.doRatioTest = false;
+    EXPECT_FALSE(segmenter.getLocateParams().matcherParams.doRatioTest);
 }
 
 TEST(ClutsegTest, DetectionWorks) {
@@ -40,8 +40,8 @@ TEST(ClutsegTest, DetectionWorks) {
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
     );
 
-    segmenter.getRefineParams().matcherParams.doRatioTest = false;
-    segmenter.getRefineParams().guessParams.ransacIterationsCount = 500;
+    segmenter.getLocateParams().matcherParams.doRatioTest = false;
+    segmenter.getLocateParams().guessParams.ransacIterationsCount = 500;
 
     Mat queryImage = imread("./data/image_00000.png");
     PointCloudT queryCloud;

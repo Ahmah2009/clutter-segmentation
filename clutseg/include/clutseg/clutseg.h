@@ -20,7 +20,7 @@ namespace clutseg {
 
             ClutSegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
-                            const std::string & refine_config);
+                            const std::string & locate_config);
 
             bool recognize(const cv::Mat & queryImage,
                             const PointCloudT & queryCloud,
@@ -29,11 +29,11 @@ namespace clutseg {
 
             tod::TODParameters & getDetectParams();
 
-            tod::TODParameters & getRefineParams();
+            tod::TODParameters & getLocateParams();
 
         private:
 
-            bool refine(const tod::Features2d & query,
+            bool locate(const tod::Features2d & query,
                             const PointCloudT & queryCloud,
                             tod::Guess & resultingGuess,
                             PointCloudT & inliersCloud);
@@ -44,7 +44,7 @@ namespace clutseg {
 
             std::string baseDirectory_;
             tod::TODParameters detect_params_; 
-            tod::TODParameters refine_params_; 
+            tod::TODParameters locate_params_; 
             tod::TrainingBase base_;
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
     };
