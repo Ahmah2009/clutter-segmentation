@@ -27,23 +27,25 @@ namespace clutseg {
 
     ClutSegmenter::ClutSegmenter(const string & baseDirectory,
                                     const string & detect_config,
-                                    const string & locate_config) {
+                                    const string & locate_config,
+                                    Ptr<GuessRanking> ranking) { 
         loadParams(detect_config, detect_params_);
         loadParams(locate_config, locate_params_);
-        init(baseDirectory);
+        init(baseDirectory, ranking);
     }
 
     ClutSegmenter::ClutSegmenter(const string & baseDirectory,
                                     const TODParameters & detect_params,
-                                    const TODParameters & locate_params) :
+                                    const TODParameters & locate_params,
+                                    Ptr<GuessRanking> ranking) :
                                 detect_params_(detect_params),
                                 locate_params_(locate_params) {
-        init(baseDirectory);
+        init(baseDirectory, ranking);
     }
 
-    void ClutSegmenter::init(const string & baseDirectory) {
+    void ClutSegmenter::init(const string & baseDirectory, Ptr<GuessRanking> ranking) {
         baseDirectory_ = baseDirectory;
-        ranking_ = new MaxInliersRanking();
+        ranking_ = ranking;
         loadBase();
         accept_threshold = -numeric_limits<float>::infinity();
     }
