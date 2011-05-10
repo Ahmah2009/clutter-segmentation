@@ -28,6 +28,7 @@
 #include <tod/training/feature_extraction.h>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
 #include <string>
 #include <iostream>
 
@@ -178,7 +179,7 @@ class ExtractorTest : public ::testing::Test {
             }
         }
 
-        void expectMaskingWorks(const FeatureExtractionParams & params, bool expect = true) {
+        bool expectMaskingWorks(const FeatureExtractionParams & params, bool expect = true) {
             Ptr<FeatureExtractor> extractor = FeatureExtractor::create(params);
             extractor->detectAndExtract(f2d_masked);
             EXPECT_EQ(CV_8U, f2d_masked.mask.type());
@@ -194,8 +195,10 @@ class ExtractorTest : public ::testing::Test {
             waitKey(1200); */
             if (expect) {
                 EXPECT_EQ(0, outside.size());
+                return outside.size() == 0;
             } else {
                 EXPECT_LT(0, outside.size());
+                return outside.size() > 0;
             }
         }
 
@@ -325,51 +328,14 @@ TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_min_features) {
 // Check whether the mask parameter is correctly used
 // ---------------------------------------------------------------------------
 
-TEST_F(ExtractorTest, orb_harrisfast_masking_works) {
-    expectMaskingWorks(orb_harrisfast);
-}
-
-TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_masking_works) {
-    expectMaskingWorks(dynamicfast_multiscale_rbrief);
-}
-
-TEST_F(ExtractorTest, fast_multiscale_rbrief_masking_works) {
-    expectMaskingWorks(fast_multiscale_rbrief);
-}
-
-#ifdef OPENCV_R5024 
-    TEST_F(ExtractorTest, sift_sequential_rbrief_masking_works) {
-        expectMaskingWorks(sift_sequential_rbrief);
+TEST_F(ExtractorTest, masking_works) {
+    map<const string, FeatureExtractionParams*>::iterator it = feparams.begin();
+    map<const string, FeatureExtractionParams*>::iterator end = feparams.end();
+    while (it != end) {
+        bool ok = expectMaskingWorks(*(it->second));
+        cout << boost::format("%35s [%4s]") % it->first % (ok ? "OK" : "FAIL") << endl;
+        it++;
     }
-#else
-    TEST_F(ExtractorTest, sift_sequential_rbrief_masking_fails) {
-        // expect to fail because of OpenCV 1044
-        expectMaskingWorks(sift_sequential_rbrief, false);
-    }
-#endif
-
-TEST_F(ExtractorTest, surf_sequential_rbrief_masking_works) {
-    expectMaskingWorks(surf_sequential_rbrief);
-}
-
-TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_masking_works) {
-    expectMaskingWorks(dynamicsurf_sequential_rbrief);
-}
-
-TEST_F(ExtractorTest, star_sequential_rbrief_masking_works) {
-    expectMaskingWorks(star_sequential_rbrief);
-}
-
-TEST_F(ExtractorTest, dynamicstar_sequential_rbrief_masking_works) {
-    expectMaskingWorks(dynamicstar_sequential_rbrief);
-}
-
-TEST_F(ExtractorTest, mser_multiscale_rbrief_masking_works) {
-    expectMaskingWorks(mser_multiscale_rbrief);
-}
-
-TEST_F(ExtractorTest, gftt_multiscale_rbrief_masking_works) {
-    expectMaskingWorks(gftt_multiscale_rbrief);
 }
 
 // Check whether expectations on the resulting configuration are met
@@ -455,7 +421,6 @@ TEST_F(ExtractorTest, times) {
 // feature extractors
 // ---------------------------------------------------------------------------
 
-/*
 struct min_max_features_win {
 
     min_max_features_win(int midpoint, int width) : midpoint(midpoint), width(width) {}
@@ -463,27 +428,33 @@ struct min_max_features_win {
     int midpoint;
     int width;
 
-}; comparable?!
+    bool operator<(const min_max_features_win & w) const {
+        return (midpoint < w.midpoint ? true :
+                  (midpoint > w.midpoint ? false : width < w.width));
+    }
+
+};
 
 TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_windows) {
     // Take a single image and a mask and detect features using different [min_features, max_features]
     // windows. Collect results in a map.
     map<min_max_features_win, int> res;
-    for (int w = 0; w < 500; w += 50) {
-        for (int m = 0; m < 1500; m += 50) {
+    for (int w = 100; w <= 500; w += 100) {
+        for (int m = 0; m <= 1000; m += 250) {
             f2d_masked.keypoints.clear();
             min_max_features_win win(m, w);
             dynamicsurf_sequential_rbrief.detector_params["min_features"] = win.midpoint - win.width / 2;
             dynamicsurf_sequential_rbrief.detector_params["max_features"] = win.midpoint + win.width / 2;
             FeatureExtractor::create(dynamicsurf_sequential_rbrief)->detectAndExtract(f2d_masked);
             res[win] = (int) f2d_masked.keypoints.size(); 
+            cout << boost::format("midpoint: %4d, width: %4d, keypoints: %4d") % win.midpoint % win.width % f2d_masked.keypoints.size() << endl;
         }
     }
 
     map<min_max_features_win, int>::iterator it = res.begin();
-    map<min_max_features_win, int>::iterator end;
+    map<min_max_features_win, int>::iterator end = res.end();
     while (it != end) {
         cout << boost::format("midpoint: %4d, width: %4d, keypoints: %4d") % (it->first).midpoint % (it->first).width % it->second << endl;
         it++;
     }
-}*/
+}

@@ -5,28 +5,46 @@
 #define _CLUTSEG_H_
 
 #include "clutseg/options.h"
+#include "clutseg/common.h"
 
 #include <cv.h>
 #include <pcl/point_types.h>
 #include <tod/detecting/GuessGenerator.h>
 #include <tod/detecting/Recognizer.h>
 
-
 namespace clutseg {
 
     class ClutSegmenter {
-        // TODO: typedef point cloud definition away
+        
         public:
-            ClutSegmenter(const std::string & baseDirectory, const std::string & config);
+
+            ClutSegmenter(const std::string & baseDirectory,
+                            const std::string & config);
+
+            ClutSegmenter(const std::string & baseDirectory,
+                            const std::string & detect_config,
+                            const std::string & refine_config);
+
             bool recognize(const cv::Mat & queryImage,
-                            const pcl::PointCloud<pcl::PointXYZ> & queryCloud,
+                            const PointCloudT & queryCloud,
                             tod::Guess & resultingGuess,
-                            pcl::PointCloud<pcl::PointXYZ> & inliersCloud);
+                            PointCloudT & inliersCloud);
+
         private:
-            void loadParams();
+
+            bool refine(const tod::Features2d & query,
+                            const PointCloudT & queryCloud,
+                            tod::Guess & resultingGuess,
+                            PointCloudT & inliersCloud);
+
+            void loadParams(Options & opts);
+
             void loadBase();
-            Options opts_; 
+
+            Options detect_opts_; 
+            Options refine_opts_; 
             tod::TrainingBase base_;
+            std::vector<cv::Ptr<tod::TexturedObject> > objects_;
     };
 
 }
