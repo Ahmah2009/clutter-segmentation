@@ -5,6 +5,7 @@
 #include "clutseg/ranking.h"
 
 using namespace cv;
+using namespace std;
 using namespace tod;
 
 namespace clutseg {
@@ -25,6 +26,17 @@ namespace clutseg {
         return guess.inliers.size();
     }
 
+    APrioriRanking::APrioriRanking(map<string, float> apriori_density) :
+                                    apriori_density_(apriori_density) {}
+
+    float APrioriRanking::operator()(const Guess & guess) const {
+        map<string, float>::const_iterator it = apriori_density_.find(guess.getObject()->name);
+        if (it == apriori_density_.end()) {
+            return 0.0;
+        } else {
+            return it->second;
+        }
+    }
 
     ProductRanking::ProductRanking(const Ptr<GuessRanking> & ranking1,
                                     const Ptr<GuessRanking> & ranking2) :

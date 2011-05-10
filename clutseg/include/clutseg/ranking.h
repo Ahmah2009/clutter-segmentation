@@ -4,6 +4,7 @@
 
 #include <cv.h>
 #include <tod/detecting/GuessGenerator.h>
+#include <map>
 
 // IDEA: create ranking by ratio between inliers and object matches
 // IDEA: create ranking by ratio between inliers and object keypoints 
@@ -58,9 +59,17 @@ namespace clutseg {
      * scene. Guesses are ranked by the a priori probability of the recognized
      * object to be on the scene. NOT implemented yet.
      */
-    struct APrioriRanking : public GuessRanking {
+    class APrioriRanking : public GuessRanking {
 
-        float operator()(const tod::Guess & guess) const;
+        public:
+
+            APrioriRanking(const std::map<std::string, float> apriori_density);
+
+            float operator()(const tod::Guess & guess) const;
+
+        private:
+
+            std::map<std::string, float> apriori_density_;
 
     };
 
