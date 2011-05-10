@@ -18,6 +18,20 @@ using namespace cv;
 using namespace std;
 using namespace tod;
 
+// TODO: Create fixture
+
+TEST(ClutsegTest, ChangeOptionsOnline) {
+    ClutSegmenter segmenter(
+        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
+        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
+        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
+    );
+
+    EXPECT_TRUE(segmenter.getRefineOptions().params.matcherParams.doRatioTest);
+    segmenter.getRefineOptions().params.matcherParams.doRatioTest = false;
+    EXPECT_FALSE(segmenter.getRefineOptions().params.matcherParams.doRatioTest);
+}
+
 TEST(ClutsegTest, DetectionWorks) {
    // Create segmenter
     ClutSegmenter segmenter(

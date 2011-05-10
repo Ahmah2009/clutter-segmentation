@@ -27,6 +27,10 @@ namespace clutseg {
                             tod::Guess & resultingGuess,
                             PointCloudT & inliersCloud);
 
+            Options & getDetectOptions();
+
+            Options & getRefineOptions();
+
         private:
 
             bool refine(const tod::Features2d & query,

@@ -42,6 +42,14 @@ namespace clutseg {
         base_ = tod::TrainingBase(objects_);
     }
 
+    Options & ClutSegmenter::getDetectOptions() {
+        return detect_opts_;
+    }
+
+    Options & ClutSegmenter::getRefineOptions() {
+        return refine_opts_;
+    }
+
     void init(Ptr<FeatureExtractor> & extractor, Ptr<Recognizer> & recognizer, TrainingBase & base, Options & opts) {
         extractor = FeatureExtractor::create(opts.params.feParams);
         Ptr<Matcher> rtMatcher = Matcher::create(opts.params.matcherParams);
