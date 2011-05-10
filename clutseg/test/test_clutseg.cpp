@@ -40,6 +40,9 @@ TEST(ClutsegTest, DetectionWorks) {
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
     );
 
+    segmenter.getRefineParams().matcherParams.doRatioTest = false;
+    segmenter.getRefineParams().guessParams.ransacIterationsCount = 500;
+
     Mat queryImage = imread("./data/image_00000.png");
     PointCloudT queryCloud;
     pcl::io::loadPCDFile("./data/cloud_00000.pcd", queryCloud);

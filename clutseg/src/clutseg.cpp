@@ -47,9 +47,7 @@ namespace clutseg {
         return refine_params_;
     }
 
-    // helper function
-    void init(Ptr<FeatureExtractor> & extractor, Ptr<Recognizer> & recognizer, TrainingBase & base, TODParameters params, const string & baseDirectory) {
-        extractor = FeatureExtractor::create(params.feParams);
+    void initRecognizer(Ptr<Recognizer> & recognizer, TrainingBase & base, TODParameters params, const string & baseDirectory) {
         Ptr<Matcher> rtMatcher = Matcher::create(params.matcherParams);
         rtMatcher->add(base);
         recognizer = new KinectRecognizer(&base, rtMatcher,
@@ -60,9 +58,9 @@ namespace clutseg {
     bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud) {
         // Initialize matcher and recognizer. This must be done prior to every
         // query,
-        Ptr<FeatureExtractor> extractor;
+        Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
         Ptr<Recognizer> recognizer;
-        init(extractor, recognizer, base_, detect_params_, baseDirectory_);
+        initRecognizer(recognizer, base_, detect_params_, baseDirectory_);
 
         Features2d test;
         test.image = queryImage;
@@ -99,7 +97,6 @@ namespace clutseg {
         if (refine_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for refinement" << endl;
         }
-        Ptr<tod::Matcher> rtMatcher = tod::Matcher::create(refine_params_.matcherParams);
         vector<Ptr<tod::TexturedObject> > so;
         BOOST_FOREACH(const Ptr<tod::TexturedObject> & obj, objects_) {
             if (obj->name == resultingGuess.getObject()->name) {
@@ -117,10 +114,11 @@ namespace clutseg {
                 break;
             }
         }
-        tod::TrainingBase single(so);
-        rtMatcher->add(single);
-        cv::Ptr<tod::Recognizer> recognizer = new tod::KinectRecognizer(&single, rtMatcher,
-                                &refine_params_.guessParams, 0 /* verbose */, baseDirectory_);
+        TrainingBase single(so);
+
+        Ptr<Recognizer> recognizer;
+        initRecognizer(recognizer, single, refine_params_, baseDirectory_);
+
         vector<tod::Guess> guesses;
         recognizer->match(query, guesses); 
 
