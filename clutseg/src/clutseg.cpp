@@ -16,6 +16,11 @@ using namespace pcl;
 using namespace tod;
 
 namespace clutseg {
+
+    #ifdef TEST
+        // see header
+        ClutSegmenter::ClutSegmenter() {}
+    #endif
         
     ClutSegmenter::ClutSegmenter(const string & baseDirectory, const string & detect_config, const string & locate_config) {
         baseDirectory_ = baseDirectory;
@@ -23,6 +28,16 @@ namespace clutseg {
         loadParams(locate_config, locate_params_);
         loadBase();
     }
+
+    ClutSegmenter::ClutSegmenter(const string & baseDirectory,
+                                    const TODParameters & detect_params,
+                                    const TODParameters & locate_params) :
+                                baseDirectory_(baseDirectory),
+                                detect_params_(detect_params),
+                                locate_params_(locate_params) {
+        loadBase();
+    }
+
 
     void ClutSegmenter::loadParams(const string & config, TODParameters & params) {
         FileStorage fs(config, FileStorage::READ);
@@ -76,6 +91,7 @@ namespace clutseg {
             int max_i = 0;
             size_t max_v = 0;
             for (size_t i = 0; i < guesses.size(); i++) {
+                cout << "Guess " << i << ": " << guesses[i].getObject()->name << endl;
                 if (guesses[i].inliers.size() > max_v) {
                     max_v = guesses[i].inliers.size();
                     max_i = i;

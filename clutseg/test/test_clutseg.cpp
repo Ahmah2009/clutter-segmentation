@@ -6,10 +6,12 @@
 
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
+#include "clutseg/viz.h"
 
 #include <gtest/gtest.h>
 #include <tod/detecting/Loader.h>
 #include <pcl/io/pcd_io.h>
+#include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <stdlib.h>
 
@@ -20,29 +22,55 @@ using namespace tod;
 
 // TODO: Create fixture
 
-TEST(ClutsegTest, ChangeOptionsOnline) {
-    ClutSegmenter segmenter(
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
-    );
+class ClutsegTest : public ::testing::Test {
 
-    EXPECT_TRUE(segmenter.getLocateParams().matcherParams.doRatioTest);
-    segmenter.getLocateParams().matcherParams.doRatioTest = false;
-    EXPECT_FALSE(segmenter.getLocateParams().matcherParams.doRatioTest);
+    public:
+
+        virtual void SetUp() {
+            segmenter = ClutSegmenter(
+                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
+                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
+                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
+            );
+                
+            segmenter.getLocateParams().matcherParams.doRatioTest = false;
+        }
+
+        ClutSegmenter segmenter;
+
+};
+
+/** Verify that changes to parameters do not affect existing ClutSegmenter
+ * instances, i.e. that parameters are properly copied in constructor. */
+TEST_F(ClutsegTest, ConstructorOpaque) {
+    TODParameters detect_params;
+    TODParameters locate_params;
+
+    ClutSegmenter s(
+        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
+        detect_params,
+        locate_params
+    );
+    
+    EXPECT_NE("SIFT", detect_params.feParams.detector_type);
+    detect_params.feParams.detector_type = "SIFT";
+    EXPECT_NE("SIFT", s.getDetectParams().feParams.detector_type);
 }
 
-TEST(ClutsegTest, DetectionWorks) {
-   // Create segmenter
-    ClutSegmenter segmenter(
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
-    );
+/** Check whether the params returned is actually a reference to the
+ * ClutSegmenter's parameters and that changes shine through. In this way,
+ * parameter configuration can be changed easily without having to reload the
+ * training base. */
+TEST_F(ClutsegTest, ChangeParamsOnline) {
+    EXPECT_FALSE(segmenter.getLocateParams().matcherParams.doRatioTest);
+    TODParameters & params = segmenter.getLocateParams();
+    params.matcherParams.doRatioTest = true;
+    EXPECT_TRUE(segmenter.getLocateParams().matcherParams.doRatioTest);
+}
 
-    segmenter.getLocateParams().matcherParams.doRatioTest = false;
-    segmenter.getLocateParams().guessParams.ransacIterationsCount = 500;
-
+/** Check whether detection works for a training image. This is expected to
+ * return with a whole bunch of inliers since it is only a training image. */
+TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
     Mat queryImage = imread("./data/image_00000.png");
     PointCloudT queryCloud;
     pcl::io::loadPCDFile("./data/cloud_00000.pcd", queryCloud);
@@ -54,9 +82,11 @@ TEST(ClutsegTest, DetectionWorks) {
     EXPECT_EQ("haltbare_milch", guess.getObject()->name);
     cout << "detected: " << guess.getObject()->name << endl;
     cout << "inliers:  " << guess.inliers.size() << endl;
+    EXPECT_GT(guess.inliers.size(), 500);
 }
 
-TEST(ClutsegTest, LoadSingleTrainingBase) {
+/** Check whether loading a single training base works without failing */
+TEST_F(ClutsegTest, LoadSingleTrainingBase) {
     vector<Ptr<TexturedObject> > objects;
     Loader loader(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train");
     loader.readTexturedObjects(objects);
@@ -65,62 +95,32 @@ TEST(ClutsegTest, LoadSingleTrainingBase) {
     TrainingBase base(objects);
 }
 
-TEST(ClutsegTest, SingleDetectionWorks) {
-    // Load training base 
-    vector<Ptr<TexturedObject> > objects;
-    Loader loader(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train");
-    loader.readTexturedObjects(objects);
-    objects.erase(objects.begin());
-    objects.erase(objects.begin() + 2);
-    objects.erase(objects.begin() + 3);
-    EXPECT_EQ(1, objects.size());
-    EXPECT_EQ("haltbare_milch", objects[0]->name);
-    TrainingBase base(objects);
+/** Check whether an object is at least detected in clutter */
+TEST_F(ClutsegTest, RecognizeInClutter) {
+    TODParameters & detect_params = segmenter.getDetectParams();
+    detect_params.guessParams.maxProjectionError = 20.0;
+    detect_params.guessParams.ransacIterationsCount = 100;
+    TODParameters & locate_params = segmenter.getLocateParams();
+    locate_params.guessParams.maxProjectionError = 5;
+    locate_params.guessParams.ransacIterationsCount = 300;
 
-    // Load options
-    Options opts_;
-    FileStorage fs(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml", FileStorage::READ);
-    if (!fs.isOpened()) {
-        throw ios_base::failure("Cannot read configuration file '" + opts_.config + "'");
-    }
-    opts_.params.read(fs[tod::TODParameters::YAML_NODE_NAME]);
-    // Turning off ratio testing is a very good idea when the training base
-    // contains only one object.
-    opts_.params.matcherParams.doRatioTest = false;
-    opts_.params.guessParams.maxProjectionError = 12.0;
-    opts_.params.guessParams.ransacIterationsCount = 1000;
-    fs.release();
-
-    // Load query
     Mat queryImage = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png");
     PointCloudT queryCloud;
     pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/cloud_00000.pcd", queryCloud);
-
-    tod::Guess guess;
+    // TODO: remove tod:: prefices
+    Guess guess;
     PointCloudT inlierCloud;
- 
-    Ptr<tod::FeatureExtractor> extractor = tod::FeatureExtractor::create(opts_.params.feParams);
-    Ptr<tod::Matcher> rtMatcher = tod::Matcher::create(opts_.params.matcherParams);
-    rtMatcher->add(base);
-    cv::Ptr<tod::Recognizer> recognizer = new tod::KinectRecognizer(&base, rtMatcher,
-                            &opts_.params.guessParams, 0 /* verbose */, opts_.baseDirectory);
 
-    tod::Features2d test;
-    test.image = queryImage;
-    vector<tod::Guess> guesses;
-    extractor->detectAndExtract(test);
-    recognizer->match(test, guesses);
+    bool positive = segmenter.recognize(queryImage, queryCloud, guess, inlierCloud);
+    ASSERT_TRUE(positive);
+    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
+                guess.getObject()->name == "haltbare_milch" ||
+                guess.getObject()->name == "jacobs_coffee");
 
-    EXPECT_FALSE(guesses.empty());
-    guess = guesses[0];
-    EXPECT_EQ("haltbare_milch", guess.getObject()->name);
-    cout << "detected: " << guess.getObject()->name << endl;
-    cout << "inliers:  " << guess.inliers.size() << endl;
-}
-
-
-TEST(ClutsegTest, ias_kinect_1) {
-    int c = system("test-eval ias_kinect_train ias_kinect_train/config.yaml ias_kinect_test_train_20");
-    EXPECT_EQ(0, c);
+    Camera camera("./data/camera.yml", Camera::TOD_YAML);
+    Mat canvas = queryImage.clone();
+    drawGuess(canvas, guess, camera, PoseRT());
+    imshow("guess", canvas);
+    waitKey(-1);
 }
 

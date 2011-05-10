@@ -18,9 +18,19 @@ namespace clutseg {
         
         public:
 
+            #ifdef TEST
+                /** The no-argument constructor is required by Google test
+                  * fixtures. It shall not be used in production-code. */ 
+                ClutSegmenter();
+            #endif
+
             ClutSegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
                             const std::string & locate_config);
+
+            ClutSegmenter(const std::string & baseDirectory,
+                            const tod::TODParameters & detect_params,
+                            const tod::TODParameters & locate_params);
 
             bool recognize(const cv::Mat & queryImage,
                             const PointCloudT & queryCloud,
