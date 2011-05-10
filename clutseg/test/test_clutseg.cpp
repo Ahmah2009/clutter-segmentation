@@ -34,9 +34,19 @@ class ClutsegTest : public ::testing::Test {
             );
                 
             segmenter.getLocateParams().matcherParams.doRatioTest = false;
+
+            haltbare_milch_train_img = imread("./data/image_00000.png");
+            pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
+
+            clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png");
+            pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/cloud_00000.pcd", clutter_cloud);
         }
 
         ClutSegmenter segmenter;
+        Mat haltbare_milch_train_img;
+        PointCloudT haltbare_milch_train_cloud;
+        Mat clutter_img;
+        PointCloudT clutter_cloud;
 
 };
 
@@ -71,13 +81,11 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 /** Check whether detection works for a training image. This is expected to
  * return with a whole bunch of inliers since it is only a training image. */
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
-    Mat queryImage = imread("./data/image_00000.png");
-    PointCloudT queryCloud;
-    pcl::io::loadPCDFile("./data/cloud_00000.pcd", queryCloud);
-
-    tod::Guess guess;
+    Guess guess;
     PointCloudT inlierCloud;
-    bool positive = segmenter.recognize(queryImage, queryCloud, guess, inlierCloud);
+    bool positive = segmenter.recognize(haltbare_milch_train_img,
+                                        haltbare_milch_train_cloud,
+                                        guess, inlierCloud);
     EXPECT_TRUE(positive);
     EXPECT_EQ("haltbare_milch", guess.getObject()->name);
     cout << "detected: " << guess.getObject()->name << endl;
@@ -98,29 +106,27 @@ TEST_F(ClutsegTest, LoadSingleTrainingBase) {
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeInClutter) {
     TODParameters & detect_params = segmenter.getDetectParams();
-    detect_params.guessParams.maxProjectionError = 20.0;
+    detect_params.guessParams.maxProjectionError = 12.0;
     detect_params.guessParams.ransacIterationsCount = 100;
     TODParameters & locate_params = segmenter.getLocateParams();
     locate_params.guessParams.maxProjectionError = 5;
     locate_params.guessParams.ransacIterationsCount = 300;
 
-    Mat queryImage = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png");
-    PointCloudT queryCloud;
-    pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/cloud_00000.pcd", queryCloud);
     // TODO: remove tod:: prefices
     Guess guess;
     PointCloudT inlierCloud;
 
-    bool positive = segmenter.recognize(queryImage, queryCloud, guess, inlierCloud);
+    bool positive = segmenter.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
     ASSERT_TRUE(positive);
     EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
                 guess.getObject()->name == "haltbare_milch" ||
                 guess.getObject()->name == "jacobs_coffee");
 
     Camera camera("./data/camera.yml", Camera::TOD_YAML);
-    Mat canvas = queryImage.clone();
+    Mat canvas = clutter_img.clone();
     drawGuess(canvas, guess, camera, PoseRT());
     imshow("guess", canvas);
     waitKey(-1);
 }
 
+/** Check whether all objects in a cluttered scene are detected */

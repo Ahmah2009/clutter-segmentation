@@ -44,14 +44,14 @@ namespace clutseg {
         if (!fs.isOpened()) {
             throw ios_base::failure("Cannot read configuration file '" + config + "'");
         }
-        params.read(fs[tod::TODParameters::YAML_NODE_NAME]);
+        params.read(fs[TODParameters::YAML_NODE_NAME]);
         fs.release();
     }
 
     void ClutSegmenter::loadBase() {
-        tod::Loader loader(baseDirectory_);
+        Loader loader(baseDirectory_);
         loader.readTexturedObjects(objects_);
-        base_ = tod::TrainingBase(objects_);
+        base_ = TrainingBase(objects_);
     }
 
     TODParameters & ClutSegmenter::getDetectParams() {
@@ -70,7 +70,7 @@ namespace clutseg {
                              baseDirectory);
     }
 
-    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud) {
+    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
         // Initialize matcher and recognizer. This must be done prior to every
         // query,
         Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
@@ -79,7 +79,7 @@ namespace clutseg {
 
         Features2d test;
         test.image = queryImage;
-        vector<tod::Guess> guesses;
+        vector<Guess> guesses;
         extractor->detectAndExtract(test);
         recognizer->match(test, guesses);
         if (guesses.empty()) {
@@ -109,18 +109,18 @@ namespace clutseg {
         }
     }
 
-    bool ClutSegmenter::locate(const tod::Features2d & query, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud) {
+    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
-        vector<Ptr<tod::TexturedObject> > so;
-        BOOST_FOREACH(const Ptr<tod::TexturedObject> & obj, objects_) {
+        vector<Ptr<TexturedObject> > so;
+        BOOST_FOREACH(const Ptr<TexturedObject> & obj, objects_) {
             if (obj->name == resultingGuess.getObject()->name) {
                 // Create a new textured object instance --- those thingies
                 // cannot exist in multiple training bases, this breaks indices
                 // that are tightly coupled between TrainingBase and
                 // TexturedObject instances.
-                Ptr<tod::TexturedObject> newObj = new tod::TexturedObject();
+                Ptr<TexturedObject> newObj = new TexturedObject();
                 newObj->id = 0;
                 newObj->name = obj->name;
                 newObj->directory_ = obj->directory_;
@@ -135,7 +135,7 @@ namespace clutseg {
         Ptr<Recognizer> recognizer;
         initRecognizer(recognizer, single, locate_params_, baseDirectory_);
 
-        vector<tod::Guess> guesses;
+        vector<Guess> guesses;
         recognizer->match(query, guesses); 
 
         if (guesses.empty()) {
