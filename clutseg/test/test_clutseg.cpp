@@ -27,9 +27,9 @@ TEST(ClutsegTest, ChangeOptionsOnline) {
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
     );
 
-    EXPECT_TRUE(segmenter.getRefineOptions().params.matcherParams.doRatioTest);
-    segmenter.getRefineOptions().params.matcherParams.doRatioTest = false;
-    EXPECT_FALSE(segmenter.getRefineOptions().params.matcherParams.doRatioTest);
+    EXPECT_TRUE(segmenter.getRefineParams().matcherParams.doRatioTest);
+    segmenter.getRefineParams().matcherParams.doRatioTest = false;
+    EXPECT_FALSE(segmenter.getRefineParams().matcherParams.doRatioTest);
 }
 
 TEST(ClutsegTest, DetectionWorks) {

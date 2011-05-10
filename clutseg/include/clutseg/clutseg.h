@@ -27,9 +27,9 @@ namespace clutseg {
                             tod::Guess & resultingGuess,
                             PointCloudT & inliersCloud);
 
-            Options & getDetectOptions();
+            tod::TODParameters & getDetectParams();
 
-            Options & getRefineOptions();
+            tod::TODParameters & getRefineParams();
 
         private:
 
@@ -38,12 +38,13 @@ namespace clutseg {
                             tod::Guess & resultingGuess,
                             PointCloudT & inliersCloud);
 
-            void loadParams(Options & opts);
+            void loadParams(const std::string & config, tod::TODParameters & params);
 
             void loadBase();
 
-            Options detect_opts_; 
-            Options refine_opts_; 
+            std::string baseDirectory_;
+            tod::TODParameters detect_params_; 
+            tod::TODParameters refine_params_; 
             tod::TrainingBase base_;
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
     };
