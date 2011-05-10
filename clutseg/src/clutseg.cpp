@@ -9,6 +9,7 @@
 
 #include <tod/detecting/Loader.h>
 #include <boost/foreach.hpp>
+#include <limits>
 
 using namespace std;
 using namespace cv;
@@ -22,22 +23,30 @@ namespace clutseg {
         ClutSegmenter::ClutSegmenter() {}
     #endif
         
-    ClutSegmenter::ClutSegmenter(const string & baseDirectory, const string & detect_config, const string & locate_config) {
-        baseDirectory_ = baseDirectory;
+    // TODO: get rid of duplication in constructors
+
+    ClutSegmenter::ClutSegmenter(const string & baseDirectory,
+                                    const string & detect_config,
+                                    const string & locate_config) {
         loadParams(detect_config, detect_params_);
         loadParams(locate_config, locate_params_);
-        loadBase();
+        init(baseDirectory);
     }
 
     ClutSegmenter::ClutSegmenter(const string & baseDirectory,
                                     const TODParameters & detect_params,
                                     const TODParameters & locate_params) :
-                                baseDirectory_(baseDirectory),
                                 detect_params_(detect_params),
                                 locate_params_(locate_params) {
-        loadBase();
+        init(baseDirectory);
     }
 
+    void ClutSegmenter::init(const string & baseDirectory) {
+        baseDirectory_ = baseDirectory;
+        ranking_ = new MaxInliersRanking();
+        loadBase();
+        accept_threshold = -numeric_limits<float>::infinity();
+    }
 
     void ClutSegmenter::loadParams(const string & config, TODParameters & params) {
         FileStorage fs(config, FileStorage::READ);
@@ -86,19 +95,26 @@ namespace clutseg {
             return false;
         } else {
             // Sort the guesses according to the ranking function.
-            sort(guesses.begin(), guesses.end(), cmp_);
-            resultingGuess = guesses[0]; 
-
+            sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
+            bool pos = false;
             // Somehow does not work, why?
             // resultingGuess = *max(guesses.begin(), guesses.end(), cmp_);
-          
-            mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
+            for (size_t i = 0; i < guesses.size(); i++) {
+                resultingGuess = guesses[0]; 
+                inliersCloud = PointCloudT(); 
+                mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
 
-            cout << "inliers before: " << resultingGuess.inliers.size() << endl;
-            locate(test, queryCloud, resultingGuess, inliersCloud);
-            cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
+                cout << "inliers before: " << resultingGuess.inliers.size() << endl;
+                locate(test, queryCloud, resultingGuess, inliersCloud);
+                cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
 
-            return true;
+                if ((*ranking_)(resultingGuess) >= accept_threshold) {
+                    pos = true;
+                    break;
+                }
+            }
+
+            return pos;
         }
     }
 

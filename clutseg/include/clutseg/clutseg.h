@@ -49,6 +49,8 @@ namespace clutseg {
                             tod::Guess & resultingGuess,
                             PointCloudT & inliersCloud);
 
+            void init(const std::string & baseDirectory);
+
             void loadParams(const std::string & config, tod::TODParameters & params);
 
             void loadBase();
@@ -58,7 +60,8 @@ namespace clutseg {
             tod::TODParameters locate_params_; 
             tod::TrainingBase base_;
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
-            GuessComparator cmp_;
+            cv::Ptr<GuessRanking> ranking_;
+            int accept_threshold;
     };
 
 }
