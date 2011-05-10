@@ -95,6 +95,9 @@ namespace clutseg {
             // worst-case. None of the objects has been detected.
             return false;
         } else {
+            BOOST_FOREACH(Guess & guess, guesses) {
+                mapInliersToCloud(guess.inlierCloud, guess, query.image, queryCloud);
+            }
             // Sort the guesses according to the ranking function.
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
             bool pos = false;
@@ -105,8 +108,11 @@ namespace clutseg {
                 resultingGuess = guesses[0]; 
 
                 cout << "inliers before: " << resultingGuess.inliers.size() << endl;
-                locate(query, resultingGuess);
+                locate(query, queryCloud, resultingGuess);
                 cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
+
+                cout << "ranking: " << (*ranking_)(resultingGuess) << endl;
+                cout << "accept_threshold: " << accept_threshold << endl;
 
                 if ((*ranking_)(resultingGuess) >= accept_threshold) {
                     pos = true;
@@ -133,7 +139,7 @@ namespace clutseg {
         return guesses.empty();
     }
 
-    bool ClutSegmenter::locate(const Features2d & query, Guess & resultingGuess) {
+    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & resultingGuess) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
@@ -169,6 +175,9 @@ namespace clutseg {
             cerr << "[WARNING] No guess made in refinement!" << endl;
             return false;
         } else {
+            BOOST_FOREACH(Guess & guess, guesses) {
+                mapInliersToCloud(guess.inlierCloud, guess, query.image, queryCloud);
+            }
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
             resultingGuess = guesses[0]; 
             return true;

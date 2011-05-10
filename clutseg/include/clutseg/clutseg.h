@@ -56,7 +56,8 @@ namespace clutseg {
                         std::vector<tod::Guess> & guesses);
 
             bool locate(const tod::Features2d & query,
-                            tod::Guess & resultingGuess);
+                        const PointCloudT & queryCloud,
+                        tod::Guess & resultingGuess);
 
             void init(const std::string & baseDirectory,
                         cv::Ptr<GuessRanking> ranking);
@@ -72,7 +73,7 @@ namespace clutseg {
             tod::TrainingBase base_;
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
             cv::Ptr<GuessRanking> ranking_;
-            int accept_threshold;
+            float accept_threshold;
     };
 
 }

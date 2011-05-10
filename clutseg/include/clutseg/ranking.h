@@ -80,6 +80,15 @@ namespace clutseg {
 
     };
 
+    /** Guesses that locate objects closer to the viewer are ranked higher.
+     * This might help in detecting objects that are actually reachable from the
+     * viewpoint and are less occluded. */
+    struct ProximityRanking : public GuessRanking {
+
+        float operator()(const tod::Guess & guess) const;
+
+    };
+
     /* Combines two ranking functions by multiplication. Note that both ranking
      * functions can veto by giving zero score on the guess. */
     class ProductRanking : public GuessRanking {

@@ -133,3 +133,36 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
     waitKey(-1);
 }
 
+/** Check whether an object is at least detected in clutter */
+TEST_F(ClutsegTest, RecognizeForemostInClutter) {
+    TODParameters & detect_params = segmenter.getDetectParams();
+    detect_params.guessParams.maxProjectionError = 15.0;
+    detect_params.guessParams.ransacIterationsCount = 100;
+    TODParameters & locate_params = segmenter.getLocateParams();
+    locate_params.guessParams.maxProjectionError = 5;
+    locate_params.guessParams.ransacIterationsCount = 500;
+
+    Ptr<GuessRanking> prox_ranking = new ProximityRanking();
+    ClutSegmenter s(
+        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
+        detect_params,
+        locate_params,
+        prox_ranking
+    );
+
+    Guess guess;
+    PointCloudT inlierCloud;
+
+    bool positive = s.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
+    ASSERT_TRUE(positive);
+    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
+                guess.getObject()->name == "haltbare_milch" ||
+                guess.getObject()->name == "jacobs_coffee");
+
+    Camera camera("./data/camera.yml", Camera::TOD_YAML);
+    Mat canvas = clutter_img.clone();
+    drawGuess(canvas, guess, camera, PoseRT());
+    imshow("RecognizeForemostInClutter", canvas);
+    waitKey(-1);
+}
+
