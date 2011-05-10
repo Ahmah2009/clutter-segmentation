@@ -180,7 +180,7 @@ namespace clutseg {
       vector<Mat> match_images;
       int scaled_width = 1000;
       int scaled_height = 0;
-      int match_threshold = 7;
+      size_t match_threshold = 7;
 
       // Build the individual matches
       for (size_t objectInd = 0; objectInd < base.size(); objectInd++)

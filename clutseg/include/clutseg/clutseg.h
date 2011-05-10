@@ -6,6 +6,7 @@
 
 #include "clutseg/options.h"
 #include "clutseg/common.h"
+#include "clutseg/ranking.h"
 
 #include <cv.h>
 #include <pcl/point_types.h>
@@ -57,6 +58,7 @@ namespace clutseg {
             tod::TODParameters locate_params_; 
             tod::TrainingBase base_;
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
+            GuessComparator cmp_;
     };
 
 }

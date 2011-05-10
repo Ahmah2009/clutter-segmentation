@@ -106,13 +106,12 @@ TEST_F(ClutsegTest, LoadSingleTrainingBase) {
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeInClutter) {
     TODParameters & detect_params = segmenter.getDetectParams();
-    detect_params.guessParams.maxProjectionError = 12.0;
+    detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
     TODParameters & locate_params = segmenter.getLocateParams();
     locate_params.guessParams.maxProjectionError = 5;
     locate_params.guessParams.ransacIterationsCount = 300;
 
-    // TODO: remove tod:: prefices
     Guess guess;
     PointCloudT inlierCloud;
 
@@ -129,4 +128,3 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
     waitKey(-1);
 }
 
-/** Check whether all objects in a cluttered scene are detected */

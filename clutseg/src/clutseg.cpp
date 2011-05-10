@@ -85,19 +85,11 @@ namespace clutseg {
         if (guesses.empty()) {
             return false;
         } else {
-            // Select guess with most inliers. We could also use another scheme
-            // to determine the best guess, for example the guess where the
-            // bounding rect.  of its inliers has the longest diagonal.
-            int max_i = 0;
-            size_t max_v = 0;
-            for (size_t i = 0; i < guesses.size(); i++) {
-                cout << "Guess " << i << ": " << guesses[i].getObject()->name << endl;
-                if (guesses[i].inliers.size() > max_v) {
-                    max_v = guesses[i].inliers.size();
-                    max_i = i;
-                }
-            }
-            resultingGuess = guesses[max_i];
+            // Sort the guesses according to the ranking function.
+            sort(guesses.begin(), guesses.end(), cmp_);
+            resultingGuess = guesses[0]; 
+
+            // resultingGuess = *max(guesses.begin(), guesses.end(), cmp_);
           
             mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
 
