@@ -80,32 +80,30 @@ namespace clutseg {
     }
 
     bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
-        // Initialize matcher and recognizer. This must be done prior to every
-        // query,
-        Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
-        Ptr<Recognizer> recognizer;
-        initRecognizer(recognizer, base_, detect_params_, baseDirectory_);
+        Features2d query;
+        query.image = queryImage;
 
-        Features2d test;
-        test.image = queryImage;
+        // Generate a couple of guesses. Ideally, each object on the scene is
+        // detected and there are no misclassifications.
         vector<Guess> guesses;
-        extractor->detectAndExtract(test);
-        recognizer->match(test, guesses);
+        detect(query, guesses);
+
         if (guesses.empty()) {
+            // In case there are any objects in the scene, this is kind of the
+            // worst-case. None of the objects has been detected.
             return false;
         } else {
             // Sort the guesses according to the ranking function.
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
             bool pos = false;
-            // Somehow does not work, why?
-            // resultingGuess = *max(guesses.begin(), guesses.end(), cmp_);
+            // Iterate over every guess, beginning with the highest ranked
+            // guess. If the guess resulting of locating the object got a score
+            // larger than the acceptance threshold, this is our best guess.
             for (size_t i = 0; i < guesses.size(); i++) {
                 resultingGuess = guesses[0]; 
-                inliersCloud = PointCloudT(); 
-                mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
 
                 cout << "inliers before: " << resultingGuess.inliers.size() << endl;
-                locate(test, queryCloud, resultingGuess, inliersCloud);
+                locate(query, resultingGuess);
                 cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
 
                 if ((*ranking_)(resultingGuess) >= accept_threshold) {
@@ -114,11 +112,26 @@ namespace clutseg {
                 }
             }
 
+            inliersCloud = PointCloudT(); 
+            if (pos) {
+                mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
+            }
+
             return pos;
         }
     }
 
-    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
+    bool ClutSegmenter::detect(Features2d & query, vector<Guess> & guesses) {
+        Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
+        Ptr<Recognizer> recognizer;
+        initRecognizer(recognizer, base_, detect_params_, baseDirectory_);
+
+        extractor->detectAndExtract(query);
+        recognizer->match(query, guesses);
+        return guesses.empty();
+    }
+
+    bool ClutSegmenter::locate(const Features2d & query, Guess & resultingGuess) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
@@ -148,24 +161,14 @@ namespace clutseg {
         recognizer->match(query, guesses); 
 
         if (guesses.empty()) {
-            // Why? 
+            // This almost certainly should not happen. If the object has been
+            // detected despite of possible confusion, it will be detected
+            // again if the source of confusion is removed.
             cerr << "[WARNING] No guess made in refinement!" << endl;
             return false;
         } else {
-            int max_i = 0;
-            size_t max_v = 0;
-            for (size_t i = 0; i < guesses.size(); i++) {
-                if (guesses[i].inliers.size() > max_v) {
-                    max_v = guesses[i].inliers.size();
-                    max_i = i;
-                }
-            }
-             
-            sort(guesses.begin(), guesses.end(), GuessComparator());
+            sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
             resultingGuess = guesses[0]; 
-
-            inliersCloud = PointCloudT();      
-            mapInliersToCloud(inliersCloud, resultingGuess, query.image, queryCloud);
             return true;
         }
     }

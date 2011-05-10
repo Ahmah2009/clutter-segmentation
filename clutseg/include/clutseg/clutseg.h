@@ -44,14 +44,16 @@ namespace clutseg {
 
         private:
 
+            bool detect(tod::Features2d & query,
+                        std::vector<tod::Guess> & guesses);
+
             bool locate(const tod::Features2d & query,
-                            const PointCloudT & queryCloud,
-                            tod::Guess & resultingGuess,
-                            PointCloudT & inliersCloud);
+                            tod::Guess & resultingGuess);
 
             void init(const std::string & baseDirectory);
 
-            void loadParams(const std::string & config, tod::TODParameters & params);
+            void loadParams(const std::string & config,
+                            tod::TODParameters & params);
 
             void loadBase();
 
