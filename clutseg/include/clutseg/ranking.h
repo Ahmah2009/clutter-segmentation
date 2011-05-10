@@ -71,10 +71,22 @@ namespace clutseg {
 
     };
 
-    /* Combines two ranking functions by multiplication. NOT implemented yet */
-    struct ProductRanking : public GuessRanking {
+    /* Combines two ranking functions by multiplication. Note that both ranking
+     * functions can veto by giving zero score on the guess. */
+    class ProductRanking : public GuessRanking {
 
-        float operator()(const tod::Guess & guess) const;
+        public:
+
+            ProductRanking(const cv::Ptr<GuessRanking> & ranking1,
+                            const cv::Ptr<GuessRanking> & ranking2);
+
+            float operator()(const tod::Guess & guess) const;
+
+        private:
+
+            cv::Ptr<GuessRanking> ranking1_;
+
+            cv::Ptr<GuessRanking> ranking2_;
 
     };
 

@@ -25,4 +25,13 @@ namespace clutseg {
         return guess.inliers.size();
     }
 
+
+    ProductRanking::ProductRanking(const Ptr<GuessRanking> & ranking1,
+                                    const Ptr<GuessRanking> & ranking2) :
+                                   ranking1_(ranking1), ranking2_(ranking2) {}
+
+    float ProductRanking::operator()(const Guess & guess) const {
+        return (*ranking1_)(guess) * (*ranking2_)(guess);
+    }
+
 }
