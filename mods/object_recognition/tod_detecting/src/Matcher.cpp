@@ -479,9 +479,11 @@ void FlannRatioTestMatcher::match(const Mat& queryDescriptors)
   objectMatches.clear();
   objectMatches.resize(objectIds.size());
 
-  // FIXME: insert switch
-  // cvflann::set_distance_type(cvflann::MANHATTAN, 0);
-  cvflann::set_distance_type(cvflann::FLANN_DIST_MANHATTAN, 0);
+  #ifdef OPENCV_R5024
+      cvflann::set_distance_type(cvflann::FLANN_DIST_MANHATTAN, 0);
+  #else
+      cvflann::set_distance_type(cvflann::MANHATTAN, 0);
+  #endif
   Mat m_indices(queryDescriptors.rows, knnNum, CV_32S);
   Mat m_dists(queryDescriptors.rows, knnNum, CV_32F);
   flann_index->knnSearch(queryDescriptors, m_indices, m_dists, knnNum, cv::flann::SearchParams(64));
