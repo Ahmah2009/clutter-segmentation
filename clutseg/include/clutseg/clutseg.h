@@ -19,9 +19,6 @@ namespace clutseg {
         public:
 
             ClutSegmenter(const std::string & baseDirectory,
-                            const std::string & config);
-
-            ClutSegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
                             const std::string & refine_config);
 

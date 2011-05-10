@@ -13,20 +13,17 @@
 using namespace std;
 using namespace cv;
 using namespace pcl;
+using namespace tod;
 
 namespace clutseg {
         
-    ClutSegmenter::ClutSegmenter(const string & baseDirectory, const string & config) {
-        ClutSegmenter(baseDirectory, config, config);
-    }
- 
     ClutSegmenter::ClutSegmenter(const string & baseDirectory, const string & detect_config, const string & refine_config) {
         detect_opts_.config = detect_config;
         refine_opts_.config = refine_config;
         detect_opts_.baseDirectory = baseDirectory;
         refine_opts_.baseDirectory = baseDirectory;
-        loadParams(detect_opts);
-        loadParams(refine_opts);
+        loadParams(detect_opts_);
+        loadParams(refine_opts_);
         loadBase();
     }
 
@@ -45,14 +42,26 @@ namespace clutseg {
         base_ = tod::TrainingBase(objects_);
     }
 
+    void init(Ptr<FeatureExtractor> & extractor, Ptr<Recognizer> & recognizer, TrainingBase & base, Options & opts) {
+        extractor = FeatureExtractor::create(opts.params.feParams);
+        Ptr<Matcher> rtMatcher = Matcher::create(opts.params.matcherParams);
+        rtMatcher->add(base);
+        recognizer = new KinectRecognizer(&base, rtMatcher,
+                            &opts.params.guessParams, 0 /* verbose */,
+                             opts.baseDirectory);
+    }
+
     bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, tod::Guess & resultingGuess, PointCloudT & inliersCloud) {
         // Initialize matcher and recognizer. This must be done prior to every
         // query,
-        Ptr<tod::FeatureExtractor> extractor = tod::FeatureExtractor::create(detect_opts_.params.feParams);
+        /* Ptr<tod::FeatureExtractor> extractor = tod::FeatureExtractor::create(detect_opts_.params.feParams);
         Ptr<tod::Matcher> rtMatcher = tod::Matcher::create(detect_opts_.params.matcherParams);
-        rtMatcher->add(base_);
-        cv::Ptr<tod::Recognizer> recognizer = new tod::KinectRecognizer(&base_, rtMatcher,
-                                &opts_.params.guessParams, 0 /* verbose */, opts_.baseDirectory);
+        rtMatcher->add(base_); */
+        // cv::Ptr<tod::Recognizer> recognizer = new tod::KinectRecognizer(&base_, rtMatcher,
+        //                        &opts_.params.guessParams, 0 /* verbose */, opts_.baseDirectory);
+        Ptr<FeatureExtractor> extractor;
+        Ptr<Recognizer> recognizer;
+        init(extractor, recognizer, base_, detect_opts_);
 
         tod::Features2d test;
         test.image = queryImage;
