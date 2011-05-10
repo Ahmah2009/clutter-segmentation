@@ -20,19 +20,22 @@ using namespace cv;
 using namespace std;
 using namespace tod;
 
-// TODO: Create fixture
+bool loaded = false;
 
 class ClutsegTest : public ::testing::Test {
 
     public:
 
         virtual void SetUp() {
-            segmenter = ClutSegmenter(
-                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
-                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
-                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
-            );
-                
+            if (!loaded) {
+                 segmenter = ClutSegmenter(
+                    string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
+                    string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
+                    string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
+                );
+                loaded = true;
+            }
+               
             segmenter.getLocateParams().matcherParams.doRatioTest = false;
 
             haltbare_milch_train_img = imread("./data/image_00000.png");
@@ -42,13 +45,15 @@ class ClutsegTest : public ::testing::Test {
             pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/cloud_00000.pcd", clutter_cloud);
         }
 
-        ClutSegmenter segmenter;
+        static ClutSegmenter segmenter;
         Mat haltbare_milch_train_img;
         PointCloudT haltbare_milch_train_cloud;
         Mat clutter_img;
         PointCloudT clutter_cloud;
 
 };
+
+ClutSegmenter ClutsegTest::segmenter;
 
 /** Verify that changes to parameters do not affect existing ClutSegmenter
  * instances, i.e. that parameters are properly copied in constructor. */

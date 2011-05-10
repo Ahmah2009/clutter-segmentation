@@ -89,6 +89,7 @@ namespace clutseg {
             sort(guesses.begin(), guesses.end(), cmp_);
             resultingGuess = guesses[0]; 
 
+            // Somehow does not work, why?
             // resultingGuess = *max(guesses.begin(), guesses.end(), cmp_);
           
             mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
@@ -144,7 +145,9 @@ namespace clutseg {
                 }
             }
              
-            resultingGuess = guesses[max_i];
+            sort(guesses.begin(), guesses.end(), GuessComparator());
+            resultingGuess = guesses[0]; 
+
             inliersCloud = PointCloudT();      
             mapInliersToCloud(inliersCloud, resultingGuess, query.image, queryCloud);
             return true;

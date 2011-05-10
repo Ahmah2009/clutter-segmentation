@@ -5,6 +5,9 @@
 #include <cv.h>
 #include <tod/detecting/GuessGenerator.h>
 
+// IDEA: create ranking by ratio between inliers and object matches
+// IDEA: create ranking by ratio between inliers and object keypoints 
+
 namespace clutseg {
 
     /** A score function that measures "goodness" of a guess. The measure is an

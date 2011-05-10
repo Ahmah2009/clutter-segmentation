@@ -60,7 +60,8 @@ TEST_F(RankingTest, MaxInliersSort) {
     EXPECT_GT(guesses[0].inliers.size(), guesses[1].inliers.size());
 }
 
-/*TEST_F(RankingTest, MaxInliersMax) {
+/*  somehow does not work ... why?
+    TEST_F(RankingTest, MaxInliersMax) {
     Ptr<GuessRanking> r = new MaxInliersRanking();
     GuessComparator cmp(r);
     max(guesses.begin(), guesses.end(), cmp);
