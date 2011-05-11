@@ -43,6 +43,14 @@ namespace clutseg {
         pose.rvec.at<double>(2, 0) += noise_r();
     }
 
+    cv::Mat randomOrientation(double angle) {
+        Mat r = Mat::zeros(3, 1, CV_64FC1);
+        r.at<double>(0, 0) = rand() - 0.5; 
+        r.at<double>(1, 0) = rand() - 0.5; 
+        r.at<double>(2, 0) = rand() - 0.5; 
+        return angle * (r / norm(r));
+    }
+
     void poseToPoseRT(const Pose & src, PoseRT & dst) {
         Mat R;
         eigen2cv(src.t(), dst.tvec);

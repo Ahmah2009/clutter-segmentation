@@ -162,12 +162,7 @@ TEST_F(PoseTest, DiffTwentyDegrees2) {
     q.tvec = p.tvec.clone();
     q.rvec = p.rvec.clone();
 
-    // Create some random rotation about twenty degrees.
-    Mat r = Mat::zeros(3, 1, CV_64FC1);
-    r.at<double>(0, 0) = rand() - 0.5; 
-    r.at<double>(1, 0) = rand() - 0.5; 
-    r.at<double>(2, 0) = rand() - 0.5; 
-    r = (M_PI / 9.0) * (r / norm(r));
+    Mat r = randomOrientation(M_PI / 9.0);
 
     Mat R;
     Rodrigues(r, R);
@@ -197,12 +192,7 @@ TEST_F(PoseTest, AngleBetweenOrientationsTwentyDegrees) {
     q.tvec = p.tvec.clone();
     q.rvec = p.rvec.clone();
 
-    // Create some random rotation about twenty degrees.
-    Mat r = Mat::zeros(3, 1, CV_64FC1);
-    r.at<double>(0, 0) = rand() - 0.5; 
-    r.at<double>(1, 0) = rand() - 0.5; 
-    r.at<double>(2, 0) = rand() - 0.5; 
-    r = (M_PI / 9.0) * (r / norm(r));
+    Mat r = randomOrientation(M_PI / 9.0);
 
     Mat R;
     Rodrigues(r, R);

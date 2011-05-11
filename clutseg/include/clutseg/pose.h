@@ -13,14 +13,17 @@ namespace clutseg {
 
     cv::Point projectOrigin(const opencv_candidate::PoseRT & pose, const opencv_candidate::Camera & camera);
 
+    /** @deprecated     randomization of orientation is rather arbitrarily */
     void randomizePose(opencv_candidate::PoseRT & pose, double stddev_t, double stddev_r);
+
+    /** Returns an orientation with random rotation axis and the specified
+     * angle in axis-angle representation. */
+    cv::Mat randomOrientation(double angle);
 
     void poseToPoseRT(const opencv_candidate::Pose & src, opencv_candidate::PoseRT & dst);
 
     void poseRtToPose(const opencv_candidate::PoseRT & src, opencv_candidate::Pose & dst);
 
-    // TODO: use template or remove one of these methods
-    // TODO: use either PoseRT or Pose, but consistently
     void writePose(const std::string & filename, const opencv_candidate::PoseRT & pose);
 
     void readPose(const std::string & filename, opencv_candidate::PoseRT & dst);
