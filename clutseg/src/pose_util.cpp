@@ -10,6 +10,7 @@
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random.hpp>
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 
 using namespace fiducial;
 using namespace cv;
@@ -112,6 +113,15 @@ namespace clutseg {
         Mat mvrot;
         Rodrigues(src.rvec, mvrot);
         modelToView(src.tvec, mvrot, model_tvec, dst.tvec);
+    }
+
+    double angleBetween(const cv::Mat u, const cv::Mat & v) {
+        double c = u.dot(v) / (norm(u) * norm(v));
+        // The calculation of cosine 'c' above is not always completely exact.
+        // It is possible that c > 1 due to inexactness of floating-point
+        // arithmetic. If min is omitted angleBetween(p, p) will produce NAN
+        // instead of zero.
+        return acos(min(1.0, c));
     }
 
 }

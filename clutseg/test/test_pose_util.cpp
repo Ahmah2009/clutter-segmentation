@@ -16,28 +16,14 @@
 
 using namespace cv;
 using namespace opencv_candidate;
-using namespace fiducial;
 using namespace clutseg;
-
-TEST(PoseUtil, PoseDrawer) {
-    PoseRT pose;
-    FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
-    pose.read(in[PoseRT::YAML_NODE_NAME]);
-    Mat img = imread("./data/fat_free_milk_image_00000.png");
-    Mat canvas = img.clone();
-    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
-    PoseDrawer(canvas, camera.K, pose);
-    imshow("PoseDrawer", canvas);
-    waitKey(0);
-}
-
 
 TEST(PoseUtil, PoseToPoseRT) {
     // PoseRT posert;
     // FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
     // posert.read(in[PoseRT::YAML_NODE_NAME]);
     PoseRT posert;
-    readPose("./data/fat_free_milk_image_00000.png.pose.yaml", posert);
+    readPose("./data/image_00000.png.pose.yaml", posert);
     
     Pose pose;
     poseRtToPose(posert, pose);
@@ -51,7 +37,7 @@ TEST(PoseUtil, PoseToPoseRT) {
     EXPECT_DOUBLE_EQ(posert.rvec.at<double>(1, 0), posert.rvec.at<double>(1, 0));
     EXPECT_DOUBLE_EQ(posert.rvec.at<double>(2, 0), posert.rvec.at<double>(2, 0));
 
-    Mat canvas = imread("./data/fat_free_milk_image_00000.png");
+    Mat canvas = imread("./data/image_00000.png");
     Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
     drawPose(canvas, pose, camera);
     imshow("PoseToPoseRT", canvas);
@@ -60,12 +46,12 @@ TEST(PoseUtil, PoseToPoseRT) {
 
 TEST(PoseUtil, WritePoseRT) {
     PoseRT posert;
-    writePose("./data/writeposert.yaml", posert);
+    writePose("./build/writeposert.yaml", posert);
 }
 
 TEST(PoseUtil, WritePose) {
     Pose pose;
-    writePose("./data/writepose.yaml", pose);
+    writePose("./build/writepose.yaml", pose);
 }
 
 TEST(PoseUtil, TestTranslatePose) {
@@ -85,5 +71,51 @@ TEST(PoseUtil, TestTranslatePose) {
     drawPose(canvas, pose_p13, camera);
     imshow("TestTranslatePose", canvas);
     waitKey(0);
+}
+
+TEST(PoseUtil, ValidatePose) {
+    PoseRT p;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    float x = p.rvec.at<float>(0, 0);
+    float y = p.rvec.at<float>(1, 0);
+    float z = p.rvec.at<float>(2, 0);
+    EXPECT_GT(0.0f, x);
+    EXPECT_GT(0.0f, y);
+    EXPECT_LT(0.0f, z);
+}
+
+TEST(PoseUtil, Norm) {
+    PoseRT p;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    double x = p.rvec.at<double>(0, 0);
+    double y = p.rvec.at<double>(1, 0);
+    double z = p.rvec.at<double>(2, 0);
+    double l2 = sqrt(x*x+y*y+z*z);
+    EXPECT_DOUBLE_EQ(l2, norm(p.rvec));
+}
+
+// TODO; Fixture
+
+TEST(PoseUtil, ArcusCosinus) {
+    EXPECT_DOUBLE_EQ(M_PI / 3.0, acos(0.5));
+}
+
+TEST(PoseUtil, ArcusCosinusZero) {
+    EXPECT_DOUBLE_EQ(0, acos(1.0));
+}
+
+TEST(PoseUtil, ZeroAngleBetween) {
+    PoseRT p;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    EXPECT_DOUBLE_EQ(0.0f, angleBetween(p.rvec, p.rvec));  
+}
+
+TEST(PoseUtil, AngleBetween) {
+    PoseRT p;
+    PoseRT q;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    readPose("./data/image_00042.png.pose.yaml", q);
+    q.rvec *= 2;
+    EXPECT_DOUBLE_EQ(0.0f, angleBetween(p.rvec, q.rvec));  
 }
 

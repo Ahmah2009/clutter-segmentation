@@ -34,6 +34,8 @@ namespace clutseg {
 
     void translatePose(const opencv_candidate::PoseRT & src, const cv::Mat & model_tvec, opencv_candidate::PoseRT & dst);
 
+    double angleBetween(const cv::Mat & u, const cv::Mat & v);
+
 }
 
 #endif
