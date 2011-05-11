@@ -116,6 +116,7 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
     TODParameters & locate_params = segmenter.getLocateParams();
     locate_params.guessParams.maxProjectionError = 5;
     locate_params.guessParams.ransacIterationsCount = 500;
+    //segmenter.setAcceptThreshold(20);
 
     Guess guess;
     PointCloudT inlierCloud;

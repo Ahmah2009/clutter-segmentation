@@ -31,7 +31,7 @@ file(GLOB tsts test/*.cpp)
 rosbuild_add_library(${PROJECT_NAME} ${srcs} ${hdrs} )
 
 rosbuild_add_gtest(utest ${tsts})
-target_link_libraries(utest ${PROJECT_NAME})
+target_link_libraries(utest sqlite3 ${PROJECT_NAME})
 
 # rosbuild_link_boost(${PROJECT_NAME})
 rosbuild_add_executable(blackbox_recognizer apps/blackbox_recognizer.cpp)

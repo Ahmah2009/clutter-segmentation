@@ -9,6 +9,7 @@
 #include "clutseg/ranking.h"
 
 #include <cv.h>
+#include <limits>
 #include <pcl/point_types.h>
 #include <tod/detecting/GuessGenerator.h>
 #include <tod/detecting/Recognizer.h>
@@ -28,12 +29,14 @@ namespace clutseg {
             ClutSegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
                             const std::string & locate_config,
-                            const cv::Ptr<GuessRanking> ranking_ = new MaxInliersRanking());
+                            const cv::Ptr<GuessRanking> ranking_ = new MaxInliersRanking(),
+                            float accept_threshold = -std::numeric_limits<float>::infinity());
 
             ClutSegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
                             const tod::TODParameters & locate_params,
-                            const cv::Ptr<GuessRanking> ranking_ = new MaxInliersRanking());
+                            const cv::Ptr<GuessRanking> ranking_ = new MaxInliersRanking(),
+                            float accept_threshold = -std::numeric_limits<float>::infinity());
 
             /** Attempts to find an object in the scene. It makes a best guess
              * according to some ranking. This algorithm proceeds in two steps.First,
@@ -50,6 +53,10 @@ namespace clutseg {
 
             tod::TODParameters & getLocateParams();
 
+            int getAcceptThreshold() const;
+
+            void setAcceptThreshold(int accept_threshold);
+
         private:
 
             bool detect(tod::Features2d & query,
@@ -58,9 +65,6 @@ namespace clutseg {
             bool locate(const tod::Features2d & query,
                         const PointCloudT & queryCloud,
                         tod::Guess & resultingGuess);
-
-            void init(const std::string & baseDirectory,
-                        cv::Ptr<GuessRanking> ranking);
 
             void loadParams(const std::string & config,
                             tod::TODParameters & params);
@@ -73,7 +77,8 @@ namespace clutseg {
             tod::TrainingBase base_;
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
             cv::Ptr<GuessRanking> ranking_;
-            float accept_threshold;
+            float accept_threshold_;
+
     };
 
 }

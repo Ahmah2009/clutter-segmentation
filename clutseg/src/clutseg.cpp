@@ -23,31 +23,31 @@ namespace clutseg {
         ClutSegmenter::ClutSegmenter() {}
     #endif
         
-    // TODO: get rid of duplication in constructors
-
     ClutSegmenter::ClutSegmenter(const string & baseDirectory,
                                     const string & detect_config,
                                     const string & locate_config,
-                                    Ptr<GuessRanking> ranking) { 
+                                    Ptr<GuessRanking> ranking,
+                                    float accept_threshold) :
+                                baseDirectory_(baseDirectory),
+                                ranking_(ranking),
+                                accept_threshold_(accept_threshold) {
+        loadBase();
         loadParams(detect_config, detect_params_);
         loadParams(locate_config, locate_params_);
-        init(baseDirectory, ranking);
+        loadBase();
     }
 
     ClutSegmenter::ClutSegmenter(const string & baseDirectory,
                                     const TODParameters & detect_params,
                                     const TODParameters & locate_params,
-                                    Ptr<GuessRanking> ranking) :
+                                    Ptr<GuessRanking> ranking,
+                                    float accept_threshold) :
+                                baseDirectory_(baseDirectory),
                                 detect_params_(detect_params),
-                                locate_params_(locate_params) {
-        init(baseDirectory, ranking);
-    }
-
-    void ClutSegmenter::init(const string & baseDirectory, Ptr<GuessRanking> ranking) {
-        baseDirectory_ = baseDirectory;
-        ranking_ = ranking;
+                                locate_params_(locate_params),
+                                ranking_(ranking),
+                                accept_threshold_(accept_threshold) {
         loadBase();
-        accept_threshold = -numeric_limits<float>::infinity();
     }
 
     void ClutSegmenter::loadParams(const string & config, TODParameters & params) {
@@ -71,6 +71,14 @@ namespace clutseg {
 
     TODParameters & ClutSegmenter::getLocateParams() {
         return locate_params_;
+    }
+
+    int ClutSegmenter::getAcceptThreshold() const {
+        return accept_threshold_;
+    }
+
+    void ClutSegmenter::setAcceptThreshold(int accept_threshold) {
+        accept_threshold_ = accept_threshold;
     }
 
     void initRecognizer(Ptr<Recognizer> & recognizer, TrainingBase & base, TODParameters params, const string & baseDirectory) {
@@ -112,9 +120,9 @@ namespace clutseg {
                 cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
 
                 cout << "ranking: " << (*ranking_)(resultingGuess) << endl;
-                cout << "accept_threshold: " << accept_threshold << endl;
+                cout << "accept_threshold: " << accept_threshold_ << endl;
 
-                if ((*ranking_)(resultingGuess) >= accept_threshold) {
+                if ((*ranking_)(resultingGuess) >= accept_threshold_) {
                     pos = true;
                     break;
                 }
