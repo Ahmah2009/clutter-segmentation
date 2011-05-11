@@ -25,7 +25,6 @@ namespace clutseg {
         vector<Point2f> ip(1);
         op[0] = o;
         projectPoints(Mat(op), pose.rvec, pose.tvec, camera.K, camera.D, ip);
-        //return Point(static_cast<int>(ip[0].x), static_cast<int>(ip[0].y));
         return ip[0];
     }
     
@@ -51,16 +50,19 @@ namespace clutseg {
         return angle * (r / norm(r));
     }
 
-    void poseToPoseRT(const Pose & src, PoseRT & dst) {
+    PoseRT poseToPoseRT(const Pose & src) {
+        PoseRT dst;
         Mat R;
         eigen2cv(src.t(), dst.tvec);
         eigen2cv(src.r(), R);
         Rodrigues(R, dst.rvec);
         dst.tvec.convertTo(dst.tvec, CV_64F);
         dst.rvec.convertTo(dst.rvec, CV_64F);
+        return dst;
     }
 
-    void poseRtToPose(const PoseRT & src, Pose & dst) {
+    Pose poseRtToPose(const PoseRT & src) {
+        Pose dst;
         Eigen::Vector3f t;
         cv2eigen(src.tvec, t);
         dst.setT(t);
@@ -69,6 +71,7 @@ namespace clutseg {
         Rodrigues(src.rvec, R);
         cv2eigen(R, Re);
         dst.setR(R);
+        return dst;
     }
 
     void writePose(const string & filename, const PoseRT & pose) {

@@ -20,9 +20,9 @@ namespace clutseg {
      * angle in axis-angle representation. */
     cv::Mat randomOrientation(double angle);
 
-    void poseToPoseRT(const opencv_candidate::Pose & src, opencv_candidate::PoseRT & dst);
+    opencv_candidate::PoseRT poseToPoseRT(const opencv_candidate::Pose & src);
 
-    void poseRtToPose(const opencv_candidate::PoseRT & src, opencv_candidate::Pose & dst);
+    opencv_candidate::Pose poseRtToPose(const opencv_candidate::PoseRT & src);
 
     void writePose(const std::string & filename, const opencv_candidate::PoseRT & pose);
 

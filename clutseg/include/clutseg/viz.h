@@ -49,15 +49,6 @@ namespace clutseg {
                   const std::string & labelY = "Y",
                   const std::string & labelZ = "Z");
 
-    void drawPose(cv::Mat & canvas, const opencv_candidate::Pose & pose,
-                  const opencv_candidate::Camera & camera,
-                  const cv::Scalar & colorX = cv::Scalar(255, 0,0),
-                  const cv::Scalar & colorY = cv::Scalar(0, 255, 0),
-                  const cv::Scalar & colorZ = cv::Scalar(0, 0, 255),
-                  const std::string & labelX = "X",
-                  const std::string & labelY = "Y",
-                  const std::string & labelZ = "Z");
-
     /** \brief Draws guesses onto the canvas. The inliers will be drawn as well
      * as the guessed poses and the labels. If ground truth is available, the true
      * poses for the tagged subject will also be visualized. For every guess, the

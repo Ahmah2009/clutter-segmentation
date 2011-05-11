@@ -91,18 +91,6 @@ namespace clutseg {
         putText(canvas, labelX, ip[1], CV_FONT_HERSHEY_SIMPLEX, 0.5, c[1], 1, CV_AA, false);
     }
 
-    void drawPose(Mat & canvas, const Pose & pose, const Camera & camera,
-                const Scalar & colorX, const Scalar & colorY, const Scalar & colorZ,
-                const string & labelX, const string & labelY, const string & labelZ) {
-        PoseRT posert;
-        // TODO: use poseToPoseRT
-        Mat R;
-        eigen2cv(pose.t(), posert.tvec);
-        eigen2cv(pose.r(), R);
-        Rodrigues(R, posert.rvec);
-        drawPose(canvas, posert, camera, colorX, colorY, colorZ, labelX, labelY, labelZ);
-    }
-
     void drawGuess(Mat & canvas, const Guess & guess, const Camera & camera, const PoseRT ground_pose) {
         vector<Guess> guesses(1, guess);
         vector<PoseRT> ground_poses(1, ground_pose);

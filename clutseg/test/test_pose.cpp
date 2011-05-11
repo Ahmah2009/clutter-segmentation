@@ -42,10 +42,8 @@ struct PoseTest : public ::testing::Test {
 };
 
 TEST_F(PoseTest, PoseToPoseRT) {
-    Pose pose;
-    poseRtToPose(posert, pose);
-    PoseRT posertB;
-    poseToPoseRT(pose, posertB);
+    // identity operation
+    PoseRT posertB = poseToPoseRT(poseRtToPose(posert));
 
     EXPECT_NEAR(posert.tvec.at<double>(0, 0), posertB.tvec.at<double>(0, 0), 1e-6);
     EXPECT_NEAR(posert.tvec.at<double>(1, 0), posertB.tvec.at<double>(1, 0), 1e-6);
@@ -207,12 +205,7 @@ TEST_F(PoseTest, AngleBetweenOrientationsTwentyDegrees) {
 TEST_F(PoseTest, rotatePose) {
     PoseRT p = posert3;
 
-    // Create some random rotation about twenty degrees.
-    Mat r = Mat::zeros(3, 1, CV_64FC1);
-    r.at<double>(0, 0) = rand() - 0.5; 
-    r.at<double>(1, 0) = rand() - 0.5; 
-    r.at<double>(2, 0) = rand() - 0.5; 
-    r = (M_PI / 9.0) * (r / norm(r));
+    Mat r = randomOrientation(M_PI / 9.0);
 
     PoseRT q = rotatePose(p, r);
     

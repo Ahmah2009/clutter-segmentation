@@ -292,8 +292,7 @@ int main(int argc, char *argv[])
         foreach(const Guess & guess, guesses) {
             string name = guess.getObject()->name;
             Pose guess_pose = guess.aligned_pose();
-            PoseRT guess_posert;
-            poseToPoseRT(guess_pose, guess_posert);
+            PoseRT guess_posert = poseToPoseRT(guess_pose);
             
             found.insert(name);
             guess_count[name] += 1;
