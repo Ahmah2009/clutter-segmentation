@@ -79,7 +79,7 @@ TEST_F(PoseTest, TestTranslatePose) {
     drawPose(canvas3, pose_m15, camera);
     drawPose(canvas3, pose_zero, camera);
     drawPose(canvas3, pose_p13, camera);
-    imshow("TestTranslatePose", canvas);
+    imshow("TestTranslatePose", canvas3);
     waitKey(0);
 }
 
@@ -182,7 +182,7 @@ TEST_F(PoseTest, DiffTwentyDegrees2) {
 
     drawPose(canvas3, p, camera);
     drawPose(canvas3, q, camera);
-    imshow("DiffTwentyDegrees2", canvas);
+    imshow("DiffTwentyDegrees2", canvas3);
     waitKey(0);
  
     Mat R1;
