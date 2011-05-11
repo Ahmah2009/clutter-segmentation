@@ -66,3 +66,24 @@ TEST(SqliteTest, CRUD) {
     sqlite3_close(db);
 }
 
+TEST(SqliteTest, CreateTable) {
+    sqlite3* db;
+    sqlite3_open("build/test.sqlite3", &db);
+    
+    {
+        // credits to http://www.w3schools.com/sql/sql_create_table.asp
+        sqlite3_stmt* create;
+        sqlite3_prepare_v2(db, "CREATE TABLE Persons2 "
+                "("
+                "    P_Id int,"
+                "    LastName varchar(255),"
+                "    FirstName varchar(255),"
+                "    Address varchar(255),"
+                "    City varchar(255)"
+                ")", 1024, &create, NULL);
+        sqlite3_step(create);   
+        sqlite3_finalize(create);
+    }
+
+    sqlite3_close(db);
+}

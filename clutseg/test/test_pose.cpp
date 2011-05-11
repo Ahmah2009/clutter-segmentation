@@ -50,7 +50,7 @@ TEST_F(PoseTest, PoseToPoseRT) {
     EXPECT_NEAR(posert.rvec.at<double>(1, 0), posertB.rvec.at<double>(1, 0), 1e-6);
     EXPECT_NEAR(posert.rvec.at<double>(2, 0), posertB.rvec.at<double>(2, 0), 1e-6);
 
-    drawPose(canvas, pose, camera);
+    drawPose(canvas, posert, camera);
     imshow("PoseToPoseRT", canvas);
     waitKey(0);
 }

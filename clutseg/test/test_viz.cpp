@@ -65,10 +65,8 @@ class Viz : public ::testing::Test {
             randomizePose(pose2, 0.1, 0.1);
             object = new TexturedObject();
             object->name = "haltbare_milch";
-            Pose p1;
-            Pose p2;
-            poseRtToPose(pose1, p1);
-            poseRtToPose(pose2, p2);
+            Pose p1 = poseRtToPose(pose1);
+            Pose p2 = poseRtToPose(pose2);
             guess1 = Guess(object, p1, camera.K, camera.D, f2d.image);
             guess2 = Guess(object, p2, camera.K, camera.D, f2d.image);
             sampleGuess(guess1);

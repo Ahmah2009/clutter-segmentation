@@ -30,7 +30,7 @@ struct RankingTest : public ::testing::Test {
     }
 
     UniformRanking uniform_ranking;
-    MaxInliersRanking max_inliers_ranking;
+    InliersRanking inliers_ranking;
     ProximityRanking proximity_ranking;
     
     Guess few_inliers_guess;
@@ -45,8 +45,8 @@ TEST_F(RankingTest, UniformRanking) {
     EXPECT_EQ(uniform_ranking(many_inliers_guess), uniform_ranking(few_inliers_guess));
 }
 
-TEST_F(RankingTest, MaxInliersRanking) {
-    EXPECT_GT(max_inliers_ranking(many_inliers_guess), max_inliers_ranking(few_inliers_guess));
+TEST_F(RankingTest, InliersRanking) {
+    EXPECT_GT(inliers_ranking(many_inliers_guess), inliers_ranking(few_inliers_guess));
 }
 
 TEST_F(RankingTest, ProximityRanking) {
@@ -62,8 +62,8 @@ TEST_F(RankingTest, UniformSort) {
     EXPECT_LT(guesses[0].inliers.size(), guesses[1].inliers.size());
 }
 
-TEST_F(RankingTest, MaxInliersSort) {
-    Ptr<GuessRanking> r = new MaxInliersRanking();
+TEST_F(RankingTest, InliersSort) {
+    Ptr<GuessRanking> r = new InliersRanking();
     GuessComparator cmp(r);
     EXPECT_LT(guesses[0].inliers.size(), guesses[1].inliers.size());
     sort(guesses.begin(), guesses.end(), cmp);
@@ -71,8 +71,8 @@ TEST_F(RankingTest, MaxInliersSort) {
 }
 
 /*  somehow does not work ... why?
-    TEST_F(RankingTest, MaxInliersMax) {
-    Ptr<GuessRanking> r = new MaxInliersRanking();
+    TEST_F(RankingTest, InliersMax) {
+    Ptr<GuessRanking> r = new InliersRanking();
     GuessComparator cmp(r);
     max(guesses.begin(), guesses.end(), cmp);
 }*/
