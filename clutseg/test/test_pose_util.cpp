@@ -95,6 +95,7 @@ TEST(PoseUtil, Norm) {
 }
 
 // TODO; Fixture
+// TODO: refactor
 
 TEST(PoseUtil, ArcusCosinus) {
     EXPECT_DOUBLE_EQ(M_PI / 3.0, acos(0.5));
@@ -107,7 +108,7 @@ TEST(PoseUtil, ArcusCosinusZero) {
 TEST(PoseUtil, ZeroAngleBetween) {
     PoseRT p;
     readPose("./data/image_00042.png.pose.yaml", p);
-    EXPECT_DOUBLE_EQ(0.0f, angleBetween(p.rvec, p.rvec));  
+    EXPECT_DOUBLE_EQ(0.0f, angleBetweenVectors(p.rvec, p.rvec));  
 }
 
 TEST(PoseUtil, AngleBetween) {
@@ -116,6 +117,113 @@ TEST(PoseUtil, AngleBetween) {
     readPose("./data/image_00042.png.pose.yaml", p);
     readPose("./data/image_00042.png.pose.yaml", q);
     q.rvec *= 2;
-    EXPECT_DOUBLE_EQ(0.0f, angleBetween(p.rvec, q.rvec));  
+    EXPECT_DOUBLE_EQ(0.0f, angleBetweenVectors(p.rvec, q.rvec));  
 }
+
+TEST(PoseUtil, DiffRotationIdentity) {
+    PoseRT p;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    Mat R;
+    Rodrigues(p.rvec, R);
+    Mat I = diffRotation(R, R);
+    EXPECT_NEAR(1.0, I.at<double>(0, 0), 1e-10);
+    EXPECT_NEAR(0.0, I.at<double>(0, 1), 1e-10);
+    EXPECT_NEAR(0.0, I.at<double>(0, 2), 1e-10);
+    EXPECT_NEAR(0.0, I.at<double>(1, 0), 1e-10);
+    EXPECT_NEAR(1.0, I.at<double>(1, 1), 1e-10);
+    EXPECT_NEAR(0.0, I.at<double>(1, 2), 1e-10);
+    EXPECT_NEAR(0.0, I.at<double>(2, 0), 1e-10);
+    EXPECT_NEAR(0.0, I.at<double>(2, 1), 1e-10);
+    EXPECT_NEAR(1.0, I.at<double>(2, 2), 1e-10);
+}
+
+TEST(PoseUtil, DiffTwentyDegrees) {
+    PoseRT p;
+    PoseRT q;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    
+    q.tvec = p.tvec.clone();
+    q.rvec = p.rvec.clone();
+
+    Mat rn = q.rvec / norm(q.rvec);
+    q.rvec += M_PI / 9.0 * rn;
+
+    Mat canvas = imread("./data/image_00042.png");
+    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
+    drawPose(canvas, p, camera);
+    drawPose(canvas, q, camera);
+    imshow("DiffTwentyDegrees", canvas);
+    waitKey(0);
+
+    Mat R1;
+    Mat R2;
+    Rodrigues(p.rvec, R1);
+    Rodrigues(q.rvec, R2);
+    Mat D = diffRotation(R1, R2);
+    Vec3d r;
+    Rodrigues(D, r);
+    EXPECT_NEAR(M_PI / 9.0, norm(r), 1e-10);
+}
+
+TEST(PoseUtil, DiffTwentyDegrees2) {
+    PoseRT p;
+    PoseRT q;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    
+    q.tvec = p.tvec.clone();
+    q.rvec = p.rvec.clone();
+
+    // Create some random rotation about twenty degrees.
+    Mat r = Mat::zeros(3, 1, CV_64FC1);
+    r.at<double>(0, 0) = rand() - 0.5; 
+    r.at<double>(1, 0) = rand() - 0.5; 
+    r.at<double>(2, 0) = rand() - 0.5; 
+    r = (M_PI / 9.0) * (r / norm(r));
+
+    Mat R;
+    Rodrigues(r, R);
+    Mat Q;
+    Rodrigues(q.rvec, Q);
+    Rodrigues(R*Q, q.rvec);
+
+    Mat canvas = imread("./data/image_00042.png");
+    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
+    drawPose(canvas, p, camera);
+    drawPose(canvas, q, camera);
+    imshow("DiffTwentyDegrees2", canvas);
+    waitKey(0);
+ 
+    Mat R1;
+    Mat R2;
+    Rodrigues(p.rvec, R1);
+    Rodrigues(q.rvec, R2);
+    Mat D = diffRotation(R1, R2);
+    Mat d;
+    Rodrigues(D, d);
+    EXPECT_NEAR(M_PI / 9.0, norm(d), 1e-10);
+}
+
+TEST(PoseUtil, AngleBetweenOrientationsTwentyDegrees) {
+    PoseRT p;
+    PoseRT q;
+    readPose("./data/image_00042.png.pose.yaml", p);
+    
+    q.tvec = p.tvec.clone();
+    q.rvec = p.rvec.clone();
+
+    // Create some random rotation about twenty degrees.
+    Mat r = Mat::zeros(3, 1, CV_64FC1);
+    r.at<double>(0, 0) = rand() - 0.5; 
+    r.at<double>(1, 0) = rand() - 0.5; 
+    r.at<double>(2, 0) = rand() - 0.5; 
+    r = (M_PI / 9.0) * (r / norm(r));
+
+    Mat R;
+    Rodrigues(r, R);
+    Mat Q;
+    Rodrigues(q.rvec, Q);
+    Rodrigues(R*Q, q.rvec);
+
+    EXPECT_NEAR(M_PI / 9.0, angleBetweenOrientations(p, q), 1e-10);
+} 
 

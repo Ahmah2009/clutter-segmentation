@@ -115,13 +115,27 @@ namespace clutseg {
         modelToView(src.tvec, mvrot, model_tvec, dst.tvec);
     }
 
-    double angleBetween(const cv::Mat u, const cv::Mat & v) {
+    double angleBetweenVectors(const cv::Mat & u, const cv::Mat & v) {
         double c = u.dot(v) / (norm(u) * norm(v));
         // The calculation of cosine 'c' above is not always completely exact.
         // It is possible that c > 1 due to inexactness of floating-point
         // arithmetic. If min is omitted angleBetween(p, p) will produce NAN
         // instead of zero.
         return acos(min(1.0, c));
+    }
+
+    cv::Mat diffRotation(const cv::Mat & P, const cv::Mat & Q) {
+        return P.inv() * Q;
+    }
+
+    double angleBetweenOrientations(const opencv_candidate::PoseRT & p,
+                                    const opencv_candidate::PoseRT & q) {
+        Mat P, Q;
+        Rodrigues(p.rvec, P);
+        Rodrigues(q.rvec, Q);
+        Mat d;
+        Rodrigues(P.inv() * Q, d);
+        return norm(d);
     }
 
 }

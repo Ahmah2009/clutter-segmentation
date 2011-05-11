@@ -34,8 +34,26 @@ namespace clutseg {
 
     void translatePose(const opencv_candidate::PoseRT & src, const cv::Mat & model_tvec, opencv_candidate::PoseRT & dst);
 
-    double angleBetween(const cv::Mat & u, const cv::Mat & v);
+    double angleBetweenVectors(const cv::Mat & u, const cv::Mat & v);
+
+    /** Computes the rotation matrix D such that P * D = Q. Let inv(P) be the
+     * inverse of P, then D = inv(P) * Q. Thus, rotation Q is decomposed into given
+     * rotation P and the difference rotation this function computes. */
+    cv::Mat diffRotation(const cv::Mat & P, const cv::Mat & Q);
+
+    /** Computes the angle between two orientations given by poses p and q,
+     * with rotation matrices P and Q. Function diffRotation computes the rotation
+     * matrix D such that P * D = Q. This difference D is a rotation around a
+     * certain axis about a certain angle. The angle is returned by this function.
+     */
+    double angleBetweenOrientations(const opencv_candidate::PoseRT & p,
+                                    const opencv_candidate::PoseRT & q);
 
 }
+
+/* Alternatively
+T * P = Q
+T = Q * inv(P)
+*/
 
 #endif
