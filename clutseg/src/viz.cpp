@@ -4,7 +4,7 @@
 
 #include "clutseg/viz.h"
 
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>

@@ -4,7 +4,7 @@
 
 #include "test.h"
 
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
 #include <gtest/gtest.h>

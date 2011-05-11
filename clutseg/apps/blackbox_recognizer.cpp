@@ -27,7 +27,7 @@
  */
 
 #include "clutseg/testdesc.h"
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 #include "clutseg/options.h"
 #include "clutseg/viz.h"
 

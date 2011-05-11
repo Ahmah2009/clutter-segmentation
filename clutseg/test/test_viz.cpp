@@ -4,7 +4,7 @@
 
 #include "test.h"
 #include "clutseg/viz.h"
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 
 #include <tod/core/Features2d.h>
 #include <gtest/gtest.h>

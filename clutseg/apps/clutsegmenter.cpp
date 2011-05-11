@@ -5,7 +5,7 @@
 #include "clutseg/clutseg.h"
 
 #include "clutseg/common.h"
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 
 #include <pcl/io/pcd_io.h>
 #include <stdlib.h>

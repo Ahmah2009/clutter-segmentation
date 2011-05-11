@@ -3,7 +3,7 @@
  */
 
 #include "clutseg/pcl_visualization_addons.h"
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
