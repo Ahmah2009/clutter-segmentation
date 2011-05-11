@@ -18,118 +18,109 @@ using namespace cv;
 using namespace opencv_candidate;
 using namespace clutseg;
 
-// TODO: rename PoseUtil
+// TODO: rename Pose
 // TODO: fixture
+// TODO: consistently name tests
 
-struct PoseUtilTest : public ::testing::Test {
+struct PoseTest : public ::testing::Test {
 
+    void SetUp() {
+        readPose("./data/image_00000.png.pose.yaml", posert);
+        readPose("./data/image_00042.png.pose.yaml", posert3);
+
+        canvas = imread("./data/image_00000.png");
+        canvas3 = imread("./data/image_00042.png");
+        camera = Camera("./data/camera.yml", Camera::TOD_YAML);
+    }
+
+    PoseRT posert;    
+    PoseRT posert3;
+
+    Mat canvas;
+    Mat canvas3;
+    Camera camera;
 };
 
-TEST(PoseUtil, PoseToPoseRT) {
-    // PoseRT posert;
-    // FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
-    // posert.read(in[PoseRT::YAML_NODE_NAME]);
-    PoseRT posert;
-    readPose("./data/image_00000.png.pose.yaml", posert);
-    
+TEST_F(PoseTest, PoseToPoseRT) {
     Pose pose;
     poseRtToPose(posert, pose);
-    PoseRT posert2;
-    poseToPoseRT(pose, posert2);
+    PoseRT posertB;
+    poseToPoseRT(pose, posertB);
 
-    EXPECT_DOUBLE_EQ(posert.tvec.at<double>(0, 0), posert.tvec.at<double>(0, 0));
-    EXPECT_DOUBLE_EQ(posert.tvec.at<double>(1, 0), posert.tvec.at<double>(1, 0));
-    EXPECT_DOUBLE_EQ(posert.tvec.at<double>(2, 0), posert.tvec.at<double>(2, 0));
-    EXPECT_DOUBLE_EQ(posert.rvec.at<double>(0, 0), posert.rvec.at<double>(0, 0));
-    EXPECT_DOUBLE_EQ(posert.rvec.at<double>(1, 0), posert.rvec.at<double>(1, 0));
-    EXPECT_DOUBLE_EQ(posert.rvec.at<double>(2, 0), posert.rvec.at<double>(2, 0));
+    EXPECT_NEAR(posert.tvec.at<double>(0, 0), posertB.tvec.at<double>(0, 0), 1e-6);
+    EXPECT_NEAR(posert.tvec.at<double>(1, 0), posertB.tvec.at<double>(1, 0), 1e-6);
+    EXPECT_NEAR(posert.tvec.at<double>(2, 0), posertB.tvec.at<double>(2, 0), 1e-6);
+    EXPECT_NEAR(posert.rvec.at<double>(0, 0), posertB.rvec.at<double>(0, 0), 1e-6);
+    EXPECT_NEAR(posert.rvec.at<double>(1, 0), posertB.rvec.at<double>(1, 0), 1e-6);
+    EXPECT_NEAR(posert.rvec.at<double>(2, 0), posertB.rvec.at<double>(2, 0), 1e-6);
 
-    Mat canvas = imread("./data/image_00000.png");
-    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
     drawPose(canvas, pose, camera);
     imshow("PoseToPoseRT", canvas);
     waitKey(0);
 }
 
-TEST(PoseUtil, WritePoseRT) {
-    PoseRT posert;
+TEST_F(PoseTest, WritePoseRT) {
     writePose("./build/writeposert.yaml", posert);
 }
 
-TEST(PoseUtil, WritePose) {
+TEST_F(PoseTest, WritePose) {
     Pose pose;
     writePose("./build/writepose.yaml", pose);
 }
 
-TEST(PoseUtil, TestTranslatePose) {
-    PoseRT pose_zero;
+TEST_F(PoseTest, TestTranslatePose) {
+    PoseRT pose_zero = posert3;
     PoseRT pose_m15;
     PoseRT pose_p13;
-    readPose("./data/image_00042.png.pose.yaml", pose_zero);
     Mat t_m15 = (Mat_<double>(3, 1) << -0.15, 0, 0);
     Mat t_p13 = (Mat_<double>(3, 1) << 0.13, 0, 0);
     translatePose(pose_zero, t_m15, pose_m15);    
     translatePose(pose_zero, t_p13, pose_p13);    
-    // TODO: introduce fixture
-    Mat canvas = imread("./data/image_00042.png");
-    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
-    drawPose(canvas, pose_m15, camera);
-    drawPose(canvas, pose_zero, camera);
-    drawPose(canvas, pose_p13, camera);
+    drawPose(canvas3, pose_m15, camera);
+    drawPose(canvas3, pose_zero, camera);
+    drawPose(canvas3, pose_p13, camera);
     imshow("TestTranslatePose", canvas);
     waitKey(0);
 }
 
-TEST(PoseUtil, ValidatePose) {
-    PoseRT p;
-    readPose("./data/image_00042.png.pose.yaml", p);
-    float x = p.rvec.at<float>(0, 0);
-    float y = p.rvec.at<float>(1, 0);
-    float z = p.rvec.at<float>(2, 0);
+TEST_F(PoseTest, ValidatePose) {
+    float x = posert3.rvec.at<float>(0, 0);
+    float y = posert3.rvec.at<float>(1, 0);
+    float z = posert3.rvec.at<float>(2, 0);
     EXPECT_GT(0.0f, x);
     EXPECT_GT(0.0f, y);
     EXPECT_LT(0.0f, z);
 }
 
-TEST(PoseUtil, Norm) {
-    PoseRT p;
-    readPose("./data/image_00042.png.pose.yaml", p);
-    double x = p.rvec.at<double>(0, 0);
-    double y = p.rvec.at<double>(1, 0);
-    double z = p.rvec.at<double>(2, 0);
+TEST_F(PoseTest, Norm) {
+    double x = posert.rvec.at<double>(0, 0);
+    double y = posert.rvec.at<double>(1, 0);
+    double z = posert.rvec.at<double>(2, 0);
     double l2 = sqrt(x*x+y*y+z*z);
-    EXPECT_DOUBLE_EQ(l2, norm(p.rvec));
+    EXPECT_DOUBLE_EQ(l2, norm(posert.rvec));
 }
 
-// TODO; Fixture
-// TODO: refactor
-
-TEST(PoseUtil, ArcusCosinus) {
+TEST_F(PoseTest, ArcusCosinus) {
     EXPECT_DOUBLE_EQ(M_PI / 3.0, acos(0.5));
 }
 
-TEST(PoseUtil, ArcusCosinusZero) {
+TEST_F(PoseTest, ArcusCosinusZero) {
     EXPECT_DOUBLE_EQ(0, acos(1.0));
 }
 
-TEST(PoseUtil, ZeroAngleBetween) {
-    PoseRT p;
-    readPose("./data/image_00042.png.pose.yaml", p);
-    EXPECT_DOUBLE_EQ(0.0f, angleBetweenVectors(p.rvec, p.rvec));  
+TEST_F(PoseTest, ZeroAngleBetween) {
+    EXPECT_DOUBLE_EQ(0.0f, angleBetweenVectors(posert.rvec, posert.rvec));  
 }
 
-TEST(PoseUtil, AngleBetween) {
-    PoseRT p;
-    PoseRT q;
-    readPose("./data/image_00042.png.pose.yaml", p);
-    readPose("./data/image_00042.png.pose.yaml", q);
+TEST_F(PoseTest, AngleBetween) {
+    PoseRT p = posert3;
+    PoseRT q = posert3;
     q.rvec *= 2;
     EXPECT_DOUBLE_EQ(0.0f, angleBetweenVectors(p.rvec, q.rvec));  
 }
 
-TEST(PoseUtil, DiffRotationIdentity) {
-    PoseRT p;
-    readPose("./data/image_00042.png.pose.yaml", p);
+TEST_F(PoseTest, DiffRotationIdentity) {
+    PoseRT p = posert3;
     Mat R;
     Rodrigues(p.rvec, R);
     Mat I = diffRotation(R, R);
@@ -144,10 +135,9 @@ TEST(PoseUtil, DiffRotationIdentity) {
     EXPECT_NEAR(1.0, I.at<double>(2, 2), 1e-10);
 }
 
-TEST(PoseUtil, DiffTwentyDegrees) {
-    PoseRT p;
+TEST_F(PoseTest, DiffTwentyDegrees) {
+    PoseRT p = posert3;
     PoseRT q;
-    readPose("./data/image_00042.png.pose.yaml", p);
     
     q.tvec = p.tvec.clone();
     q.rvec = p.rvec.clone();
@@ -155,11 +145,9 @@ TEST(PoseUtil, DiffTwentyDegrees) {
     Mat rn = q.rvec / norm(q.rvec);
     q.rvec += M_PI / 9.0 * rn;
 
-    Mat canvas = imread("./data/image_00042.png");
-    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
-    drawPose(canvas, p, camera);
-    drawPose(canvas, q, camera);
-    imshow("DiffTwentyDegrees", canvas);
+    drawPose(canvas3, p, camera);
+    drawPose(canvas3, q, camera);
+    imshow("DiffTwentyDegrees", canvas3);
     waitKey(0);
 
     Mat R1;
@@ -172,10 +160,9 @@ TEST(PoseUtil, DiffTwentyDegrees) {
     EXPECT_NEAR(M_PI / 9.0, norm(r), 1e-10);
 }
 
-TEST(PoseUtil, DiffTwentyDegrees2) {
-    PoseRT p;
+TEST_F(PoseTest, DiffTwentyDegrees2) {
+    PoseRT p = posert3;
     PoseRT q;
-    readPose("./data/image_00042.png.pose.yaml", p);
     
     q.tvec = p.tvec.clone();
     q.rvec = p.rvec.clone();
@@ -193,10 +180,8 @@ TEST(PoseUtil, DiffTwentyDegrees2) {
     Rodrigues(q.rvec, Q);
     Rodrigues(R*Q, q.rvec);
 
-    Mat canvas = imread("./data/image_00042.png");
-    Camera camera = Camera("./data/camera.yml", Camera::TOD_YAML);
-    drawPose(canvas, p, camera);
-    drawPose(canvas, q, camera);
+    drawPose(canvas3, p, camera);
+    drawPose(canvas3, q, camera);
     imshow("DiffTwentyDegrees2", canvas);
     waitKey(0);
  
@@ -210,10 +195,9 @@ TEST(PoseUtil, DiffTwentyDegrees2) {
     EXPECT_NEAR(M_PI / 9.0, norm(d), 1e-10);
 }
 
-TEST(PoseUtil, AngleBetweenOrientationsTwentyDegrees) {
-    PoseRT p;
+TEST_F(PoseTest, AngleBetweenOrientationsTwentyDegrees) {
+    PoseRT p = posert3;
     PoseRT q;
-    readPose("./data/image_00042.png.pose.yaml", p);
     
     q.tvec = p.tvec.clone();
     q.rvec = p.rvec.clone();
@@ -235,9 +219,8 @@ TEST(PoseUtil, AngleBetweenOrientationsTwentyDegrees) {
 } 
 
 /* Check whether invariant Q = P * diffRotation(P, Q) holds. */
-TEST(PoseUtil, rotatePose) {
-    PoseRT p;
-    readPose("./data/image_00042.png.pose.yaml", p);
+TEST_F(PoseTest, rotatePose) {
+    PoseRT p = posert3;
 
     // Create some random rotation about twenty degrees.
     Mat r = Mat::zeros(3, 1, CV_64FC1);
