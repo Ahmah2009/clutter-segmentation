@@ -74,8 +74,8 @@ TEST_F(PoseTest, TestTranslatePose) {
     PoseRT pose_p13;
     Mat t_m15 = (Mat_<double>(3, 1) << -0.15, 0, 0);
     Mat t_p13 = (Mat_<double>(3, 1) << 0.13, 0, 0);
-    translatePose(pose_zero, t_m15, pose_m15);    
-    translatePose(pose_zero, t_p13, pose_p13);    
+    pose_m15 = translatePose(pose_zero, t_m15);    
+    pose_p13 = translatePose(pose_zero, t_p13);    
     drawPose(canvas3, pose_m15, camera);
     drawPose(canvas3, pose_zero, camera);
     drawPose(canvas3, pose_p13, camera);

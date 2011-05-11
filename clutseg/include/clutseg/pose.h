@@ -33,13 +33,14 @@ namespace clutseg {
 
     void modelToView(const opencv_candidate::PoseRT & pose, const cv::Point3d & mpt, cv::Point3d & vpt);
 
-    void translatePose(const opencv_candidate::PoseRT & src, const cv::Mat & model_tvec, opencv_candidate::PoseRT & dst);
+    /** Translates a given pose. The translation vector 'model_tvec' is given
+     * in model coordinates.*/
+    opencv_candidate::PoseRT translatePose(const opencv_candidate::PoseRT & p, const cv::Mat & model_tvec);
    
-    /** Rotates a given pose relative to its own frame. Let's say P is the
-     * orientation of pose 'p', and the rotation matrix D is equivalent to
-     * axis-angle representation 'model_rvec'. Then, a new orientation Q is
-     * computed by Q = P * D. Conceptually, the invariant Q = P * diffRotation(P,
-     * Q) holds. */
+    /** Rotates a given pose. Let's say P is the orientation of pose 'p', and
+     * the rotation matrix D is equivalent to axis-angle representation
+     * 'model_rvec'. Then, a new orientation Q is computed by Q = P * D.
+     * Conceptually, the invariant Q = P * diffRotation(P, Q) holds. */
     opencv_candidate::PoseRT rotatePose(const opencv_candidate::PoseRT & p, const cv::Mat & model_rvec);
 
     double angleBetweenVectors(const cv::Mat & u, const cv::Mat & v);

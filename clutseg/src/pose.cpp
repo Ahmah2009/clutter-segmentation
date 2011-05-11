@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 
 #include <fiducial/fiducial.h>
 #include <opencv/cxeigen.hpp>
@@ -108,11 +108,13 @@ namespace clutseg {
         vpt = op[0];
     }
 
-    void translatePose(const opencv_candidate::PoseRT & src, const Mat & model_tvec, opencv_candidate::PoseRT & dst) {
+    opencv_candidate::PoseRT translatePose(const opencv_candidate::PoseRT & src, const Mat & model_tvec) {
+        PoseRT dst;
         dst.rvec = src.rvec.clone(); 
         Mat mvrot;
         Rodrigues(src.rvec, mvrot);
         modelToView(src.tvec, mvrot, model_tvec, dst.tvec);
+        return dst;
     }
 
     opencv_candidate::PoseRT rotatePose(const opencv_candidate::PoseRT & src, const Mat & model_rvec) {
