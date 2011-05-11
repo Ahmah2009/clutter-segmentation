@@ -29,13 +29,13 @@ namespace clutseg {
             ClutSegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
                             const std::string & locate_config,
-                            const cv::Ptr<GuessRanking> ranking_ = new MaxInliersRanking(),
+                            const cv::Ptr<GuessRanking> ranking_ = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity());
 
             ClutSegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
                             const tod::TODParameters & locate_params,
-                            const cv::Ptr<GuessRanking> ranking_ = new MaxInliersRanking(),
+                            const cv::Ptr<GuessRanking> ranking_ = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity());
 
             /** Attempts to find an object in the scene. It makes a best guess

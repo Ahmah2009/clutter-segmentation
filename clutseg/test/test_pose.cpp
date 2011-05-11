@@ -18,8 +18,6 @@ using namespace cv;
 using namespace opencv_candidate;
 using namespace clutseg;
 
-// TODO: rename Pose
-// TODO: fixture
 // TODO: consistently name tests
 
 struct PoseTest : public ::testing::Test {

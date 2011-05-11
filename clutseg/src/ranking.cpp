@@ -15,7 +15,7 @@ using namespace tod;
 
 namespace clutseg {
 
-    GuessComparator::GuessComparator() : ranking_(new MaxInliersRanking()) {}
+    GuessComparator::GuessComparator() : ranking_(new InliersRanking()) {}
 
     GuessComparator::GuessComparator(const Ptr<GuessRanking> & ranking) : ranking_(ranking) {}
 
@@ -27,7 +27,7 @@ namespace clutseg {
         return 1.0;
     }
 
-    float MaxInliersRanking::operator()(const Guess & guess) const {
+    float InliersRanking::operator()(const Guess & guess) const {
         return guess.inliers.size();
     }
 

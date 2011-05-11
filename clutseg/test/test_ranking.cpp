@@ -45,8 +45,6 @@ TEST_F(RankingTest, UniformRanking) {
     EXPECT_EQ(uniform_ranking(many_inliers_guess), uniform_ranking(few_inliers_guess));
 }
 
-// TODO: rename MaxInliersRanking, it's more or less obvious that more inliers are better
-
 TEST_F(RankingTest, MaxInliersRanking) {
     EXPECT_GT(max_inliers_ranking(many_inliers_guess), max_inliers_ranking(few_inliers_guess));
 }
