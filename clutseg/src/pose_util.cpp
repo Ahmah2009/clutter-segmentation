@@ -115,6 +115,17 @@ namespace clutseg {
         modelToView(src.tvec, mvrot, model_tvec, dst.tvec);
     }
 
+    opencv_candidate::PoseRT rotatePose(const opencv_candidate::PoseRT & src, const Mat & model_rvec) {
+        Mat P;
+        Rodrigues(src.rvec, P);
+        Mat D;
+        Rodrigues(model_rvec, D);
+        PoseRT dst;
+        Rodrigues(P * D, dst.rvec);
+        dst.tvec = src.tvec.clone();
+        return dst;
+    }
+
     double angleBetweenVectors(const cv::Mat & u, const cv::Mat & v) {
         double c = u.dot(v) / (norm(u) * norm(v));
         // The calculation of cosine 'c' above is not always completely exact.

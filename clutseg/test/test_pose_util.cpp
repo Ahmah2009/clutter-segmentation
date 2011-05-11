@@ -18,6 +18,13 @@ using namespace cv;
 using namespace opencv_candidate;
 using namespace clutseg;
 
+// TODO: rename PoseUtil
+// TODO: fixture
+
+struct PoseUtilTest : public ::testing::Test {
+
+};
+
 TEST(PoseUtil, PoseToPoseRT) {
     // PoseRT posert;
     // FileStorage in("./data/fat_free_milk_image_00000.png.pose.yaml", FileStorage::READ);
@@ -226,4 +233,35 @@ TEST(PoseUtil, AngleBetweenOrientationsTwentyDegrees) {
 
     EXPECT_NEAR(M_PI / 9.0, angleBetweenOrientations(p, q), 1e-10);
 } 
+
+/* Check whether invariant Q = P * diffRotation(P, Q) holds. */
+TEST(PoseUtil, rotatePose) {
+    PoseRT p;
+    readPose("./data/image_00042.png.pose.yaml", p);
+
+    // Create some random rotation about twenty degrees.
+    Mat r = Mat::zeros(3, 1, CV_64FC1);
+    r.at<double>(0, 0) = rand() - 0.5; 
+    r.at<double>(1, 0) = rand() - 0.5; 
+    r.at<double>(2, 0) = rand() - 0.5; 
+    r = (M_PI / 9.0) * (r / norm(r));
+
+    PoseRT q = rotatePose(p, r);
+    
+    Mat P;
+    Mat Q;
+    Rodrigues(p.rvec, P); 
+    Rodrigues(q.rvec, Q); 
+    Mat D = diffRotation(P, Q);
+    Mat Q_ = P * D;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            EXPECT_NEAR(Q.at<double>(i, j), Q_.at<double>(i, j), 1e-10);
+        }
+    }
+
+    Mat d = Mat::zeros(3, 1, CV_64FC1);
+    Rodrigues(D, d);
+    EXPECT_NEAR(M_PI / 9.0, angleBetweenOrientations(p, q), 1e-10);
+}
 
