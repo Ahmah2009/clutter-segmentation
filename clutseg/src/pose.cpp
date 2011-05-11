@@ -78,22 +78,6 @@ namespace clutseg {
         f.release();
     }
 
-    // TODO: use template or remove one of these methods
-    void writePose(const string & filename, const Pose & pose) {
-        FileStorage f;
-        f.open(filename, FileStorage::WRITE);
-        f << PoseRT::YAML_NODE_NAME;
-        pose.write(f);
-        f.release();
-    }
-
-    void readPose(const string & filename, Pose & dst) {
-        FileStorage f;
-        f.open(filename, FileStorage::READ);
-        dst.read(f[PoseRT::YAML_NODE_NAME]);
-        f.release();
-    }
-
     void modelToView(const Mat & mvtrans, const Mat & mvrot, const Mat & mpt, Mat & vpt) {
         vpt = mvrot * mpt + mvtrans;
     }

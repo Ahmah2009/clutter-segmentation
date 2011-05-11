@@ -63,11 +63,6 @@ TEST_F(PoseTest, WritePoseRT) {
     writePose("./build/writeposert.yaml", posert);
 }
 
-TEST_F(PoseTest, WritePose) {
-    Pose pose;
-    writePose("./build/writepose.yaml", pose);
-}
-
 TEST_F(PoseTest, TestTranslatePose) {
     PoseRT pose_zero = posert3;
     PoseRT pose_m15;

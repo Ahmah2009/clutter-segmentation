@@ -12,7 +12,7 @@
 #include <cv.h>
 
 #include "clutseg/pcl_visualization_addons.h"
-#include "clutseg/pose_util.h"
+#include "clutseg/pose.h"
 
 using namespace std;
 using namespace pcl;
