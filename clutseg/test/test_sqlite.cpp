@@ -8,10 +8,12 @@
 #include <string>
  
 using namespace std;
+
+// TODO: move to clutseg_test
  
 TEST(SqliteTest, OpenDB) {
     sqlite3* db;
-    string Path = "build/deleteme.sqlite3";
+    string Path = "build/OpenDBtest.sqlite3";
     if(sqlite3_open(Path.c_str(), &db) != SQLITE_OK)
     {
       cerr << sqlite3_errmsg(db) << endl;
@@ -21,7 +23,7 @@ TEST(SqliteTest, OpenDB) {
  
 TEST(SqliteTest, CRUD) {
     sqlite3* db;
-    sqlite3_open("data/test.sqlite3", &db);
+    sqlite3_open("build/test.sqlite3", &db);
     {
         /* insert */
         sqlite3_stmt* insert;
