@@ -25,6 +25,8 @@ namespace clutseg {
     void db_prepare(sqlite3* & db, sqlite3_stmt* & stmt, const std::string & sql);
 
     void db_prepare(sqlite3* & db, sqlite3_stmt* & stmt, const boost::format & sql);
+    
+    void db_step(sqlite3_stmt* & stmt, int expected_status);
 
     /** Delegates to sqlite3_open. Throws ios_base::failure if an error occurs. */
     void db_close(sqlite3* & db);

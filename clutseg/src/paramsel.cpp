@@ -30,7 +30,7 @@ namespace clutseg {
     void ClutsegParams::deserialize(sqlite3* db, int64_t id) {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select accept_threshold, ranking from pms_clutseg where id=%d") % id);
-        sqlite3_step(read);
+        db_step(read, SQLITE_ROW);
         accept_threshold = sqlite3_column_double(read, 0);
         ranking = string((const char*) sqlite3_column_text(read, 1));
         sqlite3_finalize(read);
@@ -53,7 +53,7 @@ namespace clutseg {
     void Response::deserialize(sqlite3* db, int64_t id) {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select value from response where id=%d") % id);
-        sqlite3_step(read);
+        db_step(read, SQLITE_ROW);
         value = sqlite3_column_double(read, 0);
         sqlite3_finalize(read);
     }

@@ -9,6 +9,7 @@
 #include <string>
  
 using namespace std;
+using namespace boost;
 
 namespace clutseg {
 
@@ -41,6 +42,15 @@ namespace clutseg {
 
     void db_prepare(sqlite3* & db, sqlite3_stmt* & stmt, const boost::format & sql) {
         db_prepare(db, stmt, sql.str());
+    }
+
+    void db_step(sqlite3_stmt* & stmt, int expected_status) {
+        int a = sqlite3_step(stmt);
+        if (a != expected_status) {
+            throw ios_base::failure(str(boost::format(
+                "Error when calling step: expected status %d, but was %d.") 
+                    % expected_status % a));
+        }
     }
 
     void db_close(sqlite3* & db) {
