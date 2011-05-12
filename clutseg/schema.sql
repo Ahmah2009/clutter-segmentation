@@ -1,10 +1,12 @@
----
----
----
+-- Database schema for parameter selection. It contains the basic entities
+-- 'experiment', 'paramset' and 'response'. An experiment is a run on a test set,
+-- using a given parameter set, and producing a certain response. The 'paramset'
+-- relates feature extraction, match and guess parameters, closely modeled after
+-- the structure of ClutSegmenter.
 
 create table experiment (
     paramset_id integer not null references paramset(id),
-    response_id integer not null references response(id),
+    response_id integer references response(id),
     train_set varchar(255) not null,
     test_set varchar(255) not null,
     time datetime not null
