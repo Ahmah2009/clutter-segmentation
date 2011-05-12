@@ -35,19 +35,22 @@ target_link_libraries(utest sqlite3 ${PROJECT_NAME})
 
 # rosbuild_link_boost(${PROJECT_NAME})
 rosbuild_add_executable(blackbox_recognizer apps/blackbox_recognizer.cpp)
-target_link_libraries(blackbox_recognizer tod_detecting ${PROJECT_NAME})
+target_link_libraries(blackbox_recognizer ${PROJECT_NAME})
 
 rosbuild_add_executable(clutsegmenter apps/clutsegmenter.cpp)
-target_link_libraries(clutsegmenter tod_detecting ${PROJECT_NAME})
+target_link_libraries(clutsegmenter ${PROJECT_NAME})
 
 rosbuild_add_executable(fixmask apps/fixmask.cpp)
 target_link_libraries(fixmask ${PROJECT_NAME})
 
 rosbuild_add_executable(keypoints_viewer apps/keypoints_viewer.cpp)
-target_link_libraries(keypoints_viewer tod_training ${PROJECT_NAME})
+target_link_libraries(keypoints_viewer ${PROJECT_NAME})
 
 rosbuild_add_executable(keypoints_image apps/keypoints_image.cpp)
-target_link_libraries(keypoints_image tod_training ${PROJECT_NAME})
+target_link_libraries(keypoints_image ${PROJECT_NAME})
+
+rosbuild_add_executable(param_selection apps/param_selection.cpp)
+target_link_libraries(param_selection ${PROJECT_NAME})
 
 rosbuild_add_executable(posetester apps/posetester.cpp)
 target_link_libraries(posetester ${PROJECT_NAME})
@@ -69,6 +72,6 @@ target_link_libraries(siftmask ${PROJECT_NAME})
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
+target_link_libraries(${PROJECT_NAME} sqlite3 tod_training tod_detecting)
 rosbuild_add_boost_directories()
 
