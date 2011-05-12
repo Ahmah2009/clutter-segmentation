@@ -56,6 +56,15 @@ TEST_F(DbTest, UseBoostFormat) {
     db_exec(db, boost::format("create table %s (id integer primary key);") % "foo"); 
 }
 
+TEST_F(DbTest, FailToPrepare) {
+    try {
+        sqlite3_stmt* stmt;
+        db_prepare(db, stmt, "select (foo, bar) from baz;"); 
+    } catch (ios_base::failure f) {
+        EXPECT_TRUE(string(f.what()).find("Error") != string::npos);
+    }
+}
+
 
 TEST_F(DbTest, FailToCreateTableIfAlreadyExists) {
     try {

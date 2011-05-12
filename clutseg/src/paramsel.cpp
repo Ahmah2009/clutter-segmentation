@@ -28,6 +28,12 @@ namespace clutseg {
     }
 
     void ClutsegParams::deserialize(sqlite3* db, int64_t id) {
+        sqlite3_stmt *read;
+        db_prepare(db, read, boost::format("select accept_threshold, ranking from pms_clutseg where id=%d") % id);
+        sqlite3_step(read);
+        accept_threshold = sqlite3_column_double(read, 0);
+        ranking = string((const char*) sqlite3_column_text(read, 1));
+        sqlite3_finalize(read);
     }
 
     int64_t Paramset::serialize(sqlite3* db) {
@@ -38,7 +44,10 @@ namespace clutseg {
     }
 
     int64_t Response::serialize(sqlite3* db) {
-        return -1;
+        db_exec(db, boost::format(
+            "insert into response (value) values (%f);"
+        ) % value);
+        return sqlite3_last_insert_rowid(db);
     }
 
     void Response::deserialize(sqlite3* db, int64_t id) {

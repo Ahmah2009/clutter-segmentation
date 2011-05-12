@@ -29,37 +29,21 @@ namespace clutseg {
         sqlite3_free(errmsg);
     }
  
-    void db_exec(sqlite3 *&db, boost::format & sql) {
+    void db_exec(sqlite3* & db, boost::format & sql) {
         db_exec(db, sql.str()); 
     }
  
-    /*
-    void db_exec(sqlite3* & db, const std::string & sql, int (*callback)(void*,int,char**,char**), void * arg1) {
-        char *errmsg;
-        sqlite3_exec(db, sql.c_str(), callback, arg1, &errmsg);
-        if (errmsg != NULL) {
-            string e(errmsg);
-            sqlite3_free(errmsg);
-            throw ios_base::failure("Error when executing SQL statement: " + e);
+    void db_prepare(sqlite3* & db, sqlite3_stmt* & stmt, const std::string & sql) {
+        if (sqlite3_prepare_v2(db, sql.c_str(), sql.size(), &stmt, NULL) != SQLITE_OK) {
+            throw ios_base::failure("Error when closing database: " + string(sqlite3_errmsg(db)));
         }
-        sqlite3_free(errmsg);
- 
     }
 
-    void db_exec(sqlite3* & db, boost::format & sql, int (*callback)(void*,int,char**,char**), void * arg1) {
-        db_exec(db, sql.str(), callback, arg1); 
-    }*/
-
-    void db_prepare(sqlite3 *& db, sqlite3_stmt *& stmt, const std::string & sql) {
-        sqlite3_prepare_v2(db, sql.c_str(), sql.size(), &stmt, NULL);
-    }
-
-    void db_prepare(sqlite3 *& db, sqlite3_stmt *& stmt, const boost::format & sql) {
+    void db_prepare(sqlite3* & db, sqlite3_stmt* & stmt, const boost::format & sql) {
         db_prepare(db, stmt, sql.str());
     }
 
-
-    void db_close(sqlite3 *&db) {
+    void db_close(sqlite3* & db) {
         if (sqlite3_close(db) != SQLITE_OK) {
             throw ios_base::failure("Error when closing database: " + string(sqlite3_errmsg(db)));
         }

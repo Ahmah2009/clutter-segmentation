@@ -13,7 +13,7 @@
 using namespace clutseg;
 using namespace std;
 
-struct ParamselTest : public ::testing::Test {
+struct ParamSelTest : public ::testing::Test {
 
     virtual void SetUp() {
         string fn = "build/test.sqlite3";
@@ -64,10 +64,36 @@ struct ParamselTest : public ::testing::Test {
 
 };
 
-TEST_F(ParamselTest, ReadResponse) {
+TEST_F(ParamSelTest, response_read) {
     // Validate against data as given by data/test.sql
     Response r;
     r.deserialize(db, 1); 
     EXPECT_FLOAT_EQ(0.78, r.value);
 }
+
+TEST_F(ParamSelTest, response_write_read) {
+    Response & orig = experiment.response;
+    int64_t id = orig.serialize(db);
+    Response rest;
+    rest.deserialize(db, id); 
+    EXPECT_FLOAT_EQ(orig.value, rest.value);
+}
+
+TEST_F(ParamSelTest, pms_clutseg_read) {
+    // Validate against data as given by data/test.sql
+    ClutsegParams p;
+    p.deserialize(db, 1); 
+    EXPECT_FLOAT_EQ(15.0, p.accept_threshold);
+    EXPECT_EQ("InliersRanking", p.ranking);
+}
+
+TEST_F(ParamSelTest, pms_clutseg_write_read) {
+    ClutsegParams & orig = experiment.paramset.pms_clutseg;
+    int64_t id = orig.serialize(db);
+    ClutsegParams rest;
+    rest.deserialize(db, id); 
+    EXPECT_FLOAT_EQ(orig.accept_threshold, rest.accept_threshold);
+    EXPECT_EQ(orig.ranking, rest.ranking);
+}
+
 
