@@ -11,12 +11,12 @@
  */
 
 #include <clutseg/clutseg.h>
+#include <clutseg/paramsel.h>
+#include <vector>
 
-struct ClutsegParams {
-
-    // bundles whatever parameters are used in ClutSegmenter
-
-};
+using namespace clutseg;
+using namespace std;
+using namespace tod;
 
 int main(int argc, char **argv) {
     // Use different feature extraction parameters on the training set. Loading these
@@ -45,11 +45,13 @@ int main(int argc, char **argv) {
             // and one of the parameter configurations shows extreme results
             // compared to the others and we assume a somewhat well-behaving
             // problem, then we can notice such an outlier.
-            testSubset = randomSubset(testingSet);
-            for (size_t k = 0; k < testSubset.size(); k++) {
-                // run on a single image
-                // compare with ground truth
-            }
+            
+            // set testSubset = randomSubset(testingSet);
+            // for (size_t k = 0; k < testSubset.size(); k++) {
+            //    // run on a single image
+            //    // compare with ground truth
+            // }
+
             // enter parameters and results into table
             // generate associated filesystem
             // timing
