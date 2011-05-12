@@ -3,5 +3,3 @@
 -- using a given parameter set, and producing a certain response. The 'paramset'
 -- relates feature extraction, match and guess parameters, closely modeled after
 -- the structure of ClutSegmenter.
-
-    -- this file is intentionally empty --

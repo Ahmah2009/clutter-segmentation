@@ -15,10 +15,10 @@ using namespace std;
 struct DbTest : public ::testing::Test {
 
     void SetUp() {
-        string fn = "build/test.sqlite3";
+        string fn = "build/DbTest.sqlite3";
         boost::filesystem::remove(fn);
         boost::filesystem::copy_file("./data/test.sqlite3", fn);
-        // Eat your own dog food, is this a good idea in this case?
+        // be careful, eat your own dog food
         db_open(db, fn);
     }
 
@@ -51,6 +51,11 @@ TEST_F(DbTest, CreateTableIfNotExists) {
     db_exec(db, "create table if not exists foo (id integer primary key);"); 
     db_exec(db, "create table if not exists foo (id integer primary key);"); 
 }
+
+TEST_F(DbTest, UseBoostFormat) {
+    db_exec(db, boost::format("create table %s (id integer primary key);") % "foo"); 
+}
+
 
 TEST_F(DbTest, FailToCreateTableIfAlreadyExists) {
     try {

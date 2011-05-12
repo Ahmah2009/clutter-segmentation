@@ -64,3 +64,10 @@ struct ParamselTest : public ::testing::Test {
 
 };
 
+TEST_F(ParamselTest, ReadResponse) {
+    // Validate against data as given by data/test.sql
+    Response r;
+    r.deserialize(db, 1); 
+    EXPECT_FLOAT_EQ(0.78, r.value);
+}
+
