@@ -22,6 +22,8 @@ namespace clutseg {
         /** Corresponds to Sqlite3 rowid. */
         int64_t id;
 
+        Serializable() : id(-1) {}
+
         /** Inserts or updates corresponding rows in the database. */
         virtual void serialize(sqlite3* db);
 
@@ -70,7 +72,7 @@ namespace clutseg {
         Response response;
         std::string train_set;
         std::string test_set;
-        time_t time;
+        std::string time;
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
@@ -83,6 +85,7 @@ namespace clutseg {
     void setMemberField(MemberMap & m, const std::string & field, float val);
     void setMemberField(MemberMap & m, const std::string & field, double val);
     void setMemberField(MemberMap & m, const std::string & field, int val);
+    void setMemberField(MemberMap & m, const std::string & field, int64_t val);
     void setMemberField(MemberMap & m, const std::string & field, bool val);
     void setMemberField(MemberMap & m, const std::string & field, const std::string & val);
 

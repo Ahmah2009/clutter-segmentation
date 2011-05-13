@@ -20,12 +20,13 @@ namespace clutseg {
     }
     
     void db_exec(sqlite3 *&db, const string & sql) {
+        cout << sql << endl;
         char *errmsg;
         sqlite3_exec(db, sql.c_str(), NULL, NULL, &errmsg);
         if (errmsg != NULL) {
             string e(errmsg);
             sqlite3_free(errmsg);
-            throw ios_base::failure("Error when executing SQL statement: " + e);
+            throw ios_base::failure("Error when executing SQL statement: " + e + "\nSQL: " + sql);
         }
         sqlite3_free(errmsg);
     }
@@ -46,6 +47,7 @@ namespace clutseg {
 
     void db_step(sqlite3_stmt* & stmt, int expected_status) {
         int a = sqlite3_step(stmt);
+        cout << sqlite3_sql(stmt) << endl;
         if (a != expected_status) {
             throw ios_base::failure(str(boost::format(
                 "Error when calling step: expected status %d, but was %d.\nSQL: %s") 
