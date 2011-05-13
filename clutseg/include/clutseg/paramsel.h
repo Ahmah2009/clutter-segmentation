@@ -9,20 +9,32 @@
 
 namespace clutseg {
 
+
+    /** A serializable object. It corresponds to a row in a relational database
+     * with rowid id. If id < 0, then the object is new and has not yet been
+     * written to or read from the database. An object must manage its own
+     * serialization and if it contains members that are not of type Serializable,
+     * it must also manage foreign key relationships. */
     struct Serializable {
 
-        virtual int64_t serialize(sqlite3* db);
-        virtual void deserialize(sqlite3* db, int64_t id);
+        /** Corresponds to Sqlite3 rowid. */
+        int64_t id;
+
+        /** Inserts or updates corresponding rows in the database. */
+        virtual void serialize(sqlite3* db);
+
+        /** Reads member values from database. */
+        virtual void deserialize(sqlite3* db);
 
     };
 
-    struct ClutsegParams {
+    struct ClutsegParams : public Serializable {
 
         float accept_threshold;
         std::string ranking;
 
-        virtual int64_t serialize(sqlite3* db);
-        virtual void deserialize(sqlite3* db, int64_t id);
+        virtual void serialize(sqlite3* db);
+        virtual void deserialize(sqlite3* db);
 
     };
 
@@ -36,8 +48,8 @@ namespace clutseg {
         tod::GuessGeneratorParameters locate_pms_guess;
         ClutsegParams pms_clutseg;
 
-        virtual int64_t serialize(sqlite3* db);
-        virtual void deserialize(sqlite3* db, int64_t id);
+        virtual void serialize(sqlite3* db);
+        virtual void deserialize(sqlite3* db);
 
     };
 
@@ -45,8 +57,8 @@ namespace clutseg {
 
         float value;
 
-        virtual int64_t serialize(sqlite3* db);
-        virtual void deserialize(sqlite3* db, int64_t id);
+        virtual void serialize(sqlite3* db);
+        virtual void deserialize(sqlite3* db);
 
     };
 
@@ -58,8 +70,8 @@ namespace clutseg {
         std::string test_set;
         time_t time;
 
-        virtual int64_t serialize(sqlite3* db);
-        virtual void deserialize(sqlite3* db, int64_t id);
+        virtual void serialize(sqlite3* db);
+        virtual void deserialize(sqlite3* db);
 
     };
 
