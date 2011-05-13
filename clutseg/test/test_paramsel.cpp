@@ -72,6 +72,20 @@ TEST_F(ParamSelTest, response_read) {
     EXPECT_FLOAT_EQ(0.78, r.value);
 }
 
+TEST_F(ParamSelTest, response_update) {
+    Response r;
+    r.id = 1;
+    r.deserialize(db); 
+    r.value = 2.0;
+    r.serialize(db);
+    EXPECT_EQ(1, r.id);
+    Response r2;
+    r2.id = 1;
+    r2.deserialize(db);
+    EXPECT_EQ(r.value, r2.value);
+    EXPECT_EQ(1, r.id);
+}
+
 TEST_F(ParamSelTest, response_write_read) {
     Response & orig = experiment.response;
     orig.serialize(db);

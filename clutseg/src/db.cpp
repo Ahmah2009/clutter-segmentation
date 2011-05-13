@@ -48,8 +48,8 @@ namespace clutseg {
         int a = sqlite3_step(stmt);
         if (a != expected_status) {
             throw ios_base::failure(str(boost::format(
-                "Error when calling step: expected status %d, but was %d.") 
-                    % expected_status % a));
+                "Error when calling step: expected status %d, but was %d.\nSQL: %s") 
+                    % expected_status % a % sqlite3_sql(stmt)));
         }
     }
 

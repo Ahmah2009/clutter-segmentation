@@ -6,7 +6,10 @@
 #include "clutseg/db.h"
 
 #include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <map>
+#include <utility>
 
 using namespace std;
 
@@ -43,10 +46,9 @@ namespace clutseg {
     }
 
     void Response::serialize(sqlite3* db) {
-        db_exec(db, boost::format(
-            "insert into response (value) values (%f);"
-        ) % value);
-        id = sqlite3_last_insert_rowid(db);
+        MemberMap m;
+        setMemberField(m, "value", value);
+        insertOrUpdate(db, "response", m, id);
     }
 
     void Response::deserialize(sqlite3* db) {
@@ -61,6 +63,74 @@ namespace clutseg {
     }
     
     void Experiment::deserialize(sqlite3* db) {
+    }
+
+    void setMemberField(MemberMap & m, const std::string & field, float val) {
+        m[field] = str(boost::format("%f") % val);
+    }
+    void setMemberField(MemberMap & m, const std::string & field, double val) {
+        m[field] = str(boost::format("%f") % val);
+    }
+
+    void setMemberField(MemberMap & m, const std::string & field, int val) {
+        m[field] = str(boost::format("%d") % val);
+    }
+
+    void setMemberField(MemberMap & m, const std::string & field, bool val) {
+        m[field] = str(boost::format("%s") % val);
+    }
+
+    void setMemberField(MemberMap & m, const std::string & field, const std::string & val) {
+        m[field] = val;
+    }
+
+    void insertOrUpdate(sqlite3*  & db, const std::string & table, const MemberMap & m, int64_t & id) {
+        if (id > 0) {
+            stringstream upd;
+            
+            MemberMap::const_iterator it = m.begin();
+            MemberMap::const_iterator end = m.end();
+
+            upd << "update " << table << " set ";
+            while (it != end) {
+                upd << it->first;
+                upd << "=";
+                upd << it->second;
+                upd << " ";
+                it++;
+            }
+            upd << " where id=" << id << ";";
+
+            db_exec(db, upd.str());
+        } else {
+            stringstream ins;
+            
+            MemberMap::const_iterator it = m.begin();
+            MemberMap::const_iterator end = m.end();
+
+            ins << "insert into " << table << " (";
+            for (size_t i = 0; it != end; i++) {
+                ins << it->first;
+                if (i < m.size() - 1) {
+                    ins << ", ";
+                }
+                it++;
+            }
+            ins << ") values (";
+ 
+            it = m.begin();
+            for (size_t i = 0; it != end; i++) {
+                ins << "'" << it->second << "'";
+                if (i < m.size() - 1) {
+                    ins << ", ";
+                }
+                it++;
+            }
+            ins << ");";
+
+            db_exec(db, ins.str());
+            id = sqlite3_last_insert_rowid(db);
+        }
     }
 
 }
