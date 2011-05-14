@@ -19,6 +19,16 @@ using namespace tod;
 
 namespace clutseg {
 
+    TrainCache::TrainCache(const std::string & cache_dir) : cache_dir_(cache_dir) {}
+
+    string TrainCache::trainFeaturesDir(const string & train_set, const FeatureExtractionParams & feParams) {
+        return str(boost::format("%s/%s/%s") % cache_dir_ % train_set % sha1(feParams));
+    }
+
+    bool TrainCache::trainFeaturesExist(const string & train_set, const FeatureExtractionParams & feParams) {
+        return boost::filesystem::exists(trainFeaturesDir(train_set, feParams));
+    }
+
     string sha1(const string & file) {
         // http://www.gnu.org/s/hello/manual/libc/Pipe-to-a-Subprocess.html
         // http://www.gnu.org/s/hello/manual/libc/Line-Input.html#Line-Input
@@ -50,14 +60,6 @@ namespace clutseg {
         string s = sha1(fn.str()); 
         boost::filesystem::remove(fn.str());
         return s;
-    }
-
-    string baseDirectory(const string & cacheDir, const string & train_set, const FeatureExtractionParams & feParams) {
-        return str(boost::format("%s/%s/%s") % cacheDir, train_set, sha1(feParams));
-    }
-
-    bool baseExists(const string & cacheDir, const std::string & train_set, const tod::FeatureExtractionParameters & feParams) {
-        return boost::filesystem::exists(baseDirectory(cacheDir, train_set, feParams));
     }
 
 }

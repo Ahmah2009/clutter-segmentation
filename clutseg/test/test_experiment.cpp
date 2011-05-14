@@ -7,6 +7,7 @@
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
 
+#include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
 #include <iostream>
 
@@ -112,6 +113,18 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
     fs.release();
     EXPECT_EQ("d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e", sha1(feParams));
     EXPECT_EQ(sha1("./data/features.config.yaml"), sha1(feParams));
+}
+
+TEST_F(ExperimentTest, TestTrainFeaturesDir) {
+    boost::filesystem::create_directory("build/train_cache");
+    TrainCache cache("build/train_cache");
+    FeatureExtractionParams feParams;
+    FileStorage fs("./data/features.config.yaml", FileStorage::READ);
+    feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
+    fs.release();
+    EXPECT_FALSE(cache.trainFeaturesExist("some_train_set", feParams)); 
+    boost::filesystem::create_directories("build/train_cache/some_train_set/d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e");
+    EXPECT_TRUE(cache.trainFeaturesExist("some_train_set", feParams));
 }
 
 /*
