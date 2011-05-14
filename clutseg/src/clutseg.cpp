@@ -31,7 +31,6 @@ namespace clutseg {
                                 baseDirectory_(baseDirectory),
                                 ranking_(ranking),
                                 accept_threshold_(accept_threshold) {
-        loadBase();
         loadParams(detect_config, detect_params_);
         loadParams(locate_config, locate_params_);
         loadBase();

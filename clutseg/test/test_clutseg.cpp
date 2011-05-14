@@ -21,8 +21,6 @@ using namespace cv;
 using namespace std;
 using namespace tod;
 
-bool loaded = false;
-
 class ClutsegTest : public ::testing::Test {
 
     public:
@@ -34,9 +32,9 @@ class ClutsegTest : public ::testing::Test {
                     // ias_kinect_test_grounded and ias_kinect_train together.
                     // The ground poses will not match due to different model
                     // coordinate systems. Recognition and estimation of poses
-                    // should still work, but comparison to ground truth becomes invalid.
-                    // Also, we must verify that the feature configurations for training
-                    // and querying roughly match! 
+                    // should still work, but comparison to ground truth
+                    // becomes invalid.  Also, we must verify that the feature
+                    // configurations for training and querying roughly match! 
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
@@ -54,6 +52,7 @@ class ClutsegTest : public ::testing::Test {
         }
 
         static ClutSegmenter segmenter;
+        static bool loaded;
         Mat haltbare_milch_train_img;
         PointCloudT haltbare_milch_train_cloud;
         Mat clutter_img;
@@ -62,6 +61,7 @@ class ClutsegTest : public ::testing::Test {
 };
 
 ClutSegmenter ClutsegTest::segmenter;
+bool ClutsegTest::loaded;
 
 /** Verify that changes to parameters do not affect existing ClutSegmenter
  * instances, i.e. that parameters are properly copied in constructor. */
