@@ -30,6 +30,13 @@ class ClutsegTest : public ::testing::Test {
         virtual void SetUp() {
             if (!loaded) {
                  segmenter = ClutSegmenter(
+                    // FIXME: This is a mistake. We cannot use
+                    // ias_kinect_test_grounded and ias_kinect_train together.
+                    // The ground poses will not match due to different model
+                    // coordinate systems. Recognition and estimation of poses
+                    // should still work, but comparison to ground truth becomes invalid.
+                    // Also, we must verify that the feature configurations for training
+                    // and querying roughly match! 
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
