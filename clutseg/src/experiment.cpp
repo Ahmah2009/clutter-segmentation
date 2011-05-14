@@ -95,7 +95,6 @@ namespace clutseg {
                 FeatureExtractionParams stored_fe_params; 
                 readFeParams(str(format("%s/features.config.yaml") % train_dir), stored_fe_params);
                 if (sha1(stored_fe_params) != sha1(train_features.fe_params)) {
-                    std::system(("cat " + str(format("%s/features.config.yaml") % train_dir)).c_str());
                     throw runtime_error( str(format(
                         "Cannot add train features, feature extraction parameter mismatch detected.\n"
                         "Please make sure the features.config.yaml in the training base directory\n"
