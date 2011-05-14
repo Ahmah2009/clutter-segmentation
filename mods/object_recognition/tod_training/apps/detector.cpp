@@ -147,7 +147,9 @@ struct features_worker
             f2d.camera.pose = pose_est.estimatePose(Mat());
 
             extractor->detectAndExtract(f2d);
-
+            if (f2d.keypoints.size() == 0) {
+                std::cout << "[DETECTOR] No keypoints detected on " << x << std::endl;
+            }
             sync(stats_lock, stats.success_cnt++);
             sync(stats_lock, stats.tot_keypoint_cnt += f2d.keypoints.size());
             sync(stats_lock, stats.min_keypoint_cnt = std::min((int) f2d.keypoints.size(), stats.min_keypoint_cnt);
