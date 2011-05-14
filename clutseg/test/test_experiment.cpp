@@ -11,28 +11,31 @@
 #include <iostream>
 
 using namespace clutseg;
+using namespace cv;
 using namespace std;
+using namespace tod;
 
 struct ExperimentTest : public ::testing::Test {
 
     void SetUp() {
-        if (!loaded) {
+        /* if (!loaded) {
              segmenter = ClutSegmenter(
                 string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
                 string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
                 string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
             );
             loaded = true;
-        }
+        }*/
     }
-
+/*
     static ClutSegmenter segmenter;
-    static bool loaded;
+    static bool loaded; */
 
 };
-
+/*
 ClutSegmenter ExperimentTest::segmenter;
 bool ExperimentTest::loaded;
+*/
 
 // Given an experiment setup, we need to extract the features from the
 // training images.  Since this is an extraordinarily expensive step, it
@@ -90,11 +93,22 @@ TEST_F(ExperimentTest, GenerateHashFromFile) {
     EXPECT_EQ("2605fd43e5192a2e49476e5099f8ea6e2973866b", sha1("./data/camera.yml"));
 }
 
-/*TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
-    EXPECT_TRUE(false);
+TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
+    FeatureExtractionParams feParams;
+    EXPECT_EQ("f8767180bfcd0654f4ffe9514e94e6d51324e3f6", sha1(feParams));
 }
 
 TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
-    EXPECT_TRUE(false);
+    FeatureExtractionParams feParams;
+    FileStorage fs("./data/features.config.yaml", FileStorage::READ);
+    feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
+    fs.release();
+    EXPECT_EQ("d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e", sha1(feParams));
+    EXPECT_EQ(sha1("./data/features.config.yaml"), sha1(feParams));
+}
+
+/*
+TEST_F(ExperimentTest, ExtractFeatures) {
+
 }*/
 

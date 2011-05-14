@@ -1,0 +1,12 @@
+%YAML:1.0
+# FeatureExtractionParams
+feature_extraction_params:
+   detector_type: DynamicFAST
+   extractor_type: multi-scale
+   descriptor_type: rBRIEF
+   detector_params:
+      max_features: 700.
+      min_features: 500.
+      threshold: 200.
+   extractor_params:
+      octaves: 3.
