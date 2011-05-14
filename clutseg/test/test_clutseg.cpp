@@ -6,6 +6,7 @@
 
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
+#include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
 #include <gtest/gtest.h>
@@ -114,7 +115,7 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
     TODParameters & locate_params = segmenter.getLocateParams();
-    locate_params.guessParams.maxProjectionError = 5;
+    locate_params.guessParams.maxProjectionError = 8;
     locate_params.guessParams.ransacIterationsCount = 500;
     //segmenter.setAcceptThreshold(20);
 
@@ -129,7 +130,14 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
 
     Camera camera("./data/camera.yml", Camera::TOD_YAML);
     Mat canvas = clutter_img.clone();
-    drawGuess(canvas, guess, camera, PoseRT());
+    PoseRT ground_pose;
+    // TODO: move to fixture
+    readPose(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png.pose.yaml", ground_pose);
+    PoseRT ground_pose_2 = translatePose(ground_pose, (Mat_<double>(3, 1) << -0.15, 0.0, 0.0));
+    PoseRT ground_pose_3 = translatePose(ground_pose, (Mat_<double>(3, 1) << +0.13, 0.0, 0.0));
+    drawGuess(canvas, guess, camera, ground_pose);
+    drawPose(canvas, ground_pose_2, camera); 
+    drawPose(canvas, ground_pose_3, camera); 
     imshow("guess", canvas);
     waitKey(-1);
 }

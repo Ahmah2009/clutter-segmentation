@@ -44,12 +44,27 @@ namespace clutseg {
 
     struct Paramset : public Serializable {
 
+        Paramset() : train_pms_fe_id(-1), recog_pms_fe_id(-1),
+                    detect_pms_match_id(-1), detect_pms_guess_id(-1),
+                    locate_pms_match_id(-1), locate_pms_guess_id(-1) {}
+    
         tod::FeatureExtractionParams train_pms_fe;
         tod::FeatureExtractionParams recog_pms_fe;
         tod::MatcherParameters detect_pms_match;
         tod::GuessGeneratorParameters detect_pms_guess;
         tod::MatcherParameters locate_pms_match;
         tod::GuessGeneratorParameters locate_pms_guess;
+
+        // The row identifiers are always stored explicitly in each
+        // serializable structure. Since the tod::* structures are not
+        // serializable, we manage ids for them externally.
+        int64_t train_pms_fe_id;
+        int64_t recog_pms_fe_id;
+        int64_t detect_pms_match_id;
+        int64_t detect_pms_guess_id;
+        int64_t locate_pms_match_id;
+        int64_t locate_pms_guess_id;
+ 
         ClutsegParams pms_clutseg;
 
         virtual void serialize(sqlite3* db);
