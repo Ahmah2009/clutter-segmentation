@@ -6,6 +6,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 #include <ctype.h>
 #include <cv.h>
 #include <iostream>
@@ -19,6 +20,10 @@ using namespace tod;
 
 namespace clutseg {
 
+    #ifdef TEST
+        TrainCache::TrainCache() {}
+    #endif
+
     TrainCache::TrainCache(const std::string & cache_dir) : cache_dir_(cache_dir) {}
 
     string TrainCache::trainFeaturesDir(const string & train_set, const FeatureExtractionParams & feParams) {
@@ -27,6 +32,37 @@ namespace clutseg {
 
     bool TrainCache::trainFeaturesExist(const string & train_set, const FeatureExtractionParams & feParams) {
         return boost::filesystem::exists(trainFeaturesDir(train_set, feParams));
+    }
+
+    void TrainCache::addTrainFeatures(const string & train_set, const FeatureExtractionParams & feParams) {
+        if (trainFeaturesExist(train_set, feParams)) {
+            throw runtime_error("train features already exist");
+        } else {
+            boost::filesystem::create_directories(trainFeaturesDir(train_set, feParams));
+            string p(getenv("CLUTSEG_PATH"));
+            string train_dir = str(boost::format("%s/%s") % p % train_set);
+            boost::filesystem::directory_iterator dir_it(train_dir);
+            boost::filesystem::directory_iterator dir_end;
+            while (dir_it != dir_end) {
+                if (boost::filesystem::is_directory(*dir_it)) {
+                    cout << *dir_it << endl;
+                    boost::filesystem::directory_iterator subj_it(*dir_it);
+                    boost::filesystem::directory_iterator subj_end;
+                    boost::filesystem::create_directory(str(
+                        boost::format("%s/%s") % trainFeaturesDir(train_set, feParams) % dir_it->filename()));
+                    while (subj_it != subj_end) {
+                        if (boost::algorithm::ends_with(subj_it->filename(), ".f3d.yaml.gz")) {
+                            cout << "    " << *subj_it << endl;
+                            boost::filesystem::copy_file(
+                                *subj_it,
+                                str(boost::format("%s/%s/%s") % trainFeaturesDir(train_set, feParams) % dir_it->filename() % subj_it->filename()));
+                        }
+                        subj_it++;
+                    }
+                }
+                dir_it++; 
+            }
+        }
     }
 
     string sha1(const string & file) {

@@ -22,15 +22,21 @@ namespace clutseg {
 
         public:
 
+            #ifdef TEST
+                TrainCache();
+            #endif
+
             TrainCache(const std::string & cache_dir);
 
             std::string trainFeaturesDir(const std::string & train_set, const tod::FeatureExtractionParams & feParams);
 
             bool trainFeaturesExist(const std::string & train_set, const tod::FeatureExtractionParams & feParams);
 
+            void addTrainFeatures(const std::string & train_set, const tod::FeatureExtractionParams & feParams);
+
         private:
 
-            const std::string cache_dir_;
+            std::string cache_dir_;
 
     };
 

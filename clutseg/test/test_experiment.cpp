@@ -27,13 +27,17 @@ struct ExperimentTest : public ::testing::Test {
         feParamsSha1 = "d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e"; 
 
         // Arbitrary.
-        train_set = "some_train_set";
+        train_set = "ias_kinect_train_v2";
 
         cache_dir = "build/train_cache";
-        boost::filesystem::create_directory(cache_dir);
         
         // corresponds to feParams 
         features_dir = cache_dir + "/" + train_set + "/" + feParamsSha1;
+
+        boost::filesystem::remove_all(cache_dir);
+        boost::filesystem::create_directories(cache_dir);
+
+        cache = TrainCache(cache_dir);
     }
 
     FeatureExtractionParams feParams;
@@ -41,6 +45,8 @@ struct ExperimentTest : public ::testing::Test {
     string train_set;
     string cache_dir;
     string features_dir;
+    TrainCache cache;
+
 };
 
 // Given an experiment setup, we need to extract the features from the
@@ -121,18 +127,38 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
 }
 
 TEST_F(ExperimentTest, TestTrainFeaturesDir) {
-    TrainCache cache(cache_dir);
     EXPECT_EQ(features_dir, cache.trainFeaturesDir(train_set, feParams)); 
 }
 
 TEST_F(ExperimentTest, TestTrainFeaturesExist) {
     TrainCache cache(cache_dir);
-    boost::filesystem::remove(features_dir);
     EXPECT_FALSE(cache.trainFeaturesExist(train_set, feParams)); 
     boost::filesystem::create_directories(features_dir);
     EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
 }
 
+TEST_F(ExperimentTest, AddTrainFeaturesFailIfAlreadyExist) {
+    cache.addTrainFeatures(train_set, feParams);
+    EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
+    try {
+        cache.addTrainFeatures(train_set, feParams);
+        EXPECT_TRUE(false);
+    } catch (...) {
+        
+    }
+}
+
+TEST_F(ExperimentTest, AddTrainFeatures) {
+    EXPECT_FALSE(cache.trainFeaturesExist(train_set, feParams));
+    cache.addTrainFeatures(train_set, feParams);
+    EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
+    EXPECT_TRUE(boost::filesystem::exists(features_dir + "/assam_tea/image_00000.png.f3d.yaml.gz"));
+    EXPECT_TRUE(boost::filesystem::exists(features_dir + "/haltbare_milch/image_00025.png.f3d.yaml.gz"));
+    EXPECT_TRUE(boost::filesystem::exists(features_dir + "/icedtea/image_00012.png.f3d.yaml.gz"));
+    EXPECT_TRUE(boost::filesystem::exists(features_dir + "/jacobs_coffee/image_00032.png.f3d.yaml.gz"));
+}
+
+// TODO: create class TrainFeatures that couples train_set and feParams
 
 /*
 TEST_F(ExperimentTest, ExtractFeatures) {
