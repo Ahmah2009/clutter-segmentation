@@ -21,38 +21,36 @@ using namespace tod;
 namespace clutseg {
 
     #ifdef TEST
-        TrainCache::TrainCache() {}
+        TrainFeaturesCache::TrainFeaturesCache() {}
     #endif
 
-    TrainCache::TrainCache(const std::string & cache_dir) : cache_dir_(cache_dir) {}
+    TrainFeaturesCache::TrainFeaturesCache(const std::string & cache_dir) : cache_dir_(cache_dir) {}
 
-    string TrainCache::trainFeaturesDir(const string & train_set, const FeatureExtractionParams & feParams) {
-        return str(format("%s/%s/%s") % cache_dir_ % train_set % sha1(feParams));
+    string TrainFeaturesCache::trainFeaturesDir(const TrainFeatures & train_features) {
+        return str(format("%s/%s/%s") % cache_dir_ % train_features.train_set % sha1(train_features.fe_params));
     }
 
-    bool TrainCache::trainFeaturesExist(const string & train_set, const FeatureExtractionParams & feParams) {
-        return filesystem::exists(trainFeaturesDir(train_set, feParams));
+    bool TrainFeaturesCache::trainFeaturesExist(const TrainFeatures & train_features) {
+        return filesystem::exists(trainFeaturesDir(train_features));
     }
 
-    void TrainCache::addTrainFeatures(const string & train_set, const FeatureExtractionParams & feParams) {
-        if (trainFeaturesExist(train_set, feParams)) {
+    void TrainFeaturesCache::addTrainFeatures(const TrainFeatures & train_features) {
+        if (trainFeaturesExist(train_features)) {
             throw runtime_error("train features already exist");
         } else {
-            string tfd = trainFeaturesDir(train_set, feParams);
+            string tfd = trainFeaturesDir(train_features);
             filesystem::create_directories(tfd);
             string p(getenv("CLUTSEG_PATH"));
-            filesystem::directory_iterator dir_it(str(format("%s/%s") % p % train_set));
+            filesystem::directory_iterator dir_it(str(format("%s/%s") % p % train_features.train_set));
             filesystem::directory_iterator dir_end;
             while (dir_it != dir_end) {
                 if (filesystem::is_directory(*dir_it)) {
                     string subj = dir_it->filename();
-                    // cout << subj << endl;
                     filesystem::directory_iterator subj_it(*dir_it);
                     filesystem::directory_iterator subj_end;
                     filesystem::create_directory(str(format("%s/%s") % tfd % subj));
                     while (subj_it != subj_end) {
                         if (algorithm::ends_with(subj_it->filename(), ".f3d.yaml.gz")) {
-                            // cout << "    " << *subj_it << endl;
                             filesystem::copy_file( *subj_it, 
                                 str(format("%s/%s/%s") % tfd % subj % subj_it->filename()));
                         }
@@ -64,7 +62,7 @@ namespace clutseg {
             // TODO: create or find join_path function!
             cv::FileStorage fs(str(format("%s/features.config.yaml") % tfd), cv::FileStorage::WRITE);
             fs << FeatureExtractionParams::YAML_NODE_NAME;
-            feParams.write(fs);
+            train_features.fe_params.write(fs);
             fs.release();
         }
     }

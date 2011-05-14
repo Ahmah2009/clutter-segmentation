@@ -29,6 +29,9 @@ struct ExperimentTest : public ::testing::Test {
         // Arbitrary.
         train_set = "ias_kinect_train_v2";
 
+        train_features.fe_params = feParams;
+        train_features.train_set = train_set;
+
         cache_dir = "build/train_cache";
         
         // corresponds to feParams 
@@ -37,15 +40,16 @@ struct ExperimentTest : public ::testing::Test {
         boost::filesystem::remove_all(cache_dir);
         boost::filesystem::create_directories(cache_dir);
 
-        cache = TrainCache(cache_dir);
+        cache = TrainFeaturesCache(cache_dir);
     }
 
     FeatureExtractionParams feParams;
     string feParamsSha1;
     string train_set;
+    TrainFeatures train_features;
     string cache_dir;
     string features_dir;
-    TrainCache cache;
+    TrainFeaturesCache cache;
 
 };
 
@@ -127,21 +131,21 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
 }
 
 TEST_F(ExperimentTest, TestTrainFeaturesDir) {
-    EXPECT_EQ(features_dir, cache.trainFeaturesDir(train_set, feParams)); 
+    EXPECT_EQ(features_dir, cache.trainFeaturesDir(train_features)); 
 }
 
 TEST_F(ExperimentTest, TestTrainFeaturesExist) {
-    TrainCache cache(cache_dir);
-    EXPECT_FALSE(cache.trainFeaturesExist(train_set, feParams)); 
+    TrainFeaturesCache cache(cache_dir);
+    EXPECT_FALSE(cache.trainFeaturesExist(train_features)); 
     boost::filesystem::create_directories(features_dir);
-    EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
+    EXPECT_TRUE(cache.trainFeaturesExist(train_features));
 }
 
 TEST_F(ExperimentTest, AddTrainFeaturesFailIfAlreadyExist) {
-    cache.addTrainFeatures(train_set, feParams);
-    EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
+    cache.addTrainFeatures(train_features);
+    EXPECT_TRUE(cache.trainFeaturesExist(train_features));
     try {
-        cache.addTrainFeatures(train_set, feParams);
+        cache.addTrainFeatures(train_features);
         EXPECT_TRUE(false);
     } catch (...) {
         
@@ -149,9 +153,9 @@ TEST_F(ExperimentTest, AddTrainFeaturesFailIfAlreadyExist) {
 }
 
 TEST_F(ExperimentTest, AddTrainFeatures) {
-    EXPECT_FALSE(cache.trainFeaturesExist(train_set, feParams));
-    cache.addTrainFeatures(train_set, feParams);
-    EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
+    EXPECT_FALSE(cache.trainFeaturesExist(train_features));
+    cache.addTrainFeatures(train_features);
+    EXPECT_TRUE(cache.trainFeaturesExist(train_features));
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/assam_tea/image_00000.png.f3d.yaml.gz"));
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/haltbare_milch/image_00025.png.f3d.yaml.gz"));
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/icedtea/image_00012.png.f3d.yaml.gz"));

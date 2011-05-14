@@ -12,27 +12,33 @@
 
 namespace clutseg {
 
+    /** Cache entry */
+    struct TrainFeatures {
+        std::string train_set;
+        tod::FeatureExtractionParams fe_params;
+    };
+
     /** Caches extracted features from training images in a two-level
      * directory. Each set of training features is uniquely defined by its original
      * training data set and the feature extraction parameters. This cache manager
      * is responsible for retrieving existing training feature sets, and for
      * determining whether new feature sets have to be generated.
      */
-    class TrainCache {
+    class TrainFeaturesCache {
 
         public:
 
             #ifdef TEST
-                TrainCache();
+                TrainFeaturesCache();
             #endif
 
-            TrainCache(const std::string & cache_dir);
+            TrainFeaturesCache(const std::string & cache_dir);
 
-            std::string trainFeaturesDir(const std::string & train_set, const tod::FeatureExtractionParams & feParams);
+            std::string trainFeaturesDir(const TrainFeatures & train_features);
 
-            bool trainFeaturesExist(const std::string & train_set, const tod::FeatureExtractionParams & feParams);
+            bool trainFeaturesExist(const TrainFeatures & train_features);
 
-            void addTrainFeatures(const std::string & train_set, const tod::FeatureExtractionParams & feParams);
+            void addTrainFeatures(const TrainFeatures & train_features);
 
         private:
 
