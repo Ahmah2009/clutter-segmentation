@@ -31,13 +31,16 @@ struct ExperimentTest : public ::testing::Test {
 
         cache_dir = "build/train_cache";
         boost::filesystem::create_directory(cache_dir);
+        
+        // corresponds to feParams 
+        features_dir = cache_dir + "/" + train_set + "/" + feParamsSha1;
     }
 
     FeatureExtractionParams feParams;
     string feParamsSha1;
     string train_set;
     string cache_dir;
-
+    string features_dir;
 };
 
 // Given an experiment setup, we need to extract the features from the
@@ -119,13 +122,11 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
 
 TEST_F(ExperimentTest, TestTrainFeaturesDir) {
     TrainCache cache(cache_dir);
-    string features_dir = cache_dir + "/" + train_set + "/" + feParamsSha1;
     EXPECT_EQ(features_dir, cache.trainFeaturesDir(train_set, feParams)); 
 }
 
 TEST_F(ExperimentTest, TestTrainFeaturesExist) {
     TrainCache cache(cache_dir);
-    string features_dir = cache_dir + "/" + train_set + "/" + feParamsSha1;
     boost::filesystem::remove(features_dir);
     EXPECT_FALSE(cache.trainFeaturesExist(train_set, feParams)); 
     boost::filesystem::create_directories(features_dir);
