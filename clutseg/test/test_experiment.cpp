@@ -24,7 +24,7 @@ struct ExperimentTest : public ::testing::Test {
         fs.release();
 
         // Generated from file.
-        feParamsSha1 = "d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e"; 
+        feParamsSha1 = "b8bb41a305d5616c97f54efc0edb63af561fe342";
 
         // Arbitrary.
         train_set = "ias_kinect_train_v2";
@@ -111,6 +111,7 @@ TEST_F(ExperimentTest, GenerateHashFromFile) {
 
 TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
     EXPECT_EQ(feParamsSha1, sha1(feParams));
+    EXPECT_EQ(feParamsSha1, sha1(train_features.fe_params));
 }
 
 
@@ -142,7 +143,7 @@ TEST_F(ExperimentTest, TestTrainFeaturesExist) {
 }
 
 TEST_F(ExperimentTest, AddTrainFeaturesFailIfAlreadyExist) {
-    cache.addTrainFeatures(train_features);
+    cache.addTrainFeatures(train_features, false);
     EXPECT_TRUE(cache.trainFeaturesExist(train_features));
     try {
         cache.addTrainFeatures(train_features);
@@ -154,7 +155,7 @@ TEST_F(ExperimentTest, AddTrainFeaturesFailIfAlreadyExist) {
 
 TEST_F(ExperimentTest, AddTrainFeatures) {
     EXPECT_FALSE(cache.trainFeaturesExist(train_features));
-    cache.addTrainFeatures(train_features);
+    cache.addTrainFeatures(train_features, false);
     EXPECT_TRUE(cache.trainFeaturesExist(train_features));
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/assam_tea/image_00000.png.f3d.yaml.gz"));
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/haltbare_milch/image_00025.png.f3d.yaml.gz"));
@@ -163,19 +164,27 @@ TEST_F(ExperimentTest, AddTrainFeatures) {
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/features.config.yaml"));
 }
 
-// TODO: create class TrainFeatures that couples train_set and feParams
+TEST_F(ExperimentTest, GenerateTrainFeatures) {
+    cache.addTrainFeatures(train_features, false);
+    TrainFeatures new_train_features;
+    new_train_features.train_set = train_features.train_set;
+    new_train_features.fe_params = FeatureExtractionParams::CreateSampleParams();
+    new_train_features.fe_params.detector_params["threshold"] = 40;
 
-/*
-TEST_F(ExperimentTest, ExtractFeatures) {
-    string trainDataDir = getenv("CLUTSEG_PATH") + "/ias_kinect_train_v2";
-    string cacheDir = getenv("CLUTSEG_PATH") + "/train_cache";
-    ASSERT_TRUE(boost::filesystem::exists(trainDataDir));
-    ASSERT_TRUE(boost::filesystem::exists(cacheDir));
-    // TODO: move to fixture
-    FeatureExtractionParams feParams;
-    FileStorage fs("./data/features.config.yaml", FileStorage::READ);
-    feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
+    cv::FileStorage fs(string(getenv("CLUTSEG_PATH")) + "/" + train_set + "/features.config.yaml", cv::FileStorage::WRITE);
+    fs << FeatureExtractionParams::YAML_NODE_NAME;
+    new_train_features.fe_params.write(fs);
     fs.release();
-    generateTrainBase(trainDataDir, cacheDir, feParams);
-}*/
+
+    new_train_features.generate();
+    cache.addTrainFeatures(new_train_features);
+    EXPECT_NE(sha1(new_train_features.fe_params), sha1(train_features.fe_params));
+    EXPECT_NE(cache.trainFeaturesDir(new_train_features), cache.trainFeaturesDir(train_features));
+} // TODO: check whether stuff has really been copied
+  // TODO: check whether feature configuration has been correctly stored
+    // FIXME: get rid of annoying bug in detector
+   // TODO: think about flags that allow the system to interrupt cleanly or mark things as dirty
+    // TODO: think about some logging system maybe in boost
+
+// TODO: make sha1 a member function of TrainFeatures
 

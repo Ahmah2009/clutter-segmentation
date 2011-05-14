@@ -14,8 +14,12 @@ namespace clutseg {
 
     /** Cache entry */
     struct TrainFeatures {
+
         std::string train_set;
         tod::FeatureExtractionParams fe_params;
+
+        void generate();
+
     };
 
     /** Caches extracted features from training images in a two-level
@@ -38,7 +42,7 @@ namespace clutseg {
 
             bool trainFeaturesExist(const TrainFeatures & train_features);
 
-            void addTrainFeatures(const TrainFeatures & train_features);
+            void addTrainFeatures(const TrainFeatures & train_features, bool consistency_check = true);
 
         private:
 

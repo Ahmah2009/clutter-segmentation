@@ -9,6 +9,7 @@
 #include <boost/algorithm/string.hpp>
 #include <ctype.h>
 #include <cv.h>
+#include <fstream>
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <stdio.h>
@@ -19,6 +20,51 @@ using namespace std;
 using namespace tod;
 
 namespace clutseg {
+
+    // TODO: create method that lists all training subjects
+
+    void TrainFeatures::generate() {
+        string p(getenv("CLUTSEG_PATH"));
+        string train_dir = str(format("%s/%s") % p % train_set);
+        filesystem::directory_iterator dir_it(train_dir);
+        filesystem::directory_iterator dir_end;
+        
+        // As tod_training/apps/detector.cpp and
+        // tod_training/apps/f3d_creator.cpp are not included in the linked
+        // libraries, we cannot trigger these processes directly from C++ but
+        // have to spawn a subprocess by generating a bash-script on-the-fly.
+        ofstream cmd;
+        cmd.open((train_dir + "/generate.bash").c_str());
+        cmd << "#!/usr/bin/env bash" << endl;
+        cmd << "# This file has been automatically generated. " << endl;
+        cmd << "# Better do not modify it because it might be " << endl;
+        cmd << "# overwritten without notification. " << endl;
+        cmd << "cd $1" << endl << endl;
+
+        while (dir_it != dir_end) {
+            if (filesystem::is_directory(*dir_it)) {
+                string subj = dir_it->filename();
+                cmd << "echo 'extracting features for template " << subj << "'" << endl;
+                cmd << "rosrun tod_training detector -d " << subj << " -j8" << endl;
+                cmd << "echo '2d-3d-mapping for template " << subj << "'" << endl;
+                cmd << "rosrun tod_training f3d_creator -d " << subj << " -j8" << endl;
+                cmd << endl;
+            }
+            dir_it++;
+        }
+
+        cmd << endl;
+        cmd.close();
+             
+        // start a subprocess
+        FILE *in;
+        in = popen(("bash " + train_dir + "/generate.bash " + train_dir).c_str(), "r");
+        int c;
+        while ((c = fgetc(in)) != EOF) {
+            cout << (unsigned char) c;
+        }
+        fclose(in);
+    }
 
     #ifdef TEST
         TrainFeaturesCache::TrainFeaturesCache() {}
@@ -34,14 +80,35 @@ namespace clutseg {
         return filesystem::exists(trainFeaturesDir(train_features));
     }
 
-    void TrainFeaturesCache::addTrainFeatures(const TrainFeatures & train_features) {
+    // TODO: write helper functions for r/w of FeatureExtractionParams
+
+    void TrainFeaturesCache::addTrainFeatures(const TrainFeatures & train_features, bool consistency_check) {
         if (trainFeaturesExist(train_features)) {
             throw runtime_error("train features already exist");
         } else {
+            string p(getenv("CLUTSEG_PATH"));
+            string train_dir = str(format("%s/%s") % p % train_features.train_set);
+
+            if (consistency_check) {
+                // Check whether the features.config.yaml in the training data directory matches
+                // the supplied feature configuration.
+                FeatureExtractionParams stored_fe_params; 
+                cv::FileStorage in(str(format("%s/features.config.yaml") % train_dir), cv::FileStorage::READ);
+                stored_fe_params.read(in[FeatureExtractionParams::YAML_NODE_NAME]);
+                in.release();
+                if (sha1(stored_fe_params) != sha1(train_features.fe_params)) {
+                    std::system(("cat " + str(format("%s/features.config.yaml") % train_dir)).c_str());
+                    throw runtime_error( str(format(
+                        "Cannot add train features, feature extraction parameter mismatch detected.\n"
+                        "Please make sure the features.config.yaml in the training base directory\n"
+                        "matches the supplied feature configuration! This is a consistency check.\n"
+                        "Checksums %s (stored) and %s (supplied)") % sha1(stored_fe_params) % sha1(train_features.fe_params)));
+                }
+            }
+
             string tfd = trainFeaturesDir(train_features);
             filesystem::create_directories(tfd);
-            string p(getenv("CLUTSEG_PATH"));
-            filesystem::directory_iterator dir_it(str(format("%s/%s") % p % train_features.train_set));
+            filesystem::directory_iterator dir_it(train_dir);
             filesystem::directory_iterator dir_end;
             while (dir_it != dir_end) {
                 if (filesystem::is_directory(*dir_it)) {
@@ -99,4 +166,3 @@ namespace clutseg {
     }
 
 }
-
