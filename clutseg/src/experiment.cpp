@@ -80,8 +80,6 @@ namespace clutseg {
         return filesystem::exists(trainFeaturesDir(train_features));
     }
 
-    // TODO: write helper functions for r/w of FeatureExtractionParams
-
     void TrainFeaturesCache::addTrainFeatures(const TrainFeatures & train_features, bool consistency_check) {
         if (trainFeaturesExist(train_features)) {
             throw runtime_error("train features already exist");
@@ -123,7 +121,7 @@ namespace clutseg {
                 }
                 dir_it++; 
             }
-            // TODO: create or find join_path function!
+            
             writeFeParams(str(format("%s/features.config.yaml") % tfd), train_features.fe_params);
         }
     }
