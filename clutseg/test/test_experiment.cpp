@@ -19,24 +19,26 @@ using namespace tod;
 struct ExperimentTest : public ::testing::Test {
 
     void SetUp() {
-        /* if (!loaded) {
-             segmenter = ClutSegmenter(
-                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
-                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
-                string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
-            );
-            loaded = true;
-        }*/
+        FileStorage fs("./data/features.config.yaml", FileStorage::READ);
+        feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
+        fs.release();
+
+        // Generated from file.
+        feParamsSha1 = "d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e"; 
+
+        // Arbitrary.
+        train_set = "some_train_set";
+
+        cache_dir = "build/train_cache";
+        boost::filesystem::create_directory(cache_dir);
     }
-/*
-    static ClutSegmenter segmenter;
-    static bool loaded; */
+
+    FeatureExtractionParams feParams;
+    string feParamsSha1;
+    string train_set;
+    string cache_dir;
 
 };
-/*
-ClutSegmenter ExperimentTest::segmenter;
-bool ExperimentTest::loaded;
-*/
 
 // Given an experiment setup, we need to extract the features from the
 // training images.  Since this is an extraordinarily expensive step, it
@@ -95,6 +97,11 @@ TEST_F(ExperimentTest, GenerateHashFromFile) {
 }
 
 TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
+    EXPECT_EQ(feParamsSha1, sha1(feParams));
+}
+
+
+TEST_F(ExperimentTest, GenerateHashFromEmptyFeatureExtractionParams) {
     FeatureExtractionParams feParams;
     EXPECT_EQ("f8767180bfcd0654f4ffe9514e94e6d51324e3f6", sha1(feParams));
 }
@@ -107,24 +114,16 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
     // case we can read in the features.config.yaml files, write them back
     // to the cache directories, regenerate the SHA1 hashes and rename the
     // cache directories to recover.
-    FeatureExtractionParams feParams;
-    FileStorage fs("./data/features.config.yaml", FileStorage::READ);
-    feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
-    fs.release();
-    EXPECT_EQ("d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e", sha1(feParams));
     EXPECT_EQ(sha1("./data/features.config.yaml"), sha1(feParams));
 }
 
 TEST_F(ExperimentTest, TestTrainFeaturesDir) {
-    boost::filesystem::create_directory("build/train_cache");
-    TrainCache cache("build/train_cache");
-    FeatureExtractionParams feParams;
-    FileStorage fs("./data/features.config.yaml", FileStorage::READ);
-    feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
-    fs.release();
-    EXPECT_FALSE(cache.trainFeaturesExist("some_train_set", feParams)); 
-    boost::filesystem::create_directories("build/train_cache/some_train_set/d6c53a703fc7ef70c8a77e96d4b8cd916e90fe6e");
-    EXPECT_TRUE(cache.trainFeaturesExist("some_train_set", feParams));
+    TrainCache cache(cache_dir);
+    string features_dir = cache_dir + "/" + train_set + "/" + feParamsSha1;
+    boost::filesystem::remove(features_dir);
+    EXPECT_FALSE(cache.trainFeaturesExist(train_set, feParams)); 
+    boost::filesystem::create_directories(features_dir);
+    EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
 }
 
 /*
