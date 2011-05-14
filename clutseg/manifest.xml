@@ -11,6 +11,7 @@
   <depend package="tod_detecting" />
 
   <rosdep name="sqlite3" />
+  <rosdep name="sha1sum" />
 
   <export>
       <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lclutseg_util -lsqlite3" />

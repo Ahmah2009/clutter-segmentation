@@ -1,2 +1,4 @@
 sqlite3:
     ubuntu: libsqlite3-dev
+sha1sum:
+    ubuntu: coreutils
