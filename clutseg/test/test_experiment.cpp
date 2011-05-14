@@ -120,11 +120,18 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
 TEST_F(ExperimentTest, TestTrainFeaturesDir) {
     TrainCache cache(cache_dir);
     string features_dir = cache_dir + "/" + train_set + "/" + feParamsSha1;
+    EXPECT_EQ(features_dir, cache.trainFeaturesDir(train_set, feParams)); 
+}
+
+TEST_F(ExperimentTest, TestTrainFeaturesExist) {
+    TrainCache cache(cache_dir);
+    string features_dir = cache_dir + "/" + train_set + "/" + feParamsSha1;
     boost::filesystem::remove(features_dir);
     EXPECT_FALSE(cache.trainFeaturesExist(train_set, feParams)); 
     boost::filesystem::create_directories(features_dir);
     EXPECT_TRUE(cache.trainFeaturesExist(train_set, feParams));
 }
+
 
 /*
 TEST_F(ExperimentTest, ExtractFeatures) {
