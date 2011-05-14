@@ -54,5 +54,10 @@ namespace clutseg {
 
     std::string sha1(const tod::FeatureExtractionParams & feParams);
 
+
+    void readFeParams(const std::string & path, tod::FeatureExtractionParams & feParams);
+
+    void writeFeParams(const std::string & path, const tod::FeatureExtractionParams & feParams);
+
 }
 

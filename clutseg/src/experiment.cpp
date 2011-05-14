@@ -93,9 +93,7 @@ namespace clutseg {
                 // Check whether the features.config.yaml in the training data directory matches
                 // the supplied feature configuration.
                 FeatureExtractionParams stored_fe_params; 
-                cv::FileStorage in(str(format("%s/features.config.yaml") % train_dir), cv::FileStorage::READ);
-                stored_fe_params.read(in[FeatureExtractionParams::YAML_NODE_NAME]);
-                in.release();
+                readFeParams(str(format("%s/features.config.yaml") % train_dir), stored_fe_params);
                 if (sha1(stored_fe_params) != sha1(train_features.fe_params)) {
                     std::system(("cat " + str(format("%s/features.config.yaml") % train_dir)).c_str());
                     throw runtime_error( str(format(
@@ -127,10 +125,7 @@ namespace clutseg {
                 dir_it++; 
             }
             // TODO: create or find join_path function!
-            cv::FileStorage fs(str(format("%s/features.config.yaml") % tfd), cv::FileStorage::WRITE);
-            fs << FeatureExtractionParams::YAML_NODE_NAME;
-            train_features.fe_params.write(fs);
-            fs.release();
+            writeFeParams(str(format("%s/features.config.yaml") % tfd), train_features.fe_params);
         }
     }
 
@@ -156,13 +151,24 @@ namespace clutseg {
         c = NULL;
         stringstream fn;
         fn << buffer;
-        cv::FileStorage fs(fn.str(), cv::FileStorage::WRITE);
-        fs << FeatureExtractionParams::YAML_NODE_NAME;
-        feParams.write(fs);
-        fs.release();
+        writeFeParams(fn.str(), feParams);
         string s = sha1(fn.str()); 
         filesystem::remove(fn.str());
         return s;
     }
 
+    void readFeParams(const string & path, FeatureExtractionParams & feParams) {
+        cv::FileStorage in(path, cv::FileStorage::READ);
+        feParams.read(in[FeatureExtractionParams::YAML_NODE_NAME]);
+        in.release();
+    }
+
+    void writeFeParams(const std::string & path, const tod::FeatureExtractionParams & feParams) {
+        cv::FileStorage out(path, cv::FileStorage::WRITE);
+        out << FeatureExtractionParams::YAML_NODE_NAME;
+        feParams.write(out);
+        out.release();
+    }
+
 }
+

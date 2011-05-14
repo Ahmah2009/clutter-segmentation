@@ -16,12 +16,12 @@ using namespace cv;
 using namespace std;
 using namespace tod;
 
+// TODO: use namespace boost
+
 struct ExperimentTest : public ::testing::Test {
 
     void SetUp() {
-        FileStorage fs("./data/features.config.yaml", FileStorage::READ);
-        feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
-        fs.release();
+        readFeParams("./data/features.config.yaml", feParams);
 
         // Generated from file.
         feParamsSha1 = "b8bb41a305d5616c97f54efc0edb63af561fe342";
@@ -171,10 +171,7 @@ TEST_F(ExperimentTest, GenerateTrainFeatures) {
     new_train_features.fe_params = FeatureExtractionParams::CreateSampleParams();
     new_train_features.fe_params.detector_params["threshold"] = 40;
 
-    cv::FileStorage fs(string(getenv("CLUTSEG_PATH")) + "/" + train_set + "/features.config.yaml", cv::FileStorage::WRITE);
-    fs << FeatureExtractionParams::YAML_NODE_NAME;
-    new_train_features.fe_params.write(fs);
-    fs.release();
+    writeFeParams(string(getenv("CLUTSEG_PATH")) + "/" + train_set + "/features.config.yaml", new_train_features.fe_params);
 
     new_train_features.generate();
     cache.addTrainFeatures(new_train_features);
