@@ -85,10 +85,8 @@ namespace clutseg {
 
     string sha1(const FeatureExtractionParams & feParams) {
         char buffer[L_tmpnam];
-        // TODO: get rid of annoying warning
-        // annoying, code has been taken from C++ Reference
-        // and it produces a warning ...
-        tmpnam(buffer);
+        char * c = tmpnam(buffer);
+        c = NULL;
         stringstream fn;
         fn << buffer;
         cv::FileStorage fs(fn.str(), cv::FileStorage::WRITE);
