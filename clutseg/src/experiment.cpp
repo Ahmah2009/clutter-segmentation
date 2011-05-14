@@ -19,6 +19,8 @@ using namespace boost;
 using namespace std;
 using namespace tod;
 
+namespace bfs = boost::filesystem;
+
 namespace clutseg {
 
     // TODO: create method that lists all training subjects
@@ -26,8 +28,8 @@ namespace clutseg {
     void TrainFeatures::generate() {
         string p(getenv("CLUTSEG_PATH"));
         string train_dir = str(format("%s/%s") % p % train_set);
-        filesystem::directory_iterator dir_it(train_dir);
-        filesystem::directory_iterator dir_end;
+        bfs::directory_iterator dir_it(train_dir);
+        bfs::directory_iterator dir_end;
         
         // As tod_training/apps/detector.cpp and
         // tod_training/apps/f3d_creator.cpp are not included in the linked
@@ -42,7 +44,7 @@ namespace clutseg {
         cmd << "cd $1" << endl << endl;
 
         while (dir_it != dir_end) {
-            if (filesystem::is_directory(*dir_it)) {
+            if (bfs::is_directory(*dir_it)) {
                 string subj = dir_it->filename();
                 cmd << "echo 'extracting features for template " << subj << "'" << endl;
                 cmd << "rosrun tod_training detector -d " << subj << " -j8" << endl;
@@ -77,7 +79,7 @@ namespace clutseg {
     }
 
     bool TrainFeaturesCache::trainFeaturesExist(const TrainFeatures & train_features) {
-        return filesystem::exists(trainFeaturesDir(train_features));
+        return bfs::exists(trainFeaturesDir(train_features));
     }
 
     void TrainFeaturesCache::addTrainFeatures(const TrainFeatures & train_features, bool consistency_check) {
@@ -102,18 +104,18 @@ namespace clutseg {
             }
 
             string tfd = trainFeaturesDir(train_features);
-            filesystem::create_directories(tfd);
-            filesystem::directory_iterator dir_it(train_dir);
-            filesystem::directory_iterator dir_end;
+            bfs::create_directories(tfd);
+            bfs::directory_iterator dir_it(train_dir);
+            bfs::directory_iterator dir_end;
             while (dir_it != dir_end) {
-                if (filesystem::is_directory(*dir_it)) {
+                if (bfs::is_directory(*dir_it)) {
                     string subj = dir_it->filename();
-                    filesystem::directory_iterator subj_it(*dir_it);
-                    filesystem::directory_iterator subj_end;
-                    filesystem::create_directory(str(format("%s/%s") % tfd % subj));
+                    bfs::directory_iterator subj_it(*dir_it);
+                    bfs::directory_iterator subj_end;
+                    bfs::create_directory(str(format("%s/%s") % tfd % subj));
                     while (subj_it != subj_end) {
                         if (algorithm::ends_with(subj_it->filename(), ".f3d.yaml.gz")) {
-                            filesystem::copy_file( *subj_it, 
+                            bfs::copy_file( *subj_it, 
                                 str(format("%s/%s/%s") % tfd % subj % subj_it->filename()));
                         }
                         subj_it++;
@@ -150,18 +152,18 @@ namespace clutseg {
         fn << buffer;
         writeFeParams(fn.str(), feParams);
         string s = sha1(fn.str()); 
-        filesystem::remove(fn.str());
+        bfs::remove(fn.str());
         return s;
     }
 
-    void readFeParams(const string & path, FeatureExtractionParams & feParams) {
-        cv::FileStorage in(path, cv::FileStorage::READ);
+    void readFeParams(const bfs::path & p, FeatureExtractionParams & feParams) {
+        cv::FileStorage in(p.string(), cv::FileStorage::READ);
         feParams.read(in[FeatureExtractionParams::YAML_NODE_NAME]);
         in.release();
     }
 
-    void writeFeParams(const std::string & path, const tod::FeatureExtractionParams & feParams) {
-        cv::FileStorage out(path, cv::FileStorage::WRITE);
+    void writeFeParams(const bfs::path & p, const tod::FeatureExtractionParams & feParams) {
+        cv::FileStorage out(p.string(), cv::FileStorage::WRITE);
         out << FeatureExtractionParams::YAML_NODE_NAME;
         feParams.write(out);
         out.release();

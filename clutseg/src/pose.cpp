@@ -17,6 +17,8 @@ using namespace cv;
 using namespace opencv_candidate;
 using namespace boost;
 
+namespace bfs = boost::filesystem;
+
 namespace clutseg {
 
     Point projectOrigin(const PoseRT & pose, const opencv_candidate::Camera & camera) {
@@ -74,17 +76,17 @@ namespace clutseg {
         return dst;
     }
 
-    void writePose(const string & filename, const PoseRT & pose) {
+    void writePose(const bfs::path & filename, const PoseRT & pose) {
         FileStorage f;
-        f.open(filename, FileStorage::WRITE);
+        f.open(filename.string(), FileStorage::WRITE);
         f << PoseRT::YAML_NODE_NAME;
         pose.write(f);
         f.release();
     }
 
-    void readPose(const string & filename, PoseRT & dst) {
+    void readPose(const bfs::path & filename, PoseRT & dst) {
         FileStorage f;
-        f.open(filename, FileStorage::READ);
+        f.open(filename.string(), FileStorage::READ);
         dst.read(f[PoseRT::YAML_NODE_NAME]);
         f.release();
     }

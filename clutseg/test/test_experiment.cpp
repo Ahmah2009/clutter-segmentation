@@ -17,6 +17,7 @@ using namespace cv;
 using namespace std;
 using namespace tod;
 
+namespace bfs = boost::filesystem;
 
 struct ExperimentTest : public ::testing::Test {
 
@@ -35,10 +36,10 @@ struct ExperimentTest : public ::testing::Test {
         cache_dir = "build/train_cache";
         
         // corresponds to feParams 
-        features_dir = path(cache_dir) / train_set / feParamsSha1;
+        features_dir = bfs::path(cache_dir) / train_set / feParamsSha1;
 
-        remove_all(cache_dir);
-        create_directories(cache_dir);
+        bfs::remove_all(cache_dir);
+        bfs::create_directories(cache_dir);
 
         cache = TrainFeaturesCache(cache_dir);
     }
@@ -48,7 +49,7 @@ struct ExperimentTest : public ::testing::Test {
     string train_set;
     TrainFeatures train_features;
     string cache_dir;
-    path features_dir;
+    bfs::path features_dir;
     TrainFeaturesCache cache;
 
 };
@@ -138,7 +139,7 @@ TEST_F(ExperimentTest, TestTrainFeaturesDir) {
 TEST_F(ExperimentTest, TestTrainFeaturesExist) {
     TrainFeaturesCache cache(cache_dir);
     EXPECT_FALSE(cache.trainFeaturesExist(train_features)); 
-    create_directories(features_dir);
+    bfs::create_directories(features_dir);
     EXPECT_TRUE(cache.trainFeaturesExist(train_features));
 }
 
@@ -157,11 +158,11 @@ TEST_F(ExperimentTest, AddTrainFeatures) {
     EXPECT_FALSE(cache.trainFeaturesExist(train_features));
     cache.addTrainFeatures(train_features, false);
     EXPECT_TRUE(cache.trainFeaturesExist(train_features));
-    EXPECT_TRUE(exists(features_dir / "assam_tea" / "image_00000.png.f3d.yaml.gz"));
-    EXPECT_TRUE(exists(features_dir / "haltbare_milch" / "image_00025.png.f3d.yaml.gz"));
-    EXPECT_TRUE(exists(features_dir / "icedtea" / "image_00012.png.f3d.yaml.gz"));
-    EXPECT_TRUE(exists(features_dir / "jacobs_coffee" / "image_00032.png.f3d.yaml.gz"));
-    EXPECT_TRUE(exists(features_dir / "features.config.yaml"));
+    EXPECT_TRUE(bfs::exists(features_dir / "assam_tea" / "image_00000.png.f3d.yaml.gz"));
+    EXPECT_TRUE(bfs::exists(features_dir / "haltbare_milch" / "image_00025.png.f3d.yaml.gz"));
+    EXPECT_TRUE(bfs::exists(features_dir / "icedtea" / "image_00012.png.f3d.yaml.gz"));
+    EXPECT_TRUE(bfs::exists(features_dir / "jacobs_coffee" / "image_00032.png.f3d.yaml.gz"));
+    EXPECT_TRUE(bfs::exists(features_dir / "features.config.yaml"));
 }
 
 TEST_F(ExperimentTest, GenerateTrainFeatures) {
@@ -171,7 +172,7 @@ TEST_F(ExperimentTest, GenerateTrainFeatures) {
     new_train_features.fe_params = FeatureExtractionParams::CreateSampleParams();
     new_train_features.fe_params.detector_params["threshold"] = 40;
 
-    writeFeParams((path(getenv("CLUTSEG_PATH")) / train_set / "features.config.yaml").string(), new_train_features.fe_params);
+    writeFeParams((bfs::path(getenv("CLUTSEG_PATH")) / train_set / "features.config.yaml").string(), new_train_features.fe_params);
 
     new_train_features.generate();
     cache.addTrainFeatures(new_train_features);

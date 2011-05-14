@@ -15,13 +15,15 @@
 using namespace std;
 using namespace boost;
 
+namespace bfs = boost::filesystem;
+
 namespace clutseg {
 
     // TODO: does not really parse a python configuration file
-    TestDesc loadTestDesc(const string & filename) {
+    TestDesc loadTestDesc(const bfs::path & filename) {
         TestDesc m;
         ifstream f;
-        f.open(filename.c_str()); 
+        f.open(filename.string().c_str()); 
         if (!f.is_open()) {
             throw ios_base::failure(
                 str(format(

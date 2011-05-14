@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
         throw std::runtime_error("Empty training base.");
     }
     
-    TestDesc testdesc = loadTestDesc(opts.testdescFilename);
+    TestDesc testdesc = loadTestDesc(boost::filesystem::path(opts.testdescFilename));
 
     bool write_store = (opts.storeDirectory != "");
 

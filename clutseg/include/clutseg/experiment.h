@@ -7,6 +7,7 @@
  * specific parameter set on testing set.
  */
 
+#include <boost/filesystem.hpp>
 #include <string>
 #include <tod/training/feature_extraction.h>
 
@@ -55,9 +56,9 @@ namespace clutseg {
     std::string sha1(const tod::FeatureExtractionParams & feParams);
 
 
-    void readFeParams(const std::string & path, tod::FeatureExtractionParams & feParams);
+    void readFeParams(const boost::filesystem::path & p, tod::FeatureExtractionParams & feParams);
 
-    void writeFeParams(const std::string & path, const tod::FeatureExtractionParams & feParams);
+    void writeFeParams(const boost::filesystem::path & p, const tod::FeatureExtractionParams & feParams);
 
 }
 

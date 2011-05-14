@@ -5,6 +5,7 @@
 #ifndef _POSE_UTIL_H_
 #define _POSE_UTIL_H_
 
+#include <boost/filesystem.hpp>
 #include <cv.h>
 #include <opencv_candidate/PoseRT.h>
 #include <opencv_candidate/Camera.h>
@@ -24,9 +25,9 @@ namespace clutseg {
 
     opencv_candidate::Pose poseRtToPose(const opencv_candidate::PoseRT & src);
 
-    void writePose(const std::string & filename, const opencv_candidate::PoseRT & pose);
+    void writePose(const boost::filesystem::path & filename, const opencv_candidate::PoseRT & pose);
 
-    void readPose(const std::string & filename, opencv_candidate::PoseRT & dst);
+    void readPose(const boost::filesystem::path & filename, opencv_candidate::PoseRT & dst);
 
     void modelToView(const cv::Mat & mvtrans, const cv::Mat & mvrot, const cv::Mat & mpt, cv::Mat & vpt);
 

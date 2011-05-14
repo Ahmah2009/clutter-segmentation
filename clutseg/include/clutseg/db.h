@@ -8,13 +8,14 @@
 
 #include <sqlite3.h>
 
+#include <boost/filesystem.hpp>
 #include <boost/format/format_class.hpp>
 #include <string>
 
 namespace clutseg {
     
     /** Delegates to sqlite3_open. Throws ios_base::failure if an error occurs. */
-    void db_open(sqlite3* & db, const std::string & path);
+    void db_open(sqlite3* & db, const boost::filesystem::path & filename);
     
     /** Delegates to sqlite3_exec. Throws ios_base::failure if an error occurs. */
     void db_exec(sqlite3* & db, const std::string & sql);

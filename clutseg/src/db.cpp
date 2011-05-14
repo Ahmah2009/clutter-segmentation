@@ -11,10 +11,12 @@
 using namespace std;
 using namespace boost;
 
+namespace bfs = boost::filesystem;
+
 namespace clutseg {
 
-    void db_open(sqlite3 *&db, const string & path) {
-        if (sqlite3_open(path.c_str(), &db) != SQLITE_OK) {
+    void db_open(sqlite3 *&db, const bfs::path & path) {
+        if (sqlite3_open(path.string().c_str(), &db) != SQLITE_OK) {
             throw ios_base::failure("Error when opening database: " + string(sqlite3_errmsg(db)));
         }
     }
