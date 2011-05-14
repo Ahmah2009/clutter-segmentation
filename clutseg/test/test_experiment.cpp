@@ -99,6 +99,13 @@ TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
 }
 
 TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
+    // Ensure that the hash generated from a file is the same as the hash of
+    // the parameteres retrieved from the file. This does not hold if there
+    // are any comments in the features.config.yaml. Also, if the parameters
+    // change, all the relationships in the cache get lost. Anyways, in this
+    // case we can read in the features.config.yaml files, write them back
+    // to the cache directories, regenerate the SHA1 hashes and rename the
+    // cache directories to recover.
     FeatureExtractionParams feParams;
     FileStorage fs("./data/features.config.yaml", FileStorage::READ);
     feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
@@ -109,6 +116,15 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
 
 /*
 TEST_F(ExperimentTest, ExtractFeatures) {
-
+    string trainDataDir = getenv("CLUTSEG_PATH") + "/ias_kinect_train_v2";
+    string cacheDir = getenv("CLUTSEG_PATH") + "/train_cache";
+    ASSERT_TRUE(boost::filesystem::exists(trainDataDir));
+    ASSERT_TRUE(boost::filesystem::exists(cacheDir));
+    // TODO: move to fixture
+    FeatureExtractionParams feParams;
+    FileStorage fs("./data/features.config.yaml", FileStorage::READ);
+    feParams.read(fs[FeatureExtractionParams::YAML_NODE_NAME]);
+    fs.release();
+    generateTrainBase(trainDataDir, cacheDir, feParams);
 }*/
 
