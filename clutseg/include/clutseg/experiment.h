@@ -1,3 +1,5 @@
+// TODO: ifdefs
+
 /**
  * Author: Julius Adorf
  *
@@ -5,7 +7,14 @@
  * specific parameter set on testing set.
  */
 
+#include <string>
+#include <tod/training/feature_extraction.h>
+
 namespace clutseg {
+
+    std::string sha1(const std::string & file);
+
+    std::string sha1(const tod::FeatureExtractionParams & config);
 
 }
 

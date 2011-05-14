@@ -34,71 +34,67 @@ struct ExperimentTest : public ::testing::Test {
 ClutSegmenter ExperimentTest::segmenter;
 bool ExperimentTest::loaded;
 
-TEST_F(ExperimentTest, ExtractFeatures) {
-    // Given an experiment setup, we need to extract the features from the
-    // training images.  Since this is an extraordinarily expensive step, it
-    // shall not repated and we therefore cache the training features. Masking
-    // and pose estimation is done up-front and does not have to be considered.
-    // We have a directory that contains the training images, masks and poses.
-    // We need to generate a training base for a given feature extraction
-    // parameter set.
-    
-    // Inputs
-    // - a training base
-    // - a feature configuration
-    // - a cache directory 
+// Given an experiment setup, we need to extract the features from the
+// training images.  Since this is an extraordinarily expensive step, it
+// shall not repated and we therefore cache the training features. Masking
+// and pose estimation is done up-front and does not have to be considered.
+// We have a directory that contains the training images, masks and poses.
+// We need to generate a training base for a given feature extraction
+// parameter set.
 
-    // The cache directory must be well-organized. It shall be organized in an
-    // hierarchical manner.  First, we need to distinguish between training
-    // bases that have been generated from different training data. Then we
-    // need to distinguish by feature configuration. That results in a
-    // two-level filesystem hierarchy.
+// Inputs
+// - a training base
+// - a feature configuration
+// - a cache directory 
 
-    // train_bases/
-    //      tod_kinect_train/
-    //      ias_kinect_train/
-    //      ias_kinect_train_v2/
-    //          71bcccd2efe711e112f0e4b8e1c2465a86133a6d/
-    //          586105d85ee7102613a3c56ddf0be52475a40aed/
-    //          71bcccd2efe711e112f0e4b8e1c2465a86133a6d/
-    //          fb2ecb0b83813940380058ae05e7136f6be2b044/
-    //          635b0a4b2972d8d0a82f788da39a4f12a31ca92e/
-    //              features.config.yaml
-    //              image_00000.png.f3d.yaml.gz
-    //              image_00001.png.f3d.yaml.gz
-    //              ...
-    //          ...
-    //      ...
+// The cache directory must be well-organized. It shall be organized in an
+// hierarchical manner.  First, we need to distinguish between training
+// bases that have been generated from different training data. Then we
+// need to distinguish by feature configuration. That results in a
+// two-level filesystem hierarchy.
 
-    // The second level depends on the feature configuration. The name of the
-    // training bases are sha1 hash values taken from features.config.yaml.
-    // Checking collisions is probably just paranoid (less than 10**-20), but
-    // could also be done by comparing requested feature configuration with the
-    // feature configuration loaded from the training set.
+// train_bases/
+//      tod_kinect_train/
+//      ias_kinect_train/
+//      ias_kinect_train_v2/
+//          71bcccd2efe711e112f0e4b8e1c2465a86133a6d/
+//          586105d85ee7102613a3c56ddf0be52475a40aed/
+//          71bcccd2efe711e112f0e4b8e1c2465a86133a6d/
+//          fb2ecb0b83813940380058ae05e7136f6be2b044/
+//          635b0a4b2972d8d0a82f788da39a4f12a31ca92e/
+//              features.config.yaml
+//              image_00000.png.f3d.yaml.gz
+//              image_00001.png.f3d.yaml.gz
+//              ...
+//          ...
+//      ...
 
-    // The feature configuration file shall be generated from a database entry
-    // and shall be quite stable in order to make it likely that the same
-    // feature configuration will generate the same hash.
+// The second level depends on the feature configuration. The name of the
+// training bases are sha1 hash values taken from features.config.yaml.
+// Checking collisions is probably just paranoid (less than 10**-20), but
+// could also be done by comparing requested feature configuration with the
+// feature configuration loaded from the training set.
 
-    // The generation of the features can be mostly done via the supplied tools
-    // in tod_training. Instead of calling them from a shell, we can simply
-    // call their main methods with appropriate parameters. The directory
-    // containing the training data (which was formerly intended by tod_* also
-    // to be the training base). The second step is to actually copy those
-    // f3d.yaml.gz files over to the cache.
+// The feature configuration file shall be generated from a database entry
+// and shall be quite stable in order to make it likely that the same
+// feature configuration will generate the same hash.
 
-    EXPECT_TRUE(false); // acceptance?
-}
+// The generation of the features can be mostly done via the supplied tools
+// in tod_training. Instead of calling them from a shell, we can simply
+// call their main methods with appropriate parameters. The directory
+// containing the training data (which was formerly intended by tod_* also
+// to be the training base). The second step is to actually copy those
+// f3d.yaml.gz files over to the cache.
 
 TEST_F(ExperimentTest, GenerateHashFromFile) {
-    EXPECT_TRUE(false);
+    EXPECT_EQ("2605fd43e5192a2e49476e5099f8ea6e2973866b", sha1("./data/camera.yml"));
 }
 
-TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
+/*TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
     EXPECT_TRUE(false);
 }
 
 TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
     EXPECT_TRUE(false);
-}
+}*/
 
