@@ -156,6 +156,7 @@ TEST_F(ExperimentTest, AddTrainFeatures) {
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/haltbare_milch/image_00025.png.f3d.yaml.gz"));
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/icedtea/image_00012.png.f3d.yaml.gz"));
     EXPECT_TRUE(boost::filesystem::exists(features_dir + "/jacobs_coffee/image_00032.png.f3d.yaml.gz"));
+    EXPECT_TRUE(boost::filesystem::exists(features_dir + "/features.config.yaml"));
 }
 
 // TODO: create class TrainFeatures that couples train_set and feParams
