@@ -37,4 +37,8 @@ namespace clutseg {
         bfs::remove(flagp_);
     }
 
+    bfs::path FileFlag::path() {
+        return flagp_;    
+    }
+
 }

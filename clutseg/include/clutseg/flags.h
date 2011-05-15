@@ -19,9 +19,11 @@ namespace clutseg {
 
             void set();
 
-                bool exists();
+            bool exists();
 
             void clear();
+
+            boost::filesystem::path path();
 
         private:
             

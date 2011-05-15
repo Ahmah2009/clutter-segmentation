@@ -6,6 +6,7 @@
 
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
+#include "clutseg/flags.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
@@ -123,6 +124,9 @@ TEST_F(ExperimentTest, GenerateAndUseTrainFeatures) {
     cache.addTrainFeatures(new_tr_feat);
     EXPECT_NE(sha1(new_tr_feat.fe_params), sha1(tr_feat.fe_params));
     EXPECT_NE(cache.trainFeaturesDir(new_tr_feat), cache.trainFeaturesDir(tr_feat));
+
+    FileFlag dirty(p / train_set / "dirty.flag");
+    EXPECT_FALSE(dirty.exists());
 
     // TODO: load configs that make sense
     ClutSegmenter segmenter(
