@@ -6,6 +6,7 @@
 #define _EXPERIMENT_H_
 
 #include <boost/filesystem.hpp>
+#include <set>
 #include <string>
 #include <tod/training/feature_extraction.h>
 
@@ -90,6 +91,10 @@ namespace clutseg {
     void readFeParams(const boost::filesystem::path & p, tod::FeatureExtractionParams & feParams);
 
     void writeFeParams(const boost::filesystem::path & p, const tod::FeatureExtractionParams & feParams);
+
+    
+    std::set<std::string> listTemplateNames(const boost::filesystem::path & dir);
+
 
 }
 

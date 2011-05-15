@@ -189,5 +189,18 @@ namespace clutseg {
         out.release();
     }
 
+    set<string> listTemplateNames(const boost::filesystem::path & dir) {
+        set<string> s;
+        bfs::directory_iterator dir_it(dir);
+        bfs::directory_iterator dir_end;
+        while (dir_it != dir_end) {
+            if (bfs::is_directory(*dir_it)) {
+                s.insert(dir_it->filename());
+            }
+            dir_it++;
+        }
+        return s;
+    }
+
 }
 

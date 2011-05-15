@@ -138,6 +138,16 @@ TEST_F(ExperimentTest, GenerateAndUseTrainFeatures) {
     EXPECT_EQ(4, tNames.size());
 }
 
+TEST_F(ExperimentTest, ListTemplateNames) {
+    bfs::path p = bfs::path(getenv("CLUTSEG_PATH"));
+    set<string> tNames = listTemplateNames(p / "ias_kinect_train_v2");
+    EXPECT_EQ(1, tNames.count("assam_tea"));
+    EXPECT_EQ(1, tNames.count("haltbare_milch"));
+    EXPECT_EQ(1, tNames.count("icedtea"));
+    EXPECT_EQ(1, tNames.count("jacobs_coffee"));
+    EXPECT_EQ(4, tNames.size());
+}
+
 // TODO: check whether stuff has really been copied
 // TODO: check whether feature configuration has been correctly stored
 // FIXME: get rid of annoying bug in detector
