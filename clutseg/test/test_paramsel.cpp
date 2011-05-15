@@ -4,14 +4,17 @@
 
 #include "test.h"
 #include "clutseg/db.h"
+#include "clutseg/experiment.h"
 #include "clutseg/paramsel.h"
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <gtest/gtest.h>
 #include <time.h>
+#include <tod/training/feature_extraction.h>
 
 using namespace clutseg;
 using namespace std;
+using namespace tod;
 
 struct ParamSelTest : public ::testing::Test {
 
@@ -205,5 +208,20 @@ TEST_F(ParamSelTest, select_experiments_not_run) {
     EXPECT_TRUE((exps[0].id == e3.id) || (exps[1].id == e3.id));
     EXPECT_TRUE((exps[0].id != e3.id) || exps[0].paramset.pms_clutseg.ranking == "ProximityRanking");
     EXPECT_TRUE((exps[0].id == e3.id) || exps[0].paramset.pms_clutseg.ranking != "ProximityRanking");
+}
+
+TEST_F(ParamSelTest, SortExperimentsByTrainFeatures) {
+    Experiment e1 = experiment;
+    Experiment e2 = experiment;
+    Experiment e3 = experiment;
+    e2.paramset.train_pms_fe = FeatureExtractionParams::CreateSampleParams();
+    e1.serialize(db);
+    e2.serialize(db);
+    e3.serialize(db);
+    vector<Experiment> exps;
+    selectExperimentsNotRun(db, exps);
+    sortExperimentsByTrainFeatures(exps);
+    ASSERT_EQ(3, exps.size());
+    EXPECT_TRUE(exps[0].id == e2.id || exps[2].id == e2.id);
 }
 

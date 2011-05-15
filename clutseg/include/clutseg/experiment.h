@@ -5,6 +5,9 @@
 #ifndef _EXPERIMENT_H_
 #define _EXPERIMENT_H_
 
+// TODO: responsibilities between experiment.h and paramsel.h are unclear
+#include "clutseg/paramsel.h"
+
 #include <boost/filesystem.hpp>
 #include <set>
 #include <string>
@@ -92,6 +95,7 @@ namespace clutseg {
 
     void writeFeParams(const boost::filesystem::path & p, const tod::FeatureExtractionParams & feParams);
 
+    void sortExperimentsByTrainFeatures(std::vector<Experiment> & exps);
     
     std::set<std::string> listTemplateNames(const boost::filesystem::path & dir);
 

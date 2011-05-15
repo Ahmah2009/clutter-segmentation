@@ -301,5 +301,6 @@ namespace clutseg {
         } 
         sqlite3_finalize(select);
     }
+
 }
 
