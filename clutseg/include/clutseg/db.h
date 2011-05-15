@@ -6,10 +6,12 @@
  * char *' and 'const unsigned char *'.
  */
 
-#include <sqlite3.h>
+#ifndef _DB_H_
+#define _DB_H_
 
 #include <boost/filesystem.hpp>
 #include <boost/format/format_class.hpp>
+#include <sqlite3.h>
 #include <string>
 
 namespace clutseg {
@@ -34,3 +36,4 @@ namespace clutseg {
 
 }
 
+#endif

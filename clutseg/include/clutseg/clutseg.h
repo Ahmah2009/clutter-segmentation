@@ -1,6 +1,7 @@
-/*
+/**
  * Author: Julius Adorf
  */
+
 #ifndef _CLUTSEG_H_
 #define _CLUTSEG_H_
 

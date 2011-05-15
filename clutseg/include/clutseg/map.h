@@ -1,14 +1,18 @@
-/*
+/**
  * Author: Julius Adorf
  */
+
+#ifndef _MAP_H_
+#define _MAP_H_
 
 #include "clutseg/common.h"
 
 #include <cv.h>
-#include <vector>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <sqlite3.h>
 #include <tod/detecting/GuessGenerator.h>
+#include <vector>
 
 namespace clutseg {
 
@@ -25,3 +29,4 @@ namespace clutseg {
                     const cv::Mat & scene2d, const PointCloudT & scene3d, bool sameScaleH = true);
 }
 
+#endif

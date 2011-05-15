@@ -2,6 +2,9 @@
  * Author: Julius Adorf
  */
 
+#ifndef _PARAMSEL_H_
+#define _PARAMSEL_H_
+
 #include <boost/format.hpp>
 #include <map>
 #include <sqlite3.h>
@@ -113,3 +116,4 @@ namespace clutseg {
 
 }
 
+#endif

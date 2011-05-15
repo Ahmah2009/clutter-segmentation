@@ -1,5 +1,3 @@
-// TODO: ifdefs
-
 /**
  * Author: Julius Adorf
  *
@@ -7,7 +5,11 @@
  * specific parameter set on testing set.
  */
 
+#ifndef _EXPERIMENT_H_
+#define _EXPERIMENT_H_
+
 #include <boost/filesystem.hpp>
+#include <sqlite3.h>
 #include <string>
 #include <tod/training/feature_extraction.h>
 
@@ -62,3 +64,4 @@ namespace clutseg {
 
 }
 
+#endif

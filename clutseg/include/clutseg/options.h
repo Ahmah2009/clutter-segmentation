@@ -1,12 +1,12 @@
-/*
+/**
  * Author: Julius Adorf
  */
 
 #ifndef _CONN_COMP_H_
 #define _CONN_COMP_H_
 
-#include <tod/detecting/Parameters.h>
 #include <string>
+#include <tod/detecting/Parameters.h>
 
 namespace clutseg {
 

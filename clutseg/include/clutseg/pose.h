@@ -1,4 +1,4 @@
-/*
+/**
  * Author: Julius Adorf
  */
 
@@ -7,8 +7,8 @@
 
 #include <boost/filesystem.hpp>
 #include <cv.h>
-#include <opencv_candidate/PoseRT.h>
 #include <opencv_candidate/Camera.h>
+#include <opencv_candidate/PoseRT.h>
 
 namespace clutseg {
 

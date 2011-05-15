@@ -1,4 +1,4 @@
-/*
+/**
  * Author: Julius Adorf
  */
 
@@ -8,8 +8,8 @@
 #include "clutseg/common.h"
 
 #include <opencv_candidate/PoseRT.h>
-#include <pcl_visualization/pcl_visualizer.h>
 #include <pcl/point_types.h>
+#include <pcl_visualization/pcl_visualizer.h>
 
 namespace clutseg {
 
