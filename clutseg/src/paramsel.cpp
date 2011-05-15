@@ -3,6 +3,8 @@
  */
 
 #include "clutseg/paramsel.h"
+
+#include "clutseg/experiment.h"
 #include "clutseg/db.h"
 
 #include <boost/foreach.hpp>
@@ -173,13 +175,13 @@ namespace clutseg {
     }
 
     void Experiment::serialize(sqlite3* db) {
-        if (run) {
+        if (has_run) {
             response.serialize(db);
         }
         paramset.serialize(db);
         MemberMap m;
         setMemberField(m, "paramset_id", paramset.id);
-        if (run) {
+        if (has_run) {
             setMemberField(m, "response_id", response.id);
         }
         setMemberField(m, "train_set", train_set);
@@ -193,9 +195,9 @@ namespace clutseg {
         db_prepare(db, read, boost::format("select paramset_id, response_id, train_set, test_set, time from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
        
-        run = (sqlite3_column_type(read, 1) != SQLITE_NULL);
+        has_run = (sqlite3_column_type(read, 1) != SQLITE_NULL);
         paramset.id = sqlite3_column_int64(read, 0);
-        if (run) {
+        if (has_run) {
             response.id = sqlite3_column_int64(read, 1);
         } else {
             response.id = -1;
@@ -205,7 +207,7 @@ namespace clutseg {
         time = string((const char*) sqlite3_column_text(read, 4));
         sqlite3_finalize(read);
         paramset.deserialize(db);
-        if (run) {
+        if (has_run) {
             response.deserialize(db);
         }
     }
@@ -300,6 +302,18 @@ namespace clutseg {
             exps[i].deserialize(db);
         } 
         sqlite3_finalize(select);
+    }
+
+    struct ExperimentTrainFeaturesComparator {
+        bool operator()(const Experiment & a, const Experiment & b) {
+            return (a.train_set == b.train_set) ?
+                (sha1(a.paramset.train_pms_fe) < sha1(b.paramset.train_pms_fe)) :
+                (a.train_set < b.train_set);
+        }
+    };
+
+    void sortExperimentsByTrainFeatures(std::vector<Experiment> & exps) {
+        sort(exps.begin(), exps.end(), ExperimentTrainFeaturesComparator());
     }
 
 }

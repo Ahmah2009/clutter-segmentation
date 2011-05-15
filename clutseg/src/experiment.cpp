@@ -216,17 +216,5 @@ namespace clutseg {
         return s;
     }
 
-    struct ExperimentTrainFeaturesComparator {
-        bool operator()(const Experiment & a, const Experiment & b) {
-            return (a.train_set == b.train_set) ?
-                (sha1(a.paramset.train_pms_fe) < sha1(b.paramset.train_pms_fe)) :
-                (a.train_set < b.train_set);
-        }
-    };
-
-    void sortExperimentsByTrainFeatures(std::vector<Experiment> & exps) {
-        sort(exps.begin(), exps.end(), ExperimentTrainFeaturesComparator());
-    }
-
 }
 

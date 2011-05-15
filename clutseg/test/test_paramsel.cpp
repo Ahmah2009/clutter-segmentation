@@ -162,10 +162,10 @@ TEST_F(ParamSelTest, experiment_update) {
 
 TEST_F(ParamSelTest, experiment_write_read) {
     Experiment & orig = experiment;
-    EXPECT_EQ(false, orig.run);
-    // must set orig.run to have the response to be
+    EXPECT_EQ(false, orig.has_run);
+    // must set orig.has_run to have the response to be
     // serialized as well
-    orig.run = true;
+    orig.has_run = true;
     orig.response.value = 13;
     orig.serialize(db);
     Experiment rest;
@@ -176,25 +176,25 @@ TEST_F(ParamSelTest, experiment_write_read) {
     EXPECT_EQ(experiment.train_set, rest.train_set);
     EXPECT_EQ(experiment.test_set, rest.test_set);
     EXPECT_EQ(13, rest.response.value);
-    EXPECT_EQ(true, rest.run);
+    EXPECT_EQ(true, rest.has_run);
 }
 
-TEST_F(ParamSelTest, select_experiments_not_run) {
-    // We need to be able to find those experiments that have not been run
+TEST_F(ParamSelTest, select_experiments_not_has_run) {
+    // We need to be able to find those experiments that have not been has_run
     // yet. These are candidates for being carried out next. 
     Experiment e1 = experiment;
     Experiment e2 = experiment;
     Experiment e3 = experiment;
-    e1.run = true;
-    e2.run = false;
-    e3.run = false;
+    e1.has_run = true;
+    e2.has_run = false;
+    e3.has_run = false;
     e3.paramset.pms_clutseg.ranking = "ProximityRanking";
     e1.serialize(db);
     e2.serialize(db);
     e3.serialize(db);
-    EXPECT_TRUE(e1.run);
-    EXPECT_FALSE(e2.run);
-    EXPECT_FALSE(e3.run);
+    EXPECT_TRUE(e1.has_run);
+    EXPECT_FALSE(e2.has_run);
+    EXPECT_FALSE(e3.has_run);
     EXPECT_EQ(-1, e2.response.id);
     EXPECT_EQ(-1, e3.response.id);
     vector<Experiment> exps;
@@ -202,8 +202,8 @@ TEST_F(ParamSelTest, select_experiments_not_run) {
     ASSERT_EQ(2, exps.size());
     EXPECT_EQ(-1, exps[0].response.id);
     EXPECT_EQ(-1, exps[1].response.id);
-    EXPECT_FALSE(exps[0].run);
-    EXPECT_FALSE(exps[1].run);
+    EXPECT_FALSE(exps[0].has_run);
+    EXPECT_FALSE(exps[1].has_run);
     EXPECT_TRUE((exps[0].id == e2.id) || (exps[1].id == e2.id));
     EXPECT_TRUE((exps[0].id == e3.id) || (exps[1].id == e3.id));
     EXPECT_TRUE((exps[0].id != e3.id) || exps[0].paramset.pms_clutseg.ranking == "ProximityRanking");

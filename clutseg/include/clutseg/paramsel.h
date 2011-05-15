@@ -89,7 +89,7 @@ namespace clutseg {
 
     struct Experiment : public Serializable {
       
-        Experiment() : run(false) {} // TODO:
+        Experiment() : has_run(false) {} // TODO:
  
         Paramset paramset; 
         Response response;
@@ -100,7 +100,7 @@ namespace clutseg {
          * it has been carried out, and the experiment is serialized to the database
          * column response_id will be a valid reference into table response. If not
          * run yet, column response_id will be set to NULL when serializing. */
-        bool run;
+        bool has_run;
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
@@ -109,6 +109,8 @@ namespace clutseg {
 
     void selectExperimentsNotRun(sqlite3* & db, std::vector<Experiment> & exps);
 
+    void sortExperimentsByTrainFeatures(std::vector<Experiment> & exps);
+    
     typedef std::map<std::string, std::string> MemberMap;
    
     // TODO: use template?
