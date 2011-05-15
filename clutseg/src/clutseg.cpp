@@ -80,6 +80,14 @@ namespace clutseg {
         accept_threshold_ = accept_threshold;
     }
 
+    Ptr<GuessRanking> ClutSegmenter::getRanking() const {
+        return ranking_;
+    }
+
+    void ClutSegmenter::setRanking(const Ptr<GuessRanking> & ranking) {
+        ranking_ = ranking;
+    }
+
     set<string> ClutSegmenter::getTemplateNames() const {
         set<string> s;
         BOOST_FOREACH(const Ptr<TexturedObject> & t, objects_) {

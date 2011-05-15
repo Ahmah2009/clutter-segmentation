@@ -2,6 +2,9 @@
  * Author: Julius Adorf
  */
 
+#ifndef _RANKING_H_
+#define _RANKING_H_
+
 #include <cv.h>
 #include <tod/detecting/GuessGenerator.h>
 #include <map>
@@ -110,3 +113,4 @@ namespace clutseg {
 
 }
 
+#endif

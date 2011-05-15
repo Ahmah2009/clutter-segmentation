@@ -26,6 +26,12 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
+    TrainFeatures::TrainFeatures(const std::string & train_set,
+                                    const tod::FeatureExtractionParams & fe_params) :
+                                    train_set(train_set), fe_params(fe_params) {}
+
+    TrainFeatures::TrainFeatures() {}
+
     void TrainFeatures::generate() {
         bfs::path p(getenv("CLUTSEG_PATH"));
         bfs::path train_dir = p / train_set;

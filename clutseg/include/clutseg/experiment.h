@@ -16,6 +16,9 @@ namespace clutseg {
     /** Cache entry */
     struct TrainFeatures {
 
+        TrainFeatures();
+        TrainFeatures(const std::string & train_set, const tod::FeatureExtractionParams & fe_params);
+
         std::string train_set;
         tod::FeatureExtractionParams fe_params;
 
