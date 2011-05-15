@@ -1,15 +1,11 @@
 /**
  * Author: Julius Adorf
- *
- * This module defines functionality for evaluating a system learnt on a
- * specific parameter set on testing set.
  */
 
 #ifndef _EXPERIMENT_H_
 #define _EXPERIMENT_H_
 
 #include <boost/filesystem.hpp>
-#include <sqlite3.h>
 #include <string>
 #include <tod/training/feature_extraction.h>
 
@@ -30,6 +26,39 @@ namespace clutseg {
      * training data set and the feature extraction parameters. This cache manager
      * is responsible for retrieving existing training feature sets, and for
      * determining whether new feature sets have to be generated.
+     *
+     * Extracting the features from training images is a very expensive step, it
+     * shall not repated and this class allows to cache training features. Masking
+     * and pose estimation is done up-front and does not have to be considered.
+     * The cache directory is organized in an hierarchical manner. The first level
+     * distinguishes between features that have been generated from different
+     * training data. The second level distinguishes between features that have
+     * been generated using different feature configurations.
+     *
+     * Example:
+     * train_bases/
+     *    tod_kinect_train/
+     *    ias_kinect_train/
+     *    ias_kinect_train_v2/
+     *        71bcccd2efe711e112f0e4b8e1c2465a86133a6d/
+     *        586105d85ee7102613a3c56ddf0be52475a40aed/
+     *        635b0a4b2972d8d0a82f788da39a4f12a31ca92e/
+     *            assam_tea/
+     *                image_00000.png.f3d.yaml.gz
+     *                image_00001.png.f3d.yaml.gz
+     *                ...
+     *            ...
+     *            features.config.yaml
+     *            config.txt
+     *       ...
+     *   ...
+     *
+     *
+     * The names of the cache entries are sha1 hash values generated from
+     * features.config.yaml files. Checking collisions is probably just
+     * paranoid (less than 10**-20), but could also be done by comparing
+     * requested feature configuration with the feature configuration loaded
+     * from the training set.
      */
     class TrainFeaturesCache {
 
@@ -39,17 +68,17 @@ namespace clutseg {
                 TrainFeaturesCache();
             #endif
 
-            TrainFeaturesCache(const std::string & cache_dir);
+            TrainFeaturesCache(const boost::filesystem::path & cache_dir);
 
-            std::string trainFeaturesDir(const TrainFeatures & train_features);
+            boost::filesystem::path trainFeaturesDir(const TrainFeatures & tr_feat);
 
-            bool trainFeaturesExist(const TrainFeatures & train_features);
+            bool trainFeaturesExist(const TrainFeatures & tr_feat);
 
-            void addTrainFeatures(const TrainFeatures & train_features, bool consistency_check = true);
+            void addTrainFeatures(const TrainFeatures & tr_feat, bool consistency_check = true);
 
         private:
 
-            std::string cache_dir_;
+            boost::filesystem::path cache_dir_;
 
     };
 

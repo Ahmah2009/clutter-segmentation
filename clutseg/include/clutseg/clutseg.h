@@ -12,6 +12,7 @@
 #include <cv.h>
 #include <limits>
 #include <pcl/point_types.h>
+#include <set>
 #include <tod/detecting/GuessGenerator.h>
 #include <tod/detecting/Recognizer.h>
 
@@ -50,13 +51,21 @@ namespace clutseg {
                             tod::Guess & resultingGuess,
                             PointCloudT & inliersCloud);
 
+            /** Retrieves parameters used for detection stage. Writes to the
+             * parameters are transparent to the segmenter. */
             tod::TODParameters & getDetectParams();
 
+            /** Retrieves parameters used for locating stage. Writes to the
+             * parameters are transparent to the segmenter. */
             tod::TODParameters & getLocateParams();
 
             int getAcceptThreshold() const;
 
             void setAcceptThreshold(int accept_threshold);
+
+            /** Gets a set of template objects this segmenter knows, such as
+              * assam_tea, haltbare_milch, and so on. */
+            std::set<std::string> getTemplateNames() const;
 
         private:
 

@@ -136,8 +136,8 @@ struct features_worker
             masker.mask(f2d);
             if (f2d.mask.empty())
             {
-              std::cout << "[DETECTOR] FAILED to detect features (no mask): " << x << std::endl;
-            sync(stats_lock, stats.failure_cnt++);
+                std::cout << "[DETECTOR] FAILED to detect features (no mask): " << x << std::endl;
+                sync(stats_lock, stats.failure_cnt++);
              // mout("\nno mask for file: " << x << endl);
               continue;
             }
@@ -149,6 +149,8 @@ struct features_worker
             extractor->detectAndExtract(f2d);
             if (f2d.keypoints.size() == 0) {
                 std::cout << "[DETECTOR] No keypoints detected on " << x << std::endl;
+            } else {
+                std::cout << "[DETECTOR] Detected " << f2d.keypoints.size() << " keypoints on  " << x << std::endl;
             }
             sync(stats_lock, stats.success_cnt++);
             sync(stats_lock, stats.tot_keypoint_cnt += f2d.keypoints.size());

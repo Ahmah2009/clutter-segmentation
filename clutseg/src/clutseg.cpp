@@ -80,6 +80,14 @@ namespace clutseg {
         accept_threshold_ = accept_threshold;
     }
 
+    set<string> ClutSegmenter::getTemplateNames() const {
+        set<string> s;
+        BOOST_FOREACH(const Ptr<TexturedObject> & t, objects_) {
+            s.insert(t->name);
+        }
+        return s;
+    }
+
     void initRecognizer(Ptr<Recognizer> & recognizer, TrainingBase & base, TODParameters params, const string & baseDirectory) {
         Ptr<Matcher> rtMatcher = Matcher::create(params.matcherParams);
         rtMatcher->add(base);
