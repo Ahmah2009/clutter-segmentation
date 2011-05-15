@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
     // process can be interrupted without breaking the work of the last few
     // hours. Also, the parameter configuration and the generation of new
     // parameter sets is somewhat separated.
+
     for (size_t i = 0; i < trainingParams.size(); i++) {
         // Extract training features
         // Load training base

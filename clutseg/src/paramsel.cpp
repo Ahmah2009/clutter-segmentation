@@ -5,6 +5,7 @@
 #include "clutseg/paramsel.h"
 #include "clutseg/db.h"
 
+#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
@@ -284,7 +285,21 @@ namespace clutseg {
     }
 
    void selectExperimentsNotRun(sqlite3* & db, vector<Experiment> & exps) {
-
+        sqlite3_stmt *select;
+        string sql = "select id from experiment where response_id is null;";
+        db_prepare(db, select, sql);
+        // TODO: clear interface for logging sql statements, is there any hook in sqlite3?
+        cout << "[SQL] " << sql << endl;
+        vector<int> ids;
+        while (sqlite3_step(select) == SQLITE_ROW) {
+            ids.push_back(sqlite3_column_int(select, 0));
+        }
+        exps.resize(ids.size());
+        for (size_t i = 0; i < ids.size(); i++) {
+            exps[i].id = ids[i];
+            exps[i].deserialize(db);
+        } 
+        sqlite3_finalize(select);
     }
 }
 
