@@ -172,11 +172,15 @@ namespace clutseg {
     }
 
     void Experiment::serialize(sqlite3* db) {
+        if (run) {
+            response.serialize(db);
+        }
         paramset.serialize(db);
-        response.serialize(db);
         MemberMap m;
         setMemberField(m, "paramset_id", paramset.id);
-        setMemberField(m, "response_id", response.id);
+        if (run) {
+            setMemberField(m, "response_id", response.id);
+        }
         setMemberField(m, "train_set", train_set);
         setMemberField(m, "test_set", test_set);
         setMemberField(m, "time", time);
@@ -187,14 +191,22 @@ namespace clutseg {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select paramset_id, response_id, train_set, test_set, time from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
+       
+        run = (sqlite3_column_type(read, 1) != SQLITE_NULL);
         paramset.id = sqlite3_column_int64(read, 0);
-        response.id = sqlite3_column_int64(read, 1);
+        if (run) {
+            response.id = sqlite3_column_int64(read, 1);
+        } else {
+            response.id = -1;
+        }
         train_set = string((const char*) sqlite3_column_text(read, 2));
         test_set = string((const char*) sqlite3_column_text(read, 3));
         time = string((const char*) sqlite3_column_text(read, 4));
         sqlite3_finalize(read);
         paramset.deserialize(db);
-        response.deserialize(db);
+        if (run) {
+            response.deserialize(db);
+        }
     }
 
     void setMemberField(MemberMap & m, const std::string & field, float val) {
@@ -271,5 +283,8 @@ namespace clutseg {
         }
     }
 
+   void selectExperimentsNotRun(sqlite3* & db, vector<Experiment> & exps) {
+
+    }
 }
 

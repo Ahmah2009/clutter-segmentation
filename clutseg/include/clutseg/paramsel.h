@@ -11,6 +11,7 @@
 #include <tod/training/feature_extraction.h>
 #include <tod/detecting/GuessGenerator.h>
 #include <tod/detecting/Parameters.h>
+#include <vector>
 
 namespace clutseg {
 
@@ -77,6 +78,8 @@ namespace clutseg {
 
     struct Response : public Serializable {
 
+        Response() : value(0.0) {}
+
         float value;
 
         virtual void serialize(sqlite3* db);
@@ -85,17 +88,26 @@ namespace clutseg {
     };
 
     struct Experiment : public Serializable {
-       
+      
+        Experiment() : run(false) {} // TODO:
+ 
         Paramset paramset; 
         Response response;
         std::string train_set;
         std::string test_set;
         std::string time;
+        /** Specifies whether this experiment has already been carried out. In case
+         * it has been carried out, and the experiment is serialized to the database
+         * column response_id will be a valid reference into table response. If not
+         * run yet, column response_id will be set to NULL when serializing. */
+        bool run;
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
 
     };
+
+    void selectExperimentsNotRun(sqlite3* & db, std::vector<Experiment> & exps);
 
     typedef std::map<std::string, std::string> MemberMap;
    
