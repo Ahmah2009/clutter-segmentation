@@ -2,6 +2,7 @@
  * Author: Julius Adorf
  */
 
+#include "clutseg/clutseg.h"
 #include "clutseg/experiment.h"
 
 #include <sqlite3.h>
@@ -12,6 +13,7 @@ namespace clutseg {
 
         public:
 
+            ExperimentRunner();
             ExperimentRunner(sqlite3* db, const TrainFeaturesCache & cache);
 
             /** Runs experiments, using configurations provided by a database.  After
@@ -25,10 +27,14 @@ namespace clutseg {
 
         private:
 
+            void runExperiment(const ClutSegmenter & segmenter, Experiment & exp);
+
             sqlite3* db_;
             TrainFeaturesCache cache_;
 
     };
+
+    boost::filesystem::path cloudPath(const boost::filesystem::path & img_path);
 
 }
 

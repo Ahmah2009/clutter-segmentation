@@ -24,6 +24,9 @@ namespace clutseg {
 
         void generate();
 
+        bool operator==(const TrainFeatures & rhs) const;
+        bool operator!=(const TrainFeatures & rhs) const;
+
     };
 
     /** Caches extracted features from training images in a two-level

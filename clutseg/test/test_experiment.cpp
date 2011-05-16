@@ -78,6 +78,28 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
     EXPECT_EQ(sha1("./data/features.config.yaml"), sha1(feParams));
 }
 
+TEST_F(ExperimentTest, TrainFeaturesEqual) {
+    FeatureExtractionParams feParams1;
+    FeatureExtractionParams feParams2;
+    readFeParams("./data/features.config.yaml", feParams1);
+    readFeParams("./data/features.config.yaml", feParams2);
+    TrainFeatures tr_feat_1("train_set", feParams1);
+    TrainFeatures tr_feat_2("train_set", feParams2);
+    EXPECT_TRUE(tr_feat_1 == tr_feat_2);
+}
+
+TEST_F(ExperimentTest, TrainFeaturesNotEqual) {
+    FeatureExtractionParams feParams1;
+    FeatureExtractionParams feParams2;
+    readFeParams("./data/features.config.yaml", feParams1);
+    readFeParams("./data/features.config.yaml", feParams2);
+    feParams2.detector_type = "STAR";
+    TrainFeatures tr_feat_1("train_set", feParams1);
+    TrainFeatures tr_feat_2("train_set", feParams2);
+    EXPECT_TRUE(tr_feat_1 != tr_feat_2);
+}
+
+
 TEST_F(ExperimentTest, TestTrainFeaturesDir) {
     EXPECT_EQ(feat_dir.string(), cache.trainFeaturesDir(tr_feat)); 
 }

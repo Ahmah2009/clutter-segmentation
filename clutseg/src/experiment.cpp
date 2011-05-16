@@ -90,6 +90,14 @@ namespace clutseg {
         dirty.clear();
     }
 
+    bool TrainFeatures::operator==(const TrainFeatures & rhs) const {
+        return train_set == rhs.train_set && sha1(fe_params) == sha1(rhs.fe_params);
+    }
+
+    bool TrainFeatures::operator!=(const TrainFeatures & rhs) const {
+        return !operator==(rhs);
+    }
+
     #ifdef TEST
         TrainFeaturesCache::TrainFeaturesCache() {}
     #endif
