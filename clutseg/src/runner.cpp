@@ -49,6 +49,9 @@ namespace clutseg {
                         cache_.trainFeaturesDir(tr_feat).string(),
                         TODParameters(), TODParameters());
                 }
+                // TODO: extract method configureSegmenter
+                // TODO: extract method mustReload
+
                 // Online change configuration
                 segmenter.getDetectParams().feParams = exp.paramset.recog_pms_fe;
                 segmenter.getDetectParams().matcherParams = exp.paramset.detect_pms_match;
@@ -74,6 +77,7 @@ namespace clutseg {
 
                 // for all images run segmenter.recog
                 // FIXME:
+                // TODO: check which statistics might be useful and cannot be generated afterwards
 
                 // run the experiment
                 // populate the response and results

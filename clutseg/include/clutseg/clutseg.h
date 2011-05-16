@@ -7,6 +7,7 @@
 
 #include "clutseg/options.h"
 #include "clutseg/common.h"
+#include "clutseg/paramsel.h"
 #include "clutseg/ranking.h"
 
 #include <cv.h>
@@ -37,7 +38,7 @@ namespace clutseg {
             ClutSegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
                             const tod::TODParameters & locate_params,
-                            const cv::Ptr<GuessRanking> ranking_ = new InliersRanking(),
+                            const cv::Ptr<GuessRanking> ranking = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity());
 
             /** Attempts to find an object in the scene. It makes a best guess
@@ -70,6 +71,8 @@ namespace clutseg {
             /** Gets a set of template objects this segmenter knows, such as
               * assam_tea, haltbare_milch, and so on. */
             std::set<std::string> getTemplateNames() const;
+
+            void reconfigure(const Paramset & params);
 
         private:
 

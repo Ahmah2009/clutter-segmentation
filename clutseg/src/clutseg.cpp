@@ -96,6 +96,27 @@ namespace clutseg {
         return s;
     }
 
+    void ClutSegmenter::reconfigure(const Paramset & paramset) {
+        detect_params_.feParams = paramset.recog_pms_fe;
+        detect_params_.matcherParams = paramset.detect_pms_match;
+        detect_params_.guessParams = paramset.detect_pms_guess;
+        locate_params_.feParams = paramset.recog_pms_fe;
+        locate_params_.matcherParams = paramset.locate_pms_match;
+        locate_params_.guessParams = paramset.locate_pms_guess;
+        string r = paramset.pms_clutseg.ranking;
+        if (r == "InliersRanking") {
+            ranking_ = new InliersRanking(); 
+        } else if (r == "ProximityRanking") {
+            ranking_ = new ProximityRanking();
+        } else if (r == "UniformRanking") {
+            ranking_ = new UniformRanking();
+        } else {
+            throw runtime_error("Unknown ranking: " + r);
+        }
+        accept_threshold_ = paramset.pms_clutseg.accept_threshold;
+    }
+
+
     void initRecognizer(Ptr<Recognizer> & recognizer, TrainingBase & base, TODParameters params, const string & baseDirectory) {
         Ptr<Matcher> rtMatcher = Matcher::create(params.matcherParams);
         rtMatcher->add(base);

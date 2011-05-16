@@ -6,10 +6,12 @@
 
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
+#include "clutseg/db.h"
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
 #include <gtest/gtest.h>
+#include <limits.h>
 #include <tod/detecting/Loader.h>
 #include <pcl/io/pcd_io.h>
 #include <opencv2/highgui/highgui.hpp>
@@ -180,5 +182,21 @@ TEST_F(ClutsegTest, RecognizeForemostInClutter) {
     drawGuess(canvas, guess, camera, PoseRT());
     imshow("RecognizeForemostInClutter", canvas);
     waitKey(-1);
+}
+
+TEST_F(ClutsegTest, Reconfigure) {
+    Experiment exp;
+    exp.id = 1;
+    sqlite3* db;
+    string fn = "build/ClutsegSelTest.sqlite3";
+    boost::filesystem::remove(fn);
+    boost::filesystem::copy_file("./data/test.sqlite3", fn);
+    db_open(db, fn);
+    exp.deserialize(db);
+    EXPECT_EQ("DynamicFAST", segmenter.getLocateParams().feParams.detector_type);
+    EXPECT_GT(-10, segmenter.getAcceptThreshold());
+    segmenter.reconfigure(exp.paramset);
+    EXPECT_EQ("FAST", segmenter.getLocateParams().feParams.detector_type);
+    EXPECT_FLOAT_EQ(15.0, segmenter.getAcceptThreshold());
 }
 
