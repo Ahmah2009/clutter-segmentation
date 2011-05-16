@@ -28,6 +28,7 @@ TEST(ConnComp, ReadMask) {
 TEST(ConnComp, FillSmallConnectedComponents) {
     Mat img = imread("data/mask.png", 0);
 
+    ASSERT_FALSE(img.empty());
     img = img > 1;
     namedWindow( "Source", 1 );
     imshow( "Source", img);
