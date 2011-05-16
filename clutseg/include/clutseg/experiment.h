@@ -72,9 +72,7 @@ namespace clutseg {
 
         public:
 
-            #ifdef TEST
-                TrainFeaturesCache();
-            #endif
+            TrainFeaturesCache();
 
             TrainFeaturesCache(const boost::filesystem::path & cache_dir);
 
@@ -85,7 +83,9 @@ namespace clutseg {
             void addTrainFeatures(const TrainFeatures & tr_feat, bool consistency_check = true);
 
         private:
-
+            
+            bool initialized_;
+            
             boost::filesystem::path cache_dir_;
 
     };

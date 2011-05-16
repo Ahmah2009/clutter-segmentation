@@ -179,7 +179,7 @@ TEST_F(ParamSelTest, experiment_write_read) {
     EXPECT_EQ(true, rest.has_run);
 }
 
-TEST_F(ParamSelTest, select_experiments_not_has_run) {
+TEST_F(ParamSelTest, SelectExperimentsNotRun) {
     // We need to be able to find those experiments that have not been has_run
     // yet. These are candidates for being carried out next. 
     Experiment e1 = experiment;

@@ -40,7 +40,7 @@ namespace clutseg {
  
     void db_prepare(sqlite3* & db, sqlite3_stmt* & stmt, const std::string & sql) {
         if (sqlite3_prepare_v2(db, sql.c_str(), sql.size(), &stmt, NULL) != SQLITE_OK) {
-            throw ios_base::failure("Error when closing database: " + string(sqlite3_errmsg(db)));
+            throw ios_base::failure("Error when preparing statement: " + string(sqlite3_errmsg(db)));
         }
     }
 

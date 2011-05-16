@@ -43,6 +43,8 @@ namespace clutseg {
         FileFlag dirty(train_dir / "dirty.flag");
         dirty.set();
 
+        writeFeParams(train_dir / "features.config.yaml", fe_params);
+
         // As tod_training/apps/detector.cpp and
         // tod_training/apps/f3d_creator.cpp are not included in the linked
         // libraries, we cannot trigger these processes directly from C++ but
@@ -82,7 +84,9 @@ namespace clutseg {
             for (ssize_t i = 0; i < len; i++) {
                 s << line[i];
             }
-            cout << s.str();
+            if (s.str().find("WARNING") || s.str().find("ERROR")) {
+                cout << s.str();
+            }
         } while (len != -1);
         pclose(in);
 
@@ -98,9 +102,8 @@ namespace clutseg {
         return !operator==(rhs);
     }
 
-    #ifdef TEST
-        TrainFeaturesCache::TrainFeaturesCache() {}
-    #endif
+    // TODO: fix problems with empty parameter constructors
+    TrainFeaturesCache::TrainFeaturesCache() {}
 
     TrainFeaturesCache::TrainFeaturesCache(const bfs::path & cache_dir) : cache_dir_(cache_dir) {}
 

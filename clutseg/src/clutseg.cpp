@@ -18,10 +18,7 @@ using namespace tod;
 
 namespace clutseg {
 
-    #ifdef TEST
-        // see header
-        ClutSegmenter::ClutSegmenter() {}
-    #endif
+    ClutSegmenter::ClutSegmenter() : initialized_(false) {}
         
     ClutSegmenter::ClutSegmenter(const string & baseDirectory,
                                     const string & detect_config,
@@ -30,7 +27,8 @@ namespace clutseg {
                                     float accept_threshold) :
                                 baseDirectory_(baseDirectory),
                                 ranking_(ranking),
-                                accept_threshold_(accept_threshold) {
+                                accept_threshold_(accept_threshold),
+                                initialized_(true) {
         loadParams(detect_config, detect_params_);
         loadParams(locate_config, locate_params_);
         loadBase();
@@ -45,7 +43,8 @@ namespace clutseg {
                                 detect_params_(detect_params),
                                 locate_params_(locate_params),
                                 ranking_(ranking),
-                                accept_threshold_(accept_threshold) {
+                                accept_threshold_(accept_threshold),
+                                initialized_(true) {
         loadBase();
     }
 
