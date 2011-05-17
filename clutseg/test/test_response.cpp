@@ -34,7 +34,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
     Guess guess(object, poseRtToPose(pose), Mat(), Mat(), Mat());
     GroundTruth groundTruth;
     groundTruth.push_back(np);
-    EXPECT_NEAR(0.0, sse_response(guess, groundTruth), 1e-10);
+    EXPECT_NEAR(0.0, sse_response(guess, groundTruth), 1e-7);
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
@@ -48,7 +48,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
     Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
     GroundTruth groundTruth;
     groundTruth.push_back(np);
-    EXPECT_NEAR(0.5, sse_response(guess, groundTruth), 1e-10);
+    EXPECT_NEAR(0.5, sse_response(guess, groundTruth), 1e-7);
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
