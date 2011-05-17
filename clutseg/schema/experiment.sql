@@ -5,7 +5,7 @@ create table experiment (
     response_id integer default null references response(id),
     train_set varchar(255) not null,
     test_set varchar(255) not null,
-    time datetime not null,
+    time datetime,
     vcs_commit varchar(255) 
 );
 

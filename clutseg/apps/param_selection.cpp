@@ -53,8 +53,5 @@ int main(int argc, char **argv) {
     // are close to each other and one of the parameter configurations shows
     // extreme results compared to the others and we assume a somewhat
     // well-behaving problem, then we can notice such an outlier.
-            
-    // IDEA: save git commit
-    // take first word out of git log -1 --pretty=oneline
 }
 
