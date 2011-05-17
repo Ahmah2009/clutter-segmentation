@@ -96,6 +96,8 @@ namespace clutseg {
         std::string train_set;
         std::string test_set;
         std::string time;
+        std::string vcs_commit;
+
         /** Specifies whether this experiment has already been carried out. In case
          * it has been carried out, and the experiment is serialized to the database
          * column response_id will be a valid reference into table response. If not
@@ -106,6 +108,8 @@ namespace clutseg {
         virtual void deserialize(sqlite3* db);
 
     };
+
+    bool getVcsCommit(std::string & vcs_commit);
 
     void selectExperimentsNotRun(sqlite3* & db, std::vector<Experiment> & exps);
 

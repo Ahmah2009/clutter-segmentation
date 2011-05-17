@@ -85,7 +85,6 @@ namespace clutseg {
 
             void loadBase();
 
-            bool initialized_;
             std::string baseDirectory_;
             tod::TODParameters detect_params_; 
             tod::TODParameters locate_params_; 
@@ -93,6 +92,7 @@ namespace clutseg {
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
             cv::Ptr<GuessRanking> ranking_;
             float accept_threshold_;
+            bool initialized_;
 
     };
 

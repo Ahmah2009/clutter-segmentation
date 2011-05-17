@@ -71,6 +71,7 @@ namespace clutseg {
             // TODO: compute contribution to response
         }
         // TODO: save experiment results
+        getVcsCommit(exp.vcs_commit);
         exp.has_run = true;
     }
 

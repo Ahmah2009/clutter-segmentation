@@ -57,6 +57,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.paramset.locate_pms_guess.minInliersCount = 5; 
         experiment.paramset.locate_pms_guess.maxProjectionError = 12; 
         experiment.response.value = 0.87;
+        getVcsCommit(experiment.vcs_commit);
     }
 
     void TearDown() {
@@ -67,6 +68,12 @@ struct ParamSelTest : public ::testing::Test {
     Experiment experiment;
 
 };
+
+TEST_F(ParamSelTest, GetVcsCommit) {
+    string vcs_commit;
+    EXPECT_TRUE(getVcsCommit(vcs_commit));
+    EXPECT_EQ(40, vcs_commit.size());
+}
 
 TEST_F(ParamSelTest, response_read) {
     // Validate against data as given by data/test.sql
@@ -150,6 +157,7 @@ TEST_F(ParamSelTest, experiment_update) {
     e.deserialize(db); 
     e.train_set = "train_v2";
     e.test_set = "test_v2";
+    e.vcs_commit = "aaaaa1d7307ef27a65ab82f297be80390b5ccccc";
     e.serialize(db);
     EXPECT_EQ(1, e.id);
     Experiment e2;
@@ -157,6 +165,7 @@ TEST_F(ParamSelTest, experiment_update) {
     e2.deserialize(db);
     EXPECT_EQ(e.train_set, e2.train_set);
     EXPECT_EQ(e.test_set, e2.test_set);
+    EXPECT_EQ(e.vcs_commit, e2.vcs_commit);
     EXPECT_EQ(1, e2.id);
 }
 
@@ -177,6 +186,13 @@ TEST_F(ParamSelTest, experiment_write_read) {
     EXPECT_EQ(experiment.test_set, rest.test_set);
     EXPECT_EQ(13, rest.response.value);
     EXPECT_EQ(true, rest.has_run);
+}
+
+TEST_F(ParamSelTest, experiment_vcs_commit) {
+    Experiment exp;
+    exp.id = 1;
+    exp.deserialize(db);
+    EXPECT_EQ("ccb521d7307ef27a65ab82f297be80390b5599bb", experiment.vcs_commit);
 }
 
 TEST_F(ParamSelTest, SelectExperimentsNotRun) {

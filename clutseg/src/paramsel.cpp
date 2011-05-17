@@ -187,12 +187,15 @@ namespace clutseg {
         setMemberField(m, "train_set", train_set);
         setMemberField(m, "test_set", test_set);
         setMemberField(m, "time", time);
+        if (vcs_commit != "") {
+            setMemberField(m, "vcs_commit", vcs_commit);
+        }
         insertOrUpdate(db, "experiment", m, id);
     }
     
     void Experiment::deserialize(sqlite3* db) {
         sqlite3_stmt *read;
-        db_prepare(db, read, boost::format("select paramset_id, response_id, train_set, test_set, time from experiment where id=%d;") % id);
+        db_prepare(db, read, boost::format("select paramset_id, response_id, train_set, test_set, time, vcs_commit from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
        
         has_run = (sqlite3_column_type(read, 1) != SQLITE_NULL);
@@ -205,10 +208,31 @@ namespace clutseg {
         train_set = string((const char*) sqlite3_column_text(read, 2));
         test_set = string((const char*) sqlite3_column_text(read, 3));
         time = string((const char*) sqlite3_column_text(read, 4));
+        vcs_commit = string((const char*) sqlite3_column_text(read, 5));
         sqlite3_finalize(read);
         paramset.deserialize(db);
         if (has_run) {
             response.deserialize(db);
+        }
+    }
+
+    bool getVcsCommit(std::string & vcs_commit) {
+        FILE *in;
+        in = popen(str(boost::format("git log -1 --format=oneline %s/clutter-segmentation") % getenv("CLUTSEG_PATH")).c_str(), "r");
+        char *line = NULL;
+        size_t n = 0;
+        ssize_t len = getline(&line, &n, in);
+        stringstream s;
+        for (ssize_t i = 0; i < len; i++) {
+            s << line[i];
+        }
+        pclose(in);
+        size_t offs = s.str().find(" ");
+        if (s.str() != "" && offs != string::npos && offs == 40) {
+            vcs_commit = s.str().substr(0, offs);
+            return true;
+        } else {
+            return false;
         }
     }
 
