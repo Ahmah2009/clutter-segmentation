@@ -43,6 +43,9 @@ target_link_libraries(clutsegmenter ${PROJECT_NAME})
 rosbuild_add_executable(fixmask apps/fixmask.cpp)
 target_link_libraries(fixmask ${PROJECT_NAME})
 
+rosbuild_add_executable(ground_truth_collector apps/ground_truth_collector.cpp)
+target_link_libraries(ground_truth_collector ${PROJECT_NAME})
+
 rosbuild_add_executable(keypoints_viewer apps/keypoints_viewer.cpp)
 target_link_libraries(keypoints_viewer ${PROJECT_NAME})
 

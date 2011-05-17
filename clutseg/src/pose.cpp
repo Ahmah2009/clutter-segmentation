@@ -111,6 +111,7 @@ namespace clutseg {
         Mat mvrot;
         Rodrigues(src.rvec, mvrot);
         modelToView(src.tvec, mvrot, model_tvec, dst.tvec);
+        dst.estimated = true;
         return dst;
     }
 
@@ -122,6 +123,7 @@ namespace clutseg {
         PoseRT dst;
         Rodrigues(P * D, dst.rvec);
         dst.tvec = src.tvec.clone();
+        dst.estimated = true;
         return dst;
     }
 
