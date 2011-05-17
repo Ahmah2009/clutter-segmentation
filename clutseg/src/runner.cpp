@@ -8,6 +8,7 @@
 #include "clutseg/experiment.h"
 #include "clutseg/paramsel.h"
 #include "clutseg/ranking.h"
+#include "clutseg/response.h"
 #include "clutseg/testdesc.h"
 
 #include <boost/foreach.hpp>
@@ -47,6 +48,8 @@ namespace clutseg {
         // TODO: check which statistics might be useful and cannot be generated afterwards
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / exp.test_set;
+        CutSseResponseFunction response;
+        float r_acc = 0;
         TestDesc testdesc = loadTestDesc(test_dir / "testdesc.txt");
         // Loop over all images in the test set
         for (TestDesc::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
@@ -69,7 +72,11 @@ namespace clutseg {
             PointCloudT inliersCloud;
             bool pos = segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
-            // TODO: compute contribution to response
+            if (pos) {
+                // FIXME: r_acc += response(guess, groundTruth);
+            } else {
+                r_acc += 1;
+            }
         }
         // TODO: save experiment results
         getVcsCommit(exp.vcs_commit);

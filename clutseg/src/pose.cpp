@@ -148,5 +148,10 @@ namespace clutseg {
         return norm(d);
     }
 
+    double distBetweenLocations(const opencv_candidate::PoseRT & p,
+                                const opencv_candidate::PoseRT & q) {
+        return norm(q.tvec - p.tvec);
+    }
+
 }
 

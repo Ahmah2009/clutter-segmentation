@@ -58,6 +58,10 @@ namespace clutseg {
     double angleBetweenOrientations(const opencv_candidate::PoseRT & p,
                                     const opencv_candidate::PoseRT & q);
 
+    /** Computes the distance between the origin of p and the origin of q. */
+    double distBetweenLocations(const opencv_candidate::PoseRT & p,
+                                const opencv_candidate::PoseRT & q);
+
 }
 
 /* Alternatively
