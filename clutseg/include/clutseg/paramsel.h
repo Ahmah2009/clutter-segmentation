@@ -89,7 +89,7 @@ namespace clutseg {
 
     struct Experiment : public Serializable {
       
-        Experiment() : has_run(false) {} // TODO:
+        Experiment() : sample_size(0), has_run(false) {} // TODO:
  
         Paramset paramset; 
         Response response;
@@ -97,6 +97,7 @@ namespace clutseg {
         std::string test_set;
         std::string time;
         std::string vcs_commit;
+        int sample_size;
 
         /** Specifies whether this experiment has already been carried out. In case
          * it has been carried out, and the experiment is serialized to the database

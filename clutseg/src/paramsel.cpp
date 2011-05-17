@@ -186,6 +186,7 @@ namespace clutseg {
         }
         setMemberField(m, "train_set", train_set);
         setMemberField(m, "test_set", test_set);
+        setMemberField(m, "sample_size", sample_size);
         if (time != "") {
             setMemberField(m, "time", time);
         }
@@ -197,7 +198,7 @@ namespace clutseg {
     
     void Experiment::deserialize(sqlite3* db) {
         sqlite3_stmt *read;
-        db_prepare(db, read, boost::format("select paramset_id, response_id, train_set, test_set, time, vcs_commit from experiment where id=%d;") % id);
+        db_prepare(db, read, boost::format("select paramset_id, response_id, train_set, test_set, sample_size, time, vcs_commit from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
        
         has_run = (sqlite3_column_type(read, 1) != SQLITE_NULL);
@@ -209,9 +210,10 @@ namespace clutseg {
         }
         train_set = string((const char*) sqlite3_column_text(read, 2));
         test_set = string((const char*) sqlite3_column_text(read, 3));
+        sample_size = sqlite3_column_int(read, 4);
         if (has_run) {
-            time = string((const char*) sqlite3_column_text(read, 4));
-            vcs_commit = string((const char*) sqlite3_column_text(read, 5));
+            time = string((const char*) sqlite3_column_text(read, 5));
+            vcs_commit = string((const char*) sqlite3_column_text(read, 6));
         }
         sqlite3_finalize(read);
         paramset.deserialize(db);

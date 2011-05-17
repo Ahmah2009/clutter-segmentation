@@ -28,6 +28,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.time = "2011-01-02 20:12:23";
         experiment.train_set = "hypothetical_train_set";
         experiment.test_set = "hypothetical_test_set";
+        experiment.sample_size = 20;
         experiment.paramset.pms_clutseg.accept_threshold = 15;
         experiment.paramset.pms_clutseg.ranking = "InliersRanking";
         experiment.paramset.train_pms_fe.detector_type = "FAST";
@@ -185,6 +186,7 @@ TEST_F(ParamSelTest, experiment_read) {
     e.deserialize(db); 
     EXPECT_EQ("train", e.train_set);
     EXPECT_EQ("test", e.test_set);
+    EXPECT_EQ(5, e.sample_size);
 }
 
 TEST_F(ParamSelTest, experiment_update) {
@@ -220,6 +222,7 @@ TEST_F(ParamSelTest, experiment_write_read) {
     rest.deserialize(db); 
     EXPECT_EQ(experiment.train_set, rest.train_set);
     EXPECT_EQ(experiment.test_set, rest.test_set);
+    EXPECT_EQ(experiment.sample_size, rest.sample_size);
     EXPECT_EQ(13, rest.response.value);
     EXPECT_EQ(true, rest.has_run);
 }
