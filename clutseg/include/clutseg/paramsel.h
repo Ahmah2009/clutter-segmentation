@@ -109,6 +109,15 @@ namespace clutseg {
 
     };
 
+    void deserialize_pms_fe(sqlite3* db, tod::FeatureExtractionParams & pms_fe, int64_t & id);
+    void serialize_pms_fe(sqlite3* db, const tod::FeatureExtractionParams & pms_fe, int64_t & id);
+
+    void deserialize_pms_match(sqlite3* db, tod::MatcherParameters & pms_match, int64_t & id);
+    void serialize_pms_match(sqlite3* db, const tod::MatcherParameters & pms_match, int64_t & id);
+
+    void deserialize_pms_guess(sqlite3* db, tod::GuessGeneratorParameters & pms_guess, int64_t & id);
+    void serialize_pms_guess(sqlite3* db, const tod::GuessGeneratorParameters & pms_guess, int64_t & id);
+
     bool getVcsCommit(std::string & vcs_commit);
 
     void selectExperimentsNotRun(sqlite3* & db, std::vector<Experiment> & exps);

@@ -46,7 +46,7 @@ namespace clutseg {
     void deserialize_pms_fe(sqlite3* db, FeatureExtractionParams & pms_fe, int64_t & id) {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format(
-            "select detector_type, extractor_type, descriptor_type "
+            "select detector_type, extractor_type, descriptor_type, "
             "threshold, min_features, max_features, octaves "
             "from pms_fe where id=%d;") % id);
         db_step(read, SQLITE_ROW);
@@ -56,7 +56,7 @@ namespace clutseg {
         pms_fe.detector_params["threshold"] = sqlite3_column_double(read, 3);
         pms_fe.detector_params["min_features"] = sqlite3_column_int(read, 4);
         pms_fe.detector_params["max_features"] = sqlite3_column_int(read, 5);
-        pms_fe.extractor_params["octaves"] = sqlite3_column_int(read, 6);
+        pms_fe.detector_params["octaves"] = sqlite3_column_int(read, 6);
         sqlite3_finalize(read);
     }
 
@@ -68,7 +68,7 @@ namespace clutseg {
         setMemberField(m, "threshold", (double) pms_fe.detector_params.find("threshold")->second);
         setMemberField(m, "min_features", (int) pms_fe.detector_params.find("min_features")->second);
         setMemberField(m, "max_features", (int) pms_fe.detector_params.find("max_features")->second);
-        setMemberField(m, "octaves", (int) pms_fe.extractor_params.find("octaves")->second);
+        setMemberField(m, "octaves", (int) pms_fe.detector_params.find("octaves")->second);
         insertOrUpdate(db, "pms_fe", m, id);
     }
 
@@ -186,7 +186,9 @@ namespace clutseg {
         }
         setMemberField(m, "train_set", train_set);
         setMemberField(m, "test_set", test_set);
-        setMemberField(m, "time", time);
+        if (time != "") {
+            setMemberField(m, "time", time);
+        }
         if (vcs_commit != "") {
             setMemberField(m, "vcs_commit", vcs_commit);
         }
@@ -207,8 +209,10 @@ namespace clutseg {
         }
         train_set = string((const char*) sqlite3_column_text(read, 2));
         test_set = string((const char*) sqlite3_column_text(read, 3));
-        time = string((const char*) sqlite3_column_text(read, 4));
-        vcs_commit = string((const char*) sqlite3_column_text(read, 5));
+        if (has_run) {
+            time = string((const char*) sqlite3_column_text(read, 4));
+            vcs_commit = string((const char*) sqlite3_column_text(read, 5));
+        }
         sqlite3_finalize(read);
         paramset.deserialize(db);
         if (has_run) {

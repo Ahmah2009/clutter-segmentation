@@ -67,11 +67,17 @@ namespace clutseg {
             }
             Guess guess;
             PointCloudT inliersCloud;
-            segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
+            bool pos = segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
+            cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
             // TODO: compute contribution to response
         }
         // TODO: save experiment results
         getVcsCommit(exp.vcs_commit);
+        time_t tt = time(NULL);
+        tm *t = localtime(&tt);
+        char ts[19];
+        strftime(ts, 19, "%Y-%m-%d %H:%M:%S", t);
+        exp.time = string(ts);
         exp.has_run = true;
     }
 

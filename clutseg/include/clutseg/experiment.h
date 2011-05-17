@@ -10,6 +10,7 @@
 #include <set>
 #include <string>
 #include <tod/training/feature_extraction.h>
+#include <tod/detecting/Parameters.h>
 
 namespace clutseg {
 
@@ -98,6 +99,10 @@ namespace clutseg {
     void readFeParams(const boost::filesystem::path & p, tod::FeatureExtractionParams & feParams);
 
     void writeFeParams(const boost::filesystem::path & p, const tod::FeatureExtractionParams & feParams);
+
+    void readTodParams(const boost::filesystem::path & p, tod::TODParameters & todParams);
+
+    void writeTodParams(const boost::filesystem::path & p, const tod::TODParameters & todParams);
 
     std::set<std::string> listTemplateNames(const boost::filesystem::path & dir);
 

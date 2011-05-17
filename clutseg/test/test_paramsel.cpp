@@ -36,12 +36,14 @@ struct ParamSelTest : public ::testing::Test {
         experiment.paramset.train_pms_fe.detector_params["min_features"] = 0;
         experiment.paramset.train_pms_fe.detector_params["max_features"] = 0;
         experiment.paramset.train_pms_fe.detector_params["threshold"] = 0;
+        experiment.paramset.train_pms_fe.detector_params["octaves"] = 3;
         experiment.paramset.recog_pms_fe.detector_type = "FAST";
         experiment.paramset.recog_pms_fe.extractor_type = "multi-scale";
         experiment.paramset.recog_pms_fe.descriptor_type = "rBRIEF";
         experiment.paramset.recog_pms_fe.detector_params["min_features"] = 0;
         experiment.paramset.recog_pms_fe.detector_params["max_features"] = 0;
         experiment.paramset.recog_pms_fe.detector_params["threshold"] = 0;
+        experiment.paramset.recog_pms_fe.detector_params["octaves"] = 3;
         experiment.paramset.detect_pms_match.type = "LSH-BINARY";
         experiment.paramset.detect_pms_match.knn = 3; 
         experiment.paramset.detect_pms_match.doRatioTest = true; 
@@ -106,6 +108,41 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.value, rest.value);
 }
 
+TEST_F(ParamSelTest, pms_fe_read) {
+    // Validate against data as given by data/test.sql
+    FeatureExtractionParams feParams;
+    int64_t id = 1;
+    deserialize_pms_fe(db, feParams, id); 
+    EXPECT_EQ("FAST", feParams.detector_type);
+    EXPECT_EQ("multi-scale", feParams.extractor_type);
+    EXPECT_EQ("rBRIEF", feParams.descriptor_type);
+    EXPECT_EQ(3, feParams.detector_params["octaves"]);
+    EXPECT_FLOAT_EQ(40, feParams.detector_params["threshold"]);
+    EXPECT_FLOAT_EQ(0, feParams.detector_params["min_features"]);
+    EXPECT_FLOAT_EQ(0, feParams.detector_params["max_features"]);
+}
+
+TEST_F(ParamSelTest, pms_fe_update) {
+    FeatureExtractionParams feParams;
+    int64_t id = 1;
+    deserialize_pms_fe(db, feParams, id); 
+    feParams.detector_type = "STAR";
+    serialize_pms_fe(db, feParams, id);
+    FeatureExtractionParams feParams2;
+    deserialize_pms_fe(db, feParams2, id);
+    EXPECT_EQ(feParams.detector_type, feParams2.detector_type);
+    EXPECT_EQ("STAR", feParams2.detector_type);
+}
+
+TEST_F(ParamSelTest, pms_fe_write_read) {
+    Response & orig = experiment.response;
+    orig.serialize(db);
+    Response rest;
+    rest.id = orig.id;
+    rest.deserialize(db); 
+    EXPECT_FLOAT_EQ(orig.value, rest.value);
+}
+
 TEST_F(ParamSelTest, pms_clutseg_read) {
     // Validate against data as given by data/test.sql
     ClutsegParams p;
@@ -130,7 +167,6 @@ TEST_F(ParamSelTest, pms_clutseg_update) {
     EXPECT_EQ(p.ranking, p2.ranking);
     EXPECT_EQ(1, p2.id);
 }
-
 
 TEST_F(ParamSelTest, pms_clutseg_write_read) {
     ClutsegParams & orig = experiment.paramset.pms_clutseg;
@@ -192,7 +228,7 @@ TEST_F(ParamSelTest, experiment_vcs_commit) {
     Experiment exp;
     exp.id = 1;
     exp.deserialize(db);
-    EXPECT_EQ("ccb521d7307ef27a65ab82f297be80390b5599bb", experiment.vcs_commit);
+    EXPECT_EQ("ccb521d7307ef27a65ab82f297be80390b5599bb", exp.vcs_commit);
 }
 
 TEST_F(ParamSelTest, SelectExperimentsNotRun) {

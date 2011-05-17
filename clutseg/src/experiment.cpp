@@ -213,12 +213,26 @@ namespace clutseg {
         in.release();
     }
 
-    void writeFeParams(const bfs::path & p, const tod::FeatureExtractionParams & feParams) {
+    void writeFeParams(const bfs::path & p, const FeatureExtractionParams & feParams) {
         cv::FileStorage out(p.string(), cv::FileStorage::WRITE);
         out << FeatureExtractionParams::YAML_NODE_NAME;
         feParams.write(out);
         out.release();
     }
+
+    void readTodParams(const bfs::path & p, TODParameters & todParams) {
+        cv::FileStorage in(p.string(), cv::FileStorage::READ);
+        todParams.read(in[TODParameters::YAML_NODE_NAME]);
+        in.release();
+    }
+
+    void writeTodParams(const bfs::path & p, const TODParameters & todParams) {
+        cv::FileStorage out(p.string(), cv::FileStorage::WRITE);
+        out << TODParameters::YAML_NODE_NAME;
+        todParams.write(out);
+        out.release();
+    }
+
 
     set<string> listTemplateNames(const boost::filesystem::path & dir) {
         set<string> s;
