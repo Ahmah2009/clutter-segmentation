@@ -70,6 +70,9 @@ namespace clutseg {
                     const cv::Point & topleft, int fontFace, double fontScale,
                     int thickness, const cv::Scalar & color);
 
+    /** Draws a label at the projected origin of a pose. */
+    void drawLabelAtOrigin(cv::Mat & canvas, const opencv_candidate::PoseRT & pose, const opencv_candidate::Camera & camera,
+                            const std::string & label, const cv::Scalar & color);
     // TODO: draw matches for individual objects
 
     /** \brief Draws matches from query image to all training images and puts

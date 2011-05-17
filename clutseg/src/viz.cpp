@@ -127,13 +127,17 @@ namespace clutseg {
         
         // Draw labels
         for (size_t i = 0; i < guesses.size(); i++) {
-            Point topleft = projectOrigin(guesses[i].aligned_pose(), camera); 
-            vector<string> legend;
-            legend.push_back(str(boost::format("%s (%d/%d)") %
-                guesses[i].getObject()->name % guesses[i].inliers.size() %
-                guesses[i].image_points_.size()));
-            drawText(canvas, legend, topleft + Point(20, 20), FONT_HERSHEY_SIMPLEX, 1.2, 2, colors[i]);
+            drawLabelAtOrigin(canvas, guesses[i].aligned_pose(), camera,
+                str(boost::format("%s (%d/%d)") % guesses[i].getObject()->name %
+                guesses[i].inliers.size() % guesses[i].image_points_.size()), colors[i]);
         }
+    }
+
+    void drawLabelAtOrigin(Mat & canvas, const PoseRT & pose, const Camera & camera, const string & label, const Scalar & color) {
+        Point topleft = projectOrigin(pose, camera); 
+        vector<string> legend;
+        legend.push_back(label);
+        drawText(canvas, legend, topleft + Point(10, 10), FONT_HERSHEY_SIMPLEX, 1.2, 2, color);
     }
 
     Rect drawText(Mat & outImg, const vector<string> & lines,

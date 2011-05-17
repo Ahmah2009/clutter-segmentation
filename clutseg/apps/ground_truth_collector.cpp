@@ -25,13 +25,6 @@ void print_help() {
     cerr << "Usage: ground_truth_collector <test-dir> <template-min-x> <template-zero-x> <template-max-x>  [--verbose]" << endl;
 }
 
-void drawLabelAtOrigin(Mat & canvas, const PoseRT & pose, const Camera & camera, const string & label) {
-    Point topleft = projectOrigin(pose, camera); 
-    vector<string> legend;
-    legend.push_back(label);
-    drawText(canvas, legend, topleft + Point(10, 10), FONT_HERSHEY_SIMPLEX, 1, 2, Scalar::all(-1));
-}
-
 int main(int argc, char **argv) {
     if (argc != 5 && argc != 6) {
         print_help();
@@ -68,9 +61,9 @@ int main(int argc, char **argv) {
                 canvas3 = imread((test_dir / img_name).string());
                 Camera camera = Camera((test_dir / "camera.yml").string(), Camera::TOD_YAML);
                 assert(bfs::exists(test_dir / "camera.yml"));
-                drawLabelAtOrigin(canvas3, pose_min, camera, tpl_min); 
-                drawLabelAtOrigin(canvas3, pose_zero, camera, tpl_zero); 
-                drawLabelAtOrigin(canvas3, pose_max, camera, tpl_max); 
+                drawLabelAtOrigin(canvas3, pose_min, camera, tpl_min, Scalar(0, 0, 255)); 
+                drawLabelAtOrigin(canvas3, pose_zero, camera, tpl_zero, Scalar(0, 255, 0)); 
+                drawLabelAtOrigin(canvas3, pose_max, camera, tpl_max, Scalar(255, 0, 0)); 
                 drawPose(canvas3, pose_min, camera);
                 drawPose(canvas3, pose_zero, camera);
                 drawPose(canvas3, pose_max, camera);
