@@ -75,8 +75,8 @@ namespace clutseg {
         getVcsCommit(exp.vcs_commit);
         time_t tt = time(NULL);
         tm *t = localtime(&tt);
-        char ts[19];
-        strftime(ts, 19, "%Y-%m-%d %H:%M:%S", t);
+        char ts[17];
+        strftime(ts, 17, "%Y-%m-%d %H:%M:%S", t);
         exp.time = string(ts);
         exp.has_run = true;
     }
