@@ -213,6 +213,10 @@ int main(int argc, char *argv[])
   foreach(const std::list<std::string>& x,vlist)
         {
           threads.create_thread(features_worker(opts.common.directory, x, opts.fe_params, camera,opts.common.verbose, stats));
+          // There seems to some deadlock in features_worker appearing from
+          // time to time, at the very beginning.  This is some ugly hack to
+          // prevent it.
+          sleep(1);
         }
 
   //join all the threads that we spawned

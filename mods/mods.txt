@@ -12,6 +12,7 @@ object_recognition/tod_training/src/feature_extraction.cpp
 object_recognition/tod_training/src/stats.cpp
 object_recognition/tod_detecting/apps/folder_recognizer.cpp
 object_recognition/tod_detecting/src/GuessGenerator.cpp
+object_recognition/tod_detecting/src/Loader.cpp
 object_recognition/tod_detecting/src/Matcher.cpp
 object_recognition/tod_detecting/include/tod/detecting/GuessGenerator.h
 object_recognition/tod_detecting/CMakeLists.txt
