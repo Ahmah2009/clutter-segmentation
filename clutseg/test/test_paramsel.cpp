@@ -36,14 +36,14 @@ struct ParamSelTest : public ::testing::Test {
         experiment.paramset.train_pms_fe.detector_params["min_features"] = 0;
         experiment.paramset.train_pms_fe.detector_params["max_features"] = 0;
         experiment.paramset.train_pms_fe.detector_params["threshold"] = 0;
-        experiment.paramset.train_pms_fe.detector_params["octaves"] = 3;
+        experiment.paramset.train_pms_fe.extractor_params["octaves"] = 3;
         experiment.paramset.recog_pms_fe.detector_type = "FAST";
         experiment.paramset.recog_pms_fe.extractor_type = "multi-scale";
         experiment.paramset.recog_pms_fe.descriptor_type = "rBRIEF";
         experiment.paramset.recog_pms_fe.detector_params["min_features"] = 0;
         experiment.paramset.recog_pms_fe.detector_params["max_features"] = 0;
         experiment.paramset.recog_pms_fe.detector_params["threshold"] = 0;
-        experiment.paramset.recog_pms_fe.detector_params["octaves"] = 3;
+        experiment.paramset.recog_pms_fe.extractor_params["octaves"] = 3;
         experiment.paramset.detect_pms_match.type = "LSH-BINARY";
         experiment.paramset.detect_pms_match.knn = 3; 
         experiment.paramset.detect_pms_match.doRatioTest = true; 
@@ -116,7 +116,7 @@ TEST_F(ParamSelTest, pms_fe_read) {
     EXPECT_EQ("FAST", feParams.detector_type);
     EXPECT_EQ("multi-scale", feParams.extractor_type);
     EXPECT_EQ("rBRIEF", feParams.descriptor_type);
-    EXPECT_EQ(3, feParams.detector_params["octaves"]);
+    EXPECT_EQ(3, feParams.extractor_params["octaves"]);
     EXPECT_FLOAT_EQ(40, feParams.detector_params["threshold"]);
     EXPECT_FLOAT_EQ(0, feParams.detector_params["min_features"]);
     EXPECT_FLOAT_EQ(0, feParams.detector_params["max_features"]);

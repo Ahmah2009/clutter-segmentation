@@ -56,7 +56,7 @@ namespace clutseg {
         pms_fe.detector_params["threshold"] = sqlite3_column_double(read, 3);
         pms_fe.detector_params["min_features"] = sqlite3_column_int(read, 4);
         pms_fe.detector_params["max_features"] = sqlite3_column_int(read, 5);
-        pms_fe.detector_params["octaves"] = sqlite3_column_int(read, 6);
+        pms_fe.extractor_params["octaves"] = sqlite3_column_int(read, 6);
         sqlite3_finalize(read);
     }
 
@@ -68,7 +68,7 @@ namespace clutseg {
         setMemberField(m, "threshold", (double) pms_fe.detector_params.find("threshold")->second);
         setMemberField(m, "min_features", (int) pms_fe.detector_params.find("min_features")->second);
         setMemberField(m, "max_features", (int) pms_fe.detector_params.find("max_features")->second);
-        setMemberField(m, "octaves", (int) pms_fe.detector_params.find("octaves")->second);
+        setMemberField(m, "octaves", (int) pms_fe.extractor_params.find("octaves")->second);
         insertOrUpdate(db, "pms_fe", m, id);
     }
 
