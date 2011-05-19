@@ -12,14 +12,20 @@
 using namespace std;
 using namespace clutseg;
 
-TEST(Testdesc, LoadTestSetGroundTruth) {
-    TestSetGroundTruth m = loadTestSetGroundTruth("./data/testdesc.txt");
+TEST(Testdesc, LoadTestSetGroundTruthWithoutPoses) {
+    TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses("./data/testdesc.txt");
 }
 
-TEST(Testdesc, ReadTestSetGroundTruth) {
-    TestSetGroundTruth m = loadTestSetGroundTruth("./data/testdesc.txt");
-    set<string> s = m["t0000.png"];
-    ASSERT_FALSE(s.find("teas_tea") == s.end());
-    ASSERT_FALSE(s.find("fat_free_milk") == s.end());
+TEST(Testdesc, ReadTestSetGroundTruthWithoutPoses) {
+    TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses("./data/testdesc.txt");
+    vector<NamedPose> s = m["t0000.png"];
+
+    bool true_pos = false;
+    BOOST_FOREACH(const NamedPose & np, expected) {
+        if (np.name == "teas_tea") {
+            true_pos = true;
+        }
+    }
+    ASSERT_FALSE(true_pos);
 }
 

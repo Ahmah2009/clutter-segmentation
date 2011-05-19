@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
         throw std::runtime_error("Empty training base.");
     }
     
-    TestSetGroundTruth testdesc = loadTestSetGroundTruth(boost::filesystem::path(opts.testdescFilename));
+    TestSetGroundTruth testdesc = loadTestSetGroundTruthWithoutPoses(boost::filesystem::path(opts.testdescFilename));
 
     bool write_store = (opts.storeDirectory != "");
 
@@ -222,7 +222,8 @@ int main(int argc, char *argv[])
         // that any result of previous test image runs will influence the
         // result of succeeding tests (silly keypoints problem). Yet, IMHO it's
         // highly unlikely that there is any dependence between the results.
-        // In anyway, it's cheap to recreate those instances.
+        // In anyway, it's cheap to recreate those instances. Remark: this is due to a
+        // bug in DynamicAdaptedFeatureAdaptor in OpenCV.
         TrainingBase base(objects);
         detector_stats detector_stats;
         Ptr < FeatureExtractor > extractor =
@@ -247,7 +248,7 @@ int main(int argc, char *argv[])
             return 1;
         } // end of block that could probably be moved out of the loop 
 
-        set<string> expected = it->second; 
+        GroundTruth expected = it->second; 
         // true positives
         int tp = 0;
         // false positives
@@ -313,7 +314,14 @@ int main(int argc, char *argv[])
                 readPose(ground_pose_path, ground_posert);
             }
             ground_poses.push_back(ground_posert);
-           
+ 
+            bool is_tp = false;
+            BOOST_FOREACH(const NamedPose & np, expected) {
+                if (np.name == name) {
+                    is_tp = true;
+                }
+            }
+          
             //  drawGuess2(allGuessesImg, guess, test.image, trainingCamera, false, ground_posert);
 
             if (write_store) {
@@ -377,7 +385,7 @@ int main(int argc, char *argv[])
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%10.7f %10.7f %10.7f %10.7f %10.7f %10.7f "
                            "%10.7f %10.7f") 
-                            % img_name % name % guess_count[name]  % (expected.find(name) == expected.end() ? 0 : 1) % guess.inliers.size()
+                            % img_name % name % guess_count[name]  % (is_tp ? 1  : 0) % guess.inliers.size()
                             % guess_tx % guess_ty % guess_tz % guess_rx % guess_ry % guess_rz
                             % ground_tx % ground_ty % ground_tz % ground_rx % ground_ry % ground_rz 
                             % max_rerr_t % max_rerr_r << endl;
@@ -414,12 +422,19 @@ int main(int argc, char *argv[])
             }
         }
 
-        foreach(string name, found) {
-            // Check for true or false positive.
-            if (it->second.find(name) == it->second.end()) {
-                fp += 1;
-            } else {
+        // Check for true or false positive.
+        // TODO: ugly
+        foreach (string name, found) {
+            bool good = false;
+            foreach (NamedPose np, expected) {
+                 if (np.name == name) {
+                    good = true;
+                 }
+            }
+            if (good) {
                 tp += 1;
+            } else {
+                fp += 1;
             }
         }
 
@@ -430,8 +445,8 @@ int main(int argc, char *argv[])
             stats << endl;
             stats << "# -- " << img_name << " -- " << endl;
             stats << "# actual objects: ";
-            foreach (string x, it->second) {
-                stats << x << ", ";
+            foreach (NamedPose np, it->second) {
+                stats << np.name << ", ";
             }
             stats << endl;
             stats << "# predicted objects: ";

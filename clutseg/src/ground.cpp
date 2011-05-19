@@ -4,29 +4,50 @@
 
 #include "clutseg/ground.h"
 
-#include <iostream>
-#include <fstream>
-#include <map>
-#include <vector>
-#include <set>
 #include <boost/algorithm/string.hpp>
+#include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include <cv.h>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <utility>
+#include <vector>
 
+using namespace cv;
 using namespace std;
-using namespace boost;
 
 namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    // TODO: does not really parse a python configuration file
     TestSetGroundTruth loadTestSetGroundTruth(const bfs::path & filename) {
+        TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses(filename);
+        for (TestSetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
+            string img_name = it->first;   
+            GroundTruth g = it->second;
+            g.clear();
+            string ground_name = img_name + ".ground.yaml";
+            FileStorage fs = FileStorage((filename.parent_path() / ground_name).string(), FileStorage::READ);
+            // iterate over objects
+            for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
+                NamedPose np((*n_it).name());
+                np.pose.read(*n_it);
+                np.pose.estimated = true;
+                g.push_back(np);  
+            }
+        }
+        return m;
+    }
+
+    // TODO: does not really parse a python configuration file
+    TestSetGroundTruth loadTestSetGroundTruthWithoutPoses(const bfs::path & filename) {
         TestSetGroundTruth m;
         ifstream f;
         f.open(filename.string().c_str()); 
         if (!f.is_open()) {
             throw ios_base::failure(
-                str(format(
+                str(boost::format(
                 "Cannot open testdesc file '%s', does it exist?") % filename));
         }
         size_t s = 1024;
@@ -43,17 +64,18 @@ namespace clutseg {
             if (offs != string::npos) {
                 string key = line.substr(0, offs);
                 string val = line.substr(offs+1, line.length() - offs);
-                trim(key);
+                boost::trim(key);
                 vector<string> v;
-                split(v, val, is_any_of(" "), token_compress_on);
-                set<string> subjects;
+                boost::split(v, val, boost::is_any_of(" "), boost::token_compress_on);
+                GroundTruth labels;
                 for (size_t i = 0; i < v.size(); i++) {
-                    trim(v[i]);
+                    boost::trim(v[i]);
                     if (v[i].length() > 0) {
-                        subjects.insert(v[i]);
+                        NamedPose np(v[i]);
+                        labels.push_back(np);
                     }
                 } 
-                m[key] = subjects;
+                m[key] = labels;
             }
         }
         f.close();

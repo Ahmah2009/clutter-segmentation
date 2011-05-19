@@ -7,7 +7,6 @@
 
 #include <boost/filesystem.hpp>
 #include <map>
-#include <set>
 #include <string>
 #include <opencv_candidate/PoseRT.h>
 
@@ -15,6 +14,7 @@ namespace clutseg {
 
     struct NamedPose {
 
+        NamedPose(const std::string & name) : name(name) {}
         NamedPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
 
         std::string name;
@@ -25,9 +25,11 @@ namespace clutseg {
 
     typedef std::vector<NamedPose> GroundTruth;
 
-    typedef std::map<std::string, std::set<std::string> > TestSetGroundTruth;
+    typedef std::map<std::string, GroundTruth > TestSetGroundTruth;
 
     TestSetGroundTruth loadTestSetGroundTruth(const boost::filesystem::path & filename);
+
+    TestSetGroundTruth loadTestSetGroundTruthWithoutPoses(const boost::filesystem::path & filename);
 
 }
 
