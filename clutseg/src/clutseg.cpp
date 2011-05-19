@@ -131,7 +131,7 @@ namespace clutseg {
                              baseDirectory);
     }
 
-    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
+    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & choice, PointCloudT & inliersCloud) {
         Features2d query;
         query.image = queryImage;
         
@@ -159,21 +159,21 @@ namespace clutseg {
             // guess. If the guess resulting of locating the object got a score
             // larger than the acceptance threshold, this is our best guess.
             for (size_t i = 0; i < guesses.size(); i++) {
-                resultingGuess = guesses[i]; 
+                choice = guesses[i]; 
 
-                cout << "inliers before: " << resultingGuess.inliers.size() << endl;
-                locate(query, queryCloud, resultingGuess, locateMatcher);
-                cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
+                cout << "inliers before: " << choice.inliers.size() << endl;
+                locate(query, queryCloud, choice, locateMatcher);
+                cout << "inliers after:  " << choice.inliers.size() << endl;
 
-                cout << "ranking: " << (*ranking_)(resultingGuess) << endl;
+                cout << "ranking: " << (*ranking_)(choice) << endl;
                 cout << "accept_threshold: " << accept_threshold_ << endl;
 
-                if ((*ranking_)(resultingGuess) >= accept_threshold_) {
+                if ((*ranking_)(choice) >= accept_threshold_) {
                     // TODO: rename detect_choice_inliers => detect_choice_inliers
                     // TODO: rename detect_choice_matches => detect_choice_matches
                     // TODO: rename locate_choice_inliers => locate_choice_inliers
                     // TODO: rename locate_choice_matches => locate_choice_matches
-                    // TODO: rename resultingGuess => choice
+                    // TODO: rename choice => choice
                     
                     vector<pair<int, int> > ds; 
                     vector<pair<int, int> > ls; 
@@ -181,8 +181,8 @@ namespace clutseg {
                     locateMatcher->getLabelSizes(ls);
                     stats_.detect_choice_matches += ds[guesses[i].getObject()->id].second;
                     stats_.detect_choice_inliers += guesses[i].inliers.size();
-                    stats_.locate_choice_matches += ls[resultingGuess.getObject()->id].second;
-                    stats_.locate_choice_inliers += resultingGuess.inliers.size();
+                    stats_.locate_choice_matches += ls[choice.getObject()->id].second;
+                    stats_.locate_choice_inliers += choice.inliers.size();
                     stats_.choices++;
 
                     pos = true;
@@ -192,7 +192,7 @@ namespace clutseg {
 
             inliersCloud = PointCloudT(); 
             if (pos) {
-                mapInliersToCloud(inliersCloud, resultingGuess, queryImage, queryCloud);
+                mapInliersToCloud(inliersCloud, choice, queryImage, queryCloud);
             }
 
             return pos;
@@ -227,13 +227,13 @@ namespace clutseg {
         return guesses.empty();
     }
 
-    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & resultingGuess, Ptr<Matcher> & locateMatcher) {
+    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & choice, Ptr<Matcher> & locateMatcher) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
         vector<Ptr<TexturedObject> > so;
         BOOST_FOREACH(const Ptr<TexturedObject> & obj, objects_) {
-            if (obj->name == resultingGuess.getObject()->name) {
+            if (obj->name == choice.getObject()->name) {
                 // Create a new textured object instance --- those thingies
                 // cannot exist in multiple training bases, this breaks indices
                 // that are tightly coupled between TrainingBase and
@@ -273,7 +273,7 @@ namespace clutseg {
                 mapInliersToCloud(guess.inlierCloud, guess, query.image, queryCloud);
             }
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
-            resultingGuess = guesses[0]; 
+            choice = guesses[0]; 
             return true;
         }
     }

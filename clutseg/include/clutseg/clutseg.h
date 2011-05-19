@@ -83,7 +83,7 @@ namespace clutseg {
              * an acceptance criterium, which is given by a ranking threshold. */
             bool recognize(const cv::Mat & queryImage,
                             const PointCloudT & queryCloud,
-                            tod::Guess & resultingGuess,
+                            tod::Guess & choice,
                             PointCloudT & inliersCloud);
 
             /** Retrieves parameters used for detection stage. Writes to the
@@ -120,7 +120,7 @@ namespace clutseg {
 
             bool locate(const tod::Features2d & query,
                         const PointCloudT & queryCloud,
-                        tod::Guess & resultingGuess,
+                        tod::Guess & choice,
                         cv::Ptr<tod::Matcher> & locateMatcher);
 
             void loadParams(const std::string & config,
