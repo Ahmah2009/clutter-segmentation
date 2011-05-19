@@ -19,6 +19,8 @@ namespace clutseg {
     }
 
     void CutSseResponseFunction::operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response) {
+        ResponseFunction::operator()(result, ground, response);
+
         double r_acc = 0;
         for (TestSetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             const string & img_name = it->first;

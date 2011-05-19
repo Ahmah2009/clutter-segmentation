@@ -21,9 +21,21 @@ namespace clutseg {
      * the better the guess compared to ground truth. The response function is
      * deliberately defined over the whole test set rather than for a single query
      * to allow to incorporate (and collect) global performance statistics. */
-    struct ResponseFunction {
+    class ResponseFunction {
 
-        virtual void operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response);
+        protected:
+
+            ResponseFunction(float max_trans_error = 0.02, float max_angle_error = M_PI / 9) : max_trans_error_(max_trans_error), max_angle_error_(max_angle_error) {}
+
+            /** Basic response function always sets response.value to zero, and
+             * populates the other response statistics, such as response.success_rate etc.
+             * This method must be called from derived classes. */
+            virtual void operator()(const TestSetResult & result,
+                                    const TestSetGroundTruth & ground,
+                                    Response & response);
+
+            float max_trans_error_;
+            float max_angle_error_;
 
     };
 
@@ -32,14 +44,11 @@ namespace clutseg {
 
         public:
 
-            CutSseResponseFunction(float max_trans_error = 0.02, float max_angle_error = M_PI / 9) : max_trans_error_(max_trans_error), max_angle_error_(max_angle_error) {}
+            CutSseResponseFunction(float max_trans_error = 0.02, float max_angle_error = M_PI / 9) : ResponseFunction(max_trans_error, max_angle_error_) {}
 
-            virtual void operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response);
-
-        private:
- 
-            float max_trans_error_;
-            float max_angle_error_;
+            virtual void operator()(const TestSetResult & result,
+                                    const TestSetGroundTruth & ground,
+                                    Response & response);
 
     };
 }
