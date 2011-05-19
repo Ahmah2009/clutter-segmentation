@@ -20,8 +20,8 @@ namespace bfs = boost::filesystem;
 namespace clutseg {
 
     // TODO: does not really parse a python configuration file
-    TestDesc loadTestDesc(const bfs::path & filename) {
-        TestDesc m;
+    TestSetGroundTruth loadTestSetGroundTruth(const bfs::path & filename) {
+        TestSetGroundTruth m;
         ifstream f;
         f.open(filename.string().c_str()); 
         if (!f.is_open()) {

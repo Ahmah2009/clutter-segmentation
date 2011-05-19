@@ -50,9 +50,9 @@ namespace clutseg {
         bfs::path test_dir = p / exp.test_set;
         CutSseResponseFunction response;
         float r_acc = 0;
-        TestDesc testdesc = loadTestDesc(test_dir / "testdesc.txt");
+        TestSetGroundTruth testdesc = loadTestSetGroundTruth(test_dir / "testdesc.txt");
         // Loop over all images in the test set
-        for (TestDesc::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
+        for (TestSetGroundTruth::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
             string img_name = it->first;
             cout << img_name << endl;
             bfs::path img_path = test_dir / img_name;

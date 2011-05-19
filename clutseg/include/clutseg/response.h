@@ -5,23 +5,12 @@
 #ifndef _RESPONSE_H_
 #define _RESPONSE_H_
 
-#include <opencv_candidate/PoseRT.h>
+#include "clutseg/testdesc.h"
+
 #include <string>
 #include <tod/detecting/GuessGenerator.h>
 
 namespace clutseg {
-
-    struct NamedPose {
-
-        NamedPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
-
-        std::string name;
-        /** The pose of the object. Check pose.estimated whether it is available. */
-        opencv_candidate::PoseRT pose; 
-
-    };
-
-    typedef std::vector<NamedPose> GroundTruth;
 
     /** Computes the response of the estimator on a given query.  As such the
      * result has to be compared with ground truth. The smaller the response, the
