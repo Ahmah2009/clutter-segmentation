@@ -115,11 +115,18 @@ namespace clutseg {
         accept_threshold_ = paramset.pms_clutseg.accept_threshold;
     }
 
+    void ClutSegmenter::resetStats() {
+        stats_ = ClutSegmenterStats();
+    }
 
-    void initRecognizer(Ptr<Recognizer> & recognizer, TrainingBase & base, TODParameters params, const string & baseDirectory) {
-        Ptr<Matcher> rtMatcher = Matcher::create(params.matcherParams);
-        rtMatcher->add(base);
-        recognizer = new KinectRecognizer(&base, rtMatcher,
+    ClutSegmenterStats ClutSegmenter::getStats() const {
+        return stats_;
+    }
+
+    void initRecognizer(Ptr<Recognizer> & recognizer, Ptr<Matcher> & matcher, TrainingBase & base, TODParameters params, const string & baseDirectory) {
+        matcher = Matcher::create(params.matcherParams);
+        matcher->add(base);
+        recognizer = new KinectRecognizer(&base, matcher,
                             &params.guessParams, 0 /* verbose */,
                              baseDirectory);
     }
@@ -127,11 +134,15 @@ namespace clutseg {
     bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & resultingGuess, PointCloudT & inliersCloud) {
         Features2d query;
         query.image = queryImage;
+        
+        // For statistics, we need access to the matchers at this level.
+        Ptr<Matcher> detectMatcher;
+        Ptr<Matcher> locateMatcher;
 
         // Generate a couple of guesses. Ideally, each object on the scene is
         // detected and there are no misclassifications.
         vector<Guess> guesses;
-        detect(query, guesses);
+        detect(query, guesses, detectMatcher);
 
         if (guesses.empty()) {
             // In case there are any objects in the scene, this is kind of the
@@ -148,16 +159,32 @@ namespace clutseg {
             // guess. If the guess resulting of locating the object got a score
             // larger than the acceptance threshold, this is our best guess.
             for (size_t i = 0; i < guesses.size(); i++) {
-                resultingGuess = guesses[0]; 
+                resultingGuess = guesses[i]; 
 
                 cout << "inliers before: " << resultingGuess.inliers.size() << endl;
-                locate(query, queryCloud, resultingGuess);
+                locate(query, queryCloud, resultingGuess, locateMatcher);
                 cout << "inliers after:  " << resultingGuess.inliers.size() << endl;
 
                 cout << "ranking: " << (*ranking_)(resultingGuess) << endl;
                 cout << "accept_threshold: " << accept_threshold_ << endl;
 
                 if ((*ranking_)(resultingGuess) >= accept_threshold_) {
+                    // TODO: rename detect_best_inliers => detect_choice_inliers
+                    // TODO: rename detect_best_matches => detect_choice_matches
+                    // TODO: rename locate_best_inliers => locate_choice_inliers
+                    // TODO: rename locate_best_matches => locate_choice_matches
+                    // TODO: rename resultingGuess => choice
+                    
+                    vector<pair<int, int> > ds; 
+                    vector<pair<int, int> > ls; 
+                    detectMatcher->getLabelSizes(ds);
+                    locateMatcher->getLabelSizes(ls);
+                    stats_.detect_best_matches += ds[guesses[i].getObject()->id].second;
+                    stats_.detect_best_inliers += guesses[i].inliers.size();
+                    stats_.locate_best_matches += ls[resultingGuess.getObject()->id].second;
+                    stats_.locate_best_inliers += resultingGuess.inliers.size();
+                    stats_.choices++;
+
                     pos = true;
                     break;
                 }
@@ -172,17 +199,35 @@ namespace clutseg {
         }
     }
 
-    bool ClutSegmenter::detect(Features2d & query, vector<Guess> & guesses) {
+    int sum_matches(Ptr<Matcher> & matcher) {
+        vector<pair<int, int> > labelSizes;
+        matcher->getLabelSizes(labelSizes);
+        int total = 0;
+        for (size_t i = 0; i < labelSizes.size(); i++) {
+            total += labelSizes[i].second;
+        }
+        return total;
+    }
+
+    bool ClutSegmenter::detect(Features2d & query, vector<Guess> & guesses, Ptr<Matcher> & detectMatcher) {
         Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
         Ptr<Recognizer> recognizer;
-        initRecognizer(recognizer, base_, detect_params_, baseDirectory_);
+        initRecognizer(recognizer, detectMatcher, base_, detect_params_, baseDirectory_);
 
         extractor->detectAndExtract(query);
         recognizer->match(query, guesses);
+
+        stats_.keypoints += query.keypoints.size();
+        stats_.detect_matches += sum_matches(detectMatcher);
+        stats_.detect_guesses += guesses.size();
+        BOOST_FOREACH(const Guess & g, guesses) {
+            stats_.detect_inliers += g.inliers.size();
+        }
+
         return guesses.empty();
     }
 
-    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & resultingGuess) {
+    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & resultingGuess, Ptr<Matcher> & locateMatcher) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
@@ -206,10 +251,16 @@ namespace clutseg {
         TrainingBase single(so);
 
         Ptr<Recognizer> recognizer;
-        initRecognizer(recognizer, single, locate_params_, baseDirectory_);
+        initRecognizer(recognizer, locateMatcher, single, locate_params_, baseDirectory_);
 
         vector<Guess> guesses;
         recognizer->match(query, guesses); 
+
+        stats_.locate_matches += sum_matches(locateMatcher);
+        stats_.locate_guesses += guesses.size();
+        BOOST_FOREACH(const Guess & g, guesses) {
+            stats_.locate_inliers += g.inliers.size();
+        }
 
         if (guesses.empty()) {
             // This almost certainly should not happen. If the object has been

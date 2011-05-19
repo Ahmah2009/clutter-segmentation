@@ -19,6 +19,43 @@
 
 namespace clutseg {
 
+    /** Collection of statistics for ClutSegmenter. Serves as an accumulator,
+     * and includes count for later averaging. */
+    struct ClutSegmenterStats {
+
+        ClutSegmenterStats() :
+            queries(0),
+            keypoints(0),
+            detect_matches(0),
+            detect_guesses(0),
+            detect_inliers(0),
+            detect_best_matches(0),
+            detect_best_inliers(0),
+            locate_matches(0),
+            locate_inliers(0),
+            locate_guesses(0),
+            locate_best_matches(0),
+            locate_best_inliers(0),
+            choices(0) {}
+
+        long queries;
+        // TODO: include runtime in response
+        // clock_t runtime;
+        long keypoints;
+        long detect_matches;
+        long detect_guesses;
+        long detect_inliers;
+        long detect_best_matches;
+        long detect_best_inliers;
+        long locate_matches;
+        long locate_inliers;
+        long locate_guesses;
+        long locate_best_matches;
+        long locate_best_inliers;
+        long choices;
+
+    };
+
     class ClutSegmenter {
         
         public:
@@ -70,21 +107,28 @@ namespace clutseg {
             std::set<std::string> getTemplateNames() const;
 
             void reconfigure(const Paramset & params);
+        
+            void resetStats();
+
+            ClutSegmenterStats getStats() const;
 
         private:
 
             bool detect(tod::Features2d & query,
-                        std::vector<tod::Guess> & guesses);
+                        std::vector<tod::Guess> & guesses,
+                        cv::Ptr<tod::Matcher> & detectMatcher);
 
             bool locate(const tod::Features2d & query,
                         const PointCloudT & queryCloud,
-                        tod::Guess & resultingGuess);
+                        tod::Guess & resultingGuess,
+                        cv::Ptr<tod::Matcher> & locateMatcher);
 
             void loadParams(const std::string & config,
                             tod::TODParameters & params);
 
             void loadBase();
 
+            ClutSegmenterStats stats_;
             std::string baseDirectory_;
             tod::TODParameters detect_params_; 
             tod::TODParameters locate_params_; 

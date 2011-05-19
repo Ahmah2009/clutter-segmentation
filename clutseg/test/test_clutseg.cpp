@@ -43,7 +43,8 @@ class ClutsegTest : public ::testing::Test {
                 );
                 loaded = true;
             }
-               
+
+            segmenter.resetStats();               
             segmenter.getLocateParams().matcherParams.doRatioTest = false;
 
             haltbare_milch_train_img = imread("./data/image_00000.png");
@@ -130,9 +131,32 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
 
     Guess guess;
     PointCloudT inlierCloud;
-
+    EXPECT_EQ(0, segmenter.getStats().choices);
+    EXPECT_EQ(0, segmenter.getStats().keypoints);
+    EXPECT_EQ(0, segmenter.getStats().detect_matches);
+    EXPECT_EQ(0, segmenter.getStats().detect_guesses);
+    EXPECT_EQ(0, segmenter.getStats().detect_inliers);
+    EXPECT_EQ(0, segmenter.getStats().detect_best_matches);
+    EXPECT_EQ(0, segmenter.getStats().detect_best_inliers);
+    EXPECT_EQ(0, segmenter.getStats().locate_matches);
+    EXPECT_EQ(0, segmenter.getStats().locate_guesses);
+    EXPECT_EQ(0, segmenter.getStats().locate_inliers);
+    EXPECT_EQ(0, segmenter.getStats().locate_best_matches);
+    EXPECT_EQ(0, segmenter.getStats().locate_best_inliers);
     bool positive = segmenter.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
     ASSERT_TRUE(positive);
+    EXPECT_EQ(1, segmenter.getStats().choices);
+    EXPECT_LT(100, segmenter.getStats().keypoints);
+    EXPECT_LT(0, segmenter.getStats().detect_matches);
+    EXPECT_LT(0, segmenter.getStats().detect_guesses);
+    EXPECT_LT(0, segmenter.getStats().detect_inliers);
+    EXPECT_LT(0, segmenter.getStats().detect_best_matches);
+    EXPECT_LT(0, segmenter.getStats().detect_best_inliers);
+    EXPECT_LT(0, segmenter.getStats().locate_matches);
+    EXPECT_LT(0, segmenter.getStats().locate_guesses);
+    EXPECT_LT(0, segmenter.getStats().locate_inliers);
+    EXPECT_LT(0, segmenter.getStats().locate_best_matches);
+    EXPECT_EQ(guess.inliers.size(), segmenter.getStats().locate_best_inliers);
     EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
                 guess.getObject()->name == "haltbare_milch" ||
                 guess.getObject()->name == "jacobs_coffee");
