@@ -73,7 +73,7 @@ namespace clutseg {
             bool pos = segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
             if (pos) {
-                // FIXME: r_acc += response(guess, groundTruth);
+                r_acc += response(guess, it->second);
             } else {
                 r_acc += 1;
             }
