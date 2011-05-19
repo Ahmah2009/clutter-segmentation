@@ -31,6 +31,8 @@ namespace clutseg {
 
     TestSetGroundTruth loadTestSetGroundTruthWithoutPoses(const boost::filesystem::path & filename);
 
+    bool isObjectExpected(const GroundTruth & g, const std::string & name);
+
 }
 
 #endif

@@ -21,13 +21,13 @@ TEST(GroundTest, ReadTestSetGroundTruthWithoutPoses) {
     TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses("./data/testdesc.txt");
     GroundTruth s = m["t0000.png"];
 
-    bool true_pos = false;
     BOOST_FOREACH(const NamedPose & np, s) {
-        if (np.name == "downy") {
-            true_pos = true;
-        }
-        ASSERT_FALSE(np.pose.estimated);
+        EXPECT_FALSE(np.pose.estimated);
     }
-    ASSERT_FALSE(true_pos);
+    EXPECT_TRUE(isObjectExpected("teas_tea"));
+    EXPECT_TRUE(isObjectExpected("fat_free_milk"));
+    EXPECT_FALSE(isObjectExpected("downy"));
+    EXPECT_FALSE(isObjectExpected(""));
+    EXPECT_FALSE(isObjectExpected(" "));
 }
 

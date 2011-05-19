@@ -315,12 +315,7 @@ int main(int argc, char *argv[])
             }
             ground_poses.push_back(ground_posert);
  
-            bool is_tp = false;
-            BOOST_FOREACH(const NamedPose & np, expected) {
-                if (np.name == name) {
-                    is_tp = true;
-                }
-            }
+            bool is_tp = isObjectExpected(expected, name);
           
             //  drawGuess2(allGuessesImg, guess, test.image, trainingCamera, false, ground_posert);
 
@@ -425,13 +420,7 @@ int main(int argc, char *argv[])
         // Check for true or false positive.
         // TODO: ugly
         foreach (string name, found) {
-            bool good = false;
-            foreach (NamedPose np, expected) {
-                 if (np.name == name) {
-                    good = true;
-                 }
-            }
-            if (good) {
+            if (isObjectExpected(expected, name)) {
                 tp += 1;
             } else {
                 fp += 1;

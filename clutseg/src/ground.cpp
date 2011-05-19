@@ -82,5 +82,15 @@ namespace clutseg {
         return m; 
     }
 
+    bool isObjectExpected(const GroundTruth & g, const string & name) {
+        // slow 
+        BOOST_FOREACH(const NamedPose & np, g) {
+            if (np.name == name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
