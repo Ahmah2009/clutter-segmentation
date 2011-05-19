@@ -24,15 +24,15 @@ namespace clutseg {
         double r_acc = 0;
         for (TestSetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             const string & img_name = it->first;
+            const GroundTruth & groundTruth = it->second;
             if (result.guessMade(img_name)) {
-                if (!ground.empty()) {
+                if (!groundTruth.empty()) {
                     r_acc += 1.0;
                 }
             } else {
                 const Guess & guess = result.get(img_name);
                 PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
                 double r = 1.0;
-                const GroundTruth & groundTruth = it->second;
                 BOOST_FOREACH(NamedPose np, groundTruth) {
                     if (np.name == guess.getObject()->name) {
                         double dt = distBetweenLocations(est_pose, np.pose); 
