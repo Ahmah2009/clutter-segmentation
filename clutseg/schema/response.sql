@@ -15,11 +15,11 @@ create table response (
     avg_keypoints float not null,
     avg_detect_matches float not null,
     avg_detect_inliers float not null,
-    avg_detect_best_matches float not null,
-    avg_detect_best_inliers float not null,
+    avg_detect_choice_matches float not null,
+    avg_detect_choice_inliers float not null,
     avg_locate_matches float not null,
     avg_locate_inliers float not null,
-    avg_locate_best_matches float not null,
-    avg_locate_best_inliers float not null
+    avg_locate_choice_matches float not null,
+    avg_locate_choice_inliers float not null
 );
 

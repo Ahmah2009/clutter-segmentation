@@ -29,13 +29,13 @@ namespace clutseg {
             detect_matches(0),
             detect_guesses(0),
             detect_inliers(0),
-            detect_best_matches(0),
-            detect_best_inliers(0),
+            detect_choice_matches(0),
+            detect_choice_inliers(0),
             locate_matches(0),
             locate_inliers(0),
             locate_guesses(0),
-            locate_best_matches(0),
-            locate_best_inliers(0),
+            locate_choice_matches(0),
+            locate_choice_inliers(0),
             choices(0) {}
 
         long queries;
@@ -45,13 +45,13 @@ namespace clutseg {
         long detect_matches;
         long detect_guesses;
         long detect_inliers;
-        long detect_best_matches;
-        long detect_best_inliers;
+        long detect_choice_matches;
+        long detect_choice_inliers;
         long locate_matches;
         long locate_inliers;
         long locate_guesses;
-        long locate_best_matches;
-        long locate_best_inliers;
+        long locate_choice_matches;
+        long locate_choice_inliers;
         long choices;
 
     };

@@ -169,20 +169,20 @@ namespace clutseg {
                 cout << "accept_threshold: " << accept_threshold_ << endl;
 
                 if ((*ranking_)(resultingGuess) >= accept_threshold_) {
-                    // TODO: rename detect_best_inliers => detect_choice_inliers
-                    // TODO: rename detect_best_matches => detect_choice_matches
-                    // TODO: rename locate_best_inliers => locate_choice_inliers
-                    // TODO: rename locate_best_matches => locate_choice_matches
+                    // TODO: rename detect_choice_inliers => detect_choice_inliers
+                    // TODO: rename detect_choice_matches => detect_choice_matches
+                    // TODO: rename locate_choice_inliers => locate_choice_inliers
+                    // TODO: rename locate_choice_matches => locate_choice_matches
                     // TODO: rename resultingGuess => choice
                     
                     vector<pair<int, int> > ds; 
                     vector<pair<int, int> > ls; 
                     detectMatcher->getLabelSizes(ds);
                     locateMatcher->getLabelSizes(ls);
-                    stats_.detect_best_matches += ds[guesses[i].getObject()->id].second;
-                    stats_.detect_best_inliers += guesses[i].inliers.size();
-                    stats_.locate_best_matches += ls[resultingGuess.getObject()->id].second;
-                    stats_.locate_best_inliers += resultingGuess.inliers.size();
+                    stats_.detect_choice_matches += ds[guesses[i].getObject()->id].second;
+                    stats_.detect_choice_inliers += guesses[i].inliers.size();
+                    stats_.locate_choice_matches += ls[resultingGuess.getObject()->id].second;
+                    stats_.locate_choice_inliers += resultingGuess.inliers.size();
                     stats_.choices++;
 
                     pos = true;

@@ -73,12 +73,12 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.avg_keypoints = 913.0;
         experiment.response.avg_detect_matches = 652.3;
         experiment.response.avg_detect_inliers = 9.2;
-        experiment.response.avg_detect_best_matches = 211.9;
-        experiment.response.avg_detect_best_inliers = 13.3;
+        experiment.response.avg_detect_choice_matches = 211.9;
+        experiment.response.avg_detect_choice_inliers = 13.3;
         experiment.response.avg_locate_matches = 802.1;
         experiment.response.avg_locate_inliers = 29.8;
-        experiment.response.avg_locate_best_matches = 802.1;
-        experiment.response.avg_locate_best_inliers = 39.8;
+        experiment.response.avg_locate_choice_matches = 802.1;
+        experiment.response.avg_locate_choice_inliers = 39.8;
         getVcsCommit(experiment.vcs_commit);
     }
 
@@ -140,12 +140,12 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.avg_keypoints, rest.avg_keypoints);
     EXPECT_FLOAT_EQ(orig.avg_detect_matches, rest.avg_detect_matches);
     EXPECT_FLOAT_EQ(orig.avg_detect_inliers, rest.avg_detect_inliers);
-    EXPECT_FLOAT_EQ(orig.avg_detect_best_matches, rest.avg_detect_best_matches);
-    EXPECT_FLOAT_EQ(orig.avg_detect_best_inliers, rest.avg_detect_best_inliers);
+    EXPECT_FLOAT_EQ(orig.avg_detect_choice_matches, rest.avg_detect_choice_matches);
+    EXPECT_FLOAT_EQ(orig.avg_detect_choice_inliers, rest.avg_detect_choice_inliers);
     EXPECT_FLOAT_EQ(orig.avg_locate_matches, rest.avg_locate_matches);
     EXPECT_FLOAT_EQ(orig.avg_locate_inliers, rest.avg_locate_inliers);
-    EXPECT_FLOAT_EQ(orig.avg_locate_best_matches, rest.avg_locate_best_matches);
-    EXPECT_FLOAT_EQ(orig.avg_locate_best_inliers, rest.avg_locate_best_inliers);
+    EXPECT_FLOAT_EQ(orig.avg_locate_choice_matches, rest.avg_locate_choice_matches);
+    EXPECT_FLOAT_EQ(orig.avg_locate_choice_inliers, rest.avg_locate_choice_inliers);
 }
 
 TEST_F(ParamSelTest, pms_fe_read) {

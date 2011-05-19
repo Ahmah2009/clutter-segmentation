@@ -126,17 +126,17 @@ namespace clutseg {
         /** Average number of inliers of all guesses in detection stage */
         float avg_detect_inliers;
         /** Average number of matches for the best guess object in detection stage */
-        float avg_detect_best_matches;
+        float avg_detect_choice_matches;
         /** Average number of inliers for the best guess object in detection stage */
-        float avg_detect_best_inliers;
+        float avg_detect_choice_inliers;
         /** Average number of matches in locating stage */
         float avg_locate_matches;
         /** Average number of inliers of all guesses in locating stage */
         float avg_locate_inliers;
         /** Average number of matches for the best guess object in locating stage */
-        float avg_locate_best_matches;
+        float avg_locate_choice_matches;
         /** Average number of inliers for the best guess object in locating stage */
-        float avg_locate_best_inliers;
+        float avg_locate_choice_inliers;
 
         /** Average of query images where locating (up to error margins)
          * succeeded. Depends on max_angle_error and max_trans_error. */
