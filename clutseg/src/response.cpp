@@ -7,6 +7,7 @@
 #include "clutseg/pose.h"
 
 #include <boost/foreach.hpp>
+#include <iostream>
 
 using namespace std;
 using namespace tod;
@@ -15,7 +16,7 @@ namespace clutseg {
 
 
     void ResponseFunction::operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response) {
-        throw runtime_error("not implemented");
+        response.value = 0.0;
     }
 
     void CutSseResponseFunction::operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response) {
@@ -25,7 +26,7 @@ namespace clutseg {
         for (TestSetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             const string & img_name = it->first;
             const GroundTruth & groundTruth = it->second;
-            if (result.guessMade(img_name)) {
+            if (!result.guessMade(img_name)) {
                 if (!groundTruth.empty()) {
                     r_acc += 1.0;
                 }
