@@ -24,12 +24,12 @@ namespace clutseg {
         double r_acc = 0;
         for (TestSetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             const string & img_name = it->first;
-            if (result.find(img_name) == result.end()) {
+            if (result.guessMade(img_name)) {
                 if (!ground.empty()) {
                     r_acc += 1.0;
                 }
             } else {
-                const Guess & guess = result.find(img_name)->second;
+                const Guess & guess = result.get(img_name);
                 PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
                 double r = 1.0;
                 const GroundTruth & groundTruth = it->second;

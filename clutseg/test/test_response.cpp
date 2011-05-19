@@ -38,7 +38,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
     TestSetGroundTruth ground;
     ground["image_00000.png"] = groundTruth;
     TestSetResult result;
-    result["image_00000.png"] = guess;
+    result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
     EXPECT_NEAR(0.0, response.value, 1e-7);
@@ -58,7 +58,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
     TestSetGroundTruth ground;
     ground["image_00000.png"] = groundTruth;
     TestSetResult result;
-    result["image_00000.png"] = guess;
+    result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
     EXPECT_NEAR(0.5, response.value, 1e-7);
@@ -78,7 +78,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
     TestSetGroundTruth ground;
     ground["image_00000.png"] = groundTruth;
     TestSetResult result;
-    result["image_00000.png"] = guess;
+    result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
     EXPECT_NEAR(0.25, response.value, 1e-7);

@@ -14,7 +14,24 @@
 
 namespace clutseg {
 
-    typedef std::map<std::string, tod::Guess> TestSetResult;    
+    class TestSetResult {
+
+        public:
+
+            std::map<std::string, tod::Guess>::iterator begin() { return guesses.begin(); }
+            std::map<std::string, tod::Guess>::const_iterator begin() const { return guesses.begin(); }
+            std::map<std::string, tod::Guess>::iterator end() { return guesses.end(); }
+            std::map<std::string, tod::Guess>::const_iterator end() const { return guesses.end(); }
+
+            bool guessMade(const std::string & img_name) const { return guesses.find(img_name) != end(); }
+            const tod::Guess & get(const std::string & img_name) const { return guesses.find(img_name)->second; }
+            void put(const std::string & img_name, const tod::Guess & guess) { guesses[img_name] = guess; }
+
+        private:
+
+            std::map<std::string, tod::Guess> guesses;
+
+    };
 
     /** Computes the response of the estimator on a given test set.  As such
      * the result has to be compared with ground truth. The smaller the response,

@@ -71,7 +71,7 @@ namespace clutseg {
             PointCloudT inliersCloud;
             bool pos = segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
-            result[img_name] = guess;
+            result.put(img_name, guess);
         }
         CutSseResponseFunction response;
         // TODO: save experiment results
