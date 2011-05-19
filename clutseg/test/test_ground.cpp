@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "clutseg/testdesc.h"
+#include "clutseg/ground.h"
 
 #include <gtest/gtest.h>
 #include <map>

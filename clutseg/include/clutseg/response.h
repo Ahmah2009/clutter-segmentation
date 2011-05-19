@@ -5,7 +5,7 @@
 #ifndef _RESPONSE_H_
 #define _RESPONSE_H_
 
-#include "clutseg/testdesc.h"
+#include "clutseg/ground.h"
 
 #include <string>
 #include <tod/detecting/GuessGenerator.h>

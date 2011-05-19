@@ -26,7 +26,7 @@
  * given testing set.
  */
 
-#include "clutseg/testdesc.h"
+#include "clutseg/ground.h"
 #include "clutseg/pose.h"
 #include "clutseg/options.h"
 #include "clutseg/viz.h"

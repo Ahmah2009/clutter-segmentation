@@ -9,7 +9,7 @@
 #include "clutseg/paramsel.h"
 #include "clutseg/ranking.h"
 #include "clutseg/response.h"
-#include "clutseg/testdesc.h"
+#include "clutseg/ground.h"
 
 #include <boost/foreach.hpp>
 #include <cv.h>
