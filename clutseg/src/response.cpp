@@ -13,22 +13,36 @@ using namespace tod;
 
 namespace clutseg {
 
-    float ResponseFunction::operator()(const tod::Guess & guess, const GroundTruth & groundTruth) {
+
+    void ResponseFunction::operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response) {
         throw runtime_error("not implemented");
     }
 
-    float CutSseResponseFunction::operator()(const Guess & guess, const GroundTruth & groundTruth) {
-        PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
-        double r = 1.0;
-        BOOST_FOREACH(NamedPose np, groundTruth) {
-            if (np.name == guess.getObject()->name) {
-                double dt = distBetweenLocations(est_pose, np.pose); 
-                double da = angleBetweenOrientations(est_pose, np.pose); 
-                double r2 = (dt * dt) / (max_d_ * max_d_) + (da * da) / (max_a_ * max_a_);
-                r = r2 < r ? r2 : r;
+    void CutSseResponseFunction::operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response) {
+        double r_acc = 0;
+        for (TestSetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
+            const string & img_name = it->first;
+            if (result.find(img_name) == result.end()) {
+                if (!ground.empty()) {
+                    r_acc += 1.0;
+                }
+            } else {
+                const Guess & guess = result.find(img_name)->second;
+                PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
+                double r = 1.0;
+                const GroundTruth & groundTruth = it->second;
+                BOOST_FOREACH(NamedPose np, groundTruth) {
+                    if (np.name == guess.getObject()->name) {
+                        double dt = distBetweenLocations(est_pose, np.pose); 
+                        double da = angleBetweenOrientations(est_pose, np.pose); 
+                        double r2 = (dt * dt) / (max_trans_error_ * max_trans_error_) + (da * da) / (max_angle_error_ * max_angle_error_);
+                        r = r2 < r ? r2 : r;
+                    }
+                }
+                r_acc += r;
             }
         }
-        return r;
+        response.value = r_acc / ground.size();
     }
 
 }

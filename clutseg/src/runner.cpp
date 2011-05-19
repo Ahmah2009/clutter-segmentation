@@ -48,9 +48,8 @@ namespace clutseg {
         // TODO: check which statistics might be useful and cannot be generated afterwards
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / exp.test_set;
-        CutSseResponseFunction response;
-        float r_acc = 0;
         TestSetGroundTruth testdesc = loadTestSetGroundTruth(test_dir / "testdesc.txt");
+        TestSetResult result;
         // Loop over all images in the test set
         for (TestSetGroundTruth::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
             string img_name = it->first;
@@ -72,12 +71,9 @@ namespace clutseg {
             PointCloudT inliersCloud;
             bool pos = segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
-            if (pos) {
-                r_acc += response(guess, it->second);
-            } else {
-                r_acc += 1;
-            }
+            result[img_name] = guess;
         }
+        CutSseResponseFunction response;
         // TODO: save experiment results
         getVcsCommit(exp.vcs_commit);
         time_t tt = time(NULL);
