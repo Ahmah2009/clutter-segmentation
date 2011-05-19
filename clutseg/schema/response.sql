@@ -1,12 +1,25 @@
 
 create table response (
     id integer primary key autoincrement,
-    value float not null
-    -- max_rotation_error float,
-    -- max_translation_error float
-    -- tp
-    -- fp
-    -- fn
-    -- tn
+    value float not null,
+    avg_angle_err float not null,
+    avg_succ_angle_err float not null,
+    avg_trans_err float not null,
+    avg_succ_trans_err float not null,
+    avg_angle_sq_err float not null,
+    avg_succ_angle_sq_err float not null,
+    avg_trans_sq_err float not null,
+    avg_succ_trans_sq_err float not null,
+    succ_rate float not null,
+    mislabel_rate float not null,
+    avg_keypoints float not null,
+    avg_detect_matches float not null,
+    avg_detect_inliers float not null,
+    avg_detect_best_matches float not null,
+    avg_detect_best_inliers float not null,
+    avg_locate_matches float not null,
+    avg_locate_inliers float not null,
+    avg_locate_best_matches float not null,
+    avg_locate_best_inliers float not null
 );
 

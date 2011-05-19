@@ -71,16 +71,96 @@ namespace clutseg {
  
         ClutsegParams pms_clutseg;
 
+        /** Maximum translational error that allows a guess to be marked a
+         * success. */
+        float max_trans_error;
+        /** Maximum orientational error that allows a guess to be marked a
+         * success. */
+        float max_angle_error;
+
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
 
     };
 
+    /** Stores statistics about an experiment run on a test set. These values
+     * guide the selection of better configurations. Note that we distinguish
+     * between failures and successes that are defined by the joint angular and
+     * translational error exceeding a predefined threshold. */
     struct Response : public Serializable {
 
         Response() : value(0.0) {}
 
+        /** Average of the values returned by the response function */
         float value;
+
+        /** Average orientational error (all queries). */
+        float avg_angle_err;
+        /** Average orientational error (success only). This statistic depends
+         * on max_angle_error. */
+        float avg_succ_angle_err;
+        /** Average translational error (all queries). */
+        float avg_trans_err;
+        /** Average translational error (success only). This statistic depends
+         * on max_trans_error. */
+        float avg_succ_trans_err;
+        /** Average orientational squared error (all queries) */
+        float avg_angle_sq_err;
+        /** Average orientational squared error (success only). This statistic
+         * depends on max_angle_error. */
+        float avg_succ_angle_sq_err;
+        /** Average translational squared error (all queries) */
+        float avg_trans_sq_err;
+        /** Average translational squared error (success only). This statistic
+         * depends on max_trans_error. */
+        float avg_succ_trans_sq_err;
+
+        /** Average number of scenes where label was not correct. */
+        float mislabel_rate;
+
+        /** Average number of extracted keypoints per image */
+        float avg_keypoints;
+
+        /** Average number of matches in detection stage */
+        float avg_detect_matches;
+        /** Average number of inliers of all guesses in detection stage */
+        float avg_detect_inliers;
+        /** Average number of matches for the best guess object in detection stage */
+        float avg_detect_best_matches;
+        /** Average number of inliers for the best guess object in detection stage */
+        float avg_detect_best_inliers;
+        /** Average number of matches in locating stage */
+        float avg_locate_matches;
+        /** Average number of inliers of all guesses in locating stage */
+        float avg_locate_inliers;
+        /** Average number of matches for the best guess object in locating stage */
+        float avg_locate_best_matches;
+        /** Average number of inliers for the best guess object in locating stage */
+        float avg_locate_best_inliers;
+
+        /** Average of query images where locating (up to error margins)
+         * succeeded. Depends on max_angle_error and max_trans_error. */
+        float succ_rate;
+
+        inline float fail_rate() const {
+            return 1 - succ_rate;
+        }
+
+        inline float avg_fail_angle_err() const { 
+            return (avg_angle_err - succ_rate * avg_succ_angle_err) / fail_rate();
+        }
+
+        inline float avg_fail_trans_err() const { 
+            return (avg_trans_err - succ_rate * avg_succ_trans_err) / fail_rate();
+        }
+
+        inline float avg_fail_angle_sq_err() const { 
+            return (avg_angle_sq_err - succ_rate * avg_succ_angle_sq_err) / fail_rate();
+        }
+
+        inline float avg_fail_trans_sq_err() const { 
+            return (avg_trans_sq_err - succ_rate * avg_succ_trans_sq_err) / fail_rate();
+        }
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
