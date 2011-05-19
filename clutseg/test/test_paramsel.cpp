@@ -60,6 +60,25 @@ struct ParamSelTest : public ::testing::Test {
         experiment.paramset.locate_pms_guess.minInliersCount = 5; 
         experiment.paramset.locate_pms_guess.maxProjectionError = 12; 
         experiment.response.value = 0.87;
+        experiment.response.avg_angle_err = 0.34;
+        experiment.response.avg_succ_angle_err = 0.08;
+        experiment.response.avg_trans_err = 0.12;
+        experiment.response.avg_succ_trans_err = 0.02;
+        experiment.response.avg_angle_sq_err = 0.56;
+        experiment.response.avg_succ_angle_sq_err = 0.15;
+        experiment.response.avg_trans_sq_err = 0.53;
+        experiment.response.avg_succ_trans_sq_err = 0.03;
+        experiment.response.succ_rate = 0.63;
+        experiment.response.mislabel_rate = 0.05;
+        experiment.response.avg_keypoints = 913.0;
+        experiment.response.avg_detect_matches = 652.3;
+        experiment.response.avg_detect_inliers = 9.2;
+        experiment.response.avg_detect_best_matches = 211.9;
+        experiment.response.avg_detect_best_inliers = 13.3;
+        experiment.response.avg_locate_matches = 802.1;
+        experiment.response.avg_locate_inliers = 29.8;
+        experiment.response.avg_locate_best_matches = 802.1;
+        experiment.response.avg_locate_best_inliers = 39.8;
         getVcsCommit(experiment.vcs_commit);
     }
 
@@ -107,6 +126,26 @@ TEST_F(ParamSelTest, response_write_read) {
     rest.id = orig.id;
     rest.deserialize(db); 
     EXPECT_FLOAT_EQ(orig.value, rest.value);
+    EXPECT_FLOAT_EQ(orig.value, rest.value);
+    EXPECT_FLOAT_EQ(orig.avg_angle_err, rest.avg_angle_err);
+    EXPECT_FLOAT_EQ(orig.avg_succ_angle_err, rest.avg_succ_angle_err);
+    EXPECT_FLOAT_EQ(orig.avg_trans_err, rest.avg_trans_err);
+    EXPECT_FLOAT_EQ(orig.avg_succ_trans_err, rest.avg_succ_trans_err);
+    EXPECT_FLOAT_EQ(orig.avg_angle_sq_err, rest.avg_angle_sq_err);
+    EXPECT_FLOAT_EQ(orig.avg_succ_angle_sq_err, rest.avg_succ_angle_sq_err);
+    EXPECT_FLOAT_EQ(orig.avg_trans_sq_err, rest.avg_trans_sq_err);
+    EXPECT_FLOAT_EQ(orig.avg_succ_trans_sq_err, rest.avg_succ_trans_sq_err);
+    EXPECT_FLOAT_EQ(orig.succ_rate, rest.succ_rate);
+    EXPECT_FLOAT_EQ(orig.mislabel_rate, rest.mislabel_rate);
+    EXPECT_FLOAT_EQ(orig.avg_keypoints, rest.avg_keypoints);
+    EXPECT_FLOAT_EQ(orig.avg_detect_matches, rest.avg_detect_matches);
+    EXPECT_FLOAT_EQ(orig.avg_detect_inliers, rest.avg_detect_inliers);
+    EXPECT_FLOAT_EQ(orig.avg_detect_best_matches, rest.avg_detect_best_matches);
+    EXPECT_FLOAT_EQ(orig.avg_detect_best_inliers, rest.avg_detect_best_inliers);
+    EXPECT_FLOAT_EQ(orig.avg_locate_matches, rest.avg_locate_matches);
+    EXPECT_FLOAT_EQ(orig.avg_locate_inliers, rest.avg_locate_inliers);
+    EXPECT_FLOAT_EQ(orig.avg_locate_best_matches, rest.avg_locate_best_matches);
+    EXPECT_FLOAT_EQ(orig.avg_locate_best_inliers, rest.avg_locate_best_inliers);
 }
 
 TEST_F(ParamSelTest, pms_fe_read) {
