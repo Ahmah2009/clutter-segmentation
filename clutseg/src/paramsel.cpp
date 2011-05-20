@@ -252,12 +252,22 @@ namespace clutseg {
         if (vcs_commit != "") {
             setMemberField(m, "vcs_commit", vcs_commit);
         }
+        setMemberField(m, "skip", skip);
         insertOrUpdate(db, "experiment", m, id);
     }
     
     void Experiment::deserialize(sqlite3* db) {
         sqlite3_stmt *read;
-        db_prepare(db, read, boost::format("select paramset_id, response_id, train_set, test_set, sample_size, time, vcs_commit from experiment where id=%d;") % id);
+        db_prepare(db, read, boost::format("select "
+            "paramset_id, " // 0
+            "response_id, " // 1
+            "train_set, " // 2
+            "test_set, " // 3
+            "sample_size, " // 4
+            "time, " // 5
+            "vcs_commit, " // 6
+            "skip " // 7
+            "from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
        
         has_run = (sqlite3_column_type(read, 1) != SQLITE_NULL);
@@ -274,6 +284,7 @@ namespace clutseg {
             time = string((const char*) sqlite3_column_text(read, 5));
             vcs_commit = string((const char*) sqlite3_column_text(read, 6));
         }
+        skip = sqlite3_column_int(read, 7) != 0;
         sqlite3_finalize(read);
         paramset.deserialize(db);
         if (has_run) {

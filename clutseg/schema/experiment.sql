@@ -1,4 +1,3 @@
-
 create table experiment (
     id integer primary key autoincrement,
     paramset_id integer not null references paramset(id),
@@ -7,6 +6,7 @@ create table experiment (
     train_set varchar(255) not null,
     test_set varchar(255) not null,
     time datetime,
-    vcs_commit varchar(255) 
+    vcs_commit varchar(255),
+    skip boolean default 0
 );
 

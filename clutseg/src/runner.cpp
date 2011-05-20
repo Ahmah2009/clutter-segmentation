@@ -58,7 +58,7 @@ namespace clutseg {
             Mat queryImage = imread(img_path.string(), 0);
             if (queryImage.empty()) {
                 throw runtime_error(str(boost::format(
-                    "Cannot read image '%s' for experiment with id=%d. Please check\n"
+                    "ERROR: Cannot read image '%s' for experiment with id=%d. Please check\n"
                     "whether image file exists. Full path is '%s'."
                 ) % img_name % exp.id % img_path));
             }
@@ -101,9 +101,9 @@ namespace clutseg {
     }
 
     void ExperimentRunner::run() {
-        vector<Experiment> exps;
         while (true) {
-            cout << "Querying database for experiments to carry out..." << endl;
+            cout << "[RUN] Querying database for experiments to carry out..." << endl;
+            vector<Experiment> exps;
             selectExperimentsNotRun(db_, exps);
             if (exps.empty()) {
                 // Wait for someone inserting new rows into the database. The
@@ -119,41 +119,50 @@ namespace clutseg {
             TrainFeatures cur_tr_feat;
             ClutSegmenter *segmenter = NULL;
             BOOST_FOREACH(Experiment & exp, exps) {
-                TrainFeatures tr_feat(exp.train_set, exp.paramset.train_pms_fe);
-                if (tr_feat != cur_tr_feat) {
-                    if (!cache_.trainFeaturesExist(tr_feat)) {
-                        // TODO: catch error where train directory does not exist
-                        // This is a critical part where the experiment runner
-                        // should not be interrupted. Also proper closing of
-                        // the database has to be ensured by a database handler
-                        // FIXME:
-                        tr_feat.generate();
-                        cache_.addTrainFeatures(tr_feat);
+                if (exp.skip) {
+                    cerr << "[RUN]: Skipping experiment (id=" << exp.id << ")" << endl;
+                } else {
+                    TrainFeatures tr_feat(exp.train_set, exp.paramset.train_pms_fe);
+                    if (tr_feat != cur_tr_feat) {
+                        if (!cache_.trainFeaturesExist(tr_feat)) {
+                            // TODO: catch error where train directory does not exist
+                            // This is a critical part where the experiment runner
+                            // should not be interrupted. Also proper closing of
+                            // the database has to be ensured by a database handler
+                            // FIXME:
+                            tr_feat.generate();
+                            cache_.addTrainFeatures(tr_feat);
+                        }
+                        delete segmenter;
+                        segmenter = new ClutSegmenter(
+                            cache_.trainFeaturesDir(tr_feat).string(),
+                            TODParameters(), TODParameters());
                     }
-                    delete segmenter;
-                    segmenter = new ClutSegmenter(
-                        cache_.trainFeaturesDir(tr_feat).string(),
-                        TODParameters(), TODParameters());
-                }
 
-                // Clear statistics        
-                segmenter->resetStats();
+                    // Clear statistics        
+                    segmenter->resetStats();
 
-                // Online change configuration
-                segmenter->reconfigure(exp.paramset);
-                
-                try {
-                    runExperiment(*segmenter, exp);
-                    exp.serialize(db_);
-                } catch( runtime_error & e ) {
-                    cerr << "[RUN]: " << e.what() << endl;
-                    cerr << "[RUN]: ERROR, experiment failed, no results recorded (id=" << exp.id << ")" << endl;
+                    // Online change configuration
+                    segmenter->reconfigure(exp.paramset);
+                    
+                    try {
+                        runExperiment(*segmenter, exp);
+                        exp.serialize(db_);
+                    } catch( runtime_error & e ) {
+                        cerr << "[RUN]: " << e.what() << endl;
+                        cerr << "[RUN]: ERROR, experiment failed, no results recorded (id=" << exp.id << ")" << endl;
+                        cerr << "[RUN]: Before running the experiment again, make sure to clear 'skip' flag in experiment record." << endl;
+                        exp.skip = true;
+                        exp.serialize(db_);
+                    }
                 }
             }
             // TODO: use smart pointer
             if (segmenter != NULL) {
                 delete segmenter;
             }
+
+            sleep(3);
         }
     }
 

@@ -173,7 +173,7 @@ namespace clutseg {
 
     struct Experiment : public Serializable {
       
-        Experiment() : sample_size(0), has_run(false) {
+        Experiment() : sample_size(0), skip(false), has_run(false) {
             // What's the standard
             paramset = Paramset(); 
             response = Response(); 
@@ -187,6 +187,10 @@ namespace clutseg {
         std::string vcs_commit;
         int sample_size;
 
+        /** Specifies whether to skip this experiment when carrying out
+         * experiments that have not yet been run. This allows for temporarily
+         * disabling experiments. */
+        bool skip;
         /** Specifies whether this experiment has already been carried out. In case
          * it has been carried out, and the experiment is serialized to the database
          * column response_id will be a valid reference into table response. If not
