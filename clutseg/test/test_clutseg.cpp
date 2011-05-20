@@ -44,6 +44,7 @@ class ClutsegTest : public ::testing::Test {
                 loaded = true;
             }
 
+            segmenter.setDoLocate(true);
             segmenter.resetStats();               
             segmenter.getLocateParams().matcherParams.doRatioTest = false;
 
@@ -127,6 +128,7 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
     TODParameters & locate_params = segmenter.getLocateParams();
     locate_params.guessParams.maxProjectionError = 8;
     locate_params.guessParams.ransacIterationsCount = 500;
+    locate_params.guessParams.minInliersCount = 50;
     //segmenter.setAcceptThreshold(20);
 
     Guess guess;
@@ -174,6 +176,52 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
     imshow("guess", canvas);
     waitKey(-1);
 }
+
+/** Check whether an object is at least detected in clutter */
+TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
+    TODParameters & detect_params = segmenter.getDetectParams();
+    detect_params.guessParams.maxProjectionError = 10.0;
+    detect_params.guessParams.ransacIterationsCount = 1000;
+    segmenter.setDoLocate(false);
+    Guess guess;
+    PointCloudT inlierCloud;
+    EXPECT_EQ(0, segmenter.getStats().choices);
+    EXPECT_EQ(0, segmenter.getStats().keypoints);
+    EXPECT_EQ(0, segmenter.getStats().detect_matches);
+    EXPECT_EQ(0, segmenter.getStats().detect_guesses);
+    EXPECT_EQ(0, segmenter.getStats().detect_inliers);
+    EXPECT_EQ(0, segmenter.getStats().detect_choice_matches);
+    EXPECT_EQ(0, segmenter.getStats().detect_choice_inliers);
+    EXPECT_EQ(0, segmenter.getStats().locate_matches);
+    EXPECT_EQ(0, segmenter.getStats().locate_guesses);
+    EXPECT_EQ(0, segmenter.getStats().locate_inliers);
+    EXPECT_EQ(0, segmenter.getStats().locate_choice_matches);
+    EXPECT_EQ(0, segmenter.getStats().locate_choice_inliers);
+    bool positive = segmenter.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
+    ASSERT_TRUE(positive);
+    EXPECT_EQ(1, segmenter.getStats().choices);
+    EXPECT_LT(100, segmenter.getStats().keypoints);
+    EXPECT_LT(0, segmenter.getStats().detect_matches);
+    EXPECT_LT(0, segmenter.getStats().detect_guesses);
+    EXPECT_LT(0, segmenter.getStats().detect_inliers);
+    EXPECT_LT(0, segmenter.getStats().detect_choice_matches);
+    EXPECT_LT(0, segmenter.getStats().detect_choice_inliers);
+    EXPECT_EQ(0, segmenter.getStats().locate_matches);
+    EXPECT_EQ(0, segmenter.getStats().locate_guesses);
+    EXPECT_EQ(0, segmenter.getStats().locate_inliers);
+    EXPECT_EQ(0, segmenter.getStats().locate_choice_matches);
+    EXPECT_EQ(guess.inliers.size(), segmenter.getStats().detect_choice_inliers);
+    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
+                guess.getObject()->name == "haltbare_milch" ||
+                guess.getObject()->name == "jacobs_coffee");
+
+    Camera camera("./data/camera.yml", Camera::TOD_YAML);
+    Mat canvas = clutter_img.clone();
+    drawGuess(canvas, guess, camera, PoseRT());
+    imshow("RecognizeInClutterDetectOnly", canvas);
+    waitKey(-1);
+}
+
 
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeForemostInClutter) {

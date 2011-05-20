@@ -104,6 +104,10 @@ namespace clutseg {
 
             void setRanking(const cv::Ptr<GuessRanking> & ranking);
 
+            void setDoLocate(bool do_locate);
+
+            bool isDoLocate() const;
+
             /** Gets a set of template objects this segmenter knows, such as
               * assam_tea, haltbare_milch, and so on. */
             std::set<std::string> getTemplateNames() const;

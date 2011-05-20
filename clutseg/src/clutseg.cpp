@@ -127,6 +127,14 @@ namespace clutseg {
         return stats_;
     }
 
+    void ClutSegmenter::setDoLocate(bool do_locate) {
+        do_locate_ = do_locate;
+    }
+
+    bool ClutSegmenter::isDoLocate() const {
+        return do_locate_;
+    }
+
     void initRecognizer(Ptr<Recognizer> & recognizer, Ptr<Matcher> & matcher, TrainingBase & base, TODParameters params, const string & baseDirectory) {
         matcher = Matcher::create(params.matcherParams);
         matcher->add(base);
