@@ -80,7 +80,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.avg_locate_inliers = 29.8;
         experiment.response.avg_locate_choice_matches = 802.1;
         experiment.response.avg_locate_choice_inliers = 39.8;
-        getVcsCommit(experiment.vcs_commit);
+        experiment.record_commit();
     }
 
     void TearDown() {
@@ -139,9 +139,10 @@ TEST_F(ParamSelTest, Initialization) {
 }
 
 TEST_F(ParamSelTest, GetVcsCommit) {
-    string vcs_commit;
-    EXPECT_TRUE(getVcsCommit(vcs_commit));
-    EXPECT_EQ(40, vcs_commit.size());
+    Experiment e;
+    EXPECT_EQ(0, e.vcs_commit.size());
+    e.record_commit();
+    EXPECT_EQ(40, e.vcs_commit.size());
 }
 
 TEST_F(ParamSelTest, response_read) {

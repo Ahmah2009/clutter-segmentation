@@ -201,6 +201,9 @@ namespace clutseg {
          * run yet, column response_id will be set to NULL when serializing. */
         bool has_run;
 
+        void record_time();
+        void record_commit();
+
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
 
@@ -214,8 +217,6 @@ namespace clutseg {
 
     void deserialize_pms_guess(sqlite3* db, tod::GuessGeneratorParameters & pms_guess, int64_t & id);
     void serialize_pms_guess(sqlite3* db, const tod::GuessGeneratorParameters & pms_guess, int64_t & id);
-
-    bool getVcsCommit(std::string & vcs_commit);
 
     void selectExperimentsNotRun(sqlite3* & db, std::vector<Experiment> & exps);
 

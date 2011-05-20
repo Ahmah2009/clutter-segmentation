@@ -80,8 +80,6 @@ namespace clutseg {
         CutSseResponseFunction response;
         response(result, testdesc, exp.response);
 
-        getVcsCommit(exp.vcs_commit);
-        
         ClutSegmenterStats stats = segmenter.getStats();
         exp.response.avg_keypoints = float(stats.acc_keypoints) / stats.queries;
         exp.response.avg_detect_matches = float(stats.acc_detect_matches) / stats.queries;
@@ -94,12 +92,9 @@ namespace clutseg {
         exp.response.avg_locate_inliers = float(stats.acc_locate_inliers) / stats.acc_detect_guesses;
         exp.response.avg_locate_choice_matches = float(stats.acc_locate_choice_matches) / stats.choices;
         exp.response.avg_locate_choice_inliers = float(stats.acc_locate_choice_inliers) / stats.choices;
-
-        time_t tt = time(NULL);
-        tm *t = localtime(&tt);
-        char ts[128];
-        strftime(ts, 128, "%Y-%m-%d %H:%M:%S", t);
-        exp.time = string(ts);
+    
+        exp.record_time();
+        exp.record_commit();
         exp.has_run = true;
     }
 

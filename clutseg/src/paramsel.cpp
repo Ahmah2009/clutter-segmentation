@@ -10,9 +10,9 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
+#include <ctime>
 #include <iostream>
 #include <map>
-#include <utility>
 
 using namespace std;
 using namespace tod;
@@ -295,7 +295,15 @@ namespace clutseg {
         }
     }
 
-    bool getVcsCommit(std::string & vcs_commit) {
+    void Experiment::record_time() {
+        time_t tt = std::time(NULL);
+        tm *t = localtime(&tt);
+        char ts[128];
+        strftime(ts, 128, "%Y-%m-%d %H:%M:%S", t);
+        time = string(ts);
+    }
+
+    void Experiment::record_commit() {
         FILE *in;
         in = popen(str(boost::format("git log -1 --format=oneline %s/clutter-segmentation") % getenv("CLUTSEG_PATH")).c_str(), "r");
         char *line = NULL;
@@ -309,9 +317,8 @@ namespace clutseg {
         size_t offs = s.str().find(" ");
         if (s.str() != "" && offs != string::npos && offs == 40) {
             vcs_commit = s.str().substr(0, offs);
-            return true;
         } else {
-            return false;
+            vcs_commit = "";
         }
     }
 

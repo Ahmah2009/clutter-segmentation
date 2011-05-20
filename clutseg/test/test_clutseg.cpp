@@ -75,45 +75,45 @@ class ClutsegTest : public ::testing::Test {
         void check_preconditions() {
             EXPECT_FALSE(clutter_truth.labels.empty());
             EXPECT_EQ(0, sgm.getStats().choices);
-            EXPECT_EQ(0, sgm.getStats().keypoints);
-            EXPECT_EQ(0, sgm.getStats().detect_matches);
-            EXPECT_EQ(0, sgm.getStats().detect_guesses);
-            EXPECT_EQ(0, sgm.getStats().detect_inliers);
-            EXPECT_EQ(0, sgm.getStats().detect_choice_matches);
-            EXPECT_EQ(0, sgm.getStats().detect_choice_inliers);
-            EXPECT_EQ(0, sgm.getStats().locate_matches);
-            EXPECT_EQ(0, sgm.getStats().locate_guesses);
-            EXPECT_EQ(0, sgm.getStats().locate_inliers);
+            EXPECT_EQ(0, sgm.getStats().acc_keypoints);
+            EXPECT_EQ(0, sgm.getStats().acc_detect_matches);
+            EXPECT_EQ(0, sgm.getStats().acc_detect_guesses);
+            EXPECT_EQ(0, sgm.getStats().acc_detect_inliers);
+            EXPECT_EQ(0, sgm.getStats().acc_detect_choice_matches);
+            EXPECT_EQ(0, sgm.getStats().acc_detect_choice_inliers);
+            EXPECT_EQ(0, sgm.getStats().acc_locate_matches);
+            EXPECT_EQ(0, sgm.getStats().acc_locate_guesses);
+            EXPECT_EQ(0, sgm.getStats().acc_locate_inliers);
             EXPECT_EQ(0, sgm.getStats().acc_locate_choice_matches);
-            EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
+            EXPECT_EQ(0, sgm.getStats().acc_locate_choice_inliers);
         }
 
         void check_postconditions() {
             EXPECT_EQ(1, sgm.getStats().choices);
-            EXPECT_LT(100, sgm.getStats().keypoints);
-            EXPECT_LT(0, sgm.getStats().detect_matches);
-            EXPECT_LT(0, sgm.getStats().detect_guesses);
-            EXPECT_LT(0, sgm.getStats().detect_inliers);
-            EXPECT_LT(0, sgm.getStats().detect_choice_matches);
-            EXPECT_LT(0, sgm.getStats().detect_choice_inliers);
+            EXPECT_LT(100, sgm.getStats().acc_keypoints);
+            EXPECT_LT(0, sgm.getStats().acc_detect_matches);
+            EXPECT_LT(0, sgm.getStats().acc_detect_guesses);
+            EXPECT_LT(0, sgm.getStats().acc_detect_inliers);
+            EXPECT_LT(0, sgm.getStats().acc_detect_choice_matches);
+            EXPECT_LT(0, sgm.getStats().acc_detect_choice_inliers);
             if (sgm.isDoLocate()) {
-                EXPECT_LT(0, sgm.getStats().locate_matches);
-                EXPECT_LT(0, sgm.getStats().locate_guesses);
-                EXPECT_LT(0, sgm.getStats().locate_inliers);
+                EXPECT_LT(0, sgm.getStats().acc_locate_matches);
+                EXPECT_LT(0, sgm.getStats().acc_locate_guesses);
+                EXPECT_LT(0, sgm.getStats().acc_locate_inliers);
                 EXPECT_LT(0, sgm.getStats().acc_locate_choice_matches);
-                EXPECT_EQ(choice.inliers.size(), sgm.getStats().locate_choice_inliers);
+                EXPECT_EQ(choice.inliers.size(), sgm.getStats().acc_locate_choice_inliers);
             } else {
-                EXPECT_EQ(0, sgm.getStats().locate_matches);
-                EXPECT_EQ(0, sgm.getStats().locate_guesses);
-                EXPECT_EQ(0, sgm.getStats().locate_inliers);
+                EXPECT_EQ(0, sgm.getStats().acc_locate_matches);
+                EXPECT_EQ(0, sgm.getStats().acc_locate_guesses);
+                EXPECT_EQ(0, sgm.getStats().acc_locate_inliers);
                 EXPECT_EQ(0, sgm.getStats().acc_locate_choice_matches);
-                EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
+                EXPECT_EQ(0, sgm.getStats().acc_locate_choice_inliers);
             }
             EXPECT_TRUE(clutter_truth.onScene(choice.getObject()->name));
-            EXPECT_LE(0, sgm.getStats().detect_tp_rate);
-            EXPECT_GE(1, sgm.getStats().detect_tp_rate);
-            EXPECT_LE(0, sgm.getStats().detect_fp_rate);
-            EXPECT_GE(1, sgm.getStats().detect_fp_rate);
+            EXPECT_LE(0, sgm.getStats().acc_detect_tp_rate);
+            EXPECT_GE(1, sgm.getStats().acc_detect_tp_rate);
+            EXPECT_LE(0, sgm.getStats().acc_detect_fp_rate);
+            EXPECT_GE(1, sgm.getStats().acc_detect_fp_rate);
         }
 
         void showGuessAndGroundTruth(const string & test_name, const Guess & choice) {
