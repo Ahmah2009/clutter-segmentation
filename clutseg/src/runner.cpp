@@ -73,9 +73,23 @@ namespace clutseg {
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
             result.put(img_name, guess);
         }
-        CutSseResponseFunction response;
         // TODO: save experiment results
+        CutSseResponseFunction response;
+        response(result, testdesc, exp.response);
+
         getVcsCommit(exp.vcs_commit);
+        
+        ClutSegmenterStats stats = segmenter.getStats();
+        exp.response.avg_keypoints = float(stats.keypoints) / stats.queries;
+        exp.response.avg_detect_matches = float(stats.detect_matches) / stats.queries;
+        exp.response.avg_detect_inliers = float(stats.detect_inliers) / stats.detect_guesses;
+        exp.response.avg_detect_choice_matches = float(stats.detect_choice_matches) / stats.choices;
+        exp.response.avg_detect_choice_inliers = float(stats.detect_choice_inliers) / stats.choices;
+        exp.response.avg_locate_matches = float(stats.locate_matches) / stats.queries;
+        exp.response.avg_locate_inliers = float(stats.locate_inliers) / stats.detect_guesses;
+        exp.response.avg_locate_choice_matches = float(stats.locate_choice_matches) / stats.choices;
+        exp.response.avg_locate_choice_inliers = float(stats.locate_choice_inliers) / stats.choices;
+
         time_t tt = time(NULL);
         tm *t = localtime(&tt);
         char ts[17];
@@ -120,6 +134,9 @@ namespace clutseg {
                         TODParameters(), TODParameters());
                 }
 
+                // Clear statistics        
+                segmenter->resetStats();
+
                 // Online change configuration
                 segmenter->reconfigure(exp.paramset);
                 
@@ -130,6 +147,10 @@ namespace clutseg {
                     cerr << "[RUN]: " << e.what() << endl;
                     cerr << "[RUN]: ERROR, experiment failed, no results recorded (id=" << exp.id << ")" << endl;
                 }
+            }
+            // TODO: use smart pointer
+            if (segmenter != NULL) {
+                delete segmenter;
             }
         }
     }

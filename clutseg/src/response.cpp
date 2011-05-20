@@ -31,10 +31,12 @@ namespace clutseg {
                     r_acc += 1.0;
                 }
             } else {
-                const Guess & guess = result.get(img_name);
+                Guess guess = result.get(img_name);
                 PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
                 double r = 1.0;
                 BOOST_FOREACH(NamedPose np, groundTruth) {
+                    cout << np.name << endl;
+                    cout << guess.getObject()->name << endl;
                     if (np.name == guess.getObject()->name) {
                         double dt = distBetweenLocations(est_pose, np.pose); 
                         double da = angleBetweenOrientations(est_pose, np.pose); 
