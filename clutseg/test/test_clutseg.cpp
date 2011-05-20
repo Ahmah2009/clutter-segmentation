@@ -29,7 +29,7 @@ class ClutsegTest : public ::testing::Test {
 
         virtual void SetUp() {
             if (!loaded) {
-                 segmenter = ClutSegmenter(
+                 sgm = ClutSegmenter(
                     // FIXME: This is a mistake. We cannot use
                     // ias_kinect_test_grounded and ias_kinect_train together.
                     // The ground poses will not match due to different model
@@ -44,9 +44,9 @@ class ClutsegTest : public ::testing::Test {
                 loaded = true;
             }
 
-            segmenter.setDoLocate(true);
-            segmenter.resetStats();               
-            segmenter.getLocateParams().matcherParams.doRatioTest = false;
+            sgm.setDoLocate(true);
+            sgm.resetStats();               
+            sgm.getLocateParams().matcherParams.doRatioTest = false;
 
             haltbare_milch_train_img = imread("./data/image_00000.png");
             pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
@@ -55,7 +55,7 @@ class ClutsegTest : public ::testing::Test {
             pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/cloud_00000.pcd", clutter_cloud);
         }
 
-        static ClutSegmenter segmenter;
+        static ClutSegmenter sgm;
         static bool loaded;
         Mat haltbare_milch_train_img;
         PointCloudT haltbare_milch_train_cloud;
@@ -64,7 +64,7 @@ class ClutsegTest : public ::testing::Test {
 
 };
 
-ClutSegmenter ClutsegTest::segmenter;
+ClutSegmenter ClutsegTest::sgm;
 bool ClutsegTest::loaded;
 
 /** Verify that changes to parameters do not affect existing ClutSegmenter
@@ -89,10 +89,10 @@ TEST_F(ClutsegTest, ConstructorOpaque) {
  * parameter configuration can be changed easily without having to reload the
  * training base. */
 TEST_F(ClutsegTest, ChangeParamsOnline) {
-    EXPECT_FALSE(segmenter.getLocateParams().matcherParams.doRatioTest);
-    TODParameters & params = segmenter.getLocateParams();
+    EXPECT_FALSE(sgm.getLocateParams().matcherParams.doRatioTest);
+    TODParameters & params = sgm.getLocateParams();
     params.matcherParams.doRatioTest = true;
-    EXPECT_TRUE(segmenter.getLocateParams().matcherParams.doRatioTest);
+    EXPECT_TRUE(sgm.getLocateParams().matcherParams.doRatioTest);
 }
 
 /** Check whether detection works for a training image. This is expected to
@@ -100,7 +100,7 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
     Guess guess;
     PointCloudT inlierCloud;
-    bool positive = segmenter.recognize(haltbare_milch_train_img,
+    bool positive = sgm.recognize(haltbare_milch_train_img,
                                         haltbare_milch_train_cloud,
                                         guess, inlierCloud);
     EXPECT_TRUE(positive);
@@ -122,54 +122,68 @@ TEST_F(ClutsegTest, LoadSingleTrainingBase) {
 
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeInClutter) {
-    TODParameters & detect_params = segmenter.getDetectParams();
+    TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
-    TODParameters & locate_params = segmenter.getLocateParams();
+    TODParameters & locate_params = sgm.getLocateParams();
     locate_params.guessParams.maxProjectionError = 8;
     locate_params.guessParams.ransacIterationsCount = 500;
     locate_params.guessParams.minInliersCount = 50;
-    //segmenter.setAcceptThreshold(20);
+    //sgm.setAcceptThreshold(20);
 
-    Guess guess;
-    PointCloudT inlierCloud;
-    EXPECT_EQ(0, segmenter.getStats().choices);
-    EXPECT_EQ(0, segmenter.getStats().keypoints);
-    EXPECT_EQ(0, segmenter.getStats().detect_matches);
-    EXPECT_EQ(0, segmenter.getStats().detect_guesses);
-    EXPECT_EQ(0, segmenter.getStats().detect_inliers);
-    EXPECT_EQ(0, segmenter.getStats().detect_choice_matches);
-    EXPECT_EQ(0, segmenter.getStats().detect_choice_inliers);
-    EXPECT_EQ(0, segmenter.getStats().locate_matches);
-    EXPECT_EQ(0, segmenter.getStats().locate_guesses);
-    EXPECT_EQ(0, segmenter.getStats().locate_inliers);
-    EXPECT_EQ(0, segmenter.getStats().locate_choice_matches);
-    EXPECT_EQ(0, segmenter.getStats().locate_choice_inliers);
-    bool positive = segmenter.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
-    ASSERT_TRUE(positive);
-    EXPECT_EQ(1, segmenter.getStats().choices);
-    EXPECT_LT(100, segmenter.getStats().keypoints);
-    EXPECT_LT(0, segmenter.getStats().detect_matches);
-    EXPECT_LT(0, segmenter.getStats().detect_guesses);
-    EXPECT_LT(0, segmenter.getStats().detect_inliers);
-    EXPECT_LT(0, segmenter.getStats().detect_choice_matches);
-    EXPECT_LT(0, segmenter.getStats().detect_choice_inliers);
-    EXPECT_LT(0, segmenter.getStats().locate_matches);
-    EXPECT_LT(0, segmenter.getStats().locate_guesses);
-    EXPECT_LT(0, segmenter.getStats().locate_inliers);
-    EXPECT_LT(0, segmenter.getStats().locate_choice_matches);
-    EXPECT_EQ(guess.inliers.size(), segmenter.getStats().locate_choice_inliers);
-    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
-                guess.getObject()->name == "haltbare_milch" ||
-                guess.getObject()->name == "jacobs_coffee");
-
-    Camera camera("./data/camera.yml", Camera::TOD_YAML);
-    Mat canvas = clutter_img.clone();
     PoseRT ground_pose;
-    // TODO: move to fixture
     readPose(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png.pose.yaml", ground_pose);
     PoseRT ground_pose_2 = translatePose(ground_pose, (Mat_<double>(3, 1) << -0.15, 0.0, 0.0));
     PoseRT ground_pose_3 = translatePose(ground_pose, (Mat_<double>(3, 1) << +0.13, 0.0, 0.0));
+
+    // TODO: read from file
+    GroundTruth groundTruth;
+    groundTruth.labels.push_back(LabeledPose("assam_tea", ground_pose_2));
+    groundTruth.labels.push_back(LabeledPose("haltbare_milch", ground_pose));
+    groundTruth.labels.push_back(LabeledPose("jacobs_coffee", ground_pose_3));
+ 
+    Guess guess;
+    PointCloudT inlierCloud;
+    EXPECT_EQ(0, sgm.getStats().choices);
+    EXPECT_EQ(0, sgm.getStats().keypoints);
+    EXPECT_EQ(0, sgm.getStats().detect_matches);
+    EXPECT_EQ(0, sgm.getStats().detect_guesses);
+    EXPECT_EQ(0, sgm.getStats().detect_inliers);
+    EXPECT_EQ(0, sgm.getStats().detect_choice_matches);
+    EXPECT_EQ(0, sgm.getStats().detect_choice_inliers);
+    EXPECT_EQ(0, sgm.getStats().locate_matches);
+    EXPECT_EQ(0, sgm.getStats().locate_guesses);
+    EXPECT_EQ(0, sgm.getStats().locate_inliers);
+    EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
+    EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
+    bool positive = sgm.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
+    ASSERT_TRUE(positive);
+    EXPECT_EQ(1, sgm.getStats().choices);
+    EXPECT_LT(100, sgm.getStats().keypoints);
+    EXPECT_LT(0, sgm.getStats().detect_matches);
+    EXPECT_LT(0, sgm.getStats().detect_guesses);
+    EXPECT_LT(0, sgm.getStats().detect_inliers);
+    EXPECT_LT(0, sgm.getStats().detect_choice_matches);
+    EXPECT_LT(0, sgm.getStats().detect_choice_inliers);
+    EXPECT_LT(0, sgm.getStats().locate_matches);
+    EXPECT_LT(0, sgm.getStats().locate_guesses);
+    EXPECT_LT(0, sgm.getStats().locate_inliers);
+    EXPECT_LT(0, sgm.getStats().locate_choice_matches);
+    EXPECT_EQ(guess.inliers.size(), sgm.getStats().locate_choice_inliers);
+    // TODO: get rid of next assertion
+    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
+                guess.getObject()->name == "haltbare_milch" ||
+                guess.getObject()->name == "jacobs_coffee");
+    EXPECT_TRUE(groundTruth.onScene(guess.getObject()->name));
+    EXPECT_GE(0, sgm.getStats().detect_tp_rate);
+    EXPECT_LE(1, sgm.getStats().detect_tp_rate);
+    EXPECT_GE(0, sgm.getStats().detect_fp_rate);
+    EXPECT_LE(1, sgm.getStats().detect_fp_rate);
+
+    // TODO: use drawGroundTruth
+    Camera camera("./data/camera.yml", Camera::TOD_YAML);
+    Mat canvas = clutter_img.clone();
+    // TODO: move to fixture
     drawGuess(canvas, guess, camera, ground_pose);
     drawPose(canvas, ground_pose_2, camera); 
     drawPose(canvas, ground_pose_3, camera); 
@@ -179,38 +193,41 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
 
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
-    TODParameters & detect_params = segmenter.getDetectParams();
+    TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 10.0;
     detect_params.guessParams.ransacIterationsCount = 1000;
-    segmenter.setDoLocate(false);
+    sgm.setDoLocate(false);
     Guess guess;
     PointCloudT inlierCloud;
-    EXPECT_EQ(0, segmenter.getStats().choices);
-    EXPECT_EQ(0, segmenter.getStats().keypoints);
-    EXPECT_EQ(0, segmenter.getStats().detect_matches);
-    EXPECT_EQ(0, segmenter.getStats().detect_guesses);
-    EXPECT_EQ(0, segmenter.getStats().detect_inliers);
-    EXPECT_EQ(0, segmenter.getStats().detect_choice_matches);
-    EXPECT_EQ(0, segmenter.getStats().detect_choice_inliers);
-    EXPECT_EQ(0, segmenter.getStats().locate_matches);
-    EXPECT_EQ(0, segmenter.getStats().locate_guesses);
-    EXPECT_EQ(0, segmenter.getStats().locate_inliers);
-    EXPECT_EQ(0, segmenter.getStats().locate_choice_matches);
-    EXPECT_EQ(0, segmenter.getStats().locate_choice_inliers);
-    bool positive = segmenter.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
+
+    // TODO: use ground truth
+
+    EXPECT_EQ(0, sgm.getStats().choices);
+    EXPECT_EQ(0, sgm.getStats().keypoints);
+    EXPECT_EQ(0, sgm.getStats().detect_matches);
+    EXPECT_EQ(0, sgm.getStats().detect_guesses);
+    EXPECT_EQ(0, sgm.getStats().detect_inliers);
+    EXPECT_EQ(0, sgm.getStats().detect_choice_matches);
+    EXPECT_EQ(0, sgm.getStats().detect_choice_inliers);
+    EXPECT_EQ(0, sgm.getStats().locate_matches);
+    EXPECT_EQ(0, sgm.getStats().locate_guesses);
+    EXPECT_EQ(0, sgm.getStats().locate_inliers);
+    EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
+    EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
+    bool positive = sgm.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
     ASSERT_TRUE(positive);
-    EXPECT_EQ(1, segmenter.getStats().choices);
-    EXPECT_LT(100, segmenter.getStats().keypoints);
-    EXPECT_LT(0, segmenter.getStats().detect_matches);
-    EXPECT_LT(0, segmenter.getStats().detect_guesses);
-    EXPECT_LT(0, segmenter.getStats().detect_inliers);
-    EXPECT_LT(0, segmenter.getStats().detect_choice_matches);
-    EXPECT_LT(0, segmenter.getStats().detect_choice_inliers);
-    EXPECT_EQ(0, segmenter.getStats().locate_matches);
-    EXPECT_EQ(0, segmenter.getStats().locate_guesses);
-    EXPECT_EQ(0, segmenter.getStats().locate_inliers);
-    EXPECT_EQ(0, segmenter.getStats().locate_choice_matches);
-    EXPECT_EQ(guess.inliers.size(), segmenter.getStats().detect_choice_inliers);
+    EXPECT_EQ(1, sgm.getStats().choices);
+    EXPECT_LT(100, sgm.getStats().keypoints);
+    EXPECT_LT(0, sgm.getStats().detect_matches);
+    EXPECT_LT(0, sgm.getStats().detect_guesses);
+    EXPECT_LT(0, sgm.getStats().detect_inliers);
+    EXPECT_LT(0, sgm.getStats().detect_choice_matches);
+    EXPECT_LT(0, sgm.getStats().detect_choice_inliers);
+    EXPECT_EQ(0, sgm.getStats().locate_matches);
+    EXPECT_EQ(0, sgm.getStats().locate_guesses);
+    EXPECT_EQ(0, sgm.getStats().locate_inliers);
+    EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
+    EXPECT_EQ(guess.inliers.size(), sgm.getStats().detect_choice_inliers);
     EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
                 guess.getObject()->name == "haltbare_milch" ||
                 guess.getObject()->name == "jacobs_coffee");
@@ -225,10 +242,10 @@ TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
 
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeForemostInClutter) {
-    TODParameters & detect_params = segmenter.getDetectParams();
+    TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
-    TODParameters & locate_params = segmenter.getLocateParams();
+    TODParameters & locate_params = sgm.getLocateParams();
     locate_params.guessParams.maxProjectionError = 5;
     locate_params.guessParams.ransacIterationsCount = 500;
 
@@ -265,10 +282,10 @@ TEST_F(ClutsegTest, Reconfigure) {
     boost::filesystem::copy_file("./data/test.sqlite3", fn);
     db_open(db, fn);
     exp.deserialize(db);
-    EXPECT_EQ("DynamicFAST", segmenter.getLocateParams().feParams.detector_type);
-    EXPECT_GT(-10, segmenter.getAcceptThreshold());
-    segmenter.reconfigure(exp.paramset);
-    EXPECT_EQ("FAST", segmenter.getLocateParams().feParams.detector_type);
-    EXPECT_FLOAT_EQ(15.0, segmenter.getAcceptThreshold());
+    EXPECT_EQ("DynamicFAST", sgm.getLocateParams().feParams.detector_type);
+    EXPECT_GT(-10, sgm.getAcceptThreshold());
+    sgm.reconfigure(exp.paramset);
+    EXPECT_EQ("FAST", sgm.getLocateParams().feParams.detector_type);
+    EXPECT_FLOAT_EQ(15.0, sgm.getAcceptThreshold());
 }
 

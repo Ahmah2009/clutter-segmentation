@@ -173,10 +173,21 @@ namespace clutseg {
             }
 
             /* begin statistics */
-            // TODO:
-            //if (groundTruth != NULL) {
-            //    int n = objects_.size() - 
-            // } /* end statistics */
+            if (groundTruth != NULL) {
+                int p = groundTruth->distinctLabelCount();
+                int n = objects_.size() - p;
+                int tp = 0;
+                int fp = 0;
+                BOOST_FOREACH(const Guess & g, guesses) {
+                    if (groundTruth->onScene(g.getObject()->name)) {
+                        tp++;
+                    } else {
+                        fp++;
+                    }
+                }
+                stats_.detect_tp_rate += float(tp) / p;
+                stats_.detect_fp_rate += float(fp) / n;
+            } /* end statistics */
 
             // Sort the guesses according to the ranking function.
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));

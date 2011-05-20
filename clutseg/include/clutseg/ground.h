@@ -28,10 +28,12 @@ namespace clutseg {
         std::vector<LabeledPose> labels;
 
         bool emptyScene() const { return labels.empty(); }
+        bool onScene(const std::string & name) const;
+        int distinctLabelCount() const;
+
 
         void read(const boost::filesystem::path & filename);
-
-        bool onScene(const std::string & name) const;
+        void write(const boost::filesystem::path & filename);
 
     };
 

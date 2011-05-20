@@ -54,8 +54,8 @@ namespace clutseg {
         long detect_choice_matches;
         long detect_choice_inliers;
         /* Need ground truth for comparison */
-        long detect_tp_rate;
-        long detect_fp_rate;
+        float detect_tp_rate;
+        float detect_fp_rate;
         long locate_matches;
         long locate_inliers;
         long locate_guesses;

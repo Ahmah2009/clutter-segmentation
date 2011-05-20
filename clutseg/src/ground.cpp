@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -31,6 +32,14 @@ namespace clutseg {
         return false;
     }
 
+    int GroundTruth::distinctLabelCount() const {
+        set<string> d;
+        BOOST_FOREACH(const LabeledPose & np, labels) {
+            d.insert(np.name);
+        }
+        return d.size();
+    }
+
     void GroundTruth::read(const bfs::path & filename) {
         labels.clear();
         FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
@@ -42,6 +51,15 @@ namespace clutseg {
             labels.push_back(np);  
         }
     }
+
+    void GroundTruth::write(const bfs::path & filename) {
+        FileStorage fs(filename.string(), FileStorage::WRITE);
+        BOOST_FOREACH(const LabeledPose & np, labels) {
+            fs << np.name;
+            np.pose.write(fs);
+        }
+        fs.release();
+    } 
 
     SetGroundTruth loadSetGroundTruth(const bfs::path & filename) {
         SetGroundTruth m = loadSetGroundTruthWithoutPoses(filename);

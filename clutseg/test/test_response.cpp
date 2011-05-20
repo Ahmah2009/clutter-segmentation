@@ -41,7 +41,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
     result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
-    EXPECT_NEAR(0.0, response.value, 1e-7);
+    EXPECT_NEAR(0.0, response.value, 1e-6);
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
@@ -61,7 +61,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
     result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
-    EXPECT_NEAR(0.5, response.value, 1e-7);
+    EXPECT_NEAR(0.5, response.value, 1e-6);
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
@@ -81,5 +81,5 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
     result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
-    EXPECT_NEAR(0.25, response.value, 1e-7);
+    EXPECT_NEAR(0.25, response.value, 1e-6);
 }
