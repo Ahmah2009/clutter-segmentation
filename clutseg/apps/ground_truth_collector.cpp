@@ -70,7 +70,20 @@ int main(int argc, char **argv) {
             PoseRT pose_min = translatePose(pose_zero, t_min);
             PoseRT pose_max = translatePose(pose_zero, t_max);
             string img_name = it->filename().substr(0, it->filename().size() - 10);
-            if (verbose) {
+
+            // TODO: read/write ground truth belongs to ground.h/ground.cpp
+            bfs::path ground_truth_file = test_dir / (img_name + ".ground.yaml");
+            cout << "[GENERAL] Writing ground truth file " << ground_truth_file.string() << endl;
+            FileStorage fs(ground_truth_file.string(), FileStorage::WRITE);
+            fs << obj_min;
+            pose_min.write(fs);
+            fs << obj_zero;
+            pose_zero.write(fs);
+            fs << obj_max;
+            pose_max.write(fs);
+            fs.release();
+
+           if (verbose) {
                 Mat canvas3;
                 canvas3 = imread((test_dir / img_name).string());
                 Camera camera = Camera((test_dir / "camera.yml").string(), Camera::TOD_YAML);
@@ -84,16 +97,6 @@ int main(int argc, char **argv) {
                 imshow(img_name, canvas3);
                 waitKey(0);
             }
-            bfs::path ground_truth_file = test_dir / (img_name + ".ground.yaml");
-            cout << "[GENERAL] Writing ground truth file " << ground_truth_file.string() << endl;
-            FileStorage fs(ground_truth_file.string(), FileStorage::WRITE);
-            fs << obj_min;
-            pose_min.write(fs);
-            fs << obj_zero;
-            pose_zero.write(fs);
-            fs << obj_max;
-            pose_max.write(fs);
-            fs.release();
         }
         it++;
     }
