@@ -51,9 +51,8 @@ namespace clutseg {
         SetGroundTruth testdesc = loadSetGroundTruth(test_dir / "testdesc.txt");
         SetResult result;
         // Loop over all images in the test set
-        for (SetGroundTruth::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
-            string img_name = it->first;
-            cout << img_name << endl;
+        for (SetGroundTruth::iterator test_it = testdesc.begin(); test_it != testdesc.end(); test_it++) {
+            string img_name = test_it->first;
             bfs::path img_path = test_dir / img_name;
             Mat queryImage = imread(img_path.string(), 0);
             if (queryImage.empty()) {
@@ -89,6 +88,8 @@ namespace clutseg {
         exp.response.avg_detect_inliers = float(stats.detect_inliers) / stats.detect_guesses;
         exp.response.avg_detect_choice_matches = float(stats.detect_choice_matches) / stats.choices;
         exp.response.avg_detect_choice_inliers = float(stats.detect_choice_inliers) / stats.choices;
+        exp.response.detect_tp_rate = float(stats.detect_tp_rate) / stats.queries;
+        exp.response.detect_fp_rate = float(stats.detect_fp_rate) / stats.queries;
         exp.response.avg_locate_matches = float(stats.locate_matches) / stats.queries;
         exp.response.avg_locate_inliers = float(stats.locate_inliers) / stats.detect_guesses;
         exp.response.avg_locate_choice_matches = float(stats.locate_choice_matches) / stats.choices;

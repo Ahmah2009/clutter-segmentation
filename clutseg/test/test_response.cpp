@@ -6,16 +6,13 @@
 #include "clutseg/pose.h"
 #include "test.h"
 
-#include <cv.h>
 #include <gtest/gtest.h>
-#include <vector>
 
 using namespace clutseg;
 using namespace cv;
 using namespace opencv_candidate;
 using namespace std;
 using namespace tod;
-
 
 struct ResponseFunctionTest : public ::testing::Test {
 
