@@ -248,13 +248,13 @@ int main(int argc, char *argv[])
             return 1;
         } // end of block that could probably be moved out of the loop 
 
-        GroundTruth expected = it->second; 
+        GroundTruth groundTruth = it->second; 
         // true positives
         int tp = 0;
         // false positives
         int fp = 0;
         // total positives
-        int p = expected.size();
+        int p = groundTruth.labels.size();
 
         string img_name = it->first;
         // In case the images are in subfolders of the test directory, we either
@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
             }
             ground_poses.push_back(ground_posert);
  
-            bool is_tp = isObjectExpected(expected, name);
+            bool is_tp = groundTruth.isObjectExpected(name);
           
             //  drawGuess2(allGuessesImg, guess, test.image, trainingCamera, false, ground_posert);
 
@@ -418,9 +418,8 @@ int main(int argc, char *argv[])
         }
 
         // Check for true or false positive.
-        // TODO: ugly
         foreach (string name, found) {
-            if (isObjectExpected(expected, name)) {
+            if (groundTruth.isObjectExpected(name)) {
                 tp += 1;
             } else {
                 fp += 1;
@@ -434,7 +433,7 @@ int main(int argc, char *argv[])
             stats << endl;
             stats << "# -- " << img_name << " -- " << endl;
             stats << "# actual objects: ";
-            foreach (NamedPose np, it->second) {
+            foreach (NamedPose np, it->second.labels) {
                 stats << np.name << ", ";
             }
             stats << endl;

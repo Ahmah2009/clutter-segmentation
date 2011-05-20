@@ -28,14 +28,14 @@ namespace clutseg {
             cout << "[RESPONSE] Validating results against ground truth: " << img_name << endl;
             const GroundTruth & groundTruth = it->second;
             if (!result.guessMade(img_name)) {
-                if (!groundTruth.empty()) {
+                if (!groundTruth.emptyScene()) {
                     r_acc += 1.0;
                 }
             } else {
                 Guess guess = result.get(img_name);
                 PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
                 double r = 1.0;
-                BOOST_FOREACH(NamedPose np, groundTruth) {
+                BOOST_FOREACH(const NamedPose & np, groundTruth.labels) {
                     if (np.name == guess.getObject()->name) {
                         double dt = distBetweenLocations(est_pose, np.pose); 
                         double da = angleBetweenOrientations(est_pose, np.pose); 

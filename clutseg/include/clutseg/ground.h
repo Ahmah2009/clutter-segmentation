@@ -23,17 +23,23 @@ namespace clutseg {
 
     };
 
-    typedef std::vector<NamedPose> GroundTruth;
+    struct GroundTruth {
+
+        std::vector<NamedPose> labels;
+
+        bool emptyScene() const { return labels.empty(); }
+
+        void read(const boost::filesystem::path & filename);
+
+        bool isObjectExpected(const std::string & name) const;
+
+    };
 
     typedef std::map<std::string, GroundTruth > TestSetGroundTruth;
-
-    GroundTruth loadGroundTruth(const boost::filesystem::path & filename);
 
     TestSetGroundTruth loadTestSetGroundTruth(const boost::filesystem::path & filename);
 
     TestSetGroundTruth loadTestSetGroundTruthWithoutPoses(const boost::filesystem::path & filename);
-
-    bool isObjectExpected(const GroundTruth & g, const std::string & name);
 
 }
 

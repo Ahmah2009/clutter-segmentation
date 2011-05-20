@@ -21,21 +21,26 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    void loadGroundTruth(const bfs::path & filename, GroundTruth & groundTruth) {
+    bool GroundTruth::isObjectExpected(const string & name) const {
+        // slow 
+        BOOST_FOREACH(const NamedPose & np, labels) {
+            if (np.name == name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void GroundTruth::read(const bfs::path & filename) {
+        labels.clear();
         FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
         // iterate over objects
         for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
             NamedPose np((*n_it).name());
             np.pose.read(*n_it);
             np.pose.estimated = true;
-            groundTruth.push_back(np);  
+            labels.push_back(np);  
         }
-    }
-
-    GroundTruth loadGroundTruth(const bfs::path & filename) {
-        GroundTruth g;
-        loadGroundTruth(filename, g);
-        return g;
     }
 
     TestSetGroundTruth loadTestSetGroundTruth(const bfs::path & filename) {
@@ -43,9 +48,8 @@ namespace clutseg {
         for (TestSetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
             string img_name = it->first;   
             GroundTruth g = it->second;
-            g.clear();
             string ground_name = img_name + ".ground.yaml";
-            loadGroundTruth(filename.parent_path() / ground_name, g);
+            g.read(filename.parent_path() / ground_name);
         }
         return m;
     }
@@ -77,29 +81,19 @@ namespace clutseg {
                 boost::trim(key);
                 vector<string> v;
                 boost::split(v, val, boost::is_any_of(" "), boost::token_compress_on);
-                GroundTruth labels;
+                GroundTruth groundTruth;
                 for (size_t i = 0; i < v.size(); i++) {
                     boost::trim(v[i]);
                     if (v[i].length() > 0) {
                         NamedPose np(v[i]);
-                        labels.push_back(np);
+                        groundTruth.labels.push_back(np);
                     }
                 } 
-                m[key] = labels;
+                m[key] = groundTruth;
             }
         }
         f.close();
         return m; 
-    }
-
-    bool isObjectExpected(const GroundTruth & g, const string & name) {
-        // slow 
-        BOOST_FOREACH(const NamedPose & np, g) {
-            if (np.name == name) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

@@ -18,6 +18,8 @@ namespace clutseg {
 
         public:
 
+            typedef std::map<std::string, tod::Guess>::iterator const_iterator;
+
             std::map<std::string, tod::Guess>::iterator begin() { return guesses.begin(); }
             std::map<std::string, tod::Guess>::const_iterator begin() const { return guesses.begin(); }
             std::map<std::string, tod::Guess>::iterator end() { return guesses.end(); }
