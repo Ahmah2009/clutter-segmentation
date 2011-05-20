@@ -29,7 +29,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
     string name = "haltbare_milch";
     PoseRT pose;
     samplePose(pose);
-    NamedPose np(name, pose);
+    LabeledPose np(name, pose);
     Ptr<TexturedObject> object = new TexturedObject();
     object->name = name;
     Guess guess(object, poseRtToPose(pose), Mat(), Mat(), Mat());
@@ -48,7 +48,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
     string name = "haltbare_milch";
     PoseRT pose;
     samplePose(pose);
-    NamedPose np(name, pose);
+    LabeledPose np(name, pose);
     Ptr<TexturedObject> object = new TexturedObject();
     object->name = name;
     PoseRT est_pose = rotatePose(pose, randomOrientation(M_PI / 9 / sqrt(2)));
@@ -68,7 +68,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
     string name = "haltbare_milch";
     PoseRT pose;
     samplePose(pose);
-    NamedPose np(name, pose);
+    LabeledPose np(name, pose);
     Ptr<TexturedObject> object = new TexturedObject();
     object->name = name;
     PoseRT est_pose = rotatePose(pose, randomOrientation(M_PI / 18));

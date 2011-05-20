@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
         } else if (boost::algorithm::ends_with(arg, ".ground.yaml")) {
             GroundTruth g;
             g.read(arg);
-            BOOST_FOREACH(NamedPose np, g) {
+            BOOST_FOREACH(LabeledPose np, g) {
                 addPose(visualizer, np.pose, str(boost::format("pose-%d-%d") % i % rand()));
             }
         } else if (boost::algorithm::ends_with(arg, ".yaml")) {

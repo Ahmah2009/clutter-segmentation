@@ -23,7 +23,7 @@ namespace clutseg {
 
     bool GroundTruth::onScene(const string & name) const {
         // slow 
-        BOOST_FOREACH(const NamedPose & np, labels) {
+        BOOST_FOREACH(const LabeledPose & np, labels) {
             if (np.name == name) {
                 return true;
             }
@@ -36,7 +36,7 @@ namespace clutseg {
         FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
         // iterate over objects
         for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
-            NamedPose np((*n_it).name());
+            LabeledPose np((*n_it).name());
             np.pose.read(*n_it);
             np.pose.estimated = true;
             labels.push_back(np);  
@@ -85,7 +85,7 @@ namespace clutseg {
                 for (size_t i = 0; i < v.size(); i++) {
                     boost::trim(v[i]);
                     if (v[i].length() > 0) {
-                        NamedPose np(v[i]);
+                        LabeledPose np(v[i]);
                         groundTruth.labels.push_back(np);
                     }
                 } 

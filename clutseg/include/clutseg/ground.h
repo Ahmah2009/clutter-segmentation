@@ -12,10 +12,10 @@
 
 namespace clutseg {
 
-    struct NamedPose {
+    struct LabeledPose {
 
-        NamedPose(const std::string & name) : name(name) {}
-        NamedPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
+        LabeledPose(const std::string & name) : name(name) {}
+        LabeledPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
 
         std::string name;
         /** The pose of the object. Check pose.estimated whether it is available. */
@@ -25,7 +25,7 @@ namespace clutseg {
 
     struct GroundTruth {
 
-        std::vector<NamedPose> labels;
+        std::vector<LabeledPose> labels;
 
         bool emptyScene() const { return labels.empty(); }
 

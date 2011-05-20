@@ -21,7 +21,7 @@ TEST(GroundTest, ReadSetGroundTruthWithoutPoses) {
     SetGroundTruth m = loadSetGroundTruthWithoutPoses("./data/testdesc.txt");
     GroundTruth s = m["t0000.png"];
 
-    BOOST_FOREACH(const NamedPose & np, s.labels) {
+    BOOST_FOREACH(const LabeledPose & np, s.labels) {
         EXPECT_FALSE(np.pose.estimated);
     }
     EXPECT_TRUE(s.onScene("teas_tea"));

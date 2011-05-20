@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
             stats << endl;
             stats << "# -- " << img_name << " -- " << endl;
             stats << "# actual objects: ";
-            foreach (NamedPose np, it->second.labels) {
+            foreach (LabeledPose np, it->second.labels) {
                 stats << np.name << ", ";
             }
             stats << endl;
