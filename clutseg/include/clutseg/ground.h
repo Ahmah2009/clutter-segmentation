@@ -14,6 +14,7 @@ namespace clutseg {
 
     struct LabeledPose {
 
+        LabeledPose() : name("") {}
         LabeledPose(const std::string & name) : name(name) {}
         LabeledPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
 

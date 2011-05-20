@@ -20,7 +20,6 @@ struct ConnCompTest : public ::testing::Test {
     Mat img;
 };
 
-
 TEST_F(ConnCompTest, ReadMask) {
     for (int i = 0; i < img.rows; i++) {
         for (int j = 0; j < img.cols; j++) {
@@ -37,4 +36,3 @@ TEST_F(ConnCompTest, FillSmallConnectedComponents) {
     imshow("Components", img);
     waitKey(0);
 }
-

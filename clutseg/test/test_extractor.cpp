@@ -440,7 +440,7 @@ TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_windows) {
     // windows. Collect results in a map.
     map<min_max_features_win, int> res;
     for (int w = 100; w <= 500; w += 100) {
-        for (int m = 0; m <= 1000; m += 250) {
+        for (int m = 0; m <= 1000; m += 500) {
             f2d_masked.keypoints.clear();
             min_max_features_win win(m, w);
             dynamicsurf_sequential_rbrief.detector_params["min_features"] = win.midpoint - win.width / 2;

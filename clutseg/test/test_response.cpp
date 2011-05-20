@@ -20,66 +20,43 @@ using namespace tod;
 struct ResponseFunctionTest : public ::testing::Test {
 
     void SetUp() {
+        samplePose(pose);
+        string name = "haltbare_milch";
+        np = LabeledPose(name, pose);
+        object = new TexturedObject();
+        object->name = name;
+        groundTruth.labels.push_back(np);
+        img_name = "image_00000.png";
+        ground[img_name] = groundTruth;
     }
 
     CutSseResponseFunction sse_response;
+    PoseRT pose;
+    LabeledPose np;
+    Ptr<TexturedObject> object;
+    string img_name;
+    GroundTruth groundTruth;
+    SetGroundTruth ground;
+    SetResult result;
+    Response response;
+
+    void expect_sse_response(float expected, PoseRT est_pose) {
+        Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
+        result.put(img_name, guess);
+        sse_response(result, ground, response);
+        EXPECT_NEAR(expected, response.value, 1e-6);
+    }
 
 };
+
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
-    string name = "haltbare_milch";
-    PoseRT pose;
-    samplePose(pose);
-    LabeledPose np(name, pose);
-    Ptr<TexturedObject> object = new TexturedObject();
-    object->name = name;
-    Guess guess(object, poseRtToPose(pose), Mat(), Mat(), Mat());
-    GroundTruth groundTruth;
-    groundTruth.labels.push_back(np);
-    SetGroundTruth ground;
-    ground["image_00000.png"] = groundTruth;
-    SetResult result;
-    result.put("image_00000.png", guess);
-    Response response;
-    sse_response(result, ground, response);
-    EXPECT_NEAR(0.0, response.value, 1e-6);
+    expect_sse_response(0.0, pose);
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
-    string name = "haltbare_milch";
-    PoseRT pose;
-    samplePose(pose);
-    LabeledPose np(name, pose);
-    Ptr<TexturedObject> object = new TexturedObject();
-    object->name = name;
-    PoseRT est_pose = rotatePose(pose, randomOrientation(M_PI / 9 / sqrt(2)));
-    Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
-    GroundTruth groundTruth;
-    groundTruth.labels.push_back(np);
-    SetGroundTruth ground;
-    ground["image_00000.png"] = groundTruth;
-    SetResult result;
-    result.put("image_00000.png", guess);
-    Response response;
-    sse_response(result, ground, response);
-    EXPECT_NEAR(0.5, response.value, 1e-6);
+    expect_sse_response(0.5, rotatePose(pose, randomOrientation(M_PI / 9 / sqrt(2))));
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
-    string name = "haltbare_milch";
-    PoseRT pose;
-    samplePose(pose);
-    LabeledPose np(name, pose);
-    Ptr<TexturedObject> object = new TexturedObject();
-    object->name = name;
-    PoseRT est_pose = rotatePose(pose, randomOrientation(M_PI / 18));
-    Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
-    GroundTruth groundTruth;
-    groundTruth.labels.push_back(np);
-    SetGroundTruth ground;
-    ground["image_00000.png"] = groundTruth;
-    SetResult result;
-    result.put("image_00000.png", guess);
-    Response response;
-    sse_response(result, ground, response);
-    EXPECT_NEAR(0.25, response.value, 1e-6);
+    expect_sse_response(0.25, rotatePose(pose, randomOrientation(M_PI / 18)));
 }

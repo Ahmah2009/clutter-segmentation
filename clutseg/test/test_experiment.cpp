@@ -173,10 +173,3 @@ TEST_F(ExperimentTest, ListTemplateNames) {
     EXPECT_EQ(1, tNames.count("jacobs_coffee"));
     EXPECT_EQ(4, tNames.size());
 }
-
-// TODO: check whether stuff has really been copied
-// TODO: check whether feature configuration has been correctly stored
-// FIXME: get rid of annoying bug in detector
-// TODO: think about flags that allow the system to interrupt cleanly or mark things as dirty
-// TODO: think about some logging system maybe in boost
-
