@@ -50,7 +50,8 @@ namespace clutseg {
 
         Paramset() : train_pms_fe_id(-1), recog_pms_fe_id(-1),
                     detect_pms_match_id(-1), detect_pms_guess_id(-1),
-                    locate_pms_match_id(-1), locate_pms_guess_id(-1) {}
+                    locate_pms_match_id(-1), locate_pms_guess_id(-1),
+                    max_trans_error(0.02), max_angle_error(M_PI / 9) {}
     
         tod::FeatureExtractionParams train_pms_fe;
         tod::FeatureExtractionParams recog_pms_fe;
@@ -89,11 +90,20 @@ namespace clutseg {
      * translational error exceeding a predefined threshold. */
     struct Response : public Serializable {
 
-        Response() : value(0.0) {}
+        /** A maintainer's nightmare */
+       Response() : value(0.0), succ_rate(0), avg_angle_err(0),
+            avg_succ_angle_err(0), avg_trans_err(0), avg_succ_trans_err(0),
+            avg_angle_sq_err(0), avg_succ_angle_sq_err(0), avg_trans_sq_err(0),
+            avg_succ_trans_sq_err(0), mislabel_rate(0), avg_keypoints(0),
+            avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
+            avg_locate_matches(0), avg_locate_inliers(0), avg_locate_choice_matches(0),
+            avg_locate_choice_inliers(0) { }
 
         /** Average of the values returned by the response function */
         float value;
-
+        /** Average of query images where locating (up to error margins)
+         * succeeded. Depends on max_angle_error and max_trans_error. */
+        float succ_rate;
         /** Average orientational error (all queries). */
         float avg_angle_err;
         /** Average orientational error (success only). This statistic depends
@@ -114,13 +124,11 @@ namespace clutseg {
         /** Average translational squared error (success only). This statistic
          * depends on max_trans_error. */
         float avg_succ_trans_sq_err;
-
         /** Average number of scenes where label was not correct. */
         float mislabel_rate;
 
         /** Average number of extracted keypoints per image */
         float avg_keypoints;
-
         /** Average number of matches in detection stage */
         float avg_detect_matches;
         /** Average number of inliers of all guesses in detection stage */
@@ -137,10 +145,6 @@ namespace clutseg {
         float avg_locate_choice_matches;
         /** Average number of inliers for the best guess object in locating stage */
         float avg_locate_choice_inliers;
-
-        /** Average of query images where locating (up to error margins)
-         * succeeded. Depends on max_angle_error and max_trans_error. */
-        float succ_rate;
 
         inline float fail_rate() const {
             return 1 - succ_rate;
@@ -169,7 +173,11 @@ namespace clutseg {
 
     struct Experiment : public Serializable {
       
-        Experiment() : sample_size(0), has_run(false) {} // TODO:
+        Experiment() : sample_size(0), has_run(false) {
+            // What's the standard
+            paramset = Paramset(); 
+            response = Response(); 
+        }
  
         Paramset paramset; 
         Response response;

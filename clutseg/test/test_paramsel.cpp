@@ -91,6 +91,52 @@ struct ParamSelTest : public ::testing::Test {
 
 };
 
+TEST_F(ParamSelTest, Initialization) {
+    Experiment exp;
+    EXPECT_FLOAT_EQ(0, exp.response.value);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_angle_err);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_succ_angle_err);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_trans_err);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_succ_trans_err);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_angle_sq_err);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_succ_angle_sq_err);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_trans_sq_err);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_succ_trans_sq_err);
+    EXPECT_FLOAT_EQ(0, exp.response.succ_rate);
+    EXPECT_FLOAT_EQ(0, exp.response.mislabel_rate);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_keypoints);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_detect_matches);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_detect_inliers);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_detect_choice_matches);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_detect_choice_inliers);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_matches);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_inliers);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_choice_matches);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_choice_inliers);
+
+    Response r;
+    EXPECT_FLOAT_EQ(0, r.value);
+    EXPECT_FLOAT_EQ(0, r.avg_angle_err);
+    EXPECT_FLOAT_EQ(0, r.avg_succ_angle_err);
+    EXPECT_FLOAT_EQ(0, r.avg_trans_err);
+    EXPECT_FLOAT_EQ(0, r.avg_succ_trans_err);
+    EXPECT_FLOAT_EQ(0, r.avg_angle_sq_err);
+    EXPECT_FLOAT_EQ(0, r.avg_succ_angle_sq_err);
+    EXPECT_FLOAT_EQ(0, r.avg_trans_sq_err);
+    EXPECT_FLOAT_EQ(0, r.avg_succ_trans_sq_err);
+    EXPECT_FLOAT_EQ(0, r.succ_rate);
+    EXPECT_FLOAT_EQ(0, r.mislabel_rate);
+    EXPECT_FLOAT_EQ(0, r.avg_keypoints);
+    EXPECT_FLOAT_EQ(0, r.avg_detect_matches);
+    EXPECT_FLOAT_EQ(0, r.avg_detect_inliers);
+    EXPECT_FLOAT_EQ(0, r.avg_detect_choice_matches);
+    EXPECT_FLOAT_EQ(0, r.avg_detect_choice_inliers);
+    EXPECT_FLOAT_EQ(0, r.avg_locate_matches);
+    EXPECT_FLOAT_EQ(0, r.avg_locate_inliers);
+    EXPECT_FLOAT_EQ(0, r.avg_locate_choice_matches);
+    EXPECT_FLOAT_EQ(0, r.avg_locate_choice_inliers);
+}
+
 TEST_F(ParamSelTest, GetVcsCommit) {
     string vcs_commit;
     EXPECT_TRUE(getVcsCommit(vcs_commit));
