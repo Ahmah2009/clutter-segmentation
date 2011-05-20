@@ -83,17 +83,17 @@ namespace clutseg {
         getVcsCommit(exp.vcs_commit);
         
         ClutSegmenterStats stats = segmenter.getStats();
-        exp.response.avg_keypoints = float(stats.keypoints) / stats.queries;
-        exp.response.avg_detect_matches = float(stats.detect_matches) / stats.queries;
-        exp.response.avg_detect_inliers = float(stats.detect_inliers) / stats.detect_guesses;
-        exp.response.avg_detect_choice_matches = float(stats.detect_choice_matches) / stats.choices;
-        exp.response.avg_detect_choice_inliers = float(stats.detect_choice_inliers) / stats.choices;
-        exp.response.detect_tp_rate = float(stats.detect_tp_rate) / stats.queries;
-        exp.response.detect_fp_rate = float(stats.detect_fp_rate) / stats.queries;
-        exp.response.avg_locate_matches = float(stats.locate_matches) / stats.queries;
-        exp.response.avg_locate_inliers = float(stats.locate_inliers) / stats.detect_guesses;
-        exp.response.avg_locate_choice_matches = float(stats.locate_choice_matches) / stats.choices;
-        exp.response.avg_locate_choice_inliers = float(stats.locate_choice_inliers) / stats.choices;
+        exp.response.avg_keypoints = float(stats.acc_keypoints) / stats.queries;
+        exp.response.avg_detect_matches = float(stats.acc_detect_matches) / stats.queries;
+        exp.response.avg_detect_inliers = float(stats.acc_detect_inliers) / stats.acc_detect_guesses;
+        exp.response.avg_detect_choice_matches = float(stats.acc_detect_choice_matches) / stats.choices;
+        exp.response.avg_detect_choice_inliers = float(stats.acc_detect_choice_inliers) / stats.choices;
+        exp.response.detect_tp_rate = float(stats.acc_detect_tp_rate) / stats.queries;
+        exp.response.detect_fp_rate = float(stats.acc_detect_fp_rate) / stats.queries;
+        exp.response.avg_locate_matches = float(stats.acc_locate_matches) / stats.queries;
+        exp.response.avg_locate_inliers = float(stats.acc_locate_inliers) / stats.acc_detect_guesses;
+        exp.response.avg_locate_choice_matches = float(stats.acc_locate_choice_matches) / stats.choices;
+        exp.response.avg_locate_choice_inliers = float(stats.acc_locate_choice_inliers) / stats.choices;
 
         time_t tt = time(NULL);
         tm *t = localtime(&tt);

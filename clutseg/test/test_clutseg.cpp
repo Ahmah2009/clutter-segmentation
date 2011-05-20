@@ -84,7 +84,7 @@ class ClutsegTest : public ::testing::Test {
             EXPECT_EQ(0, sgm.getStats().locate_matches);
             EXPECT_EQ(0, sgm.getStats().locate_guesses);
             EXPECT_EQ(0, sgm.getStats().locate_inliers);
-            EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
+            EXPECT_EQ(0, sgm.getStats().acc_locate_choice_matches);
             EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
         }
 
@@ -100,13 +100,13 @@ class ClutsegTest : public ::testing::Test {
                 EXPECT_LT(0, sgm.getStats().locate_matches);
                 EXPECT_LT(0, sgm.getStats().locate_guesses);
                 EXPECT_LT(0, sgm.getStats().locate_inliers);
-                EXPECT_LT(0, sgm.getStats().locate_choice_matches);
+                EXPECT_LT(0, sgm.getStats().acc_locate_choice_matches);
                 EXPECT_EQ(choice.inliers.size(), sgm.getStats().locate_choice_inliers);
             } else {
                 EXPECT_EQ(0, sgm.getStats().locate_matches);
                 EXPECT_EQ(0, sgm.getStats().locate_guesses);
                 EXPECT_EQ(0, sgm.getStats().locate_inliers);
-                EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
+                EXPECT_EQ(0, sgm.getStats().acc_locate_choice_matches);
                 EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
             }
             EXPECT_TRUE(clutter_truth.onScene(choice.getObject()->name));

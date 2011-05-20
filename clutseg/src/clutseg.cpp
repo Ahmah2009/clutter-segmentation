@@ -185,8 +185,8 @@ namespace clutseg {
                         fp++;
                     }
                 }
-                stats_.detect_tp_rate += float(tp) / p;
-                stats_.detect_fp_rate += float(fp) / n;
+                stats_.acc_detect_tp_rate += float(tp) / p;
+                stats_.acc_detect_fp_rate += float(fp) / n;
             } /* end statistics */
 
             // Sort the guesses according to the ranking function.
@@ -211,13 +211,13 @@ namespace clutseg {
                     { /* begin statistics */ 
                         vector<pair<int, int> > ds; 
                         detectMatcher->getLabelSizes(ds);
-                        stats_.detect_choice_matches += ds[guesses[i].getObject()->id].second;
-                        stats_.detect_choice_inliers += guesses[i].inliers.size();
+                        stats_.acc_detect_choice_matches += ds[guesses[i].getObject()->id].second;
+                        stats_.acc_detect_choice_inliers += guesses[i].inliers.size();
                         if (do_locate_) {
                             vector<pair<int, int> > ls; 
                             locateMatcher->getLabelSizes(ls);
-                            stats_.locate_choice_matches += ls[choice.getObject()->id].second;
-                            stats_.locate_choice_inliers += choice.inliers.size();
+                            stats_.acc_locate_choice_matches += ls[choice.getObject()->id].second;
+                            stats_.acc_locate_choice_inliers += choice.inliers.size();
                         }
                         stats_.choices++;
                     } /* end statistics */
@@ -254,11 +254,11 @@ namespace clutseg {
         extractor->detectAndExtract(query);
         recognizer->match(query, guesses);
 
-        stats_.keypoints += query.keypoints.size();
-        stats_.detect_matches += sum_matches(detectMatcher);
-        stats_.detect_guesses += guesses.size();
+        stats_.acc_keypoints += query.keypoints.size();
+        stats_.acc_detect_matches += sum_matches(detectMatcher);
+        stats_.acc_detect_guesses += guesses.size();
         BOOST_FOREACH(const Guess & g, guesses) {
-            stats_.detect_inliers += g.inliers.size();
+            stats_.acc_detect_inliers += g.inliers.size();
         }
 
         return guesses.empty();
@@ -293,10 +293,10 @@ namespace clutseg {
         vector<Guess> guesses;
         recognizer->match(query, guesses); 
 
-        stats_.locate_matches += sum_matches(locateMatcher);
-        stats_.locate_guesses += guesses.size();
+        stats_.acc_locate_matches += sum_matches(locateMatcher);
+        stats_.acc_locate_guesses += guesses.size();
         BOOST_FOREACH(const Guess & g, guesses) {
-            stats_.locate_inliers += g.inliers.size();
+            stats_.acc_locate_inliers += g.inliers.size();
         }
 
         if (guesses.empty()) {

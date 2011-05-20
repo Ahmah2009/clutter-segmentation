@@ -31,36 +31,36 @@ namespace clutseg {
 
         ClutSegmenterStats() :
             queries(0),
-            keypoints(0),
-            detect_matches(0),
-            detect_guesses(0),
-            detect_inliers(0),
-            detect_choice_matches(0),
-            detect_choice_inliers(0),
-            locate_matches(0),
-            locate_inliers(0),
-            locate_guesses(0),
-            locate_choice_matches(0),
-            locate_choice_inliers(0),
+            acc_keypoints(0),
+            acc_detect_matches(0),
+            acc_detect_guesses(0),
+            acc_detect_inliers(0),
+            acc_detect_choice_matches(0),
+            acc_detect_choice_inliers(0),
+            acc_locate_matches(0),
+            acc_locate_inliers(0),
+            acc_locate_guesses(0),
+            acc_locate_choice_matches(0),
+            acc_locate_choice_inliers(0),
             choices(0) {}
 
         long queries;
         // TODO: include runtime in response
         // clock_t runtime;
-        long keypoints;
-        long detect_matches;
-        long detect_guesses;
-        long detect_inliers;
-        long detect_choice_matches;
-        long detect_choice_inliers;
+        long acc_keypoints;
+        long acc_detect_matches;
+        long acc_detect_guesses;
+        long acc_detect_inliers;
+        long acc_detect_choice_matches;
+        long acc_detect_choice_inliers;
         /* Need ground truth for comparison */
-        float detect_tp_rate;
-        float detect_fp_rate;
-        long locate_matches;
-        long locate_inliers;
-        long locate_guesses;
-        long locate_choice_matches;
-        long locate_choice_inliers;
+        float acc_detect_tp_rate;
+        float acc_detect_fp_rate;
+        long acc_locate_matches;
+        long acc_locate_inliers;
+        long acc_locate_guesses;
+        long acc_locate_choice_matches;
+        long acc_locate_choice_inliers;
         long choices;
 
     };
