@@ -5,9 +5,10 @@
 #ifndef _CLUTSEG_H_
 #define _CLUTSEG_H_
 
-#include "clutseg/options.h"
 #include "clutseg/common.h"
+#include "clutseg/ground.h"
 #include "clutseg/paramsel.h"
+#include "clutseg/options.h"
 #include "clutseg/ranking.h"
 
 #include <cv.h>
@@ -20,8 +21,13 @@
 namespace clutseg {
 
     /** Collection of statistics for ClutSegmenter. Serves as an accumulator,
-     * and includes count for later averaging. */
+     * and includes counts for later averaging. Be careful, even variables such as
+     * detect_fp_rate are accumulators. */
     struct ClutSegmenterStats {
+
+        // TODO: rename variables to show that they are accumulators and might have
+        // to be divided by either queries or choices in order to obtain an average
+        // value.
 
         ClutSegmenterStats() :
             queries(0),
@@ -47,6 +53,9 @@ namespace clutseg {
         long detect_inliers;
         long detect_choice_matches;
         long detect_choice_inliers;
+        /* Need ground truth for comparison */
+        long detect_tp_rate;
+        long detect_fp_rate;
         long locate_matches;
         long locate_inliers;
         long locate_guesses;
@@ -86,7 +95,8 @@ namespace clutseg {
             bool recognize(const cv::Mat & queryImage,
                             const PointCloudT & queryCloud,
                             tod::Guess & choice,
-                            PointCloudT & inliersCloud);
+                            PointCloudT & inliersCloud,
+                            const GroundTruth *groundTruth = NULL);
 
             /** Retrieves parameters used for detection stage. Writes to the
              * parameters are transparent to the segmenter. */

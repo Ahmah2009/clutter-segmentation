@@ -143,8 +143,13 @@ namespace clutseg {
                              baseDirectory);
     }
 
-    bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & choice, PointCloudT & inliersCloud) {
-        stats_.queries++;
+    bool ClutSegmenter::recognize(const Mat & queryImage,
+                                    const PointCloudT & queryCloud,
+                                    Guess & choice, PointCloudT & inliersCloud,
+                                    const GroundTruth *groundTruth) {
+        { /* begin statistics */ 
+            stats_.queries++;
+        } /* end statistics */
 
         Features2d query;
         query.image = queryImage;
@@ -166,6 +171,13 @@ namespace clutseg {
             BOOST_FOREACH(Guess & g, guesses) {
                 mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
             }
+
+            /* begin statistics */
+            // TODO:
+            //if (groundTruth != NULL) {
+            //    int n = objects_.size() - 
+            // } /* end statistics */
+
             // Sort the guesses according to the ranking function.
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
             bool pos = false;
@@ -184,17 +196,20 @@ namespace clutseg {
 
                 if ((*ranking_)(choice) >= accept_threshold_) {
                     cout << "[CLUTSEG] Inliers before:  " << guesses[i].inliers.size() << ", and after: " << choice.inliers.size() << endl;
-                    vector<pair<int, int> > ds; 
-                    detectMatcher->getLabelSizes(ds);
-                    stats_.detect_choice_matches += ds[guesses[i].getObject()->id].second;
-                    stats_.detect_choice_inliers += guesses[i].inliers.size();
-                    if (do_locate_) {
-                        vector<pair<int, int> > ls; 
-                        locateMatcher->getLabelSizes(ls);
-                        stats_.locate_choice_matches += ls[choice.getObject()->id].second;
-                        stats_.locate_choice_inliers += choice.inliers.size();
-                    }
-                    stats_.choices++;
+
+                    { /* begin statistics */ 
+                        vector<pair<int, int> > ds; 
+                        detectMatcher->getLabelSizes(ds);
+                        stats_.detect_choice_matches += ds[guesses[i].getObject()->id].second;
+                        stats_.detect_choice_inliers += guesses[i].inliers.size();
+                        if (do_locate_) {
+                            vector<pair<int, int> > ls; 
+                            locateMatcher->getLabelSizes(ls);
+                            stats_.locate_choice_matches += ls[choice.getObject()->id].second;
+                            stats_.locate_choice_inliers += choice.inliers.size();
+                        }
+                        stats_.choices++;
+                    } /* end statistics */
 
                     pos = true;
                     break;
