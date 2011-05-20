@@ -53,6 +53,11 @@ class ClutsegTest : public ::testing::Test {
 
             clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png");
             pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/cloud_00000.pcd", clutter_cloud);
+
+            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png.ground.yaml");
+            assert(!clutter_truth.labels.empty());
+
+            camera = Camera("./data/camera.yml", Camera::TOD_YAML);
         }
 
         static ClutSegmenter sgm;
@@ -61,6 +66,71 @@ class ClutsegTest : public ::testing::Test {
         PointCloudT haltbare_milch_train_cloud;
         Mat clutter_img;
         PointCloudT clutter_cloud;
+        GroundTruth clutter_truth;
+        Camera camera;
+
+        Guess choice;
+        PointCloudT inlierCloud;
+
+        void check_preconditions() {
+            EXPECT_FALSE(clutter_truth.labels.empty());
+            EXPECT_EQ(0, sgm.getStats().choices);
+            EXPECT_EQ(0, sgm.getStats().keypoints);
+            EXPECT_EQ(0, sgm.getStats().detect_matches);
+            EXPECT_EQ(0, sgm.getStats().detect_guesses);
+            EXPECT_EQ(0, sgm.getStats().detect_inliers);
+            EXPECT_EQ(0, sgm.getStats().detect_choice_matches);
+            EXPECT_EQ(0, sgm.getStats().detect_choice_inliers);
+            EXPECT_EQ(0, sgm.getStats().locate_matches);
+            EXPECT_EQ(0, sgm.getStats().locate_guesses);
+            EXPECT_EQ(0, sgm.getStats().locate_inliers);
+            EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
+            EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
+        }
+
+        void check_postconditions() {
+            EXPECT_EQ(1, sgm.getStats().choices);
+            EXPECT_LT(100, sgm.getStats().keypoints);
+            EXPECT_LT(0, sgm.getStats().detect_matches);
+            EXPECT_LT(0, sgm.getStats().detect_guesses);
+            EXPECT_LT(0, sgm.getStats().detect_inliers);
+            EXPECT_LT(0, sgm.getStats().detect_choice_matches);
+            EXPECT_LT(0, sgm.getStats().detect_choice_inliers);
+            if (sgm.isDoLocate()) {
+                EXPECT_LT(0, sgm.getStats().locate_matches);
+                EXPECT_LT(0, sgm.getStats().locate_guesses);
+                EXPECT_LT(0, sgm.getStats().locate_inliers);
+                EXPECT_LT(0, sgm.getStats().locate_choice_matches);
+                EXPECT_EQ(choice.inliers.size(), sgm.getStats().locate_choice_inliers);
+            } else {
+                EXPECT_EQ(0, sgm.getStats().locate_matches);
+                EXPECT_EQ(0, sgm.getStats().locate_guesses);
+                EXPECT_EQ(0, sgm.getStats().locate_inliers);
+                EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
+                EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
+            }
+            EXPECT_TRUE(clutter_truth.onScene(choice.getObject()->name));
+            EXPECT_LE(0, sgm.getStats().detect_tp_rate);
+            EXPECT_GE(1, sgm.getStats().detect_tp_rate);
+            EXPECT_LE(0, sgm.getStats().detect_fp_rate);
+            EXPECT_GE(1, sgm.getStats().detect_fp_rate);
+        }
+
+        void showGuessAndGroundTruth(const string & test_name, const Guess & choice) {
+            Mat c = clutter_img.clone();
+            drawGroundTruth(c, clutter_truth, camera);
+            drawGuess(c, choice, camera, PoseRT());
+            imshow(test_name, c);
+            waitKey(-1);
+        }
+
+        void recognize(const string & test_name) {
+            check_preconditions();
+            bool positive = sgm.recognize(clutter_img, clutter_cloud, choice, inlierCloud);
+            ASSERT_TRUE(positive);
+            check_postconditions();
+            showGuessAndGroundTruth(test_name, choice);
+        }
 
 };
 
@@ -98,16 +168,16 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 /** Check whether detection works for a training image. This is expected to
  * return with a whole bunch of inliers since it is only a training image. */
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
-    Guess guess;
+    Guess choice;
     PointCloudT inlierCloud;
     bool positive = sgm.recognize(haltbare_milch_train_img,
                                         haltbare_milch_train_cloud,
-                                        guess, inlierCloud);
+                                        choice, inlierCloud);
     EXPECT_TRUE(positive);
-    EXPECT_EQ("haltbare_milch", guess.getObject()->name);
-    cout << "detected: " << guess.getObject()->name << endl;
-    cout << "inliers:  " << guess.inliers.size() << endl;
-    EXPECT_GT(guess.inliers.size(), 500);
+    EXPECT_EQ("haltbare_milch", choice.getObject()->name);
+    cout << "detected: " << choice.getObject()->name << endl;
+    cout << "inliers:  " << choice.inliers.size() << endl;
+    EXPECT_GT(choice.inliers.size(), 500);
 }
 
 /** Check whether loading a single training base works without failing */
@@ -131,64 +201,8 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
     locate_params.guessParams.minInliersCount = 50;
     //sgm.setAcceptThreshold(20);
 
-    PoseRT ground_pose;
-    readPose(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png.pose.yaml", ground_pose);
-    PoseRT ground_pose_2 = translatePose(ground_pose, (Mat_<double>(3, 1) << -0.15, 0.0, 0.0));
-    PoseRT ground_pose_3 = translatePose(ground_pose, (Mat_<double>(3, 1) << +0.13, 0.0, 0.0));
-
-    // TODO: read from file
-    GroundTruth groundTruth;
-    groundTruth.labels.push_back(LabeledPose("assam_tea", ground_pose_2));
-    groundTruth.labels.push_back(LabeledPose("haltbare_milch", ground_pose));
-    groundTruth.labels.push_back(LabeledPose("jacobs_coffee", ground_pose_3));
- 
-    Guess guess;
-    PointCloudT inlierCloud;
-    EXPECT_EQ(0, sgm.getStats().choices);
-    EXPECT_EQ(0, sgm.getStats().keypoints);
-    EXPECT_EQ(0, sgm.getStats().detect_matches);
-    EXPECT_EQ(0, sgm.getStats().detect_guesses);
-    EXPECT_EQ(0, sgm.getStats().detect_inliers);
-    EXPECT_EQ(0, sgm.getStats().detect_choice_matches);
-    EXPECT_EQ(0, sgm.getStats().detect_choice_inliers);
-    EXPECT_EQ(0, sgm.getStats().locate_matches);
-    EXPECT_EQ(0, sgm.getStats().locate_guesses);
-    EXPECT_EQ(0, sgm.getStats().locate_inliers);
-    EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
-    EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
-    bool positive = sgm.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
-    ASSERT_TRUE(positive);
-    EXPECT_EQ(1, sgm.getStats().choices);
-    EXPECT_LT(100, sgm.getStats().keypoints);
-    EXPECT_LT(0, sgm.getStats().detect_matches);
-    EXPECT_LT(0, sgm.getStats().detect_guesses);
-    EXPECT_LT(0, sgm.getStats().detect_inliers);
-    EXPECT_LT(0, sgm.getStats().detect_choice_matches);
-    EXPECT_LT(0, sgm.getStats().detect_choice_inliers);
-    EXPECT_LT(0, sgm.getStats().locate_matches);
-    EXPECT_LT(0, sgm.getStats().locate_guesses);
-    EXPECT_LT(0, sgm.getStats().locate_inliers);
-    EXPECT_LT(0, sgm.getStats().locate_choice_matches);
-    EXPECT_EQ(guess.inliers.size(), sgm.getStats().locate_choice_inliers);
-    // TODO: get rid of next assertion
-    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
-                guess.getObject()->name == "haltbare_milch" ||
-                guess.getObject()->name == "jacobs_coffee");
-    EXPECT_TRUE(groundTruth.onScene(guess.getObject()->name));
-    EXPECT_GE(0, sgm.getStats().detect_tp_rate);
-    EXPECT_LE(1, sgm.getStats().detect_tp_rate);
-    EXPECT_GE(0, sgm.getStats().detect_fp_rate);
-    EXPECT_LE(1, sgm.getStats().detect_fp_rate);
-
-    // TODO: use drawGroundTruth
-    Camera camera("./data/camera.yml", Camera::TOD_YAML);
-    Mat canvas = clutter_img.clone();
-    // TODO: move to fixture
-    drawGuess(canvas, guess, camera, ground_pose);
-    drawPose(canvas, ground_pose_2, camera); 
-    drawPose(canvas, ground_pose_3, camera); 
-    imshow("guess", canvas);
-    waitKey(-1);
+    ASSERT_TRUE(sgm.isDoLocate());
+    recognize("RecognizeInClutter");
 }
 
 /** Check whether an object is at least detected in clutter */
@@ -196,47 +210,10 @@ TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
     TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 10.0;
     detect_params.guessParams.ransacIterationsCount = 1000;
+
     sgm.setDoLocate(false);
-    Guess guess;
-    PointCloudT inlierCloud;
-
-    // TODO: use ground truth
-
-    EXPECT_EQ(0, sgm.getStats().choices);
-    EXPECT_EQ(0, sgm.getStats().keypoints);
-    EXPECT_EQ(0, sgm.getStats().detect_matches);
-    EXPECT_EQ(0, sgm.getStats().detect_guesses);
-    EXPECT_EQ(0, sgm.getStats().detect_inliers);
-    EXPECT_EQ(0, sgm.getStats().detect_choice_matches);
-    EXPECT_EQ(0, sgm.getStats().detect_choice_inliers);
-    EXPECT_EQ(0, sgm.getStats().locate_matches);
-    EXPECT_EQ(0, sgm.getStats().locate_guesses);
-    EXPECT_EQ(0, sgm.getStats().locate_inliers);
-    EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
-    EXPECT_EQ(0, sgm.getStats().locate_choice_inliers);
-    bool positive = sgm.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
-    ASSERT_TRUE(positive);
-    EXPECT_EQ(1, sgm.getStats().choices);
-    EXPECT_LT(100, sgm.getStats().keypoints);
-    EXPECT_LT(0, sgm.getStats().detect_matches);
-    EXPECT_LT(0, sgm.getStats().detect_guesses);
-    EXPECT_LT(0, sgm.getStats().detect_inliers);
-    EXPECT_LT(0, sgm.getStats().detect_choice_matches);
-    EXPECT_LT(0, sgm.getStats().detect_choice_inliers);
-    EXPECT_EQ(0, sgm.getStats().locate_matches);
-    EXPECT_EQ(0, sgm.getStats().locate_guesses);
-    EXPECT_EQ(0, sgm.getStats().locate_inliers);
-    EXPECT_EQ(0, sgm.getStats().locate_choice_matches);
-    EXPECT_EQ(guess.inliers.size(), sgm.getStats().detect_choice_inliers);
-    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
-                guess.getObject()->name == "haltbare_milch" ||
-                guess.getObject()->name == "jacobs_coffee");
-
-    Camera camera("./data/camera.yml", Camera::TOD_YAML);
-    Mat canvas = clutter_img.clone();
-    drawGuess(canvas, guess, camera, PoseRT());
-    imshow("RecognizeInClutterDetectOnly", canvas);
-    waitKey(-1);
+    ASSERT_FALSE(sgm.isDoLocate());
+    recognize("RecognizeInClutterDetectOnly");
 }
 
 
@@ -246,31 +223,20 @@ TEST_F(ClutsegTest, RecognizeForemostInClutter) {
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
     TODParameters & locate_params = sgm.getLocateParams();
-    locate_params.guessParams.maxProjectionError = 5;
-    locate_params.guessParams.ransacIterationsCount = 500;
+    locate_params.guessParams.maxProjectionError = 7;
+    locate_params.guessParams.ransacIterationsCount = 1000;
+    locate_params.guessParams.minInliersCount = 30;
 
     Ptr<GuessRanking> prox_ranking = new ProximityRanking();
-    ClutSegmenter s(
+    sgm = ClutSegmenter(
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
         detect_params,
         locate_params,
         prox_ranking
     );
 
-    Guess guess;
-    PointCloudT inlierCloud;
-
-    bool positive = s.recognize(clutter_img, clutter_cloud, guess, inlierCloud);
-    ASSERT_TRUE(positive);
-    EXPECT_TRUE(guess.getObject()->name == "assam_tea" ||
-                guess.getObject()->name == "haltbare_milch" ||
-                guess.getObject()->name == "jacobs_coffee");
-
-    Camera camera("./data/camera.yml", Camera::TOD_YAML);
-    Mat canvas = clutter_img.clone();
-    drawGuess(canvas, guess, camera, PoseRT());
-    imshow("RecognizeForemostInClutter", canvas);
-    waitKey(-1);
+    ASSERT_TRUE(sgm.isDoLocate());
+    recognize("RecognizeForemostInClutter");
 }
 
 TEST_F(ClutsegTest, Reconfigure) {

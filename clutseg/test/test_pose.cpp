@@ -205,7 +205,7 @@ TEST_F(PoseTest, AngleBetweenOrientationsTwentyDegrees) {
 } 
 
 /* Check whether invariant Q = P * diffRotation(P, Q) holds. */
-TEST_F(PoseTest, rotatePose) {
+TEST_F(PoseTest, RotatePose) {
     PoseRT p = posert3;
 
     Mat r = randomOrientation(M_PI / 9.0);

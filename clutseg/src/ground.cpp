@@ -41,6 +41,7 @@ namespace clutseg {
     }
 
     void GroundTruth::read(const bfs::path & filename) {
+        cout << "[GROUND] Reading in " << filename << endl;
         labels.clear();
         FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
         // iterate over objects
@@ -49,6 +50,7 @@ namespace clutseg {
             np.pose.read(*n_it);
             np.pose.estimated = true;
             labels.push_back(np);  
+            cout << "[GROUND] Read " << np.name << endl;
         }
     }
 
