@@ -17,6 +17,8 @@ create table response (
     avg_detect_inliers float not null,
     avg_detect_choice_matches float not null,
     avg_detect_choice_inliers float not null,
+    detect_tp_rate float not null, -- TODO
+    detect_fp_rate float not null, -- TODO
     avg_locate_matches float not null,
     avg_locate_inliers float not null,
     avg_locate_choice_matches float not null,

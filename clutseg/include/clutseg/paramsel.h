@@ -137,6 +137,11 @@ namespace clutseg {
         float avg_detect_choice_matches;
         /** Average number of inliers for the best guess object in detection stage */
         float avg_detect_choice_inliers;
+        /** Of all detected guesses (interpreted as a bag of words, poses
+         * ignored), this is the rate of true positives */
+        float detect_tp_rate;
+        /** See detect_tp_rate */
+        float detect_fp_rate;
         /** Average number of matches in locating stage */
         float avg_locate_matches;
         /** Average number of inliers of all guesses in locating stage */

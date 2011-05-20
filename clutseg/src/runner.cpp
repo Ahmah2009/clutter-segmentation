@@ -62,10 +62,12 @@ namespace clutseg {
                     "whether image file exists. Full path is '%s'."
                 ) % img_name % exp.id % img_path));
             }
+            cout << "[RUN] Loaded image " << img_path << endl;
             PointCloudT queryCloud;
             bfs::path cloud_path = cloudPath(img_path);
             if (bfs::exists(cloud_path)) {
                 pcl::io::loadPCDFile(cloud_path.string(), queryCloud);
+                cout << "[RUN] Loaded query cloud " << cloud_path << endl;
             }
             Guess guess;
             PointCloudT inliersCloud;

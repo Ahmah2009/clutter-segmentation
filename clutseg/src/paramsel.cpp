@@ -178,6 +178,8 @@ namespace clutseg {
         setMemberField(m, "avg_detect_inliers", avg_detect_inliers);
         setMemberField(m, "avg_detect_choice_matches", avg_detect_choice_matches);
         setMemberField(m, "avg_detect_choice_inliers", avg_detect_choice_inliers);
+        setMemberField(m, "detect_tp_rate", detect_tp_rate);
+        setMemberField(m, "detect_fp_rate", detect_fp_rate);
         setMemberField(m, "avg_locate_matches", avg_locate_matches);
         setMemberField(m, "avg_locate_inliers", avg_locate_inliers);
         setMemberField(m, "avg_locate_choice_matches", avg_locate_choice_matches);
@@ -204,10 +206,12 @@ namespace clutseg {
             "avg_detect_inliers, " // 13
             "avg_detect_choice_matches, " // 14
             "avg_detect_choice_inliers, " // 15
-            "avg_locate_matches, " // 16
-            "avg_locate_inliers, " // 17
-            "avg_locate_choice_matches, " // 18
-            "avg_locate_choice_inliers " // 19
+            "detect_tp_rate, " // 16
+            "detect_fp_rate, " // 17
+            "avg_locate_matches, " // 18
+            "avg_locate_inliers, " // 19
+            "avg_locate_choice_matches, " // 20
+            "avg_locate_choice_inliers " // 21
             "from response where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         value = sqlite3_column_double(read, 0);
@@ -226,10 +230,12 @@ namespace clutseg {
         avg_detect_inliers = sqlite3_column_double(read, 13);
         avg_detect_choice_matches = sqlite3_column_double(read, 14);
         avg_detect_choice_inliers = sqlite3_column_double(read, 15);
-        avg_locate_matches = sqlite3_column_double(read, 16);
-        avg_locate_inliers = sqlite3_column_double(read, 17);
-        avg_locate_choice_matches = sqlite3_column_double(read, 18);
-        avg_locate_choice_inliers = sqlite3_column_double(read, 19);
+        detect_tp_rate = sqlite3_column_double(read, 16);
+        detect_fp_rate = sqlite3_column_double(read, 17);
+        avg_locate_matches = sqlite3_column_double(read, 18);
+        avg_locate_inliers = sqlite3_column_double(read, 19);
+        avg_locate_choice_matches = sqlite3_column_double(read, 20);
+        avg_locate_choice_inliers = sqlite3_column_double(read, 21);
         sqlite3_finalize(read);
     }
 

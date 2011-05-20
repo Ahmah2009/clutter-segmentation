@@ -75,6 +75,8 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.avg_detect_inliers = 9.2;
         experiment.response.avg_detect_choice_matches = 211.9;
         experiment.response.avg_detect_choice_inliers = 13.3;
+        experiment.response.detect_tp_rate = 0.95;
+        experiment.response.detect_fp_rate = 0.35;
         experiment.response.avg_locate_matches = 802.1;
         experiment.response.avg_locate_inliers = 29.8;
         experiment.response.avg_locate_choice_matches = 802.1;
@@ -188,6 +190,8 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.avg_detect_inliers, rest.avg_detect_inliers);
     EXPECT_FLOAT_EQ(orig.avg_detect_choice_matches, rest.avg_detect_choice_matches);
     EXPECT_FLOAT_EQ(orig.avg_detect_choice_inliers, rest.avg_detect_choice_inliers);
+    EXPECT_FLOAT_EQ(orig.detect_tp_rate, rest.detect_tp_rate);
+    EXPECT_FLOAT_EQ(orig.detect_fp_rate, rest.detect_fp_rate);
     EXPECT_FLOAT_EQ(orig.avg_locate_matches, rest.avg_locate_matches);
     EXPECT_FLOAT_EQ(orig.avg_locate_inliers, rest.avg_locate_inliers);
     EXPECT_FLOAT_EQ(orig.avg_locate_choice_matches, rest.avg_locate_choice_matches);
