@@ -21,6 +21,10 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
+    void typify(cv::Mat & m) {
+        m.convertTo(m, CV_64F);
+    }
+
     Point projectOrigin(const PoseRT & pose, const opencv_candidate::Camera & camera) {
         Point3d o(0, 0, 0);
         vector<Point3f> op(1);
@@ -140,11 +144,17 @@ namespace clutseg {
         return P.inv() * Q;
     }
 
+
     double angleBetweenOrientations(const opencv_candidate::PoseRT & p,
                                     const opencv_candidate::PoseRT & q) {
+        // See also comment on distBetweenLocations for information about type
+        // conversion.
+        Mat pr, qr;
+        p.rvec.convertTo(pr, CV_64FC1);
+        q.rvec.convertTo(qr, CV_64FC1);
         Mat P, Q;
-        Rodrigues(p.rvec, P);
-        Rodrigues(q.rvec, Q);
+        Rodrigues(pr, P);
+        Rodrigues(qr, Q);
         Mat d;
         Rodrigues(P.inv() * Q, d);
         return norm(d);
@@ -152,7 +162,14 @@ namespace clutseg {
 
     double distBetweenLocations(const opencv_candidate::PoseRT & p,
                                 const opencv_candidate::PoseRT & q) {
-        return norm(q.tvec - p.tvec);
+        // There is a type confusion issue with opencv_candidate::PoseRT and
+        // opencv_candidate::Pose which are not compliant with used Matrix
+        // types, therefore we cannot rely on p, q having members of the same
+        // data type.
+        Mat pt, qt;
+        p.tvec.convertTo(pt, CV_64FC1);
+        q.tvec.convertTo(qt, CV_64FC1);
+        return norm(qt - pt);
     }
 
 }

@@ -55,6 +55,11 @@ TEST_F(PoseTest, PoseToPoseRT) {
     waitKey(0);
 }
 
+TEST_F(PoseTest, PoseToPoseRtTypes) {
+    PoseRT p = poseToPoseRT(Pose());
+    Mat d = p.tvec - posert.tvec;
+}
+
 TEST_F(PoseTest, WritePoseRT) {
     writePose("./build/writeposert.yaml", posert);
 }
