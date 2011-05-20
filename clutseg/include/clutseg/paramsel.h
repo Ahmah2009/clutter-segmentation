@@ -178,7 +178,7 @@ namespace clutseg {
 
     struct Experiment : public Serializable {
       
-        Experiment() : sample_size(0), skip(false), has_run(false) {
+        Experiment() : skip(false), has_run(false) {
             // What's the standard
             paramset = Paramset(); 
             response = Response(); 
@@ -190,7 +190,6 @@ namespace clutseg {
         std::string test_set;
         std::string time;
         std::string vcs_commit;
-        int sample_size;
 
         /** Specifies whether to skip this experiment when carrying out
          * experiments that have not yet been run. This allows for temporarily

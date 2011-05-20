@@ -251,7 +251,6 @@ namespace clutseg {
         }
         setMemberField(m, "train_set", train_set);
         setMemberField(m, "test_set", test_set);
-        setMemberField(m, "sample_size", sample_size);
         if (time != "") {
             setMemberField(m, "time", time);
         }
@@ -269,10 +268,9 @@ namespace clutseg {
             "response_id, " // 1
             "train_set, " // 2
             "test_set, " // 3
-            "sample_size, " // 4
-            "time, " // 5
-            "vcs_commit, " // 6
-            "skip " // 7
+            "time, " // 4
+            "vcs_commit, " // 5
+            "skip " // 6
             "from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
        
@@ -285,12 +283,11 @@ namespace clutseg {
         }
         train_set = string((const char*) sqlite3_column_text(read, 2));
         test_set = string((const char*) sqlite3_column_text(read, 3));
-        sample_size = sqlite3_column_int(read, 4);
         if (has_run) {
-            time = string((const char*) sqlite3_column_text(read, 5));
-            vcs_commit = string((const char*) sqlite3_column_text(read, 6));
+            time = string((const char*) sqlite3_column_text(read, 4));
+            vcs_commit = string((const char*) sqlite3_column_text(read, 5));
         }
-        skip = sqlite3_column_int(read, 7) != 0;
+        skip = sqlite3_column_int(read, 6) != 0;
         sqlite3_finalize(read);
         paramset.deserialize(db);
         if (has_run) {
