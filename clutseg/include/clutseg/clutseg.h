@@ -67,13 +67,15 @@ namespace clutseg {
                             const std::string & detect_config,
                             const std::string & locate_config,
                             const cv::Ptr<GuessRanking> ranking_ = new InliersRanking(),
-                            float accept_threshold = -std::numeric_limits<float>::infinity());
+                            float accept_threshold = -std::numeric_limits<float>::infinity(),
+                            bool do_locate = true);
 
             ClutSegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
                             const tod::TODParameters & locate_params,
                             const cv::Ptr<GuessRanking> ranking = new InliersRanking(),
-                            float accept_threshold = -std::numeric_limits<float>::infinity());
+                            float accept_threshold = -std::numeric_limits<float>::infinity(),
+                            bool do_locate = true);
 
             /** Attempts to find an object in the scene. It makes a best guess
              * according to some ranking. This algorithm proceeds in two steps.First,
@@ -136,6 +138,7 @@ namespace clutseg {
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
             cv::Ptr<GuessRanking> ranking_;
             float accept_threshold_;
+            bool do_locate_;
             bool initialized_;
 
     };

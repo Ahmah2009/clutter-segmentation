@@ -24,10 +24,12 @@ namespace clutseg {
                                     const string & detect_config,
                                     const string & locate_config,
                                     Ptr<GuessRanking> ranking,
-                                    float accept_threshold) :
+                                    float accept_threshold,
+                                    bool do_locate) :
                                 baseDirectory_(baseDirectory),
                                 ranking_(ranking),
                                 accept_threshold_(accept_threshold),
+                                do_locate_(do_locate),
                                 initialized_(true) {
         loadParams(detect_config, detect_params_);
         loadParams(locate_config, locate_params_);
@@ -38,12 +40,14 @@ namespace clutseg {
                                     const TODParameters & detect_params,
                                     const TODParameters & locate_params,
                                     Ptr<GuessRanking> ranking,
-                                    float accept_threshold) :
+                                    float accept_threshold,
+                                    bool do_locate) :
                                 baseDirectory_(baseDirectory),
                                 detect_params_(detect_params),
                                 locate_params_(locate_params),
                                 ranking_(ranking),
                                 accept_threshold_(accept_threshold),
+                                do_locate_(do_locate),
                                 initialized_(true) {
         loadBase();
     }
@@ -149,8 +153,8 @@ namespace clutseg {
             // worst-case. None of the objects has been detected.
             return false;
         } else {
-            BOOST_FOREACH(Guess & guess, guesses) {
-                mapInliersToCloud(guess.inlierCloud, guess, query.image, queryCloud);
+            BOOST_FOREACH(Guess & g, guesses) {
+                mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
             }
             // Sort the guesses according to the ranking function.
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
@@ -161,28 +165,25 @@ namespace clutseg {
             for (size_t i = 0; i < guesses.size(); i++) {
                 choice = guesses[i]; 
 
-                cout << "inliers before: " << choice.inliers.size() << endl;
-                locate(query, queryCloud, choice, locateMatcher);
-                cout << "inliers after:  " << choice.inliers.size() << endl;
+                if (do_locate_) {
+                    locate(query, queryCloud, choice, locateMatcher);
+                }
 
-                cout << "ranking: " << (*ranking_)(choice) << endl;
-                cout << "accept_threshold: " << accept_threshold_ << endl;
+                cout << "[CLUTSEG] ranking: " << (*ranking_)(choice) << endl;
+                cout << "[CLUTSEG] accept_threshold: " << accept_threshold_ << endl;
 
                 if ((*ranking_)(choice) >= accept_threshold_) {
-                    // TODO: rename detect_choice_inliers => detect_choice_inliers
-                    // TODO: rename detect_choice_matches => detect_choice_matches
-                    // TODO: rename locate_choice_inliers => locate_choice_inliers
-                    // TODO: rename locate_choice_matches => locate_choice_matches
-                    // TODO: rename choice => choice
-                    
+                    cout << "[CLUTSEG] Inliers before:  " << guesses[i].inliers.size() << ", and after: " << choice.inliers.size() << endl;
                     vector<pair<int, int> > ds; 
-                    vector<pair<int, int> > ls; 
                     detectMatcher->getLabelSizes(ds);
-                    locateMatcher->getLabelSizes(ls);
                     stats_.detect_choice_matches += ds[guesses[i].getObject()->id].second;
                     stats_.detect_choice_inliers += guesses[i].inliers.size();
-                    stats_.locate_choice_matches += ls[choice.getObject()->id].second;
-                    stats_.locate_choice_inliers += choice.inliers.size();
+                    if (do_locate_) {
+                        vector<pair<int, int> > ls; 
+                        locateMatcher->getLabelSizes(ls);
+                        stats_.locate_choice_matches += ls[choice.getObject()->id].second;
+                        stats_.locate_choice_inliers += choice.inliers.size();
+                    }
                     stats_.choices++;
 
                     pos = true;
