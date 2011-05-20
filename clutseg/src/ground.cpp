@@ -21,6 +21,23 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
+    void loadGroundTruth(const bfs::path & filename, GroundTruth & groundTruth) {
+        FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
+        // iterate over objects
+        for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
+            NamedPose np((*n_it).name());
+            np.pose.read(*n_it);
+            np.pose.estimated = true;
+            groundTruth.push_back(np);  
+        }
+    }
+
+    GroundTruth loadGroundTruth(const bfs::path & filename) {
+        GroundTruth g;
+        loadGroundTruth(filename, g);
+        return g;
+    }
+
     TestSetGroundTruth loadTestSetGroundTruth(const bfs::path & filename) {
         TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses(filename);
         for (TestSetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
@@ -28,14 +45,7 @@ namespace clutseg {
             GroundTruth g = it->second;
             g.clear();
             string ground_name = img_name + ".ground.yaml";
-            FileStorage fs = FileStorage((filename.parent_path() / ground_name).string(), FileStorage::READ);
-            // iterate over objects
-            for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
-                NamedPose np((*n_it).name());
-                np.pose.read(*n_it);
-                np.pose.estimated = true;
-                g.push_back(np);  
-            }
+            loadGroundTruth(filename.parent_path() / ground_name, g);
         }
         return m;
     }

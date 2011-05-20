@@ -27,6 +27,8 @@ namespace clutseg {
 
     typedef std::map<std::string, GroundTruth > TestSetGroundTruth;
 
+    GroundTruth loadGroundTruth(const boost::filesystem::path & filename);
+
     TestSetGroundTruth loadTestSetGroundTruth(const boost::filesystem::path & filename);
 
     TestSetGroundTruth loadTestSetGroundTruthWithoutPoses(const boost::filesystem::path & filename);

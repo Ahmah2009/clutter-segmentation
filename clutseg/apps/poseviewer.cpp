@@ -2,6 +2,7 @@
  * Author: Julius Adorf
  */
 
+#include "clutseg/ground.h"
 #include "clutseg/pcl_visualization_addons.h"
 #include "clutseg/pose.h"
 #include <iostream>
@@ -43,6 +44,11 @@ int main(int argc, char *argv[]) {
             cout << boost::format("%10s: %8s") % "is_dense" % !cloud.is_dense << endl; 
             cout << endl;
             visualizer.addPointCloud(cloud, str(boost::format("cloud-%d") % i));
+        } else if (boost::algorithm::ends_with(arg, ".ground.yaml")) {
+            GroundTruth g = loadGroundTruth(arg);
+            BOOST_FOREACH(NamedPose np, g) {
+                addPose(visualizer, np.pose, str(boost::format("pose-%d-%d") % i % rand()));
+            }
         } else if (boost::algorithm::ends_with(arg, ".yaml")) {
             PoseRT pose;
             FileStorage in(arg, FileStorage::READ); 
