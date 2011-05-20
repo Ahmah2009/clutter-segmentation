@@ -144,6 +144,8 @@ namespace clutseg {
     }
 
     bool ClutSegmenter::recognize(const Mat & queryImage, const PointCloudT & queryCloud, Guess & choice, PointCloudT & inliersCloud) {
+        stats_.queries++;
+
         Features2d query;
         query.image = queryImage;
         
