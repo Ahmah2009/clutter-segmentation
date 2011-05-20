@@ -5,10 +5,11 @@
 #ifndef _VIZ_H_
 #define _VIZ_H_
 
+#include "clutseg/ground.h"
+
 #include <cv.h>
 #include <opencv_candidate/Camera.h>
 #include <opencv_candidate/PoseRT.h>
-#include <opencv/cxeigen.hpp>
 #include <tod/detecting/GuessGenerator.h>
 #include <tod/core/TrainingBase.h>
 #include <tod/core/Features2d.h>
@@ -82,6 +83,9 @@ namespace clutseg {
                             const tod::KeypointVector & testKeypoints,
                             const std::string & baseDirectory);
 
+    /** Draws ground truth poses and labels */
+    void drawGroundTruth(cv::Mat & canvas, const clutseg::GroundTruth & groundTruth,
+                            const opencv_candidate::Camera & camera);
 }
 
 #endif
