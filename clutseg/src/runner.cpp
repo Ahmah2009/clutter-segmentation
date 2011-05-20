@@ -71,7 +71,9 @@ namespace clutseg {
             PointCloudT inliersCloud;
             bool pos = segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
-            result.put(img_name, guess);
+            if (pos) {
+                result.put(img_name, guess);
+            }
         }
         // TODO: save experiment results
         CutSseResponseFunction response;
@@ -92,7 +94,6 @@ namespace clutseg {
 
         time_t tt = time(NULL);
         tm *t = localtime(&tt);
-        // FIXME: bug in time formatting!
         char ts[128];
         strftime(ts, 128, "%Y-%m-%d %H:%M:%S", t);
         exp.time = string(ts);

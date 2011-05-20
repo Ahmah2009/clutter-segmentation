@@ -25,6 +25,7 @@ namespace clutseg {
         double r_acc = 0;
         for (TestSetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             const string & img_name = it->first;
+            cout << "[RESPONSE] Validating results against ground truth: " << img_name << endl;
             const GroundTruth & groundTruth = it->second;
             if (!result.guessMade(img_name)) {
                 if (!groundTruth.empty()) {
@@ -35,8 +36,6 @@ namespace clutseg {
                 PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
                 double r = 1.0;
                 BOOST_FOREACH(NamedPose np, groundTruth) {
-                    cout << np.name << endl;
-                    cout << guess.getObject()->name << endl;
                     if (np.name == guess.getObject()->name) {
                         double dt = distBetweenLocations(est_pose, np.pose); 
                         double da = angleBetweenOrientations(est_pose, np.pose); 
