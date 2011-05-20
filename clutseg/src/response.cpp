@@ -15,15 +15,15 @@ using namespace tod;
 namespace clutseg {
 
 
-    void ResponseFunction::operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response) {
+    void ResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & response) {
         response.value = 0.0;
     }
 
-    void CutSseResponseFunction::operator()(const TestSetResult & result, const TestSetGroundTruth & ground, Response & response) {
+    void CutSseResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & response) {
         ResponseFunction::operator()(result, ground, response);
 
         double r_acc = 0;
-        for (TestSetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
+        for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             const string & img_name = it->first;
             cout << "[RESPONSE] Validating results against ground truth: " << img_name << endl;
             const GroundTruth & groundTruth = it->second;

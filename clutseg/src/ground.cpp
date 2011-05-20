@@ -43,9 +43,9 @@ namespace clutseg {
         }
     }
 
-    TestSetGroundTruth loadTestSetGroundTruth(const bfs::path & filename) {
-        TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses(filename);
-        for (TestSetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
+    SetGroundTruth loadSetGroundTruth(const bfs::path & filename) {
+        SetGroundTruth m = loadSetGroundTruthWithoutPoses(filename);
+        for (SetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
             string img_name = it->first;   
             GroundTruth g = it->second;
             string ground_name = img_name + ".ground.yaml";
@@ -55,8 +55,8 @@ namespace clutseg {
     }
 
     // TODO: does not really parse a python configuration file
-    TestSetGroundTruth loadTestSetGroundTruthWithoutPoses(const bfs::path & filename) {
-        TestSetGroundTruth m;
+    SetGroundTruth loadSetGroundTruthWithoutPoses(const bfs::path & filename) {
+        SetGroundTruth m;
         ifstream f;
         f.open(filename.string().c_str()); 
         if (!f.is_open()) {

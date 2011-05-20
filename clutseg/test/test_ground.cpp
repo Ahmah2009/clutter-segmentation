@@ -13,12 +13,12 @@
 using namespace std;
 using namespace clutseg;
 
-TEST(GroundTest, LoadTestSetGroundTruthWithoutPoses) {
-    TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses("./data/testdesc.txt");
+TEST(GroundTest, LoadSetGroundTruthWithoutPoses) {
+    SetGroundTruth m = loadSetGroundTruthWithoutPoses("./data/testdesc.txt");
 }
 
-TEST(GroundTest, ReadTestSetGroundTruthWithoutPoses) {
-    TestSetGroundTruth m = loadTestSetGroundTruthWithoutPoses("./data/testdesc.txt");
+TEST(GroundTest, ReadSetGroundTruthWithoutPoses) {
+    SetGroundTruth m = loadSetGroundTruthWithoutPoses("./data/testdesc.txt");
     GroundTruth s = m["t0000.png"];
 
     BOOST_FOREACH(const NamedPose & np, s.labels) {

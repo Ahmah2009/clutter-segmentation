@@ -48,10 +48,10 @@ namespace clutseg {
         // TODO: check which statistics might be useful and cannot be generated afterwards
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / exp.test_set;
-        TestSetGroundTruth testdesc = loadTestSetGroundTruth(test_dir / "testdesc.txt");
-        TestSetResult result;
+        SetGroundTruth testdesc = loadSetGroundTruth(test_dir / "testdesc.txt");
+        SetResult result;
         // Loop over all images in the test set
-        for (TestSetGroundTruth::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
+        for (SetGroundTruth::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
             string img_name = it->first;
             cout << img_name << endl;
             bfs::path img_path = test_dir / img_name;

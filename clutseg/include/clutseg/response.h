@@ -14,7 +14,7 @@
 
 namespace clutseg {
 
-    class TestSetResult {
+    class SetResult {
 
         public:
 
@@ -49,8 +49,8 @@ namespace clutseg {
             /** Basic response function always sets response.value to zero, and
              * populates the other response statistics, such as response.success_rate etc.
              * This method must be called from derived classes. */
-            virtual void operator()(const TestSetResult & result,
-                                    const TestSetGroundTruth & ground,
+            virtual void operator()(const SetResult & result,
+                                    const SetGroundTruth & ground,
                                     Response & response);
 
             float max_trans_error_;
@@ -65,8 +65,8 @@ namespace clutseg {
 
             CutSseResponseFunction(float max_trans_error = 0.02, float max_angle_error = M_PI / 9) : ResponseFunction(max_trans_error, max_angle_error) {}
 
-            virtual void operator()(const TestSetResult & result,
-                                    const TestSetGroundTruth & ground,
+            virtual void operator()(const SetResult & result,
+                                    const SetGroundTruth & ground,
                                     Response & response);
 
     };

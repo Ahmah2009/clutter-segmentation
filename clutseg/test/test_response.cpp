@@ -35,9 +35,9 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
     Guess guess(object, poseRtToPose(pose), Mat(), Mat(), Mat());
     GroundTruth groundTruth;
     groundTruth.labels.push_back(np);
-    TestSetGroundTruth ground;
+    SetGroundTruth ground;
     ground["image_00000.png"] = groundTruth;
-    TestSetResult result;
+    SetResult result;
     result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
@@ -55,9 +55,9 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
     Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
     GroundTruth groundTruth;
     groundTruth.labels.push_back(np);
-    TestSetGroundTruth ground;
+    SetGroundTruth ground;
     ground["image_00000.png"] = groundTruth;
-    TestSetResult result;
+    SetResult result;
     result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
@@ -75,9 +75,9 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
     Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
     GroundTruth groundTruth;
     groundTruth.labels.push_back(np);
-    TestSetGroundTruth ground;
+    SetGroundTruth ground;
     ground["image_00000.png"] = groundTruth;
-    TestSetResult result;
+    SetResult result;
     result.put("image_00000.png", guess);
     Response response;
     sse_response(result, ground, response);
