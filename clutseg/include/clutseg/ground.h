@@ -31,7 +31,7 @@ namespace clutseg {
 
         void read(const boost::filesystem::path & filename);
 
-        bool isObjectExpected(const std::string & name) const;
+        bool onScene(const std::string & name) const;
 
     };
 

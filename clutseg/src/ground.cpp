@@ -21,7 +21,7 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    bool GroundTruth::isObjectExpected(const string & name) const {
+    bool GroundTruth::onScene(const string & name) const {
         // slow 
         BOOST_FOREACH(const NamedPose & np, labels) {
             if (np.name == name) {

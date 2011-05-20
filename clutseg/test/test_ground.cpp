@@ -24,10 +24,10 @@ TEST(GroundTest, ReadTestSetGroundTruthWithoutPoses) {
     BOOST_FOREACH(const NamedPose & np, s.labels) {
         EXPECT_FALSE(np.pose.estimated);
     }
-    EXPECT_TRUE(s.isObjectExpected("teas_tea"));
-    EXPECT_TRUE(s.isObjectExpected("fat_free_milk"));
-    EXPECT_FALSE(s.isObjectExpected("downy"));
-    EXPECT_FALSE(s.isObjectExpected(""));
-    EXPECT_FALSE(s.isObjectExpected(" "));
+    EXPECT_TRUE(s.onScene("teas_tea"));
+    EXPECT_TRUE(s.onScene("fat_free_milk"));
+    EXPECT_FALSE(s.onScene("downy"));
+    EXPECT_FALSE(s.onScene(""));
+    EXPECT_FALSE(s.onScene(" "));
 }
 

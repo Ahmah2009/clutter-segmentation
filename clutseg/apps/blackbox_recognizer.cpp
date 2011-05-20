@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
             }
             ground_poses.push_back(ground_posert);
  
-            bool is_tp = groundTruth.isObjectExpected(name);
+            bool is_tp = groundTruth.onScene(name);
           
             //  drawGuess2(allGuessesImg, guess, test.image, trainingCamera, false, ground_posert);
 
@@ -419,7 +419,7 @@ int main(int argc, char *argv[])
 
         // Check for true or false positive.
         foreach (string name, found) {
-            if (groundTruth.isObjectExpected(name)) {
+            if (groundTruth.onScene(name)) {
                 tp += 1;
             } else {
                 fp += 1;
