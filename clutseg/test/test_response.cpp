@@ -23,7 +23,7 @@ struct ResponseFunctionTest : public ::testing::Test {
     // We need to construct a result of an experiment i.e. an instance of
     // SetResult and compare that to the ground truth (i.e. SetGroundTruth).
     // Then we can verify that the statistics work as expected. For covering
-    // several cases, we want to include
+    // several cases, we might include
     // - an empty scene
     // - a non-empty scene with no choice being made
     // - a non-empty scene with a false positive at close to an object
@@ -31,6 +31,7 @@ struct ResponseFunctionTest : public ::testing::Test {
     // - a non-empty scene with a true positive exceeding max_trans_error
     // - a non-empty scene with a true positive exceeding max_angle_error
     // - a non-empty scene with a true positive within max_trans_error and max_angle_error
+    // - ...
     // For simplification, we can use the same scene with different mocked
     // choices. The choices are made in such a way that we can infer bounds on
     // the generated statistics, or even check for equality.
@@ -284,10 +285,8 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     float t = dist_between(at_close.aligned_pose(), at_perfect.aligned_pose());
     float fa = angle_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
     float ft = dist_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
-    
     EXPECT_NEAR(a, M_PI / 18, 1e-6);
     EXPECT_NEAR(fa, M_PI / 8, 1e-6);
-
     EXPECT_NEAR((0 + a + fa) / 3, rsp.avg_angle_err, 1e-6);
     EXPECT_NEAR((0 + a*a + fa*fa) / 3, rsp.avg_angle_sq_err, 1e-6);
     EXPECT_NEAR((0 + t + ft) / 3, rsp.avg_trans_err, 1e-6);
@@ -300,3 +299,24 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     EXPECT_NEAR(1./5, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(1./5, rsp.none_rate, 1e-6);
 }
+
+TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
+    SetResult r;
+    r.put("empty_scene_1", at_close);
+    SetGroundTruth g;
+    g["empty_scene_1"] = empty_scene;
+    g["empty_scene_2"] = empty_scene;
+    sse_response_function(r, g, rsp);
+    EXPECT_TRUE(isnan(rsp.avg_angle_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
+    EXPECT_TRUE(isnan(rsp.avg_trans_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_err));
+    EXPECT_TRUE(isnan(rsp.avg_angle_sq_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_sq_err));
+    EXPECT_TRUE(isnan(rsp.avg_trans_sq_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_sq_err));
+    EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
+    EXPECT_NEAR(0.5, rsp.mislabel_rate, 1e-6);
+    EXPECT_NEAR(0.5, rsp.none_rate, 1e-6);
+}
+

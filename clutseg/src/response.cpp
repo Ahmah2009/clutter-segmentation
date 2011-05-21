@@ -27,9 +27,18 @@ namespace clutseg {
         float acc_succ_angle_sq_err = 0;
         float acc_trans_sq_err = 0;
         float acc_succ_trans_sq_err = 0;
+        // In case, the angular and translational error both are less than a given threshold.
         int successes = 0;
+        // Mislabelings are false positives in the bag of words classification
+        // model. For example, if icedtea does not show up on the scene but is
+        // said to be on the scene by the recognizer, then we call this a
+        // "mislabeling".
         int mislabelings = 0;
+        // Nones count the number of scenes where no choice was made,
+        // independently whether there was any object on the scene or not
         int nones = 0;
+        // This is the number of cases in which calculating pose error makes sense.
+        int v = 0;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             string img_name = it->first;
             GroundTruth g = it->second;
@@ -44,6 +53,7 @@ namespace clutseg {
                             "test result with ground truth, when there are multiple \n"
                             "instances of the same template object on the scene.");
                     } else {
+                        v++;
                         PoseRT truep = poses[0];
                         PoseRT estp = poseToPoseRT(c.aligned_pose());
                         double t = dist_between(estp, truep); 
@@ -67,20 +77,18 @@ namespace clutseg {
                     mislabelings++;
                 }
             } else {
+                nones++;
                 if (g.emptyScene()) {
                     // no choice made and scene empty
-                    successes++;
-                } else {
+                } else { 
                     // no choice made, yet scene is showing objects 
-                    nones++;
+                    // doing nothing means decreasing success_rate
                 }
             }
 
         }
         
         int n = ground.size();
-        // This is the number of cases in which calculating pose error makes sense.
-        int v = ground.size() - nones - mislabelings;
         // FIXME: Nones are problems, they pull down average though bad! Need to 
         //        ignore them in averaging!
         // v may well be zero. In that case, the fields will be assigned NAN,
