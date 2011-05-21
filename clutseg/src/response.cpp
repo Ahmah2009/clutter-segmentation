@@ -9,11 +9,11 @@
 #include <boost/foreach.hpp>
 #include <iostream>
 
+using namespace opencv_candidate;
 using namespace std;
 using namespace tod;
 
 namespace clutseg {
-
 
     void ResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & resp) {
         resp.value = 0.0;
@@ -86,9 +86,9 @@ namespace clutseg {
         resp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / n;
         resp.avg_trans_sq_err = acc_trans_sq_err / n;
         resp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / n;
-        resp.succ_rate = successes / n;
-        resp.mislabel_rate = mislabelings / n;
-        resp.none_rate = nones / n;
+        resp.succ_rate = float(successes) / n;
+        resp.mislabel_rate = float(mislabelings) / n;
+        resp.none_rate = float(nones) / n;
     }
 
     void CutSseResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & resp) {
