@@ -221,9 +221,8 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
     sse_response_function(r, g, rsp);
-    // TODO: rename those longish functions
-    float a = angleBetweenOrientations(at_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
-    float t = distBetweenLocations(at_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
+    float a = angle_between(at_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
+    float t = dist_between(at_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
     EXPECT_NEAR(a, rsp.avg_angle_err, 1e-6);
     EXPECT_NEAR(a, rsp.avg_succ_angle_err, 1e-6);
     EXPECT_NEAR(t, rsp.avg_trans_err, 1e-6);

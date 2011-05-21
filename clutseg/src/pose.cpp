@@ -154,9 +154,9 @@ namespace clutseg {
     }
 
 
-    double angleBetweenOrientations(const opencv_candidate::PoseRT & p,
+    double angle_between(const opencv_candidate::PoseRT & p,
                                     const opencv_candidate::PoseRT & q) {
-        // See also comment on distBetweenLocations for information about type
+        // See also comment on dist_between for information about type
         // conversion.
         Mat pr, qr;
         p.rvec.convertTo(pr, CV_64FC1);
@@ -169,7 +169,7 @@ namespace clutseg {
         return norm(d);
     }
 
-    double distBetweenLocations(const opencv_candidate::PoseRT & p,
+    double dist_between(const opencv_candidate::PoseRT & p,
                                 const opencv_candidate::PoseRT & q) {
         // There is a type confusion issue with opencv_candidate::PoseRT and
         // opencv_candidate::Pose which are not compliant with used Matrix

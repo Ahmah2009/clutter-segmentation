@@ -46,8 +46,8 @@ namespace clutseg {
                     } else {
                         PoseRT truep = poses[0];
                         PoseRT estp = poseToPoseRT(c.aligned_pose());
-                        double t = distBetweenLocations(estp, truep); 
-                        double a = angleBetweenOrientations(estp, truep); 
+                        double t = dist_between(estp, truep); 
+                        double a = angle_between(estp, truep); 
                         acc_angle_err += abs(a);
                         acc_angle_sq_err += a * a;
                         acc_trans_err += abs(t);
@@ -117,8 +117,8 @@ namespace clutseg {
                 double r = 1.0;
                 BOOST_FOREACH(const LabeledPose & np, groundTruth.labels) {
                     if (np.name == guess.getObject()->name) {
-                        double dt = distBetweenLocations(est_pose, np.pose); 
-                        double da = angleBetweenOrientations(est_pose, np.pose); 
+                        double dt = dist_between(est_pose, np.pose); 
+                        double da = angle_between(est_pose, np.pose); 
                         double r2 = (dt * dt) / (max_trans_error_ * max_trans_error_) + (da * da) / (max_angle_error_ * max_angle_error_);
                         r = r2 < r ? r2 : r;
                     }

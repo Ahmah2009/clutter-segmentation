@@ -64,11 +64,11 @@ namespace clutseg {
      * matrix D such that P * D = Q. This difference D is a rotation around a
      * certain axis about a certain angle. The angle is returned by this function.
      */
-    double angleBetweenOrientations(const opencv_candidate::PoseRT & p,
+    double angle_between(const opencv_candidate::PoseRT & p,
                                     const opencv_candidate::PoseRT & q);
 
     /** Computes the distance between the origin of p and the origin of q. */
-    double distBetweenLocations(const opencv_candidate::PoseRT & p,
+    double dist_between(const opencv_candidate::PoseRT & p,
                                 const opencv_candidate::PoseRT & q);
 
 }

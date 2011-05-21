@@ -201,7 +201,7 @@ TEST_F(PoseTest, AngleBetweenOrientationsTwentyDegrees) {
     Rodrigues(q.rvec, Q);
     Rodrigues(R*Q, q.rvec);
 
-    EXPECT_NEAR(M_PI / 9.0, angleBetweenOrientations(p, q), 1e-10);
+    EXPECT_NEAR(M_PI / 9.0, angle_between(p, q), 1e-10);
 } 
 
 /* Check whether invariant Q = P * diffRotation(P, Q) holds. */
@@ -226,6 +226,6 @@ TEST_F(PoseTest, RotatePose) {
 
     Mat d = Mat::zeros(3, 1, CV_64FC1);
     Rodrigues(D, d);
-    EXPECT_NEAR(M_PI / 9.0, angleBetweenOrientations(p, q), 1e-10);
+    EXPECT_NEAR(M_PI / 9.0, angle_between(p, q), 1e-10);
 }
 
