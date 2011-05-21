@@ -87,13 +87,13 @@ namespace clutseg {
         // which is best way to handle it (we have no data to calculate the error, so 
         // NAN is appropriate).
         resp.avg_angle_err = acc_angle_err / v;
-        resp.avg_succ_angle_err = acc_succ_angle_err / v;
+        resp.avg_succ_angle_err = acc_succ_angle_err / successes;
         resp.avg_trans_err = acc_trans_err / v;
-        resp.avg_succ_trans_err = acc_succ_trans_err / v;
+        resp.avg_succ_trans_err = acc_succ_trans_err / successes;
         resp.avg_angle_sq_err = acc_angle_sq_err / v;
-        resp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / v;
+        resp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / successes;
         resp.avg_trans_sq_err = acc_trans_sq_err / v;
-        resp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / v;
+        resp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / successes;
         resp.succ_rate = float(successes) / n;
         resp.mislabel_rate = float(mislabelings) / n;
         resp.none_rate = float(nones) / n;

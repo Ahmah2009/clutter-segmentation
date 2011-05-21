@@ -48,6 +48,7 @@ struct ResponseFunctionTest : public ::testing::Test {
     Guess at_perfect;
     Guess at_ge_max_angle;
     Guess at_ge_max_trans;
+    Guess at_ge_max_trans_angle;
     Guess it_ge_max_angle;
     Guess it_ge_max_trans;
     Guess at_close;
@@ -71,7 +72,11 @@ struct ResponseFunctionTest : public ::testing::Test {
             at_perfect = createGuess("assam_tea", atp);
             at_ge_max_angle = createGuess("assam_tea", rotatePose(atp, randomOrientation(M_PI / 8)));
             at_ge_max_trans = createGuess("assam_tea", translatePose(atp, (Mat_<double>(3, 1) << 0.02, 0.03, 0.01)));
-            at_close = createGuess("assam_tea", translatePose(rotatePose(atp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.03, 0.01)));
+            at_ge_max_trans_angle = createGuess("assam_tea", translatePose(rotatePose(atp, randomOrientation(M_PI / 8)), (Mat_<double>(3, 1) << 0.02, 0.02, 0.03)));
+            it_ge_max_angle = createGuess("icedtea", rotatePose(atp, randomOrientation(M_PI / 8)));
+            it_ge_max_trans = createGuess("icedtea", translatePose(atp, (Mat_<double>(3, 1) << 0.02, 0.03, 0.01)));
+            at_close = createGuess("assam_tea", translatePose(rotatePose(atp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.01, 0.01)));
+            it_close = createGuess("icedtea", translatePose(rotatePose(atp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.01, 0.01)));
             at_max_angle = createGuess("assam_tea", rotatePose(atp, randomOrientation(M_PI / 9)));
             at_max_trans = createGuess("assam_tea", translatePose(atp, (Mat_<double>(3, 1)  << 0.02, 0.02, 0.008)));
             at_max_trans_angle = createGuess("assam_tea", translatePose(rotatePose(atp, randomOrientation(M_PI / 9 - 0.02)), (Mat_<double>(3, 1) << 0.02, 0.02, 0.008)));
@@ -176,13 +181,13 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     sse_response_function(r, g, rsp);
 
     EXPECT_NEAR(M_PI / 16, rsp.avg_angle_err, 1e-6);
-    EXPECT_NEAR(0, rsp.avg_succ_angle_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
     EXPECT_NEAR(sqrt(0.0014) / 2, rsp.avg_trans_err, 1e-6);
-    EXPECT_NEAR(0, rsp.avg_succ_trans_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_err));
     EXPECT_NEAR(M_PI * M_PI / 128, rsp.avg_angle_sq_err, 1e-6);
-    EXPECT_NEAR(0, rsp.avg_succ_angle_sq_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_sq_err));
     EXPECT_NEAR(0.0007, rsp.avg_trans_sq_err, 1e-6);
-    EXPECT_NEAR(0, rsp.avg_succ_trans_sq_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_sq_err));
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
@@ -236,3 +241,62 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     EXPECT_NEAR(2./3, rsp.none_rate, 1e-6);
 }
 
+/** Handling of the case in which an object has been labeled that is not even
+ * on the scene. */
+TEST_F(ResponseFunctionTest, MislabelingsOnly) {
+    SetResult r;
+    r.put("at_hm_jc_1", it_close);
+    r.put("at_hm_jc_2", it_ge_max_angle);
+    r.put("at_hm_jc_3", it_ge_max_trans);
+    SetGroundTruth g;
+    g["at_hm_jc_1"] = at_hm_jc;
+    g["at_hm_jc_2"] = at_hm_jc;
+    g["at_hm_jc_3"] = at_hm_jc;
+    sse_response_function(r, g, rsp);
+    EXPECT_TRUE(isnan(rsp.avg_angle_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
+    EXPECT_TRUE(isnan(rsp.avg_trans_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_err));
+    EXPECT_TRUE(isnan(rsp.avg_angle_sq_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_sq_err));
+    EXPECT_TRUE(isnan(rsp.avg_trans_sq_err));
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_sq_err));
+    EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
+    EXPECT_NEAR(1, rsp.mislabel_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+}
+
+ /* Realistic example with all kinds of cases occuring. */
+TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
+    SetResult r;
+    r.put("at_hm_jc_1", at_perfect);
+    r.put("at_hm_jc_3", it_close);
+    r.put("at_hm_jc_4", at_close);
+    r.put("at_hm_jc_5", at_ge_max_trans_angle);
+    SetGroundTruth g;
+    g["at_hm_jc_1"] = at_hm_jc;
+    g["at_hm_jc_2"] = at_hm_jc;
+    g["at_hm_jc_3"] = at_hm_jc;
+    g["at_hm_jc_4"] = at_hm_jc;
+    g["at_hm_jc_5"] = at_hm_jc;
+    sse_response_function(r, g, rsp);
+    float a = angle_between(at_close.aligned_pose(), at_perfect.aligned_pose());
+    float t = dist_between(at_close.aligned_pose(), at_perfect.aligned_pose());
+    float fa = angle_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
+    float ft = dist_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
+    
+    EXPECT_NEAR(a, M_PI / 18, 1e-6);
+    EXPECT_NEAR(fa, M_PI / 8, 1e-6);
+
+    EXPECT_NEAR((0 + a + fa) / 3, rsp.avg_angle_err, 1e-6);
+    EXPECT_NEAR((0 + a*a + fa*fa) / 3, rsp.avg_angle_sq_err, 1e-6);
+    EXPECT_NEAR((0 + t + ft) / 3, rsp.avg_trans_err, 1e-6);
+    EXPECT_NEAR((0 + t*t + ft*ft) / 3, rsp.avg_trans_sq_err, 1e-6);
+    EXPECT_NEAR((0 + t) / 2, rsp.avg_succ_trans_err, 1e-6);
+    EXPECT_NEAR((0 + t*t) / 2, rsp.avg_succ_trans_sq_err, 1e-6);
+    EXPECT_NEAR((0 + a) / 2, rsp.avg_succ_angle_err, 1e-6);
+    EXPECT_NEAR((0 + a*a) / 2, rsp.avg_succ_angle_sq_err, 1e-6);
+    EXPECT_NEAR(2./5, rsp.succ_rate, 1e-6);
+    EXPECT_NEAR(1./5, rsp.mislabel_rate, 1e-6);
+    EXPECT_NEAR(1./5, rsp.none_rate, 1e-6);
+}
