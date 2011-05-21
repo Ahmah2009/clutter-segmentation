@@ -10,12 +10,10 @@
 #include <cv.h>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <set>
-#include <utility>
-#include <vector>
 
 using namespace cv;
+using namespace opencv_candidate;
 using namespace std;
 
 namespace bfs = boost::filesystem;
@@ -38,6 +36,16 @@ namespace clutseg {
             d.insert(np.name);
         }
         return d.size();
+    }
+
+    vector<PoseRT> GroundTruth::posesOf(const string & subject) const {
+        vector<PoseRT> ps;
+        BOOST_FOREACH(const LabeledPose & np, labels) {
+            if (np.name == subject) {
+                ps.push_back(np.pose);
+            }
+        }
+        return ps;
     }
 
     void GroundTruth::read(const bfs::path & filename) {
@@ -115,6 +123,5 @@ namespace clutseg {
         f.close();
         return m; 
     }
-
 }
 

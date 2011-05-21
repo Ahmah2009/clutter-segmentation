@@ -44,10 +44,9 @@ namespace clutseg {
         return img_path.parent_path() / (img_path.filename() + ".cloud.pcd");
     }
 
-    void ExperimentRunner::runExperiment(ClutSegmenter & segmenter, Experiment & exp) {
-        // TODO: check which statistics might be useful and cannot be generated afterwards
+    void ExperimentRunner::runExperiment(ClutSegmenter & sgm, Experiment & e) {
         bfs::path p = getenv("CLUTSEG_PATH");
-        bfs::path test_dir = p / exp.test_set;
+        bfs::path test_dir = p / e.test_set;
         SetGroundTruth testdesc = loadSetGroundTruth(test_dir / "testdesc.txt");
         SetResult result;
         // Loop over all images in the test set
@@ -57,9 +56,9 @@ namespace clutseg {
             Mat queryImage = imread(img_path.string(), 0);
             if (queryImage.empty()) {
                 throw runtime_error(str(boost::format(
-                    "ERROR: Cannot read image '%s' for experiment with id=%d. Please check\n"
+                    "ERROR: Cannot read image '%s' for eeriment with id=%d. Please check\n"
                     "whether image file exists. Full path is '%s'."
-                ) % img_name % exp.id % img_path));
+                ) % img_name % e.id % img_path));
             }
             cout << "[RUN] Loaded image " << img_path << endl;
             PointCloudT queryCloud;
@@ -70,32 +69,20 @@ namespace clutseg {
             }
             Guess guess;
             PointCloudT inliersCloud;
-            bool pos = segmenter.recognize(queryImage, queryCloud, guess, inliersCloud);
+            bool pos = sgm.recognize(queryImage, queryCloud, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
             if (pos) {
                 result.put(img_name, guess);
             }
         }
         // TODO: save experiment results
-        CutSseResponseFunction response;
-        response(result, testdesc, exp.response);
+        CutSseResponseFunction responseFunc;
+        responseFunc(result, testdesc, e.response);
 
-        ClutSegmenterStats stats = segmenter.getStats();
-        exp.response.avg_keypoints = float(stats.acc_keypoints) / stats.queries;
-        exp.response.avg_detect_matches = float(stats.acc_detect_matches) / stats.queries;
-        exp.response.avg_detect_inliers = float(stats.acc_detect_inliers) / stats.acc_detect_guesses;
-        exp.response.avg_detect_choice_matches = float(stats.acc_detect_choice_matches) / stats.choices;
-        exp.response.avg_detect_choice_inliers = float(stats.acc_detect_choice_inliers) / stats.choices;
-        exp.response.detect_tp_rate = float(stats.acc_detect_tp_rate) / stats.queries;
-        exp.response.detect_fp_rate = float(stats.acc_detect_fp_rate) / stats.queries;
-        exp.response.avg_locate_matches = float(stats.acc_locate_matches) / stats.queries;
-        exp.response.avg_locate_inliers = float(stats.acc_locate_inliers) / stats.acc_detect_guesses;
-        exp.response.avg_locate_choice_matches = float(stats.acc_locate_choice_matches) / stats.choices;
-        exp.response.avg_locate_choice_inliers = float(stats.acc_locate_choice_inliers) / stats.choices;
-    
-        exp.record_time();
-        exp.record_commit();
-        exp.has_run = true;
+        sgm.getStats().populateResponse(e.response);
+        e.record_time();
+        e.record_commit();
+        e.has_run = true;
     }
 
     void ExperimentRunner::run() {
@@ -115,12 +102,12 @@ namespace clutseg {
             // much, though.
             sortExperimentsByTrainFeatures(exps);
             TrainFeatures cur_tr_feat;
-            ClutSegmenter *segmenter = NULL;
-            BOOST_FOREACH(Experiment & exp, exps) {
-                if (exp.skip) {
-                    cerr << "[RUN]: Skipping experiment (id=" << exp.id << ")" << endl;
+            ClutSegmenter *sgm = NULL;
+            BOOST_FOREACH(Experiment & e, exps) {
+                if (e.skip) {
+                    cerr << "[RUN]: Skipping experiment (id=" << e.id << ")" << endl;
                 } else {
-                    TrainFeatures tr_feat(exp.train_set, exp.paramset.train_pms_fe);
+                    TrainFeatures tr_feat(e.train_set, e.paramset.train_pms_fe);
                     if (tr_feat != cur_tr_feat) {
                         if (!cache_.trainFeaturesExist(tr_feat)) {
                             // TODO: catch error where train directory does not exist
@@ -131,33 +118,33 @@ namespace clutseg {
                             tr_feat.generate();
                             cache_.addTrainFeatures(tr_feat);
                         }
-                        delete segmenter;
-                        segmenter = new ClutSegmenter(
+                        delete sgm;
+                        sgm = new ClutSegmenter(
                             cache_.trainFeaturesDir(tr_feat).string(),
                             TODParameters(), TODParameters());
                     }
 
                     // Clear statistics        
-                    segmenter->resetStats();
+                    sgm->resetStats();
 
                     // Online change configuration
-                    segmenter->reconfigure(exp.paramset);
+                    sgm->reconfigure(e.paramset);
                     
                     try {
-                        runExperiment(*segmenter, exp);
-                        exp.serialize(db_);
-                    } catch( runtime_error & e ) {
-                        cerr << "[RUN]: " << e.what() << endl;
-                        cerr << "[RUN]: ERROR, experiment failed, no results recorded (id=" << exp.id << ")" << endl;
+                        runExperiment(*sgm, e);
+                        e.serialize(db_);
+                    } catch( runtime_error & err ) {
+                        cerr << "[RUN]: " << err.what() << endl;
+                        cerr << "[RUN]: ERROR, experiment failed, no results recorded (id=" << e.id << ")" << endl;
                         cerr << "[RUN]: Before running the experiment again, make sure to clear 'skip' flag in experiment record." << endl;
-                        exp.skip = true;
-                        exp.serialize(db_);
+                        e.skip = true;
+                        e.serialize(db_);
                     }
                 }
             }
             // TODO: use smart pointer
-            if (segmenter != NULL) {
-                delete segmenter;
+            if (sgm != NULL) {
+                delete sgm;
             }
 
             sleep(3);

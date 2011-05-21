@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <opencv_candidate/PoseRT.h>
+#include <vector>
 
 namespace clutseg {
 
@@ -31,7 +32,7 @@ namespace clutseg {
         bool emptyScene() const { return labels.empty(); }
         bool onScene(const std::string & name) const;
         int distinctLabelCount() const;
-
+        std::vector<opencv_candidate::PoseRT> posesOf(const std::string & subject) const;
 
         void read(const boost::filesystem::path & filename);
         void write(const boost::filesystem::path & filename);

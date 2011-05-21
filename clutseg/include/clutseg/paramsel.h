@@ -94,7 +94,7 @@ namespace clutseg {
        Response() : value(0.0), succ_rate(0), avg_angle_err(0),
             avg_succ_angle_err(0), avg_trans_err(0), avg_succ_trans_err(0),
             avg_angle_sq_err(0), avg_succ_angle_sq_err(0), avg_trans_sq_err(0),
-            avg_succ_trans_sq_err(0), mislabel_rate(0), avg_keypoints(0),
+            avg_succ_trans_sq_err(0), mislabel_rate(0), none_rate(0), avg_keypoints(0),
             avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
             avg_locate_matches(0), avg_locate_inliers(0), avg_locate_choice_matches(0),
             avg_locate_choice_inliers(0) { }
@@ -126,6 +126,8 @@ namespace clutseg {
         float avg_succ_trans_sq_err;
         /** Average number of scenes where label was not correct. */
         float mislabel_rate;
+        /** Average number of scenes where no choice was made. */
+        float none_rate;
 
         /** Average number of extracted keypoints per image */
         float avg_keypoints;

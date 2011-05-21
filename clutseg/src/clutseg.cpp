@@ -300,9 +300,6 @@ namespace clutseg {
         }
 
         if (guesses.empty()) {
-            // This almost certainly should not happen. If the object has been
-            // detected despite of possible confusion, it will be detected
-            // again if the source of confusion is removed.
             cerr << "[WARNING] No guess made in refinement!" << endl;
             return false;
         } else {
@@ -313,6 +310,20 @@ namespace clutseg {
             choice = guesses[0]; 
             return true;
         }
+    }
+
+    void ClutSegmenterStats::populateResponse(Response & r) const {
+        r.avg_keypoints = float(acc_keypoints) / queries;
+        r.avg_detect_matches = float(acc_detect_matches) / queries;
+        r.avg_detect_inliers = float(acc_detect_inliers) / acc_detect_guesses;
+        r.avg_detect_choice_matches = float(acc_detect_choice_matches) / choices;
+        r.avg_detect_choice_inliers = float(acc_detect_choice_inliers) / choices;
+        r.detect_tp_rate = float(acc_detect_tp_rate) / queries;
+        r.detect_fp_rate = float(acc_detect_fp_rate) / queries;
+        r.avg_locate_matches = float(acc_locate_matches) / queries;
+        r.avg_locate_inliers = float(acc_locate_inliers) / acc_detect_guesses;
+        r.avg_locate_choice_matches = float(acc_locate_choice_matches) / choices;
+        r.avg_locate_choice_inliers = float(acc_locate_choice_inliers) / choices;
     }
 
 }

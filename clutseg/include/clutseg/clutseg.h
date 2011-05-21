@@ -63,6 +63,11 @@ namespace clutseg {
         long acc_locate_choice_inliers;
         long choices;
 
+        /** Computes average statistics, and stores them into a response
+         * object. This function merges locally accumulated statistics into the global
+         * response statistics. */
+        void populateResponse(Response & r) const;
+
     };
 
     class ClutSegmenter {
