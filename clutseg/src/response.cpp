@@ -8,6 +8,7 @@
 
 #include <boost/foreach.hpp>
 #include <iostream>
+#include <limits>
 
 using namespace opencv_candidate;
 using namespace std;
@@ -53,7 +54,7 @@ namespace clutseg {
                         acc_trans_sq_err += t * t;
                         // FIXME: these are directly parameter-dependent measures,
                         //        put max_angle_error and max_trans_error somewhere
-                        if (a <= M_PI / 9 && t <= 0.02) {
+                        if (a <= M_PI / 9 && t <= 0.03) {
                             successes++;
                             acc_succ_angle_err += abs(a);
                             acc_succ_angle_sq_err += a * a;
@@ -77,15 +78,22 @@ namespace clutseg {
 
         }
         
-        int n = ground.size(); 
-        resp.avg_angle_err = acc_angle_err / n;
-        resp.avg_succ_angle_err = acc_succ_angle_err / n;
-        resp.avg_trans_err = acc_trans_err / n;
-        resp.avg_succ_trans_err = acc_succ_trans_err / n;
-        resp.avg_angle_sq_err = acc_angle_sq_err / n;
-        resp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / n;
-        resp.avg_trans_sq_err = acc_trans_sq_err / n;
-        resp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / n;
+        int n = ground.size();
+        // This is the number of cases in which calculating pose error makes sense.
+        int v = ground.size() - nones - mislabelings;
+        // FIXME: Nones are problems, they pull down average though bad! Need to 
+        //        ignore them in averaging!
+        // v may well be zero. In that case, the fields will be assigned NAN,
+        // which is best way to handle it (we have no data to calculate the error, so 
+        // NAN is appropriate).
+        resp.avg_angle_err = acc_angle_err / v;
+        resp.avg_succ_angle_err = acc_succ_angle_err / v;
+        resp.avg_trans_err = acc_trans_err / v;
+        resp.avg_succ_trans_err = acc_succ_trans_err / v;
+        resp.avg_angle_sq_err = acc_angle_sq_err / v;
+        resp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / v;
+        resp.avg_trans_sq_err = acc_trans_sq_err / v;
+        resp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / v;
         resp.succ_rate = float(successes) / n;
         resp.mislabel_rate = float(mislabelings) / n;
         resp.none_rate = float(nones) / n;

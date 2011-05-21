@@ -4,6 +4,8 @@
 
 #include "clutseg/pose.h"
 
+#include "clutseg/check.h"
+
 #include <fiducial/fiducial.h>
 #include <opencv/cxeigen.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
@@ -89,6 +91,7 @@ namespace clutseg {
     }
 
     void readPose(const bfs::path & filename, PoseRT & dst) {
+        assert_path_exists(filename);
         FileStorage f;
         f.open(filename.string(), FileStorage::READ);
         dst.read(f[PoseRT::YAML_NODE_NAME]);
@@ -111,19 +114,25 @@ namespace clutseg {
 
     opencv_candidate::PoseRT translatePose(const opencv_candidate::PoseRT & src, const Mat & model_tvec) {
         PoseRT dst;
-        dst.rvec = src.rvec.clone(); 
+        src.rvec.convertTo(dst.rvec, CV_64FC1);
         Mat mvrot;
-        Rodrigues(src.rvec, mvrot);
-        modelToView(src.tvec, mvrot, model_tvec, dst.tvec);
+        Rodrigues(dst.rvec, mvrot);
+        Mat st;
+        src.tvec.convertTo(st, CV_64FC1);
+        modelToView(st, mvrot, model_tvec, dst.tvec);
         dst.estimated = true;
         return dst;
     }
 
     opencv_candidate::PoseRT rotatePose(const opencv_candidate::PoseRT & src, const Mat & model_rvec) {
+        Mat sr, mr;
+        src.rvec.convertTo(sr, CV_64FC1);
+        model_rvec.convertTo(mr, CV_64FC1);
+
         Mat P;
-        Rodrigues(src.rvec, P);
+        Rodrigues(sr, P);
         Mat D;
-        Rodrigues(model_rvec, D);
+        Rodrigues(mr, D);
         PoseRT dst;
         Rodrigues(P * D, dst.rvec);
         dst.tvec = src.tvec.clone();

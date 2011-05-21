@@ -1,5 +1,14 @@
 /**
  * Author: Julius Adorf
+ *
+ * Provides helper methods for transforming model coordinates to camera
+ * coordinates and vice versa, for reading and writing pose information, for
+ * randomizing poses, translation and rotation. Basic data structures are
+ * opencv_candidate::PoseRT, opencv_candidate::Pose, and cv::Mat. There seem to
+ * be some issues with type confusion, depending on whether constructors are
+ * used or poses are read from file. This module tries to always use CV_64FC1
+ * matrices for computations, but this policy has not been implemented in each
+ * method yet, so watch out! 
  */
 
 #ifndef _POSE_UTIL_H_

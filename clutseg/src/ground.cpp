@@ -4,6 +4,8 @@
 
 #include "clutseg/ground.h"
 
+#include "clutseg/check.h"
+
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
@@ -50,6 +52,7 @@ namespace clutseg {
 
     void GroundTruth::read(const bfs::path & filename) {
         cout << "[GROUND] Reading in " << filename << endl;
+        assert_path_exists(filename);
         labels.clear();
         FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
         // iterate over objects
@@ -72,6 +75,7 @@ namespace clutseg {
     } 
 
     SetGroundTruth loadSetGroundTruth(const bfs::path & filename) {
+        assert_path_exists(filename);
         SetGroundTruth m = loadSetGroundTruthWithoutPoses(filename);
         for (SetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
             string img_name = it->first;   
@@ -84,6 +88,7 @@ namespace clutseg {
 
     // TODO: does not really parse a python configuration file
     SetGroundTruth loadSetGroundTruthWithoutPoses(const bfs::path & filename) {
+        assert_path_exists(filename);
         SetGroundTruth m;
         ifstream f;
         f.open(filename.string().c_str()); 
