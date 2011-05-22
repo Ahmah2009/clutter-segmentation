@@ -40,10 +40,8 @@ namespace clutseg {
                 sc.max_cscore += 2;
                 if (result.guessMade(img_name)) {
                     // False positive
-                    // mislabelings++;
                     sc.fp++;
                 } else {
-                    nones++;
                     // True negative
                     sc.tn++;
                     sc.cscore += 2;
@@ -64,8 +62,7 @@ namespace clutseg {
                                 "instances of the same template object on the scene.");
                         }
                         PoseRT truep = poses[0];
-                        // TODO: no need to convert here
-                        PoseRT estp = poseToPoseRT(c.aligned_pose());
+                        Pose estp = c.aligned_pose();
                         double t = dist_between(estp, truep); 
                         double a = angle_between(estp, truep); 
                         acc_angle_err += abs(a);
@@ -88,12 +85,10 @@ namespace clutseg {
                         sc.tp++;
                     } else {
                         // False positive
-                        // mislabelings++;
                         sc.fp++;
                     }
                 } else {
                     // False negative
-                    nones++;
                     sc.fn++;
                 }
             }
@@ -102,10 +97,6 @@ namespace clutseg {
         }
         
         // TODO: store them in the db / response struct
-        // rsp.sipc_score = compute_sipc_score(fscores);
-        // sc.frames = fscores.size();
-        // sc.final_score = 0.5 * sc.cscore + 0.25 * sc.rscore + 0.25 * sc.tscore;
-        // sc.final_score /= sc.frames;
         sc.compute_final_score();
         rsp.sipc_score = sc; 
 
