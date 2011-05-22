@@ -101,12 +101,9 @@ namespace clutseg {
         rsp.sipc_score = sc; 
 
         int n = ground.size();
-        // FIXME: Nones are problems, they pull down average though bad! Need to 
-        //        ignore them in averaging!
-        // v may well be zero. In that case, the fields will be assigned NAN,
-        // which is best way to handle it (we have no data to calculate the error, so 
-        // NAN is appropriate).
         int tps = rsp.sipc_score.tp;
+        // 'successes' might as well be zero. In that case, we cannot compute
+        // the average errors. NaN will be an appropriate value.
         rsp.avg_angle_err = acc_angle_err / tps;
         rsp.avg_succ_angle_err = acc_succ_angle_err / successes;
         rsp.avg_trans_err = acc_trans_err / tps;
@@ -124,6 +121,7 @@ namespace clutseg {
     void CutSseResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & rsp) {
         ResponseFunction::operator()(result, ground, rsp);
 
+        // TODO: maybe we can compute this directly
         double r_acc = 0;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             const string & img_name = it->first;
