@@ -35,18 +35,18 @@
 namespace clutseg {
 
     struct sipc_t {
-        sipc_t() : final_score(0), acc_tp(0), acc_fp(0), acc_tn(0), acc_fn(0),
-                    frames(0), acc_rscore(0), acc_tscore(0), acc_cscore(0),
+        sipc_t() : final_score(0), tp(0), fp(0), tn(0), fn(0),
+                    frames(0), rscore(0), tscore(0), cscore(0),
                     max_cscore(0), max_rscore(0), max_tscore(0) {}
         float final_score;
-        int acc_tp;
-        int acc_fp;
-        int acc_tn;
-        int acc_fn;
+        int tp;
+        int fp;
+        int tn;
+        int fn;
         int frames;
-        float acc_rscore;
-        float acc_tscore;
-        float acc_cscore;
+        float rscore;
+        float tscore;
+        float cscore;
         float max_cscore;
         float max_rscore;
         float max_tscore;
@@ -54,8 +54,8 @@ namespace clutseg {
         void print();
     };
 
-    float compute_s_r(float angle_err);
-    float compute_s_t(float trans_err);
+    float compute_rscore(float angle_err);
+    float compute_tscore(float trans_err);
 
 }
 

@@ -54,12 +54,12 @@ namespace clutseg {
                 if (result.guessMade(img_name)) {
                     // False positive
                     mislabelings++;
-                    sc.acc_fp++;
+                    sc.fp++;
                 } else {
                     nones++;
                     // True negative
-                    sc.acc_tn++;
-                    sc.acc_cscore += 2;
+                    sc.tn++;
+                    sc.cscore += 2;
                 }
             } else {
                 sc.max_cscore++;
@@ -95,19 +95,19 @@ namespace clutseg {
                             acc_succ_trans_sq_err += t * t;
                         }
                         
-                        sc.acc_rscore += compute_s_r(a);  
-                        sc.acc_tscore += compute_s_t(t);
-                        sc.acc_cscore++;
-                        sc.acc_tp++;
+                        sc.rscore += compute_rscore(a);  
+                        sc.tscore += compute_tscore(t);
+                        sc.cscore++;
+                        sc.tp++;
                     } else {
                         // False positive
                         mislabelings++;
-                        sc.acc_fp++;
+                        sc.fp++;
                     }
                 } else {
                     // False negative
                     nones++;
-                    sc.acc_fn++;
+                    sc.fn++;
                 }
             }
     
@@ -117,7 +117,7 @@ namespace clutseg {
         // TODO: store them in the db / response struct
         // rsp.sipc_score = compute_sipc_score(fscores);
         // sc.frames = fscores.size();
-        // sc.final_score = 0.5 * sc.acc_cscore + 0.25 * sc.acc_rscore + 0.25 * sc.acc_tscore;
+        // sc.final_score = 0.5 * sc.cscore + 0.25 * sc.rscore + 0.25 * sc.tscore;
         // sc.final_score /= sc.frames;
         sc.compute_final_score();
         rsp.sipc_score = sc; 
@@ -128,7 +128,7 @@ namespace clutseg {
         // v may well be zero. In that case, the fields will be assigned NAN,
         // which is best way to handle it (we have no data to calculate the error, so 
         // NAN is appropriate).
-        int tps = rsp.sipc_score.acc_tp;
+        int tps = rsp.sipc_score.tp;
         rsp.avg_angle_err = acc_angle_err / tps;
         rsp.avg_succ_angle_err = acc_succ_angle_err / successes;
         rsp.avg_trans_err = acc_trans_err / tps;

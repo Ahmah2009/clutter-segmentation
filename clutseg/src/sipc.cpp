@@ -13,7 +13,7 @@ using namespace std;
 
 namespace clutseg {
 
-    float compute_s_r(float angle_err) {
+    float compute_rscore(float angle_err) {
         float min_a = M_PI / 90;
         float max_a = M_PI / 9;
         if (angle_err > max_a) {
@@ -25,7 +25,7 @@ namespace clutseg {
         }
     }
 
-    float compute_s_t(float trans_err) {
+    float compute_tscore(float trans_err) {
         float min_t = 0.01;
         float max_t = 0.03;
         if (trans_err > max_t) {
@@ -38,27 +38,27 @@ namespace clutseg {
     }
 
     void sipc_t::compute_final_score() {
-        final_score = (0.5 * acc_cscore + 0.25 * acc_rscore + 0.25 * acc_tscore) / frames;
+        final_score = (0.5 * cscore + 0.25 * rscore + 0.25 * tscore) / frames;
     }
 
     void sipc_t::print() {
         cout << "SIPC Results" << endl
             << "---------------------------------------------------------------" << endl
             << "    Number of frames = " << frames << endl
-            << "    Hits   (true positive)  = " << acc_tp << endl
-            << "    Misses (false negative) = " << acc_fn << endl
-            << "    Noise  (false positive) = " << acc_fp << endl
-            << "    Correct rejections (true negative)) = " << acc_tn << endl
+            << "    Hits   (true positive)  = " << tp << endl
+            << "    Misses (false negative) = " << fn << endl
+            << "    Noise  (false positive) = " << fp << endl
+            << "    Correct rejections (true negative)) = " << tn << endl
             << endl
             << "  Recognition Score: (max possible score = " << float(max_cscore) << ")" << endl
-            << "    Total = " << acc_cscore << endl
+            << "    Total = " << cscore << endl
             << endl
             << "  Pose Score: (max possible weighted score = " << float(0.5 * max_rscore + 0.5 * max_tscore) << ")" << endl
-            << "    Rotation    = " << acc_rscore << endl
-            << "    Translation = " << acc_tscore << endl
-            << "    Total (equally weighted) = " << 0.5 * (acc_rscore + acc_tscore) << endl
+            << "    Rotation    = " << rscore << endl
+            << "    Translation = " << tscore << endl
+            << "    Total (equally weighted) = " << 0.5 * (rscore + tscore) << endl
             << endl
-            << " Combined Score = " <<  0.5 * (acc_cscore + 0.5 * (acc_rscore + acc_tscore)) << endl
+            << " Combined Score = " <<  0.5 * (cscore + 0.5 * (rscore + tscore)) << endl
             << " Final Score    = " << final_score << endl
             << " Time Duration >= UNKNOWN" << endl;
     }
