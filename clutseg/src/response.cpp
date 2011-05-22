@@ -40,26 +40,44 @@ namespace clutseg {
         // independently whether there was any object on the scene or not
         int nones = 0;
         // This is the number of cases in which calculating pose error makes sense.
-        int v = 0;
+        int empty = 0;
         // Structs for recording SIPC score
-        vector<sipc_frame_t> fscores;
+        // vector<sipc_frame_t> fscores;
+        sipc_t sc;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             string img_name = it->first;
             GroundTruth g = it->second;
-            sipc_frame_t f;
-            if (result.guessMade(img_name)) {
-                Guess c = result.get(img_name);
-                if (g.onScene(c.getObject()->name)) {
-                    // choice made for object on scene
-                    vector<PoseRT> poses = g.posesOf(c.getObject()->name);
-                    if (poses.size() > 1) {
-                        throw runtime_error(
-                            "ERROR: Response function does not allow for comparing \n"
-                            "test result with ground truth, when there are multiple \n"
-                            "instances of the same template object on the scene.");
-                    } else {
-                        v++;
+
+            if (g.emptyScene()) {
+                sc.max_cscore += 2;
+                empty++;
+                if (result.guessMade(img_name)) {
+                    // False positive
+                    mislabelings++;
+                    sc.acc_fp++;
+                } else {
+                    nones++;
+                    // True negative
+                    sc.acc_tn++;
+                    sc.acc_cscore += 2;
+                }
+            } else {
+                sc.max_cscore++;
+                sc.max_rscore++;
+                sc.max_tscore++;
+                if (result.guessMade(img_name)) {
+                    Guess c = result.get(img_name);
+                    if (g.onScene(c.getObject()->name)) {
+                        // True positive
+                        vector<PoseRT> poses = g.posesOf(c.getObject()->name);
+                        if (poses.size() > 1) {
+                            throw runtime_error(
+                                "ERROR: Response function does not allow for comparing \n"
+                                "test result with ground truth, when there are multiple \n"
+                                "instances of the same template object on the scene.");
+                        }
                         PoseRT truep = poses[0];
+                        // TODO: no need to convert here
                         PoseRT estp = poseToPoseRT(c.aligned_pose());
                         double t = dist_between(estp, truep); 
                         double a = angle_between(estp, truep); 
@@ -76,49 +94,54 @@ namespace clutseg {
                             acc_succ_trans_err += abs(t);
                             acc_succ_trans_sq_err += t * t;
                         }
-                        f.s_r = compute_s_r(a);  
-                        f.s_t = compute_s_t(t);
-                        f.s_h++;
+                        
+                        sc.acc_rscore += compute_s_r(a);  
+                        sc.acc_tscore += compute_s_t(t);
+                        sc.acc_cscore++;
+                        sc.acc_tp++;
+                    } else {
+                        // False positive
+                        mislabelings++;
+                        sc.acc_fp++;
                     }
                 } else {
-                    // choice made but for object not on scene
-                    mislabelings++;
-                    f.s_n++;
-                }
-            } else {
-                nones++;
-                if (g.emptyScene()) {
-                    // no choice made and scene empty
-                } else { 
-                    // no choice made, yet scene is showing objects 
-                    // doing nothing means decreasing success_rate
-                    f.s_m++;
+                    // False negative
+                    nones++;
+                    sc.acc_fn++;
                 }
             }
-            fscores.push_back(f);
+    
+            sc.frames++;
         }
         
+        // TODO: store them in the db / response struct
+        // rsp.sipc_score = compute_sipc_score(fscores);
+        // sc.frames = fscores.size();
+        // sc.final_score = 0.5 * sc.acc_cscore + 0.25 * sc.acc_rscore + 0.25 * sc.acc_tscore;
+        // sc.final_score /= sc.frames;
+        sc.compute_final_score();
+        rsp.sipc_score = sc; 
+
         int n = ground.size();
         // FIXME: Nones are problems, they pull down average though bad! Need to 
         //        ignore them in averaging!
         // v may well be zero. In that case, the fields will be assigned NAN,
         // which is best way to handle it (we have no data to calculate the error, so 
         // NAN is appropriate).
-        rsp.avg_angle_err = acc_angle_err / v;
+        int tps = rsp.sipc_score.acc_tp;
+        rsp.avg_angle_err = acc_angle_err / tps;
         rsp.avg_succ_angle_err = acc_succ_angle_err / successes;
-        rsp.avg_trans_err = acc_trans_err / v;
+        rsp.avg_trans_err = acc_trans_err / tps;
         rsp.avg_succ_trans_err = acc_succ_trans_err / successes;
-        rsp.avg_angle_sq_err = acc_angle_sq_err / v;
+        rsp.avg_angle_sq_err = acc_angle_sq_err / tps;
         rsp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / successes;
-        rsp.avg_trans_sq_err = acc_trans_sq_err / v;
+        rsp.avg_trans_sq_err = acc_trans_sq_err / tps;
         rsp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / successes;
         rsp.succ_rate = float(successes) / n;
         rsp.mislabel_rate = float(mislabelings) / n;
         rsp.none_rate = float(nones) / n;
-        
-        // TODO: store them in the db / response struct
-        rsp.sipc_score = compute_sipc_score(fscores);
     }
+
 
     void CutSseResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & rsp) {
         ResponseFunction::operator()(result, ground, rsp);

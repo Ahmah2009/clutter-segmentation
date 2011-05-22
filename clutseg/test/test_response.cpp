@@ -198,8 +198,7 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     rsp.sipc_score.print();
     // Correct labels produced, and half score for poses, so get 75% of points
     // in total. 
-    EXPECT_NEAR(1.5, rsp.sipc_score.final_score, 1e-6);
-    EXPECT_NEAR(0.75, rsp.sipc_score.final_grade, 1e-6);
+    EXPECT_NEAR(0.75, rsp.sipc_score.final_score, 1e-6);
 }
 
 TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
@@ -227,8 +226,7 @@ TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
     rsp.sipc_score.print();
     // Correct labels produced, but no score for poses, so get only half of the
     // points in total. 
-    EXPECT_NEAR(1, rsp.sipc_score.final_score, 1e-6);
-    EXPECT_NEAR(0.5, rsp.sipc_score.final_grade, 1e-6);
+    EXPECT_NEAR(0.5, rsp.sipc_score.final_score, 1e-6);
 }
 
 
@@ -251,6 +249,8 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(1, rsp.none_rate, 1e-6);   
     rsp.sipc_score.print();
+    // Zero score when no choice was made
+    EXPECT_NEAR(0, rsp.sipc_score.final_score, 1e-6);
 }
 
 /** Consider a scene where the recognizer does not make any choice at all.
@@ -359,4 +359,6 @@ TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0.5, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0.5, rsp.none_rate, 1e-6);
+    EXPECT_NEAR(0.5, rsp.sipc_score.final_score, 1e-6);
+    rsp.sipc_score.print();
 }

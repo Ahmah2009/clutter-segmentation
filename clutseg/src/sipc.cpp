@@ -4,6 +4,7 @@
 
 #include "clutseg/sipc.h"
 
+#include <algorithm>
 #include <boost/foreach.hpp>
 #include <cmath>
 #include <iostream>
@@ -36,46 +37,29 @@ namespace clutseg {
         }
     }
 
-    sipc_t compute_sipc_score(const vector<sipc_frame_t> fscores) {
-        sipc_t ts;
-        BOOST_FOREACH(const sipc_frame_t & f, fscores) {
-            float fs = f.s_h - 0.5*f.s_m - f.s_n + (f.s_h == 1 ? 0.5*f.s_r + 0.5*f.s_t : 0);
-            ts.final_score += fs > 0 ? fs : 0;
-            ts.acc_s_h += f.s_h;
-            ts.acc_s_m += f.s_m;
-            ts.acc_s_n += f.s_n;
-            ts.acc_s_r += f.s_r;
-            ts.acc_s_t += f.s_t;
-        }
-        ts.frames = fscores.size();
-        ts.final_score /= 2;
-        ts.final_grade = ts.final_score / ts.frames;
-        return ts;
+    void sipc_t::compute_final_score() {
+        final_score = (0.5 * acc_cscore + 0.25 * acc_rscore + 0.25 * acc_tscore) / frames;
     }
 
     void sipc_t::print() {
         cout << "SIPC Results" << endl
             << "---------------------------------------------------------------" << endl
             << "    Number of frames = " << frames << endl
-            << "    Hits   (true positive)  = " << acc_s_h << endl
-            << "    Misses (false negative) = " << acc_s_m << endl
-            << "    Noise  (false positive) = " << acc_s_n << endl
+            << "    Hits   (true positive)  = " << acc_tp << endl
+            << "    Misses (false negative) = " << acc_fn << endl
+            << "    Noise  (false positive) = " << acc_fp << endl
+            << "    Correct rejections (true negative)) = " << acc_tn << endl
             << endl
-            << "  Recognition Score: (max possible score = " << float(frames) << ")" << endl
-            << "    Hits   (true positive)  = " << float(acc_s_h) << endl
-            << "    Misses (false negative) = " << float(-0.5 * acc_s_m) << endl
-            << "    Noise  (false positive) = " << float(- acc_s_n) << endl
-            << "    Negative Frame Recognition Score = 0.0" << endl
-            << "    Total = " << (acc_s_h - 0.5 * acc_s_m - acc_s_n) << endl
+            << "  Recognition Score: (max possible score = " << float(max_cscore) << ")" << endl
+            << "    Total = " << acc_cscore << endl
             << endl
-            << "  Pose Score: (max possible weighted score = " << float(frames) << ")" << endl
-            << "    Rotation    = " << float(acc_s_r) << endl
-            << "    Translation = " << float(acc_s_t) << endl
-            << "    Total (equally weighted) = " << float(0.5 * acc_s_r + acc_s_t) << endl
+            << "  Pose Score: (max possible weighted score = " << float(0.5 * max_rscore + 0.5 * max_tscore) << ")" << endl
+            << "    Rotation    = " << acc_rscore << endl
+            << "    Translation = " << acc_tscore << endl
+            << "    Total (equally weighted) = " << 0.5 * (acc_rscore + acc_tscore) << endl
             << endl
-            << " Combined Score = " << 0.5 * (0.5 * acc_s_r + 0.5 * acc_s_t + acc_s_h - 0.5 * acc_s_m - acc_s_n) << endl
+            << " Combined Score = " <<  0.5 * (acc_cscore + 0.5 * (acc_rscore + acc_tscore)) << endl
             << " Final Score    = " << final_score << endl
-            << " Final Grade = " << final_grade << endl
             << " Time Duration >= UNKNOWN" << endl;
     }
 }
