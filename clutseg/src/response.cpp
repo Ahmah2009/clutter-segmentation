@@ -4,11 +4,13 @@
 
 #include "clutseg/response.h"
 
+#include "clutseg/sipc.h"
 #include "clutseg/pose.h"
 
 #include <boost/foreach.hpp>
 #include <iostream>
 #include <limits>
+#include <vector>
 
 using namespace opencv_candidate;
 using namespace std;
@@ -16,8 +18,8 @@ using namespace tod;
 
 namespace clutseg {
 
-    void ResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & resp) {
-        resp.value = 0.0;
+    void ResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & rsp) {
+        rsp.value = 0.0;
 
         float acc_angle_err = 0;
         float acc_succ_angle_err = 0;
@@ -39,9 +41,12 @@ namespace clutseg {
         int nones = 0;
         // This is the number of cases in which calculating pose error makes sense.
         int v = 0;
+        // Structs for recording SIPC score
+        vector<sipc_frame_t> fscores;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             string img_name = it->first;
             GroundTruth g = it->second;
+            sipc_frame_t f;
             if (result.guessMade(img_name)) {
                 Guess c = result.get(img_name);
                 if (g.onScene(c.getObject()->name)) {
@@ -71,10 +76,14 @@ namespace clutseg {
                             acc_succ_trans_err += abs(t);
                             acc_succ_trans_sq_err += t * t;
                         }
+                        f.s_r = compute_s_r(a);  
+                        f.s_t = compute_s_t(t);
+                        f.s_h++;
                     }
                 } else {
                     // choice made but for object not on scene
                     mislabelings++;
+                    f.s_n++;
                 }
             } else {
                 nones++;
@@ -83,9 +92,10 @@ namespace clutseg {
                 } else { 
                     // no choice made, yet scene is showing objects 
                     // doing nothing means decreasing success_rate
+                    f.s_m++;
                 }
             }
-
+            fscores.push_back(f);
         }
         
         int n = ground.size();
@@ -94,21 +104,24 @@ namespace clutseg {
         // v may well be zero. In that case, the fields will be assigned NAN,
         // which is best way to handle it (we have no data to calculate the error, so 
         // NAN is appropriate).
-        resp.avg_angle_err = acc_angle_err / v;
-        resp.avg_succ_angle_err = acc_succ_angle_err / successes;
-        resp.avg_trans_err = acc_trans_err / v;
-        resp.avg_succ_trans_err = acc_succ_trans_err / successes;
-        resp.avg_angle_sq_err = acc_angle_sq_err / v;
-        resp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / successes;
-        resp.avg_trans_sq_err = acc_trans_sq_err / v;
-        resp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / successes;
-        resp.succ_rate = float(successes) / n;
-        resp.mislabel_rate = float(mislabelings) / n;
-        resp.none_rate = float(nones) / n;
+        rsp.avg_angle_err = acc_angle_err / v;
+        rsp.avg_succ_angle_err = acc_succ_angle_err / successes;
+        rsp.avg_trans_err = acc_trans_err / v;
+        rsp.avg_succ_trans_err = acc_succ_trans_err / successes;
+        rsp.avg_angle_sq_err = acc_angle_sq_err / v;
+        rsp.avg_succ_angle_sq_err = acc_succ_angle_sq_err / successes;
+        rsp.avg_trans_sq_err = acc_trans_sq_err / v;
+        rsp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / successes;
+        rsp.succ_rate = float(successes) / n;
+        rsp.mislabel_rate = float(mislabelings) / n;
+        rsp.none_rate = float(nones) / n;
+        
+        // TODO: store them in the db / response struct
+        rsp.sipc_score = compute_sipc_score(fscores);
     }
 
-    void CutSseResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & resp) {
-        ResponseFunction::operator()(result, ground, resp);
+    void CutSseResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & rsp) {
+        ResponseFunction::operator()(result, ground, rsp);
 
         double r_acc = 0;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
@@ -134,7 +147,7 @@ namespace clutseg {
                 r_acc += r;
             }
         }
-        resp.value = r_acc / ground.size();
+        rsp.value = r_acc / ground.size();
     }
 
 }

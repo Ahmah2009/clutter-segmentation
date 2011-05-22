@@ -3,6 +3,7 @@
  */
 
 #include "clutseg/response.h"
+#include "clutseg/sipc.h"
 #include "clutseg/pose.h"
 #include "test.h"
 
@@ -146,6 +147,7 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
     EXPECT_NEAR(1.0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    rsp.sipc_score.print();
 }
 
 TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
@@ -170,6 +172,7 @@ TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     EXPECT_NEAR(1.0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    rsp.sipc_score.print();
 }
 
 TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
@@ -192,7 +195,42 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    rsp.sipc_score.print();
+    // Correct labels produced, and half score for poses, so get 75% of points
+    // in total. 
+    EXPECT_NEAR(1.5, rsp.sipc_score.final_score, 1e-6);
+    EXPECT_NEAR(0.75, rsp.sipc_score.final_grade, 1e-6);
 }
+
+TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
+    SetResult r;
+    r.put("at_hm_jc_1", at_ge_max_trans_angle);
+    r.put("at_hm_jc_2", at_ge_max_trans_angle);
+    SetGroundTruth g;
+    g["at_hm_jc_1"] = at_hm_jc;
+    g["at_hm_jc_2"] = at_hm_jc;
+    sse_response_function(r, g, rsp);
+
+    float a = angle_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
+    float t = dist_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
+    EXPECT_NEAR(a, rsp.avg_angle_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
+    EXPECT_NEAR(t, rsp.avg_trans_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_err));
+    EXPECT_NEAR(a*a, rsp.avg_angle_sq_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_angle_sq_err));
+    EXPECT_NEAR(t*t, rsp.avg_trans_sq_err, 1e-6);
+    EXPECT_TRUE(isnan(rsp.avg_succ_trans_sq_err));
+    EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    rsp.sipc_score.print();
+    // Correct labels produced, but no score for poses, so get only half of the
+    // points in total. 
+    EXPECT_NEAR(1, rsp.sipc_score.final_score, 1e-6);
+    EXPECT_NEAR(0.5, rsp.sipc_score.final_grade, 1e-6);
+}
+
 
 TEST_F(ResponseFunctionTest, NonesOnly) {
     SetResult r;
@@ -212,6 +250,7 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(1, rsp.none_rate, 1e-6);   
+    rsp.sipc_score.print();
 }
 
 /** Consider a scene where the recognizer does not make any choice at all.
@@ -240,6 +279,7 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     EXPECT_NEAR(1./3, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(2./3, rsp.none_rate, 1e-6);
+    rsp.sipc_score.print();
 }
 
 /** Handling of the case in which an object has been labeled that is not even
@@ -265,6 +305,7 @@ TEST_F(ResponseFunctionTest, MislabelingsOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(1, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    rsp.sipc_score.print();
 }
 
  /* Realistic example with all kinds of cases occuring. */
@@ -319,4 +360,3 @@ TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
     EXPECT_NEAR(0.5, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0.5, rsp.none_rate, 1e-6);
 }
-

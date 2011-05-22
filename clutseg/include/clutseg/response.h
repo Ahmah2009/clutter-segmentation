@@ -63,7 +63,7 @@ namespace clutseg {
 
         public:
 
-            CutSseResponseFunction(float max_trans_error = 0.02, float max_angle_error = M_PI / 9) : ResponseFunction(max_trans_error, max_angle_error) {}
+            CutSseResponseFunction(float max_trans_error = 0.03, float max_angle_error = M_PI / 9) : ResponseFunction(max_trans_error, max_angle_error) {}
 
             virtual void operator()(const SetResult & result,
                                     const SetGroundTruth & ground,

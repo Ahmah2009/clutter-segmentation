@@ -48,7 +48,11 @@ namespace clutseg {
 
     /** Ranks guesses according to the number of inliers. The more inliers, the
      * better the score. In fact, this implementation just returns the number of
-     * guesses and as such is not normalized. */
+     * guesses and as such is not normalized.
+     *
+     * The rationale behind this ranking is that more inliers indicate stronger
+     * support for a decision made by RANSAC.
+     */
     struct InliersRanking : public GuessRanking {
 
         float operator()(const tod::Guess & guess) const;

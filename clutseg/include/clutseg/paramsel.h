@@ -5,6 +5,8 @@
 #ifndef _PARAMSEL_H_
 #define _PARAMSEL_H_
 
+#include "clutseg/sipc.h"
+
 #include <boost/format.hpp>
 #include <map>
 #include <sqlite3.h>
@@ -51,7 +53,7 @@ namespace clutseg {
         Paramset() : train_pms_fe_id(-1), recog_pms_fe_id(-1),
                     detect_pms_match_id(-1), detect_pms_guess_id(-1),
                     locate_pms_match_id(-1), locate_pms_guess_id(-1),
-                    max_trans_error(0.02), max_angle_error(M_PI / 9) {}
+                    max_trans_error(0.03), max_angle_error(M_PI / 9) {}
     
         tod::FeatureExtractionParams train_pms_fe;
         tod::FeatureExtractionParams recog_pms_fe;
@@ -97,10 +99,12 @@ namespace clutseg {
             avg_succ_trans_sq_err(0), mislabel_rate(0), none_rate(0), avg_keypoints(0),
             avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
             avg_locate_matches(0), avg_locate_inliers(0), avg_locate_choice_matches(0),
-            avg_locate_choice_inliers(0) { }
+            avg_locate_choice_inliers(0) { sipc_score = sipc_t(); }
 
         /** Average of the values returned by the response function */
         float value;
+        /** SIPC score, see sipc.h */
+        sipc_t sipc_score;
         /** Average of query images where locating (up to error margins)
          * succeeded. Depends on max_angle_error and max_trans_error. */
         float succ_rate;
