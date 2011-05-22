@@ -172,7 +172,7 @@ namespace clutseg {
         setMemberField(m, "avg_trans_sq_err", avg_trans_sq_err);
         setMemberField(m, "avg_succ_trans_sq_err", avg_succ_trans_sq_err);
         setMemberField(m, "succ_rate", succ_rate);
-        setMemberField(m, "mislabel_rate", mislabel_rate);
+        setMemberField(m, "fp_rate", fp_rate);
         setMemberField(m, "none_rate", none_rate);
         setMemberField(m, "avg_keypoints", avg_keypoints);
         setMemberField(m, "avg_detect_matches", avg_detect_matches);
@@ -201,7 +201,7 @@ namespace clutseg {
             "avg_trans_sq_err, " // 7
             "avg_succ_trans_sq_err, " // 8
             "succ_rate, " // 9
-            "mislabel_rate, " // 10
+            "fp_rate, " // 10
             "none_rate, " // 11
             "avg_keypoints, " // 12
             "avg_detect_matches, " // 13
@@ -226,7 +226,7 @@ namespace clutseg {
         avg_trans_sq_err = sqlite3_column_double(read, 7);
         avg_succ_trans_sq_err = sqlite3_column_double(read, 8);
         succ_rate = sqlite3_column_double(read, 9);
-        mislabel_rate = sqlite3_column_double(read, 10);
+        fp_rate = sqlite3_column_double(read, 10);
         none_rate = sqlite3_column_double(read, 11);
         avg_keypoints = sqlite3_column_double(read, 12);
         avg_detect_matches = sqlite3_column_double(read, 13);

@@ -10,7 +10,7 @@ insert into response (
     avg_trans_sq_err,
     avg_succ_trans_sq_err,
     succ_rate,
-    mislabel_rate,
+    fp_rate,
     none_rate,
     avg_keypoints,
     avg_detect_matches,

@@ -68,7 +68,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.avg_trans_sq_err = 0.53;
         experiment.response.avg_succ_trans_sq_err = 0.03;
         experiment.response.succ_rate = 0.63;
-        experiment.response.mislabel_rate = 0.05;
+        experiment.response.fp_rate = 0.05;
         experiment.response.none_rate = 0.15;
         experiment.response.avg_keypoints = 913.0;
         experiment.response.avg_detect_matches = 652.3;
@@ -105,7 +105,7 @@ TEST_F(ParamSelTest, Initialization) {
     EXPECT_FLOAT_EQ(0, exp.response.avg_trans_sq_err);
     EXPECT_FLOAT_EQ(0, exp.response.avg_succ_trans_sq_err);
     EXPECT_FLOAT_EQ(0, exp.response.succ_rate);
-    EXPECT_FLOAT_EQ(0, exp.response.mislabel_rate);
+    EXPECT_FLOAT_EQ(0, exp.response.fp_rate);
     EXPECT_FLOAT_EQ(0, exp.response.none_rate);
     EXPECT_FLOAT_EQ(0, exp.response.avg_keypoints);
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_matches);
@@ -128,7 +128,7 @@ TEST_F(ParamSelTest, Initialization) {
     EXPECT_FLOAT_EQ(0, r.avg_trans_sq_err);
     EXPECT_FLOAT_EQ(0, r.avg_succ_trans_sq_err);
     EXPECT_FLOAT_EQ(0, r.succ_rate);
-    EXPECT_FLOAT_EQ(0, r.mislabel_rate);
+    EXPECT_FLOAT_EQ(0, r.fp_rate);
     EXPECT_FLOAT_EQ(0, r.none_rate);
     EXPECT_FLOAT_EQ(0, r.avg_keypoints);
     EXPECT_FLOAT_EQ(0, r.avg_detect_matches);
@@ -187,7 +187,7 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.avg_trans_sq_err, rest.avg_trans_sq_err);
     EXPECT_FLOAT_EQ(orig.avg_succ_trans_sq_err, rest.avg_succ_trans_sq_err);
     EXPECT_FLOAT_EQ(orig.succ_rate, rest.succ_rate);
-    EXPECT_FLOAT_EQ(orig.mislabel_rate, rest.mislabel_rate);
+    EXPECT_FLOAT_EQ(orig.fp_rate, rest.fp_rate);
     EXPECT_FLOAT_EQ(orig.none_rate, rest.none_rate);
     EXPECT_FLOAT_EQ(orig.avg_keypoints, rest.avg_keypoints);
     EXPECT_FLOAT_EQ(orig.avg_detect_matches, rest.avg_detect_matches);

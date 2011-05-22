@@ -96,7 +96,7 @@ namespace clutseg {
             sc.frames++;
         }
         
-        // TODO: store them in the db / response struct
+        // TODO: store them in the db
         sc.compute_final_score();
         rsp.sipc_score = sc; 
 
@@ -113,7 +113,7 @@ namespace clutseg {
         rsp.avg_trans_sq_err = acc_trans_sq_err / tps;
         rsp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / successes;
         rsp.succ_rate = float(successes) / n;
-        rsp.mislabel_rate = float(sc.fp) / n; // TODO: rename into fp_rate
+        rsp.fp_rate = float(sc.fp) / n; // TODO: rename into fp_rate
         rsp.none_rate = float(sc.tn + sc.fn) / n;
     }
 
