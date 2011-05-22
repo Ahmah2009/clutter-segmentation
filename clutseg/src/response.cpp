@@ -31,18 +31,6 @@ namespace clutseg {
         float acc_succ_trans_sq_err = 0;
         // In case, the angular and translational error both are less than a given threshold.
         int successes = 0;
-        // Mislabelings are false positives in the bag of words classification
-        // model. For example, if icedtea does not show up on the scene but is
-        // said to be on the scene by the recognizer, then we call this a
-        // "mislabeling".
-        int mislabelings = 0;
-        // Nones count the number of scenes where no choice was made,
-        // independently whether there was any object on the scene or not
-        int nones = 0;
-        // This is the number of cases in which calculating pose error makes sense.
-        int empty = 0;
-        // Structs for recording SIPC score
-        // vector<sipc_frame_t> fscores;
         sipc_t sc;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             string img_name = it->first;
@@ -50,10 +38,9 @@ namespace clutseg {
 
             if (g.emptyScene()) {
                 sc.max_cscore += 2;
-                empty++;
                 if (result.guessMade(img_name)) {
                     // False positive
-                    mislabelings++;
+                    // mislabelings++;
                     sc.fp++;
                 } else {
                     nones++;
@@ -101,7 +88,7 @@ namespace clutseg {
                         sc.tp++;
                     } else {
                         // False positive
-                        mislabelings++;
+                        // mislabelings++;
                         sc.fp++;
                     }
                 } else {
@@ -138,8 +125,8 @@ namespace clutseg {
         rsp.avg_trans_sq_err = acc_trans_sq_err / tps;
         rsp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / successes;
         rsp.succ_rate = float(successes) / n;
-        rsp.mislabel_rate = float(mislabelings) / n;
-        rsp.none_rate = float(nones) / n;
+        rsp.mislabel_rate = float(sc.fp) / n; // TODO: rename into fp_rate
+        rsp.none_rate = float(sc.tn + sc.fn) / n;
     }
 
 
