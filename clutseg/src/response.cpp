@@ -44,10 +44,12 @@ namespace clutseg {
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             string img_name = it->first;
             GroundTruth g = it->second;
+            // FIXME: make sure there is a result object for every image in test and experiment!
+            Result r = result.find(img_name)->second;
 
             if (g.emptyScene()) {
                 sc.max_cscore += 2;
-                if (result.guessMade(img_name)) {
+                if (r.guess_made) {
                     // False positive
                     mislabelings++;
                 } else {
@@ -58,8 +60,8 @@ namespace clutseg {
                 sc.max_cscore++;
                 sc.max_rscore++;
                 sc.max_tscore++;
-                if (result.guessMade(img_name)) {
-                    Guess c = result.get(img_name);
+                if (r.guess_made) {
+                    Guess c = r.locate_choice; // TODO: remove indirection
                     if (g.onScene(c.getObject()->name)) {
                         // True positive
                         vector<PoseRT> poses = g.posesOf(c.getObject()->name);
@@ -156,12 +158,13 @@ namespace clutseg {
             const string & img_name = it->first;
             cout << "[RESPONSE] Validating results against ground truth: " << img_name << endl;
             const GroundTruth & groundTruth = it->second;
-            if (!result.guessMade(img_name)) {
+            const Result & res = result.find(img_name)->second; // TODO: resolve name clash
+            if (!res.guess_made) {
                 if (!groundTruth.emptyScene()) {
                     r_acc += 1.0;
                 }
             } else {
-                Guess guess = result.get(img_name);
+                Guess guess = res.locate_choice; // TODO: remove indirection
                 PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
                 double r = 1.0;
                 BOOST_FOREACH(const LabeledPose & np, groundTruth.labels) {

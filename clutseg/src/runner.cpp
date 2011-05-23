@@ -73,7 +73,8 @@ namespace clutseg {
             bool pos = sgm.recognize(queryImage, queryCloud, detectChoices, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
             if (pos) {
-                result.put(img_name, guess);
+                // TODO: consider combining recognizer output in Result struct
+                result[img_name] = Result(pos, guess, detectChoices);
             }
         }
         // TODO: save experiment results

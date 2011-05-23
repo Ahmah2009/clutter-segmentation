@@ -14,6 +14,26 @@
 
 namespace clutseg {
 
+    struct Result {
+
+        // FIXME: initialize
+        Result() : guess_made(false), detect_choices(0) {}
+        Result(bool guess_made, const tod::Guess & locate_choice) :
+                    guess_made(guess_made), locate_choice(locate_choice), detect_choices(0) {}
+        Result(bool guess_made, const tod::Guess & locate_choice,
+                const std::vector<tod::Guess> & detect_choices) :
+                    guess_made(guess_made), locate_choice(locate_choice), detect_choices(detect_choices) {}
+
+        bool guess_made;
+        tod::Guess locate_choice;
+        std::vector<tod::Guess> detect_choices;
+
+    };
+
+
+    typedef std::map<std::string, Result > SetResult;
+
+    /*
     class SetResult {
 
         public:
@@ -33,7 +53,7 @@ namespace clutseg {
 
             std::map<std::string, tod::Guess> guesses;
 
-    };
+    };*/
 
     /** Computes the response of the estimator on a given test set.  As such
      * the result has to be compared with ground truth. The smaller the response,
