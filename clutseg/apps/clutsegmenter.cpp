@@ -31,15 +31,15 @@ void readInput(int argc, char **argv, Mat & queryImage, PointCloudT & queryCloud
     }
 }
 
-void processOutput(int argc, char **argv, bool positive, tod::Guess & guess, PointCloudT & inlierCloud) {
+void processOutput(int argc, char **argv, Result & result) {
     // Process result
-    if (positive) {
-        cout << "Recognized " << guess.getObject()->name << endl;
+    if (result.guess_made) {
+        cout << "Recognized " << result.locate_choice.getObject()->name << endl;
         if (argc >= 4) {
-            io::savePCDFileASCII(argv[3], inlierCloud);
+            io::savePCDFileASCII(argv[3], result.locate_choice.inlierCloud);
         }
         if (argc >= 5) {
-           writePose(argv[4], guess.aligned_pose()); 
+           writePose(argv[4], result.locate_choice.aligned_pose()); 
         }
     } else {
         cerr << "Could not recognize object." << endl;
@@ -65,17 +65,11 @@ int main(int argc, char **argv) {
 
     // Output: whether an object has been located 
     bool positive;
-    // Output: a list of guesses from detection step
-    vector<tod::Guess> detectChoices;
-    // Output: aligned pose, subject name and inliers
-    tod::Guess guess;
-    // Output: 3d points corresponding to inliers
-    PointCloudT inlierCloud;
-
+    Result result;
     // Actual recognition 
-    positive = segmenter.recognize(queryImage, queryCloud, detectChoices, guess, inlierCloud);
+    positive = segmenter.recognize(queryImage, queryCloud, result);
 
-    processOutput(argc, argv, positive, guess, inlierCloud);
+    processOutput(argc, argv, result);
 
     return 0;
 }

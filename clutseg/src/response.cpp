@@ -8,6 +8,7 @@
 #include "clutseg/pose.h"
 
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <iostream>
 #include <limits>
 #include <vector>
@@ -43,6 +44,9 @@ namespace clutseg {
         for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
             GroundTruth g = it->second;
+            if (resultSet.find(img_name) == resultSet.end()) {
+                throw runtime_error(str(boost::format("ERROR: No result for image '%s'") % img_name));
+            }
             Result r = resultSet.find(img_name)->second;
 
             if (g.emptyScene()) {
@@ -121,7 +125,6 @@ namespace clutseg {
             sc.frames++;
         }
         
-        // TODO: store them in the db
         sc.compute_final_score();
         rsp.sipc_score = sc; 
 

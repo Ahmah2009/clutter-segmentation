@@ -70,9 +70,7 @@ namespace clutseg {
             Result res;// TODO: resolve name clash
             bool pos = sgm.recognize(queryImage, queryCloud, res);
             cout << "[RUN] Recognized " << (pos ? res.locate_choice.getObject()->name : "NONE") << endl;
-            if (pos) {
-                result[img_name] = res;
-            }
+            result[img_name] = res;
         }
         // TODO: save experiment results
         CutSseResponseFunction responseFunc;
@@ -141,7 +139,6 @@ namespace clutseg {
                     }
                 }
             }
-            // TODO: use smart pointer
             if (sgm != NULL) {
                 delete sgm;
             }
