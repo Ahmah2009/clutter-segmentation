@@ -4,7 +4,9 @@ cp CMakeLists.txt CMakeLists.txt.backup
 cp CMakeListsTest.txt CMakeLists.txt
 
 make tests
-./bin/utest --gtest_filter=$1
+if [ "$?" = "0" ] ; then
+    ./bin/utest --gtest_filter=$1
+fi
 
 mv CMakeLists.txt.backup CMakeLists.txt
 
