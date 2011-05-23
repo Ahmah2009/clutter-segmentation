@@ -9,7 +9,7 @@
 #include "clutseg/paramsel.h"
 #include "clutseg/options.h"
 #include "clutseg/ranking.h"
-#include "clutseg/response.h"
+#include "clutseg/result.h"
 
 #include <cv.h>
 #include <limits>

@@ -18,7 +18,10 @@ using namespace tod;
 
 namespace clutseg {
 
-    void ResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth & groundSet, Response & rsp) {
+    void ResponseFunction::operator()(const SetResult & resultSet,
+                                        const SetGroundTruth & groundSet,
+                                        const set<string> & templateNames,
+                                        Response & rsp) {
         rsp.value = 0.0;
 
         float acc_angle_err = 0;
@@ -101,9 +104,8 @@ namespace clutseg {
                 }
             }
     
-            vector<string> templates;
-            set<string> choice_labels; // FIXME:
-            BOOST_FOREACH(const string & subj, templates) {
+            set<string> choice_labels = r.distinctLabels();
+            BOOST_FOREACH(const string & subj, templateNames) {
                 if (g.onScene(subj)) {
                     if (choice_labels.count(subj) == 1) {
                         detect_tp++;
@@ -147,8 +149,8 @@ namespace clutseg {
     }
 
 
-    void CutSseResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth & groundSet, Response & rsp) {
-        ResponseFunction::operator()(resultSet, groundSet, rsp);
+    void CutSseResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth & groundSet, const set<string> & templateNames, Response & rsp) {
+        ResponseFunction::operator()(resultSet, groundSet, templateNames, rsp);
 
         // TODO: maybe we can compute this directly
         double r_acc = 0;

@@ -6,6 +6,7 @@
 #define _RESULT_H_
 
 #include <map>
+#include <set>
 #include <string>
 #include <tod/detecting/GuessGenerator.h>
 
@@ -24,6 +25,8 @@ namespace clutseg {
         bool guess_made;
         tod::Guess locate_choice;
         std::vector<tod::Guess> detect_choices;
+
+        std::set<std::string> distinctLabels() const;
 
     };
 

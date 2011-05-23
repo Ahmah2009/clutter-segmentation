@@ -76,7 +76,7 @@ namespace clutseg {
         }
         // TODO: save experiment results
         CutSseResponseFunction responseFunc;
-        responseFunc(result, testdesc, e.response);
+        responseFunc(result, testdesc, sgm.getTemplateNames(), e.response);
 
         sgm.getStats().populateResponse(e.response);
         e.record_time();

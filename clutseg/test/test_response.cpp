@@ -92,6 +92,11 @@ struct ResponseFunctionTest : public ::testing::Test {
             img_name_single = "image_00000.png";
             ground_single[img_name_single].labels.push_back(LabeledPose(name, pose));
         }
+
+        templateNames.insert("assam_tea");
+        templateNames.insert("haltbare_milch");
+        templateNames.insert("icedtea");
+        templateNames.insert("jacobs_coffee");
     }
 
     CutSseResponseFunction sse_response_function;
@@ -100,12 +105,13 @@ struct ResponseFunctionTest : public ::testing::Test {
     string img_name_single;
     SetGroundTruth ground_single;
     Response rsp;
+    set<string> templateNames;
 
     void expect_sse_response_single(float expected, PoseRT est_pose) {
         Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
         SetResult result_single;
         result_single[img_name_single] = Result(guess);
-        sse_response_function(result_single, ground_single, rsp);
+        sse_response_function(result_single, ground_single, templateNames, rsp);
         EXPECT_NEAR(expected, rsp.value, 1e-6);
     }
 
@@ -131,10 +137,14 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
     ground_double[img_name_2].labels.push_back(LabeledPose("haltbare_milch", pose_2));
 
     SetResult result;
-    result[img_name_single] = Result(Guess(object, poseRtToPose(pose), Mat(), Mat(), Mat()));
-    result[img_name_2] = Result(Guess(object, poseRtToPose(pose_2), Mat(), Mat(), Mat()));
+    Guess guess_1(object, poseRtToPose(pose), Mat(), Mat(), Mat());
+    Guess guess_2(object, poseRtToPose(pose_2), Mat(), Mat(), Mat());
+    result[img_name_single] = Result(guess_1);
+    result[img_name_single].detect_choices.push_back(guess_1);
+    result[img_name_2] = Result(guess_2);
+    result[img_name_2].detect_choices.push_back(guess_2);
 
-    sse_response_function(result, ground_double, rsp); 
+    sse_response_function(result, ground_double, templateNames, rsp); 
 
     EXPECT_NEAR(0, rsp.avg_angle_err, 1e-6);
     EXPECT_NEAR(0, rsp.avg_succ_angle_err, 1e-6);
@@ -147,19 +157,24 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
     EXPECT_NEAR(1.0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    EXPECT_NEAR(1.0, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
     rsp.sipc_score.print();
 }
 
 TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
+    r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
     r["at_hm_jc_2"] = Result(at_perfect);
+    r["at_hm_jc_2"].detect_choices.push_back(at_perfect);
     r["at_hm_jc_3"] = Result(at_perfect);
+    r["at_hm_jc_3"].detect_choices.push_back(at_perfect);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
 
     EXPECT_NEAR(0, rsp.avg_angle_err, 1e-6);
     EXPECT_NEAR(0, rsp.avg_succ_angle_err, 1e-6);
@@ -173,17 +188,21 @@ TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
     EXPECT_NEAR(1, rsp.sipc_score.final_score, 1e-6);
+    EXPECT_NEAR(1./3, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
     rsp.sipc_score.print();
 }
 
 TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_ge_max_angle);
+    r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_angle);
     r["at_hm_jc_2"] = Result(at_ge_max_trans);
+    r["at_hm_jc_2"].detect_choices.push_back(at_ge_max_trans);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
 
     EXPECT_NEAR(M_PI / 16, rsp.avg_angle_err, 1e-6);
     EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
@@ -196,6 +215,8 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    EXPECT_NEAR(1./3, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
     rsp.sipc_score.print();
     // Correct labels produced, and half score for poses, so get 75% of points
     // in total. 
@@ -205,11 +226,13 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
 TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_ge_max_trans_angle);
+    r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_trans_angle);
     r["at_hm_jc_2"] = Result(at_ge_max_trans_angle);
+    r["at_hm_jc_2"].detect_choices.push_back(at_ge_max_trans_angle);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
 
     float a = angle_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
     float t = dist_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
@@ -225,6 +248,8 @@ TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
     rsp.sipc_score.print();
+    EXPECT_NEAR(1./3, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
     // Correct labels produced, but no score for poses, so get only half of the
     // points in total. 
     EXPECT_NEAR(0.5, rsp.sipc_score.final_score, 1e-6);
@@ -238,7 +263,7 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
 
     EXPECT_TRUE(isnan(rsp.avg_angle_err));
     EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
@@ -251,6 +276,8 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(1, rsp.none_rate, 1e-6);   
+    EXPECT_NEAR(0, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
     rsp.sipc_score.print();
     // Zero score when no choice was made
     EXPECT_NEAR(0, rsp.sipc_score.final_score, 1e-6);
@@ -264,13 +291,14 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
 TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_max_trans_angle);
+    r["at_hm_jc_1"].detect_choices.push_back(at_max_trans_angle);
     r["at_hm_jc_2"] = Result();
     r["at_hm_jc_3"] = Result();
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
     float a = angle_between(at_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
     float t = dist_between(at_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
     EXPECT_NEAR(a, rsp.avg_angle_err, 1e-6);
@@ -284,6 +312,8 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     EXPECT_NEAR(1./3, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(2./3, rsp.none_rate, 1e-6);
+    EXPECT_NEAR(1./9, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
     rsp.sipc_score.print();
 }
 
@@ -292,13 +322,16 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
 TEST_F(ResponseFunctionTest, MislabelingsOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(it_close);
+    r["at_hm_jc_1"].detect_choices.push_back(it_close);
     r["at_hm_jc_2"] = Result(it_ge_max_angle);
+    r["at_hm_jc_2"].detect_choices.push_back(it_ge_max_angle);
     r["at_hm_jc_3"] = Result(it_ge_max_trans);
+    r["at_hm_jc_3"].detect_choices.push_back(it_ge_max_trans);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
     EXPECT_TRUE(isnan(rsp.avg_angle_err));
     EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
     EXPECT_TRUE(isnan(rsp.avg_trans_err));
@@ -310,6 +343,8 @@ TEST_F(ResponseFunctionTest, MislabelingsOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(1, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(1, rsp.detect_fp_rate, 1e-6);
     rsp.sipc_score.print();
 }
 
@@ -317,17 +352,21 @@ TEST_F(ResponseFunctionTest, MislabelingsOnly) {
 TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
+    r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
     r["at_hm_jc_2"] = Result();
     r["at_hm_jc_3"] = Result(it_close);
+    r["at_hm_jc_3"].detect_choices.push_back(it_close);
     r["at_hm_jc_4"] = Result(at_close);
+    r["at_hm_jc_4"].detect_choices.push_back(at_close);
     r["at_hm_jc_5"] = Result(at_ge_max_trans_angle);
+    r["at_hm_jc_5"].detect_choices.push_back(at_ge_max_trans_angle);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
     g["at_hm_jc_4"] = at_hm_jc;
     g["at_hm_jc_5"] = at_hm_jc;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
     float a = angle_between(at_close.aligned_pose(), at_perfect.aligned_pose());
     float t = dist_between(at_close.aligned_pose(), at_perfect.aligned_pose());
     float fa = angle_between(at_ge_max_trans_angle.aligned_pose(), at_perfect.aligned_pose());
@@ -345,6 +384,8 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     EXPECT_NEAR(2./5, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(1./5, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(1./5, rsp.none_rate, 1e-6);
+    EXPECT_NEAR(3./15, rsp.detect_tp_rate, 1e-6);
+    EXPECT_NEAR(1./5, rsp.detect_fp_rate, 1e-6);
 }
 
 TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
@@ -354,7 +395,7 @@ TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
     SetGroundTruth g;
     g["empty_scene_1"] = empty_scene;
     g["empty_scene_2"] = empty_scene;
-    sse_response_function(r, g, rsp);
+    sse_response_function(r, g, templateNames, rsp);
     EXPECT_TRUE(isnan(rsp.avg_angle_err));
     EXPECT_TRUE(isnan(rsp.avg_succ_angle_err));
     EXPECT_TRUE(isnan(rsp.avg_trans_err));
