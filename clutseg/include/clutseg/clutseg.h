@@ -91,18 +91,6 @@ namespace clutseg {
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
                             bool do_locate = true);
 
-            /** Attempts to find an object in the scene. It makes a best guess
-             * according to some ranking. This algorithm proceeds in two steps.First,
-             * objects are detected on the image with little regard on their exact
-             * locations. High-ranked guesses are refined by applying more computing
-             * resources and by using a object-specific test until the refined guess meets
-             * an acceptance criterium, which is given by a ranking threshold. */
-            bool recognize(const cv::Mat & queryImage,
-                            const PointCloudT & queryCloud,
-                            tod::Guess & choice,
-                            PointCloudT & inliersCloud,
-                            const GroundTruth *groundTruth = NULL);
-
             /** Retrieves parameters used for detection stage. Writes to the
              * parameters are transparent to the segmenter. */
             tod::TODParameters & getDetectParams();
@@ -133,15 +121,28 @@ namespace clutseg {
 
             ClutSegmenterStats getStats() const;
 
+            /** Attempts to find an object in the scene. It makes a best guess
+             * according to some ranking. This algorithm proceeds in two steps.First,
+             * objects are detected on the image with little regard on their exact
+             * locations. High-ranked guesses are refined by applying more computing
+             * resources and by using a object-specific test until the refined guess meets
+             * an acceptance criterium, which is given by a ranking threshold. */
+            bool recognize(const cv::Mat & queryImage,
+                            const PointCloudT & queryCloud,
+                            std::vector<tod::Guess> & detectChoices,
+                            tod::Guess & locateChoice,
+                            PointCloudT & inliersCloud,
+                            const GroundTruth *groundTruth = NULL);
+
         private:
 
             bool detect(tod::Features2d & query,
-                        std::vector<tod::Guess> & guesses,
+                        std::vector<tod::Guess> & detectChoices,
                         cv::Ptr<tod::Matcher> & detectMatcher);
 
             bool locate(const tod::Features2d & query,
                         const PointCloudT & queryCloud,
-                        tod::Guess & choice,
+                        tod::Guess & locateChoice,
                         cv::Ptr<tod::Matcher> & locateMatcher);
 
             void loadParams(const std::string & config,

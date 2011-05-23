@@ -68,8 +68,9 @@ namespace clutseg {
                 cout << "[RUN] Loaded query cloud " << cloud_path << endl;
             }
             Guess guess;
+            vector<Guess> detectChoices;
             PointCloudT inliersCloud;
-            bool pos = sgm.recognize(queryImage, queryCloud, guess, inliersCloud);
+            bool pos = sgm.recognize(queryImage, queryCloud, detectChoices, guess, inliersCloud);
             cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
             if (pos) {
                 result.put(img_name, guess);

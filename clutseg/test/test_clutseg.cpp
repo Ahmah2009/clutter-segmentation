@@ -70,6 +70,7 @@ class ClutsegTest : public ::testing::Test {
         Camera camera;
 
         Guess choice;
+        vector<Guess> detectChoices;
         PointCloudT inlierCloud;
 
         void check_preconditions() {
@@ -126,7 +127,7 @@ class ClutsegTest : public ::testing::Test {
 
         void recognize(const string & test_name) {
             check_preconditions();
-            bool positive = sgm.recognize(clutter_img, clutter_cloud, choice, inlierCloud);
+            bool positive = sgm.recognize(clutter_img, clutter_cloud, detectChoices, choice, inlierCloud);
             ASSERT_TRUE(positive);
             check_postconditions();
             showGuessAndGroundTruth(test_name, choice);
@@ -168,10 +169,9 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 /** Check whether detection works for a training image. This is expected to
  * return with a whole bunch of inliers since it is only a training image. */
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
-    Guess choice;
-    PointCloudT inlierCloud;
     bool positive = sgm.recognize(haltbare_milch_train_img,
                                         haltbare_milch_train_cloud,
+                                        detectChoices,
                                         choice, inlierCloud);
     EXPECT_TRUE(positive);
     EXPECT_EQ("haltbare_milch", choice.getObject()->name);

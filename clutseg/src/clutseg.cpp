@@ -145,7 +145,8 @@ namespace clutseg {
 
     bool ClutSegmenter::recognize(const Mat & queryImage,
                                     const PointCloudT & queryCloud,
-                                    Guess & choice, PointCloudT & inliersCloud,
+                                    vector<Guess> & detectChoices,
+                                    Guess & locateChoice, PointCloudT & inliersCloud,
                                     const GroundTruth *groundTruth) {
         { /* begin statistics */ 
             stats_.queries++;
@@ -160,15 +161,14 @@ namespace clutseg {
 
         // Generate a couple of guesses. Ideally, each object on the scene is
         // detected and there are no misclassifications.
-        vector<Guess> guesses;
-        detect(query, guesses, detectMatcher);
+        detect(query, detectChoices, detectMatcher);
 
-        if (guesses.empty()) {
+        if (detectChoices.empty()) {
             // In case there are any objects in the scene, this is kind of the
             // worst-case. None of the objects has been detected.
             return false;
         } else {
-            BOOST_FOREACH(Guess & g, guesses) {
+            BOOST_FOREACH(Guess & g, detectChoices) {
                 mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
             }
 
@@ -178,7 +178,7 @@ namespace clutseg {
                 int n = objects_.size() - p;
                 int tp = 0;
                 int fp = 0;
-                BOOST_FOREACH(const Guess & g, guesses) {
+                BOOST_FOREACH(const Guess & g, detectChoices) {
                     if (groundTruth->onScene(g.getObject()->name)) {
                         tp++;
                     } else {
@@ -190,35 +190,39 @@ namespace clutseg {
             } /* end statistics */
 
             // Sort the guesses according to the ranking function.
-            sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
+            sort(detectChoices.begin(), detectChoices.end(), GuessComparator(ranking_));
             bool pos = false;
             // Iterate over every guess, beginning with the highest ranked
             // guess. If the guess resulting of locating the object got a score
             // larger than the acceptance threshold, this is our best guess.
-            for (size_t i = 0; i < guesses.size(); i++) {
-                choice = guesses[i]; 
+            for (size_t i = 0; i < detectChoices.size(); i++) {
+                locateChoice = detectChoices[i]; 
 
                 if (do_locate_) {
-                    locate(query, queryCloud, choice, locateMatcher);
+                    locate(query, queryCloud, locateChoice, locateMatcher);
                 }
 
-                cout << "[CLUTSEG] ranking: " << (*ranking_)(choice) << endl;
+                cout << "[CLUTSEG] ranking: " << (*ranking_)(locateChoice) << endl;
                 cout << "[CLUTSEG] accept_threshold: " << accept_threshold_ << endl;
 
-                if ((*ranking_)(choice) >= accept_threshold_) {
-                    cout << "[CLUTSEG] Inliers before:  " << guesses[i].inliers.size() << ", and after: " << choice.inliers.size() << endl;
+                if ((*ranking_)(locateChoice) >= accept_threshold_) {
+                    cout << "[CLUTSEG] Inliers before:  " << detectChoices[i].inliers.size() << ", and after: " << locateChoice.inliers.size() << endl;
 
                     { /* begin statistics */ 
                         vector<pair<int, int> > ds; 
                         detectMatcher->getLabelSizes(ds);
-                        stats_.acc_detect_choice_matches += ds[guesses[i].getObject()->id].second;
-                        stats_.acc_detect_choice_inliers += guesses[i].inliers.size();
+                        stats_.acc_detect_choice_matches += ds[detectChoices[i].getObject()->id].second;
+                        stats_.acc_detect_choice_inliers += detectChoices[i].inliers.size();
                         if (do_locate_) {
                             vector<pair<int, int> > ls; 
                             locateMatcher->getLabelSizes(ls);
-                            stats_.acc_locate_choice_matches += ls[choice.getObject()->id].second;
-                            stats_.acc_locate_choice_inliers += choice.inliers.size();
-                        }
+                            stats_.acc_locate_choice_matches += ls[locateChoice.getObject()->id].second;
+                            stats_.acc_locate_choice_inliers += locateChoice.inliers.size();
+                        } 
+                        // else {
+                        //    stats_.acc_locate_choice_matches += ds[detectChoices[i].getObject()->id].second;
+                        //    stats_.acc_locate_choice_inliers += detectChoices[i].inliers.size();
+                        //}
                         stats_.choices++;
                     } /* end statistics */
 
@@ -229,7 +233,7 @@ namespace clutseg {
 
             inliersCloud = PointCloudT(); 
             if (pos) {
-                mapInliersToCloud(inliersCloud, choice, queryImage, queryCloud);
+                mapInliersToCloud(inliersCloud, locateChoice, queryImage, queryCloud);
             }
 
             return pos;
@@ -246,31 +250,31 @@ namespace clutseg {
         return total;
     }
 
-    bool ClutSegmenter::detect(Features2d & query, vector<Guess> & guesses, Ptr<Matcher> & detectMatcher) {
+    bool ClutSegmenter::detect(Features2d & query, vector<Guess> & detectChoices, Ptr<Matcher> & detectMatcher) {
         Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
         Ptr<Recognizer> recognizer;
         initRecognizer(recognizer, detectMatcher, base_, detect_params_, baseDirectory_);
 
         extractor->detectAndExtract(query);
-        recognizer->match(query, guesses);
+        recognizer->match(query, detectChoices);
 
         stats_.acc_keypoints += query.keypoints.size();
         stats_.acc_detect_matches += sum_matches(detectMatcher);
-        stats_.acc_detect_guesses += guesses.size();
-        BOOST_FOREACH(const Guess & g, guesses) {
+        stats_.acc_detect_guesses += detectChoices.size();
+        BOOST_FOREACH(const Guess & g, detectChoices) {
             stats_.acc_detect_inliers += g.inliers.size();
         }
 
-        return guesses.empty();
+        return detectChoices.empty();
     }
 
-    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & choice, Ptr<Matcher> & locateMatcher) {
+    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & locateChoice, Ptr<Matcher> & locateMatcher) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
         vector<Ptr<TexturedObject> > so;
         BOOST_FOREACH(const Ptr<TexturedObject> & obj, objects_) {
-            if (obj->name == choice.getObject()->name) {
+            if (obj->name == locateChoice.getObject()->name) {
                 // Create a new textured object instance --- those thingies
                 // cannot exist in multiple training bases, this breaks indices
                 // that are tightly coupled between TrainingBase and
@@ -293,6 +297,7 @@ namespace clutseg {
         vector<Guess> guesses;
         recognizer->match(query, guesses); 
 
+        cout << "[CLUTSEG] locate_matches: " << sum_matches(locateMatcher) << endl;
         stats_.acc_locate_matches += sum_matches(locateMatcher);
         stats_.acc_locate_guesses += guesses.size();
         BOOST_FOREACH(const Guess & g, guesses) {
@@ -307,7 +312,7 @@ namespace clutseg {
                 mapInliersToCloud(guess.inlierCloud, guess, query.image, queryCloud);
             }
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
-            choice = guesses[0]; 
+            locateChoice = guesses[0]; 
             return true;
         }
     }
