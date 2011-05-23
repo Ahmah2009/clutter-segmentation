@@ -179,8 +179,10 @@ namespace clutseg {
         setMemberField(m, "avg_detect_inliers", avg_detect_inliers);
         setMemberField(m, "avg_detect_choice_matches", avg_detect_choice_matches);
         setMemberField(m, "avg_detect_choice_inliers", avg_detect_choice_inliers);
-        setMemberField(m, "detect_tp_rate", detect_tp_rate);
-        setMemberField(m, "detect_fp_rate", detect_fp_rate);
+        setMemberField(m, "detect_tp", detect_tp);
+        setMemberField(m, "detect_fp", detect_fp);
+        setMemberField(m, "detect_fn", detect_fn);
+        setMemberField(m, "detect_tn", detect_tn);
         setMemberField(m, "avg_locate_matches", avg_locate_matches);
         setMemberField(m, "avg_locate_inliers", avg_locate_inliers);
         setMemberField(m, "avg_locate_choice_matches", avg_locate_choice_matches);
@@ -208,12 +210,14 @@ namespace clutseg {
             "avg_detect_inliers, " // 14
             "avg_detect_choice_matches, " // 15
             "avg_detect_choice_inliers, " // 16
-            "detect_tp_rate, " // 17
-            "detect_fp_rate, " // 18
-            "avg_locate_matches, " // 19
-            "avg_locate_inliers, " // 20
-            "avg_locate_choice_matches, " // 21
-            "avg_locate_choice_inliers " // 22
+            "detect_tp, " // 17
+            "detect_fp, " // 18
+            "detect_fn, " // 19
+            "detect_tn, " // 20
+            "avg_locate_matches, " // 21
+            "avg_locate_inliers, " // 22
+            "avg_locate_choice_matches, " // 23
+            "avg_locate_choice_inliers " // 24
             "from response where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         value = sqlite3_column_double(read, 0);
@@ -233,12 +237,14 @@ namespace clutseg {
         avg_detect_inliers = sqlite3_column_double(read, 14);
         avg_detect_choice_matches = sqlite3_column_double(read, 15);
         avg_detect_choice_inliers = sqlite3_column_double(read, 16);
-        detect_tp_rate = sqlite3_column_double(read, 17);
-        detect_fp_rate = sqlite3_column_double(read, 18);
-        avg_locate_matches = sqlite3_column_double(read, 19);
-        avg_locate_inliers = sqlite3_column_double(read, 20);
-        avg_locate_choice_matches = sqlite3_column_double(read, 21);
-        avg_locate_choice_inliers = sqlite3_column_double(read, 22);
+        detect_tp = sqlite3_column_int(read, 17);
+        detect_fp = sqlite3_column_int(read, 18);
+        detect_fn = sqlite3_column_int(read, 19);
+        detect_tn = sqlite3_column_int(read, 20);
+        avg_locate_matches = sqlite3_column_double(read, 21);
+        avg_locate_inliers = sqlite3_column_double(read, 22);
+        avg_locate_choice_matches = sqlite3_column_double(read, 23);
+        avg_locate_choice_inliers = sqlite3_column_double(read, 24);
         sqlite3_finalize(read);
     }
 

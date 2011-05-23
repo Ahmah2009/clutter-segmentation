@@ -98,7 +98,7 @@ namespace clutseg {
             avg_angle_sq_err(0), avg_succ_angle_sq_err(0), avg_trans_sq_err(0),
             avg_succ_trans_sq_err(0), mislabel_rate(0), none_rate(0), avg_keypoints(0),
             avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
-            detect_tp_rate(0), detect_fp_rate(0), avg_locate_matches(0),
+            detect_tp(0), detect_fp(0), detect_fn(0), detect_tn(0), avg_locate_matches(0),
             avg_locate_inliers(0), avg_locate_choice_matches(0), avg_locate_choice_inliers(0)
             { sipc_score = sipc_t(); }
 
@@ -145,11 +145,16 @@ namespace clutseg {
         float avg_detect_choice_matches;
         /** Average number of inliers for the best guess object in detection stage */
         float avg_detect_choice_inliers;
-        /** Of all detected guesses (interpreted as a bag of words, poses
-         * ignored), this is the rate of true positives */
-        float detect_tp_rate;
-        /** See detect_tp_rate */
-        float detect_fp_rate;
+
+        /** ROC true positives for detection stage */
+        int detect_tp;
+        /** ROC false positives for detection stage */
+        int detect_fp;
+        /** ROC false negatives for detection stage */
+        int detect_fn;
+        /** ROC true negatives for detection stage */
+        int detect_tn;
+
         /** Average number of matches in locating stage */
         float avg_locate_matches;
         /** Average number of inliers of all guesses in locating stage */
@@ -177,6 +182,14 @@ namespace clutseg {
 
         inline float avg_fail_trans_sq_err() const { 
             return (avg_trans_sq_err - succ_rate * avg_succ_trans_sq_err) / fail_rate();
+        }
+
+        inline float detect_tp_rate() const {
+            return detect_tp / float(detect_tp + detect_fn);
+        }
+
+        inline float detect_fp_rate() const {
+            return detect_fp / float(detect_fp + detect_tn);
         }
 
         virtual void serialize(sqlite3* db);

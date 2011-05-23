@@ -157,8 +157,8 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
     EXPECT_NEAR(1.0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
-    EXPECT_NEAR(1.0, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(1.0, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate(), 1e-6);
     rsp.sipc_score.print();
 }
 
@@ -188,8 +188,8 @@ TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
     EXPECT_NEAR(1, rsp.sipc_score.final_score, 1e-6);
-    EXPECT_NEAR(1./3, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(1./3, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate(), 1e-6);
     rsp.sipc_score.print();
 }
 
@@ -215,8 +215,8 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
-    EXPECT_NEAR(1./3, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(1./3, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate(), 1e-6);
     rsp.sipc_score.print();
     // Correct labels produced, and half score for poses, so get 75% of points
     // in total. 
@@ -248,8 +248,8 @@ TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
     rsp.sipc_score.print();
-    EXPECT_NEAR(1./3, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(1./3, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate(), 1e-6);
     // Correct labels produced, but no score for poses, so get only half of the
     // points in total. 
     EXPECT_NEAR(0.5, rsp.sipc_score.final_score, 1e-6);
@@ -276,8 +276,8 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(1, rsp.none_rate, 1e-6);   
-    EXPECT_NEAR(0, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate(), 1e-6);
     rsp.sipc_score.print();
     // Zero score when no choice was made
     EXPECT_NEAR(0, rsp.sipc_score.final_score, 1e-6);
@@ -312,8 +312,8 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     EXPECT_NEAR(1./3, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(2./3, rsp.none_rate, 1e-6);
-    EXPECT_NEAR(1./9, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(0, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(1./9, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(0, rsp.detect_fp_rate(), 1e-6);
     rsp.sipc_score.print();
 }
 
@@ -343,8 +343,8 @@ TEST_F(ResponseFunctionTest, MislabelingsOnly) {
     EXPECT_NEAR(0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(1, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
-    EXPECT_NEAR(0, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(1, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(0, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(1, rsp.detect_fp_rate(), 1e-6);
     rsp.sipc_score.print();
 }
 
@@ -384,8 +384,8 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     EXPECT_NEAR(2./5, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(1./5, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(1./5, rsp.none_rate, 1e-6);
-    EXPECT_NEAR(3./15, rsp.detect_tp_rate, 1e-6);
-    EXPECT_NEAR(1./5, rsp.detect_fp_rate, 1e-6);
+    EXPECT_NEAR(3./15, rsp.detect_tp_rate(), 1e-6);
+    EXPECT_NEAR(1./5, rsp.detect_fp_rate(), 1e-6);
 }
 
 TEST_F(ResponseFunctionTest, EmptyScenesOnly) {

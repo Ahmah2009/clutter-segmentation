@@ -17,14 +17,16 @@ insert into response (
     avg_detect_inliers,
     avg_detect_choice_matches,
     avg_detect_choice_inliers,
-    detect_tp_rate,
-    detect_fp_rate,
+    detect_tp,
+    detect_fp,
+    detect_fn,
+    detect_tn,
     avg_locate_matches,
     avg_locate_inliers,
     avg_locate_choice_matches,
     avg_locate_choice_inliers
     ) values
-    (0.78, 0.34, 0.08, 0.12, 0.02, 0.56, 0.15, 0.53, 0.03, 0.63, 0.05, 0.15, 913.0, 652.3, 9.2, 211.9, 13.3, 0.96, 0.35, 802.1, 29.8, 802.1, 39.8);
+    (0.78, 0.34, 0.08, 0.12, 0.02, 0.56, 0.15, 0.53, 0.03, 0.63, 0.05, 0.15, 913.0, 652.3, 9.2, 211.9, 13.3, 35, 5, 10, 40, 802.1, 29.8, 802.1, 39.8);
 insert into pms_clutseg (accept_threshold, ranking) values (15, "InliersRanking");
 insert into pms_match (matcher_type, knn, do_ratio_test, ratio_threshold) values ("LSH-BINARY", 3, 1, 0.8);
 insert into pms_match (matcher_type, knn, do_ratio_test, ratio_threshold) values ("LSH-BINARY", 3, 0, null);
