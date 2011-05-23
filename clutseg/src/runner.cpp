@@ -67,14 +67,11 @@ namespace clutseg {
                 pcl::io::loadPCDFile(cloud_path.string(), queryCloud);
                 cout << "[RUN] Loaded query cloud " << cloud_path << endl;
             }
-            Guess guess;
-            vector<Guess> detectChoices;
-            PointCloudT inliersCloud;
-            bool pos = sgm.recognize(queryImage, queryCloud, detectChoices, guess, inliersCloud);
-            cout << "[RUN] Recognized " << (pos ? guess.getObject()->name : "NONE") << endl;
+            Result res;// TODO: resolve name clash
+            bool pos = sgm.recognize(queryImage, queryCloud, res);
+            cout << "[RUN] Recognized " << (pos ? res.locate_choice.getObject()->name : "NONE") << endl;
             if (pos) {
-                // TODO: consider combining recognizer output in Result struct
-                result[img_name] = Result(pos, guess, detectChoices);
+                result[img_name] = res;
             }
         }
         // TODO: save experiment results

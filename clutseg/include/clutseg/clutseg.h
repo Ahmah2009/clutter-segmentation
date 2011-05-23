@@ -9,6 +9,7 @@
 #include "clutseg/paramsel.h"
 #include "clutseg/options.h"
 #include "clutseg/ranking.h"
+#include "clutseg/response.h"
 
 #include <cv.h>
 #include <limits>
@@ -121,9 +122,7 @@ namespace clutseg {
              * an acceptance criterium, which is given by a ranking threshold. */
             bool recognize(const cv::Mat & queryImage,
                             const PointCloudT & queryCloud,
-                            std::vector<tod::Guess> & detectChoices,
-                            tod::Guess & locateChoice,
-                            PointCloudT & inliersCloud);
+                            Result & result);
 
         private:
 

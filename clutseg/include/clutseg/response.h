@@ -16,7 +16,7 @@ namespace clutseg {
 
     struct Result {
 
-        Result() : guess_made(false), detect_choices(0) {}
+        Result() : guess_made(false), locate_choice(), detect_choices(0) {}
         /** This constructor is designed for testing purposes */
         Result(const tod::Guess & locate_choice) :
                     guess_made(true), locate_choice(locate_choice), detect_choices(0) {}
@@ -29,7 +29,6 @@ namespace clutseg {
         std::vector<tod::Guess> detect_choices;
 
     };
-
 
     typedef std::map<std::string, Result > SetResult;
 

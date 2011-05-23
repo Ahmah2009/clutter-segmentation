@@ -68,10 +68,7 @@ class ClutsegTest : public ::testing::Test {
         PointCloudT clutter_cloud;
         GroundTruth clutter_truth;
         Camera camera;
-
-        Guess choice;
-        vector<Guess> detectChoices;
-        PointCloudT inlierCloud;
+        Result res;
 
         void check_preconditions() {
             EXPECT_FALSE(clutter_truth.labels.empty());
@@ -102,7 +99,7 @@ class ClutsegTest : public ::testing::Test {
                 EXPECT_LT(0, sgm.getStats().acc_locate_guesses);
                 EXPECT_LT(0, sgm.getStats().acc_locate_inliers);
                 EXPECT_LT(0, sgm.getStats().acc_locate_choice_matches);
-                EXPECT_EQ(choice.inliers.size(), sgm.getStats().acc_locate_choice_inliers);
+                EXPECT_EQ(res.locate_choice.inliers.size(), sgm.getStats().acc_locate_choice_inliers);
             } else {
                 EXPECT_EQ(0, sgm.getStats().acc_locate_matches);
                 EXPECT_EQ(0, sgm.getStats().acc_locate_guesses);
@@ -110,7 +107,7 @@ class ClutsegTest : public ::testing::Test {
                 EXPECT_EQ(0, sgm.getStats().acc_locate_choice_matches);
                 EXPECT_EQ(0, sgm.getStats().acc_locate_choice_inliers);
             }
-            EXPECT_TRUE(clutter_truth.onScene(choice.getObject()->name));
+            EXPECT_TRUE(clutter_truth.onScene(res.locate_choice.getObject()->name));
         }
 
         void showGuessAndGroundTruth(const string & test_name, const Guess & choice) {
@@ -123,10 +120,10 @@ class ClutsegTest : public ::testing::Test {
 
         void recognize(const string & test_name) {
             check_preconditions();
-            bool positive = sgm.recognize(clutter_img, clutter_cloud, detectChoices, choice, inlierCloud);
+            bool positive = sgm.recognize(clutter_img, clutter_cloud, res);
             ASSERT_TRUE(positive);
             check_postconditions();
-            showGuessAndGroundTruth(test_name, choice);
+            showGuessAndGroundTruth(test_name, res.locate_choice);
         }
 
 };
@@ -167,13 +164,12 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
     bool positive = sgm.recognize(haltbare_milch_train_img,
                                         haltbare_milch_train_cloud,
-                                        detectChoices,
-                                        choice, inlierCloud);
+                                        res);
     EXPECT_TRUE(positive);
-    EXPECT_EQ("haltbare_milch", choice.getObject()->name);
-    cout << "detected: " << choice.getObject()->name << endl;
-    cout << "inliers:  " << choice.inliers.size() << endl;
-    EXPECT_GT(choice.inliers.size(), 500);
+    EXPECT_EQ("haltbare_milch", res.locate_choice.getObject()->name);
+    cout << "detected: " << res.locate_choice.getObject()->name << endl;
+    cout << "inliers:  " << res.locate_choice.inliers.size() << endl;
+    EXPECT_GT(res.locate_choice.inliers.size(), 500);
 }
 
 /** Check whether loading a single training base works without failing */
