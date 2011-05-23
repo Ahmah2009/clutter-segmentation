@@ -76,7 +76,6 @@ int main(int argc, char **argv) {
             g.labels.push_back(LabeledPose(obj_zero, pose_zero));
             g.labels.push_back(LabeledPose(obj_max, pose_max));
 
-            // TODO: read/write ground truth belongs to ground.h/ground.cpp
             bfs::path ground_truth_file = test_dir / (img_name + ".ground.yaml");
             cout << "[GENERAL] Writing ground truth file " << ground_truth_file.string() << endl;
             g.write(ground_truth_file);

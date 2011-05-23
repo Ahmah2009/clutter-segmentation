@@ -18,7 +18,7 @@ using namespace tod;
 
 namespace clutseg {
 
-    void ResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & rsp) {
+    void ResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth & groundSet, Response & rsp) {
         rsp.value = 0.0;
 
         float acc_angle_err = 0;
@@ -41,11 +41,10 @@ namespace clutseg {
         int detect_fp = 0;
 
         sipc_t sc;
-        for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
+        for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
             GroundTruth g = it->second;
-            // FIXME: make sure there is a result object for every image in test and experiment!
-            Result r = result.find(img_name)->second;
+            Result r = resultSet.find(img_name)->second;
 
             if (g.emptyScene()) {
                 sc.max_cscore += 2;
@@ -61,10 +60,9 @@ namespace clutseg {
                 sc.max_rscore++;
                 sc.max_tscore++;
                 if (r.guess_made) {
-                    Guess c = r.locate_choice; // TODO: remove indirection
-                    if (g.onScene(c.getObject()->name)) {
+                    if (g.onScene(r.locate_choice.getObject()->name)) {
                         // True positive
-                        vector<PoseRT> poses = g.posesOf(c.getObject()->name);
+                        vector<PoseRT> poses = g.posesOf(r.locate_choice.getObject()->name);
                         if (poses.size() > 1) {
                             throw runtime_error(
                                 "ERROR: Response function does not allow for comparing \n"
@@ -72,7 +70,7 @@ namespace clutseg {
                                 "instances of the same template object on the scene.");
                         }
                         PoseRT truep = poses[0];
-                        Pose estp = c.aligned_pose();
+                        Pose estp = r.locate_choice.aligned_pose();
                         double t = dist_between(estp, truep); 
                         double a = angle_between(estp, truep); 
                         acc_angle_err += abs(a);
@@ -129,7 +127,7 @@ namespace clutseg {
         sc.compute_final_score();
         rsp.sipc_score = sc; 
 
-        int n = ground.size();
+        int n = groundSet.size();
         int tps = tp;
         // 'successes' might as well be zero. In that case, we cannot compute
         // the average errors. NaN will be an appropriate value.
@@ -149,36 +147,34 @@ namespace clutseg {
     }
 
 
-    void CutSseResponseFunction::operator()(const SetResult & result, const SetGroundTruth & ground, Response & rsp) {
-        ResponseFunction::operator()(result, ground, rsp);
+    void CutSseResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth & groundSet, Response & rsp) {
+        ResponseFunction::operator()(resultSet, groundSet, rsp);
 
         // TODO: maybe we can compute this directly
         double r_acc = 0;
-        for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
+        for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             const string & img_name = it->first;
             cout << "[RESPONSE] Validating results against ground truth: " << img_name << endl;
-            const GroundTruth & groundTruth = it->second;
-            const Result & res = result.find(img_name)->second; // TODO: resolve name clash
-            if (!res.guess_made) {
-                if (!groundTruth.emptyScene()) {
+            const GroundTruth & g = it->second;
+            const Result & result = resultSet.find(img_name)->second;
+            if (!result.guess_made) {
+                if (!g.emptyScene()) {
                     r_acc += 1.0;
                 }
             } else {
-                Guess guess = res.locate_choice; // TODO: remove indirection
-                PoseRT est_pose = poseToPoseRT(guess.aligned_pose());
+                Pose estp = result.locate_choice.aligned_pose();
                 double r = 1.0;
-                BOOST_FOREACH(const LabeledPose & np, groundTruth.labels) {
-                    if (np.name == guess.getObject()->name) {
-                        double dt = dist_between(est_pose, np.pose); 
-                        double da = angle_between(est_pose, np.pose); 
-                        double r2 = (dt * dt) / (max_trans_error_ * max_trans_error_) + (da * da) / (max_angle_error_ * max_angle_error_);
-                        r = r2 < r ? r2 : r;
-                    }
+                vector<PoseRT> poses = g.posesOf(result.locate_choice.getObject()->name);
+                BOOST_FOREACH(const PoseRT & truep, poses) {
+                    double dt = dist_between(estp, truep); 
+                    double da = angle_between(estp, truep); 
+                    double r2 = (dt * dt) / (max_trans_error_ * max_trans_error_) + (da * da) / (max_angle_error_ * max_angle_error_);
+                    r = r2 < r ? r2 : r;
                 }
                 r_acc += r;
             }
         }
-        rsp.value = r_acc / ground.size();
+        rsp.value = r_acc / groundSet.size();
     }
 
 }

@@ -161,15 +161,15 @@ namespace clutseg {
         // detected and there are no misclassifications.
         detect(query, result.detect_choices, detectMatcher);
 
+        BOOST_FOREACH(Guess & g, result.detect_choices) {
+            mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
+        }
+
         if (result.detect_choices.empty()) {
             // In case there are any objects in the scene, this is kind of the
             // worst-case. None of the objects has been detected.
             return false;
         } else {
-            BOOST_FOREACH(Guess & g, result.detect_choices) {
-                mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
-            }
-
             // Sort the guesses according to the ranking function.
             sort(result.detect_choices.begin(), result.detect_choices.end(), GuessComparator(ranking_));
             bool pos = false;
@@ -200,21 +200,12 @@ namespace clutseg {
                             stats_.acc_locate_choice_matches += ls[result.locate_choice.getObject()->id].second;
                             stats_.acc_locate_choice_inliers += result.locate_choice.inliers.size();
                         } 
-                        // else {
-                        //    stats_.acc_locate_choice_matches += ds[detect_choices[i].getObject()->id].second;
-                        //    stats_.acc_locate_choice_inliers += detect_choices[i].inliers.size();
-                        //}
                         stats_.choices++;
                     } /* end statistics */
 
                     pos = true;
                     break;
                 }
-            }
-
-            if (pos) {
-                // TODO: is this really necessary, or has this already be done
-                mapInliersToCloud(result.locate_choice.inlierCloud, result.locate_choice, queryImage, queryCloud);
             }
 
             return pos;
@@ -239,12 +230,14 @@ namespace clutseg {
         extractor->detectAndExtract(query);
         recognizer->match(query, detect_choices);
 
-        stats_.acc_keypoints += query.keypoints.size();
-        stats_.acc_detect_matches += sum_matches(detectMatcher);
-        stats_.acc_detect_guesses += detect_choices.size();
-        BOOST_FOREACH(const Guess & g, detect_choices) {
-            stats_.acc_detect_inliers += g.inliers.size();
-        }
+        { /* begin statistics */
+            stats_.acc_keypoints += query.keypoints.size();
+            stats_.acc_detect_matches += sum_matches(detectMatcher);
+            stats_.acc_detect_guesses += detect_choices.size();
+            BOOST_FOREACH(const Guess & g, detect_choices) {
+                stats_.acc_detect_inliers += g.inliers.size();
+            }
+        } /* end statistics */
 
         return detect_choices.empty();
     }
