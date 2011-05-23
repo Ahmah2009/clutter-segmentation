@@ -30,3 +30,12 @@ create table response (
     avg_locate_choice_inliers float not null
 );
 
+create view response_detect_roc as
+    select experiment.id as experiment_id,
+        detect_tp as tp,
+        detect_fp as fp,
+        detect_fn as fn,
+        detect_tn as tn,
+        1.0 * detect_tp / (detect_tp + detect_fn) as tp_rate,
+        1.0 * detect_fp / (detect_fp + detect_tn) as fp_rate
+    from response join experiment on experiment.response_id = response.id;
