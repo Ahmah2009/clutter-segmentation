@@ -104,7 +104,7 @@ struct ResponseFunctionTest : public ::testing::Test {
     void expect_sse_response_single(float expected, PoseRT est_pose) {
         Guess guess(object, poseRtToPose(est_pose), Mat(), Mat(), Mat());
         SetResult result_single;
-        result_single[img_name_single] = Result(true, guess);
+        result_single[img_name_single] = Result(guess);
         sse_response_function(result_single, ground_single, rsp);
         EXPECT_NEAR(expected, rsp.value, 1e-6);
     }
@@ -131,8 +131,8 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
     ground_double[img_name_2].labels.push_back(LabeledPose("haltbare_milch", pose_2));
 
     SetResult result;
-    result[img_name_single] = Result(true, Guess(object, poseRtToPose(pose), Mat(), Mat(), Mat()));
-    result[img_name_2] = Result(true, Guess(object, poseRtToPose(pose_2), Mat(), Mat(), Mat()));
+    result[img_name_single] = Result(Guess(object, poseRtToPose(pose), Mat(), Mat(), Mat()));
+    result[img_name_2] = Result(Guess(object, poseRtToPose(pose_2), Mat(), Mat(), Mat()));
 
     sse_response_function(result, ground_double, rsp); 
 
@@ -152,9 +152,9 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
 
 TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     SetResult r;
-    r["at_hm_jc_1"] = Result(true, at_perfect);
-    r["at_hm_jc_2"] = Result(true, at_perfect);
-    r["at_hm_jc_3"] = Result(true, at_perfect);
+    r["at_hm_jc_1"] = Result(at_perfect);
+    r["at_hm_jc_2"] = Result(at_perfect);
+    r["at_hm_jc_3"] = Result(at_perfect);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
@@ -178,8 +178,8 @@ TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
 
 TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     SetResult r;
-    r["at_hm_jc_1"] = Result(true, at_ge_max_angle);
-    r["at_hm_jc_2"] = Result(true, at_ge_max_trans);
+    r["at_hm_jc_1"] = Result(at_ge_max_angle);
+    r["at_hm_jc_2"] = Result(at_ge_max_trans);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
@@ -204,8 +204,8 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
 
 TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
     SetResult r;
-    r["at_hm_jc_1"] = Result(true, at_ge_max_trans_angle);
-    r["at_hm_jc_2"] = Result(true, at_ge_max_trans_angle);
+    r["at_hm_jc_1"] = Result(at_ge_max_trans_angle);
+    r["at_hm_jc_2"] = Result(at_ge_max_trans_angle);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
@@ -263,7 +263,7 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
  */
 TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     SetResult r;
-    r["at_hm_jc_1"] = Result(true, at_max_trans_angle);
+    r["at_hm_jc_1"] = Result(at_max_trans_angle);
     r["at_hm_jc_2"] = Result();
     r["at_hm_jc_3"] = Result();
     SetGroundTruth g;
@@ -291,9 +291,9 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
  * on the scene. */
 TEST_F(ResponseFunctionTest, MislabelingsOnly) {
     SetResult r;
-    r["at_hm_jc_1"] = Result(true, it_close);
-    r["at_hm_jc_2"] = Result(true, it_ge_max_angle);
-    r["at_hm_jc_3"] = Result(true, it_ge_max_trans);
+    r["at_hm_jc_1"] = Result(it_close);
+    r["at_hm_jc_2"] = Result(it_ge_max_angle);
+    r["at_hm_jc_3"] = Result(it_ge_max_trans);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
@@ -316,11 +316,11 @@ TEST_F(ResponseFunctionTest, MislabelingsOnly) {
  /* Realistic example with all kinds of cases occuring. */
 TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     SetResult r;
-    r["at_hm_jc_1"] = Result(true, at_perfect); // TODO: get rid of first parameter, set to true automatically if guess supplied
+    r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_2"] = Result();
-    r["at_hm_jc_3"] = Result(true, it_close);
-    r["at_hm_jc_4"] = Result(true, at_close);
-    r["at_hm_jc_5"] = Result(true, at_ge_max_trans_angle);
+    r["at_hm_jc_3"] = Result(it_close);
+    r["at_hm_jc_4"] = Result(at_close);
+    r["at_hm_jc_5"] = Result(at_ge_max_trans_angle);
     SetGroundTruth g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
@@ -349,7 +349,7 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
 
 TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
     SetResult r;
-    r["empty_scene_1"] = Result(true, at_close);
+    r["empty_scene_1"] = Result(at_close);
     r["empty_scene_2"] = Result();
     SetGroundTruth g;
     g["empty_scene_1"] = empty_scene;

@@ -16,10 +16,10 @@ namespace clutseg {
 
     struct Result {
 
-        // FIXME: initialize
         Result() : guess_made(false), detect_choices(0) {}
-        Result(bool guess_made, const tod::Guess & locate_choice) :
-                    guess_made(guess_made), locate_choice(locate_choice), detect_choices(0) {}
+        /** This constructor is designed for testing purposes */
+        Result(const tod::Guess & locate_choice) :
+                    guess_made(true), locate_choice(locate_choice), detect_choices(0) {}
         Result(bool guess_made, const tod::Guess & locate_choice,
                 const std::vector<tod::Guess> & detect_choices) :
                     guess_made(guess_made), locate_choice(locate_choice), detect_choices(detect_choices) {}
@@ -32,28 +32,6 @@ namespace clutseg {
 
 
     typedef std::map<std::string, Result > SetResult;
-
-    /*
-    class SetResult {
-
-        public:
-
-            typedef std::map<std::string, tod::Guess>::iterator const_iterator;
-
-            std::map<std::string, tod::Guess>::iterator begin() { return guesses.begin(); }
-            std::map<std::string, tod::Guess>::const_iterator begin() const { return guesses.begin(); }
-            std::map<std::string, tod::Guess>::iterator end() { return guesses.end(); }
-            std::map<std::string, tod::Guess>::const_iterator end() const { return guesses.end(); }
-
-            bool guessMade(const std::string & img_name) const { return guesses.find(img_name) != end(); }
-            const tod::Guess & get(const std::string & img_name) const { return guesses.find(img_name)->second; }
-            void put(const std::string & img_name, const tod::Guess & guess) { guesses[img_name] = guess; }
-
-        private:
-
-            std::map<std::string, tod::Guess> guesses;
-
-    };*/
 
     /** Computes the response of the estimator on a given test set.  As such
      * the result has to be compared with ground truth. The smaller the response,
