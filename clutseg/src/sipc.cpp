@@ -45,10 +45,10 @@ namespace clutseg {
         cout << "SIPC Results" << endl
             << "---------------------------------------------------------------" << endl
             << "    Number of frames = " << frames << endl
-            << "    Hits   (true positive)  = " << tp << endl
-            << "    Misses (false negative) = " << fn << endl
-            << "    Noise  (false positive) = " << fp << endl
-            << "    Correct rejections (true negative)) = " << tn << endl
+        //    << "    Hits   (true positive)  = " << tp << endl
+        //    << "    Misses (false negative) = " << fn << endl
+        //    << "    Noise  (false positive) = " << fp << endl
+        //    << "    Correct rejections (true negative)) = " << tn << endl
             << endl
             << "  Recognition Score: (max possible score = " << float(max_cscore) << ")" << endl
             << "    Total = " << cscore << endl
@@ -59,7 +59,7 @@ namespace clutseg {
             << "    Total (equally weighted) = " << 0.5 * (rscore + tscore) << endl
             << endl
             << " Combined Score = " <<  0.5 * (cscore + 0.5 * (rscore + tscore)) << endl
-            << " Final Score    = " << final_score << endl
-            << " Time Duration >= UNKNOWN" << endl;
+            << " Final Score    = " << final_score << endl;
+        //    << " Time Duration >= UNKNOWN" << endl;
     }
 }

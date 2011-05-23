@@ -31,6 +31,9 @@ namespace clutseg {
         float acc_succ_trans_sq_err = 0;
         // In case, the angular and translational error both are less than a given threshold.
         int successes = 0;
+        int mislabelings = 0;
+        int nones = 0;
+        int tp = 0;
         sipc_t sc;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             string img_name = it->first;
@@ -40,10 +43,9 @@ namespace clutseg {
                 sc.max_cscore += 2;
                 if (result.guessMade(img_name)) {
                     // False positive
-                    sc.fp++;
+                    mislabelings++;
                 } else {
                     // True negative
-                    sc.tn++;
                     sc.cscore += 2;
                 }
             } else {
@@ -82,14 +84,14 @@ namespace clutseg {
                         sc.rscore += compute_rscore(a);  
                         sc.tscore += compute_tscore(t);
                         sc.cscore++;
-                        sc.tp++;
+                        tp++;
                     } else {
                         // False positive
-                        sc.fp++;
+                        mislabelings++;
                     }
                 } else {
                     // False negative
-                    sc.fn++;
+                    nones++;
                 }
             }
     
@@ -101,7 +103,7 @@ namespace clutseg {
         rsp.sipc_score = sc; 
 
         int n = ground.size();
-        int tps = rsp.sipc_score.tp;
+        int tps = tp;
         // 'successes' might as well be zero. In that case, we cannot compute
         // the average errors. NaN will be an appropriate value.
         rsp.avg_angle_err = acc_angle_err / tps;
@@ -113,8 +115,8 @@ namespace clutseg {
         rsp.avg_trans_sq_err = acc_trans_sq_err / tps;
         rsp.avg_succ_trans_sq_err = acc_succ_trans_sq_err / successes;
         rsp.succ_rate = float(successes) / n;
-        rsp.fp_rate = float(sc.fp) / n; // TODO: rename into fp_rate
-        rsp.none_rate = float(sc.tn + sc.fn) / n;
+        rsp.mislabel_rate = float(mislabelings) / n;
+        rsp.none_rate = float(nones) / n;
     }
 
 

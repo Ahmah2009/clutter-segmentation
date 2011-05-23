@@ -96,10 +96,11 @@ namespace clutseg {
        Response() : value(0.0), succ_rate(0), avg_angle_err(0),
             avg_succ_angle_err(0), avg_trans_err(0), avg_succ_trans_err(0),
             avg_angle_sq_err(0), avg_succ_angle_sq_err(0), avg_trans_sq_err(0),
-            avg_succ_trans_sq_err(0), fp_rate(0), none_rate(0), avg_keypoints(0),
+            avg_succ_trans_sq_err(0), mislabel_rate(0), none_rate(0), avg_keypoints(0),
             avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
-            avg_locate_matches(0), avg_locate_inliers(0), avg_locate_choice_matches(0),
-            avg_locate_choice_inliers(0) { sipc_score = sipc_t(); }
+            detect_tp_rate(0), detect_fp_rate(0), avg_locate_matches(0),
+            avg_locate_inliers(0), avg_locate_choice_matches(0), avg_locate_choice_inliers(0)
+            { sipc_score = sipc_t(); }
 
         /** Average of the values returned by the response function */
         float value;
@@ -129,8 +130,9 @@ namespace clutseg {
          * depends on max_trans_error. */
         float avg_succ_trans_sq_err;
         /** Average number of scenes where label was not correct. */
-        float fp_rate;
-        /** Average number of scenes where no choice was made. */
+        float mislabel_rate;
+        /** Average number of scenes where no choice was made, though scene was
+         * not empty. */
         float none_rate;
 
         /** Average number of extracted keypoints per image */

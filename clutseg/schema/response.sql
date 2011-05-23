@@ -11,7 +11,7 @@ create table response (
     avg_trans_sq_err float not null,
     avg_succ_trans_sq_err float not null,
     succ_rate float not null,
-    fp_rate float not null,
+    mislabel_rate float not null,
     none_rate float not null,
     avg_keypoints float not null,
     avg_detect_matches float not null,

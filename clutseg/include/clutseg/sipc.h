@@ -18,7 +18,7 @@
  *
  * The following cases can happen in a test scene:
  *
- *  scene type          choice                      score       ROC terminology 
+ *  scene type          choice                      n.score     ROC terminology 
  * ----------------------------------------------------------------------------
  *   empty              none                        1.0         true negative
  *   empty              some object not on scene    0.0         false positive    
@@ -35,14 +35,9 @@
 namespace clutseg {
 
     struct sipc_t {
-        sipc_t() : final_score(0), tp(0), fp(0), tn(0), fn(0),
-                    frames(0), rscore(0), tscore(0), cscore(0),
+        sipc_t() : final_score(0), frames(0), rscore(0), tscore(0), cscore(0),
                     max_cscore(0), max_rscore(0), max_tscore(0) {}
         float final_score;
-        int tp;
-        int fp;
-        int tn;
-        int fn;
         int frames;
         float rscore;
         float tscore;
