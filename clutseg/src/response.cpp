@@ -34,6 +34,12 @@ namespace clutseg {
         int mislabelings = 0;
         int nones = 0;
         int tp = 0;
+
+        int detect_tp = 0;
+        int detect_fn = 0;
+        int detect_tn = 0;
+        int detect_fp = 0;
+
         sipc_t sc;
         for (SetGroundTruth::const_iterator it = ground.begin(); it != ground.end(); it++) {
             string img_name = it->first;
@@ -95,6 +101,25 @@ namespace clutseg {
                 }
             }
     
+            vector<string> templates;
+            set<string> choice_labels; // FIXME:
+            BOOST_FOREACH(const string & subj, templates) {
+                if (g.onScene(subj)) {
+                    if (choice_labels.count(subj) == 1) {
+                        detect_tp++;
+                    } else {
+                        detect_fn++;
+                    }
+                } else {
+                    if (choice_labels.count(subj) == 0) {
+                        detect_tn++;
+                    } else {
+                        detect_fp++;
+                    }
+                }
+            }
+
+
             sc.frames++;
         }
         
@@ -117,6 +142,8 @@ namespace clutseg {
         rsp.succ_rate = float(successes) / n;
         rsp.mislabel_rate = float(mislabelings) / n;
         rsp.none_rate = float(nones) / n;
+        rsp.detect_tp_rate = float(detect_tp) / float(detect_tp + detect_fn);
+        rsp.detect_fp_rate = float(detect_fp) / float(detect_fp + detect_tn);
     }
 
 

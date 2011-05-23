@@ -146,8 +146,7 @@ namespace clutseg {
     bool ClutSegmenter::recognize(const Mat & queryImage,
                                     const PointCloudT & queryCloud,
                                     vector<Guess> & detectChoices,
-                                    Guess & locateChoice, PointCloudT & inliersCloud,
-                                    const GroundTruth *groundTruth) {
+                                    Guess & locateChoice, PointCloudT & inliersCloud) {
         { /* begin statistics */ 
             stats_.queries++;
         } /* end statistics */
@@ -171,23 +170,6 @@ namespace clutseg {
             BOOST_FOREACH(Guess & g, detectChoices) {
                 mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
             }
-
-            /* begin statistics */
-            if (groundTruth != NULL) {
-                int p = groundTruth->distinctLabelCount();
-                int n = objects_.size() - p;
-                int tp = 0;
-                int fp = 0;
-                BOOST_FOREACH(const Guess & g, detectChoices) {
-                    if (groundTruth->onScene(g.getObject()->name)) {
-                        tp++;
-                    } else {
-                        fp++;
-                    }
-                }
-                stats_.acc_detect_tp_rate += float(tp) / p;
-                stats_.acc_detect_fp_rate += float(fp) / n;
-            } /* end statistics */
 
             // Sort the guesses according to the ranking function.
             sort(detectChoices.begin(), detectChoices.end(), GuessComparator(ranking_));
@@ -323,8 +305,6 @@ namespace clutseg {
         r.avg_detect_inliers = float(acc_detect_inliers) / acc_detect_guesses;
         r.avg_detect_choice_matches = float(acc_detect_choice_matches) / choices;
         r.avg_detect_choice_inliers = float(acc_detect_choice_inliers) / choices;
-        r.detect_tp_rate = float(acc_detect_tp_rate) / queries;
-        r.detect_fp_rate = float(acc_detect_fp_rate) / queries;
         r.avg_locate_matches = float(acc_locate_matches) / queries;
         r.avg_locate_inliers = float(acc_locate_inliers) / acc_detect_guesses;
         r.avg_locate_choice_matches = float(acc_locate_choice_matches) / choices;

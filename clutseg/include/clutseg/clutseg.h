@@ -6,7 +6,6 @@
 #define _CLUTSEG_H_
 
 #include "clutseg/common.h"
-#include "clutseg/ground.h"
 #include "clutseg/paramsel.h"
 #include "clutseg/options.h"
 #include "clutseg/ranking.h"
@@ -24,10 +23,6 @@ namespace clutseg {
      * and includes counts for later averaging. Be careful, even variables such as
      * detect_fp_rate are accumulators. */
     struct ClutSegmenterStats {
-
-        // TODO: rename variables to show that they are accumulators and might have
-        // to be divided by either queries or choices in order to obtain an average
-        // value.
 
         ClutSegmenterStats() :
             queries(0),
@@ -53,9 +48,6 @@ namespace clutseg {
         long acc_detect_inliers;
         long acc_detect_choice_matches;
         long acc_detect_choice_inliers;
-        /* Need ground truth for comparison */
-        float acc_detect_tp_rate;
-        float acc_detect_fp_rate;
         long acc_locate_matches;
         long acc_locate_inliers;
         long acc_locate_guesses;
@@ -131,8 +123,7 @@ namespace clutseg {
                             const PointCloudT & queryCloud,
                             std::vector<tod::Guess> & detectChoices,
                             tod::Guess & locateChoice,
-                            PointCloudT & inliersCloud,
-                            const GroundTruth *groundTruth = NULL);
+                            PointCloudT & inliersCloud);
 
         private:
 

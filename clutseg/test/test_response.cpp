@@ -172,6 +172,7 @@ TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     EXPECT_NEAR(1.0, rsp.succ_rate, 1e-6);
     EXPECT_NEAR(0, rsp.mislabel_rate, 1e-6);
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
+    EXPECT_NEAR(1, rsp.sipc_score.final_score, 1e-6);
     rsp.sipc_score.print();
 }
 

@@ -63,15 +63,17 @@ int main(int argc, char **argv) {
 
     readInput(argc, argv, queryImage, queryCloud);
 
-    // Output: whether an object has been detected
+    // Output: whether an object has been located 
     bool positive;
+    // Output: a list of guesses from detection step
+    vector<tod::Guess> detectChoices;
     // Output: aligned pose, subject name and inliers
     tod::Guess guess;
     // Output: 3d points corresponding to inliers
     PointCloudT inlierCloud;
 
     // Actual recognition 
-    positive = segmenter.recognize(queryImage, queryCloud, guess, inlierCloud);
+    positive = segmenter.recognize(queryImage, queryCloud, detectChoices, guess, inlierCloud);
 
     processOutput(argc, argv, positive, guess, inlierCloud);
 

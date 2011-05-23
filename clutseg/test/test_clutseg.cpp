@@ -111,10 +111,6 @@ class ClutsegTest : public ::testing::Test {
                 EXPECT_EQ(0, sgm.getStats().acc_locate_choice_inliers);
             }
             EXPECT_TRUE(clutter_truth.onScene(choice.getObject()->name));
-            EXPECT_LE(0, sgm.getStats().acc_detect_tp_rate);
-            EXPECT_GE(1, sgm.getStats().acc_detect_tp_rate);
-            EXPECT_LE(0, sgm.getStats().acc_detect_fp_rate);
-            EXPECT_GE(1, sgm.getStats().acc_detect_fp_rate);
         }
 
         void showGuessAndGroundTruth(const string & test_name, const Guess & choice) {
