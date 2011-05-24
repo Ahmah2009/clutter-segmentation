@@ -50,7 +50,7 @@ void processOutput(int argc, char **argv, Result & result) {
 
 int main(int argc, char **argv) {
     // Create segmenter
-    ClutSegmenter segmenter(
+    Clutsegmenter segmenter(
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"

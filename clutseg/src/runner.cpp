@@ -64,9 +64,9 @@ namespace clutseg {
     // passes this to the global and local processors. There occurs the question, whether
     // the response object actually shall update itself according to the report.
     // Also, how much information shall the Result object carry. Actually, it should not
-    // carry any more information than the ClutSegmenter can fill in. It can become a member
+    // carry any more information than the Clutsegmenter can fill in. It can become a member
     // of a report specific to a test scene.
-    void ExperimentRunner::runExperiment(ClutSegmenter & sgm, Experiment & e) {
+    void ExperimentRunner::runExperiment(Clutsegmenter & sgm, Experiment & e) {
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / e.test_set;
         SetGroundTruth testdesc = loadSetGroundTruth(test_dir / "testdesc.txt");
@@ -128,7 +128,7 @@ namespace clutseg {
             // much, though.
             sortExperimentsByTrainFeatures(exps);
             TrainFeatures cur_tr_feat;
-            ClutSegmenter *sgm = NULL;
+            Clutsegmenter *sgm = NULL;
             BOOST_FOREACH(Experiment & e, exps) {
                 if (e.skip) {
                     cerr << "[RUN]: Skipping experiment (id=" << e.id << ")" << endl;
@@ -145,7 +145,7 @@ namespace clutseg {
                             cache_.addTrainFeatures(tr_feat);
                         }
                         delete sgm;
-                        sgm = new ClutSegmenter(
+                        sgm = new Clutsegmenter(
                             cache_.trainFeaturesDir(tr_feat).string(),
                             TODParameters(), TODParameters());
                     }

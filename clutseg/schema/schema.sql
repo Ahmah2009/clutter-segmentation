@@ -2,4 +2,4 @@
 -- 'experiment', 'paramset' and 'response'. An experiment is a run on a test set,
 -- using a given parameter set, and producing a certain response. The 'paramset'
 -- relates feature extraction, match and guess parameters, closely modeled after
--- the structure of ClutSegmenter.
+-- the structure of Clutsegmenter.

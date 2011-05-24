@@ -29,7 +29,7 @@ namespace clutseg {
 
         private:
 
-            void runExperiment(ClutSegmenter & segmenter, Experiment & exp);
+            void runExperiment(Clutsegmenter & segmenter, Experiment & exp);
 
             sqlite3* db_;
             TrainFeaturesCache cache_;

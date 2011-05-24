@@ -151,7 +151,7 @@ TEST_F(ExperimentTest, GenerateAndUseTrainFeatures) {
     EXPECT_FALSE(dirty.exists());
 
     // TODO: load configs that make sense
-    ClutSegmenter segmenter(
+    Clutsegmenter segmenter(
         cache.trainFeaturesDir(new_tr_feat).string(),
             (p / "ias_kinect_train/config.yaml").string(),
             (p / "ias_kinect_train/config.yaml").string()

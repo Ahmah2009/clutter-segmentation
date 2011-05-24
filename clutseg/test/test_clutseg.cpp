@@ -29,7 +29,7 @@ class ClutsegTest : public ::testing::Test {
 
         virtual void SetUp() {
             if (!loaded) {
-                 sgm = ClutSegmenter(
+                 sgm = Clutsegmenter(
                     // FIXME: This is a mistake. We cannot use
                     // ias_kinect_test_grounded and ias_kinect_train together.
                     // The ground poses will not match due to different model
@@ -60,7 +60,7 @@ class ClutsegTest : public ::testing::Test {
             camera = Camera("./data/camera.yml", Camera::TOD_YAML);
         }
 
-        static ClutSegmenter sgm;
+        static Clutsegmenter sgm;
         static bool loaded;
         Mat haltbare_milch_train_img;
         PointCloudT haltbare_milch_train_cloud;
@@ -129,16 +129,16 @@ class ClutsegTest : public ::testing::Test {
 
 };
 
-ClutSegmenter ClutsegTest::sgm;
+Clutsegmenter ClutsegTest::sgm;
 bool ClutsegTest::loaded;
 
-/** Verify that changes to parameters do not affect existing ClutSegmenter
+/** Verify that changes to parameters do not affect existing Clutsegmenter
  * instances, i.e. that parameters are properly copied in constructor. */
 TEST_F(ClutsegTest, ConstructorOpaque) {
     TODParameters detect_params;
     TODParameters locate_params;
 
-    ClutSegmenter s(
+    Clutsegmenter s(
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
         detect_params,
         locate_params
@@ -150,7 +150,7 @@ TEST_F(ClutsegTest, ConstructorOpaque) {
 }
 
 /** Check whether the params returned is actually a reference to the
- * ClutSegmenter's parameters and that changes shine through. In this way,
+ * Clutsegmenter's parameters and that changes shine through. In this way,
  * parameter configuration can be changed easily without having to reload the
  * training base. */
 TEST_F(ClutsegTest, ChangeParamsOnline) {
@@ -220,7 +220,7 @@ TEST_F(ClutsegTest, RecognizeForemostInClutter) {
     locate_params.guessParams.minInliersCount = 30;
 
     Ptr<GuessRanking> prox_ranking = new ProximityRanking();
-    sgm = ClutSegmenter(
+    sgm = Clutsegmenter(
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
         detect_params,
         locate_params,

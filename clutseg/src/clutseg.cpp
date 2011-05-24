@@ -18,9 +18,9 @@ using namespace tod;
 
 namespace clutseg {
 
-    ClutSegmenter::ClutSegmenter() : initialized_(false) {}
+    Clutsegmenter::Clutsegmenter() : initialized_(false) {}
         
-    ClutSegmenter::ClutSegmenter(const string & baseDirectory,
+    Clutsegmenter::Clutsegmenter(const string & baseDirectory,
                                     const string & detect_config,
                                     const string & locate_config,
                                     Ptr<GuessRanking> ranking,
@@ -36,7 +36,7 @@ namespace clutseg {
         loadBase();
     }
 
-    ClutSegmenter::ClutSegmenter(const string & baseDirectory,
+    Clutsegmenter::Clutsegmenter(const string & baseDirectory,
                                     const TODParameters & detect_params,
                                     const TODParameters & locate_params,
                                     Ptr<GuessRanking> ranking,
@@ -52,7 +52,7 @@ namespace clutseg {
         loadBase();
     }
 
-    void ClutSegmenter::loadParams(const string & config, TODParameters & params) {
+    void Clutsegmenter::loadParams(const string & config, TODParameters & params) {
         FileStorage fs(config, FileStorage::READ);
         if (!fs.isOpened()) {
             throw ios_base::failure("Cannot read configuration file '" + config + "'");
@@ -61,37 +61,37 @@ namespace clutseg {
         fs.release();
     }
 
-    void ClutSegmenter::loadBase() {
+    void Clutsegmenter::loadBase() {
         Loader loader(baseDirectory_);
         loader.readTexturedObjects(objects_);
         base_ = TrainingBase(objects_);
     }
 
-    TODParameters & ClutSegmenter::getDetectParams() {
+    TODParameters & Clutsegmenter::getDetectParams() {
         return detect_params_;
     }
 
-    TODParameters & ClutSegmenter::getLocateParams() {
+    TODParameters & Clutsegmenter::getLocateParams() {
         return locate_params_;
     }
 
-    int ClutSegmenter::getAcceptThreshold() const {
+    int Clutsegmenter::getAcceptThreshold() const {
         return accept_threshold_;
     }
 
-    void ClutSegmenter::setAcceptThreshold(int accept_threshold) {
+    void Clutsegmenter::setAcceptThreshold(int accept_threshold) {
         accept_threshold_ = accept_threshold;
     }
 
-    Ptr<GuessRanking> ClutSegmenter::getRanking() const {
+    Ptr<GuessRanking> Clutsegmenter::getRanking() const {
         return ranking_;
     }
 
-    void ClutSegmenter::setRanking(const Ptr<GuessRanking> & ranking) {
+    void Clutsegmenter::setRanking(const Ptr<GuessRanking> & ranking) {
         ranking_ = ranking;
     }
 
-    set<string> ClutSegmenter::getTemplateNames() const {
+    set<string> Clutsegmenter::getTemplateNames() const {
         set<string> s;
         BOOST_FOREACH(const Ptr<TexturedObject> & t, objects_) {
             s.insert(t->name);
@@ -99,7 +99,7 @@ namespace clutseg {
         return s;
     }
 
-    void ClutSegmenter::reconfigure(const Paramset & paramset) {
+    void Clutsegmenter::reconfigure(const Paramset & paramset) {
         detect_params_.feParams = paramset.recog_pms_fe;
         detect_params_.matcherParams = paramset.detect_pms_match;
         detect_params_.guessParams = paramset.detect_pms_guess;
@@ -119,19 +119,19 @@ namespace clutseg {
         accept_threshold_ = paramset.pms_clutseg.accept_threshold;
     }
 
-    void ClutSegmenter::resetStats() {
-        stats_ = ClutSegmenterStats();
+    void Clutsegmenter::resetStats() {
+        stats_ = ClutsegmenterStats();
     }
 
-    ClutSegmenterStats ClutSegmenter::getStats() const {
+    ClutsegmenterStats Clutsegmenter::getStats() const {
         return stats_;
     }
 
-    void ClutSegmenter::setDoLocate(bool do_locate) {
+    void Clutsegmenter::setDoLocate(bool do_locate) {
         do_locate_ = do_locate;
     }
 
-    bool ClutSegmenter::isDoLocate() const {
+    bool Clutsegmenter::isDoLocate() const {
         return do_locate_;
     }
 
@@ -143,7 +143,7 @@ namespace clutseg {
                              baseDirectory);
     }
 
-    void ClutSegmenter::recognize(const ClutsegQuery & query, Result & result) {
+    void Clutsegmenter::recognize(const ClutsegQuery & query, Result & result) {
         { /* begin statistics */ 
             stats_.queries++;
         } /* end statistics */
@@ -215,7 +215,7 @@ namespace clutseg {
         return total;
     }
 
-    bool ClutSegmenter::detect(Features2d & queryF2d, vector<Guess> & detect_choices, Ptr<Matcher> & detectMatcher) {
+    bool Clutsegmenter::detect(Features2d & queryF2d, vector<Guess> & detect_choices, Ptr<Matcher> & detectMatcher) {
         Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
         Ptr<Recognizer> recognizer;
         initRecognizer(recognizer, detectMatcher, base_, detect_params_, baseDirectory_);
@@ -235,7 +235,7 @@ namespace clutseg {
         return detect_choices.empty();
     }
 
-    bool ClutSegmenter::locate(const Features2d & queryF2d, const PointCloudT & queryCloud, Guess & locate_choice, Ptr<Matcher> & locateMatcher) {
+    bool Clutsegmenter::locate(const Features2d & queryF2d, const PointCloudT & queryCloud, Guess & locate_choice, Ptr<Matcher> & locateMatcher) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
@@ -284,7 +284,7 @@ namespace clutseg {
         }
     }
 
-    void ClutSegmenterStats::populateResponse(Response & r) const {
+    void ClutsegmenterStats::populateResponse(Response & r) const {
         r.avg_keypoints = float(acc_keypoints) / queries;
         r.avg_detect_matches = float(acc_detect_matches) / queries;
         r.avg_detect_inliers = float(acc_detect_inliers) / acc_detect_guesses;

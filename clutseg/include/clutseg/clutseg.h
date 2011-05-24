@@ -20,12 +20,12 @@
 
 namespace clutseg {
 
-    /** Collection of statistics for ClutSegmenter. Serves as an accumulator,
+    /** Collection of statistics for Clutsegmenter. Serves as an accumulator,
      * and includes counts for later averaging. Be careful, even variables such as
      * detect_fp_rate are accumulators. */
-    struct ClutSegmenterStats {
+    struct ClutsegmenterStats {
 
-        ClutSegmenterStats() :
+        ClutsegmenterStats() :
             queries(0),
             acc_keypoints(0),
             acc_detect_matches(0),
@@ -63,21 +63,21 @@ namespace clutseg {
 
     };
 
-    class ClutSegmenter {
+    class Clutsegmenter {
         
         public:
 
             /** Constructed segmenter will be invalid and cannot be used. */
-            ClutSegmenter();
+            Clutsegmenter();
 
-            ClutSegmenter(const std::string & baseDirectory,
+            Clutsegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
                             const std::string & locate_config,
                             const cv::Ptr<GuessRanking> ranking_ = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
                             bool do_locate = true);
 
-            ClutSegmenter(const std::string & baseDirectory,
+            Clutsegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
                             const tod::TODParameters & locate_params,
                             const cv::Ptr<GuessRanking> ranking = new InliersRanking(),
@@ -112,7 +112,7 @@ namespace clutseg {
         
             void resetStats();
 
-            ClutSegmenterStats getStats() const;
+            ClutsegmenterStats getStats() const;
 
             /** Attempts to find an object in the scene. It makes a best guess
              * according to some ranking. This algorithm proceeds in two steps.First,
@@ -138,7 +138,7 @@ namespace clutseg {
 
             void loadBase();
 
-            ClutSegmenterStats stats_;
+            ClutsegmenterStats stats_;
             std::string baseDirectory_;
             tod::TODParameters detect_params_; 
             tod::TODParameters locate_params_; 
