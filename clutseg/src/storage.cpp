@@ -34,7 +34,7 @@ namespace clutseg {
             //throw runtime_error(str(boost::format(
             //    "ERROR: Result directory for experiment %d already exists.") % experiment_id));
         }
-        int offs = img_name.rfind(".");
+        size_t offs = img_name.rfind(".");
         string img_basename;
         if (offs == string::npos) {
             img_basename = img_name;
@@ -51,7 +51,7 @@ namespace clutseg {
         /*// Draw locate choice image
         Mat lci = img.clone();
         drawGroundTruth(lci, ground, camera);
-        if (result.guess_made) { // TODO: make locate_choice a method, then throw exception if !guess_made
+        if (result.guess_made) { 
             drawGuess(lci, result.locate_choice, camera, PoseRT());
         }
         bfs::path lci_path = erd / (img_name + ".locate_choice.png");
@@ -81,6 +81,16 @@ namespace clutseg {
         feat_fs << Features2d::YAML_NODE_NAME;
         result.features.write(feat_fs);
         feat_fs.release();
+
+        // Save locate choice
+        bfs::path lc_path = erd / (img_basename + ".locate_choice.yaml.gz");
+        bfs::create_directories(lc_path.parent_path());
+        FileStorage lc_fs(lc_path.string(), FileStorage::WRITE);
+        if (result.guess_made) {
+            lc_fs << result.locate_choice.getObject()->name;
+            result.locate_choice.aligned_pose().write(lc_fs);
+        }
+        lc_fs.release();
     }
 
 }
