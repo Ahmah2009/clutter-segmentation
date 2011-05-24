@@ -5,6 +5,8 @@
 #ifndef _RESULT_H_
 #define _RESULT_H_
 
+#include "clutseg/common.h"
+
 #include <map>
 #include <set>
 #include <string>
@@ -44,6 +46,14 @@ namespace clutseg {
          * and can be used for analysis. */
         tod::Features2d features; 
         std::set<std::string> distinctLabels() const;
+
+    };
+
+    struct ClutsegQuery {
+    
+        PointCloudT cloud;
+        cv::Mat img;
+        std::string img_name;
 
     };
 
