@@ -82,6 +82,7 @@ namespace clutseg {
             GroundTruth g = it->second;
             string ground_name = img_name + ".ground.yaml";
             g.read(filename.parent_path() / ground_name);
+            m[img_name] = g;
         }
         return m;
     }
