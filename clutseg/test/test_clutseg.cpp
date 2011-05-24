@@ -120,7 +120,8 @@ class ClutsegTest : public ::testing::Test {
 
         void recognize(const string & test_name) {
             check_preconditions();
-            bool positive = sgm.recognize(clutter_img, clutter_cloud, res);
+            ClutsegQuery query(test_name, clutter_img, clutter_cloud);
+            bool positive = sgm.recognize(query, res);
             ASSERT_TRUE(positive);
             check_postconditions();
             showGuessAndGroundTruth(test_name, res.locate_choice);
@@ -162,9 +163,8 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 /** Check whether detection works for a training image. This is expected to
  * return with a whole bunch of inliers since it is only a training image. */
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
-    bool positive = sgm.recognize(haltbare_milch_train_img,
-                                        haltbare_milch_train_cloud,
-                                        res);
+    ClutsegQuery query(haltbare_milch_train_img, haltbare_milch_train_cloud);
+    bool positive = sgm.recognize(query, res);
     EXPECT_TRUE(positive);
     EXPECT_EQ("haltbare_milch", res.locate_choice.getObject()->name);
     cout << "detected: " << res.locate_choice.getObject()->name << endl;

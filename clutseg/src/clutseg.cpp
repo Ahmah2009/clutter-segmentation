@@ -143,15 +143,13 @@ namespace clutseg {
                              baseDirectory);
     }
 
-    bool ClutSegmenter::recognize(const Mat & queryImage,
-                                    const PointCloudT & queryCloud,
-                                    Result & result) {
+    bool ClutSegmenter::recognize(const ClutsegQuery & query, Result & result) {
         { /* begin statistics */ 
             stats_.queries++;
         } /* end statistics */
 
-        Features2d query;
-        query.image = queryImage;
+        Features2d f2d;
+        f2d.image = query.img;
         
         // For statistics, we need access to the matchers at this level.
         Ptr<Matcher> detectMatcher;
@@ -159,12 +157,12 @@ namespace clutseg {
 
         // Generate a couple of guesses. Ideally, each object on the scene is
         // detected and there are no misclassifications.
-        detect(query, result.detect_choices, detectMatcher);
+        detect(f2d, result.detect_choices, detectMatcher);
 
-        result.features = query;
+        result.features = f2d;
 
         BOOST_FOREACH(Guess & g, result.detect_choices) {
-            mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
+            mapInliersToCloud(g.inlierCloud, g, query.img, query.cloud);
         }
 
         if (result.detect_choices.empty()) {
@@ -182,7 +180,7 @@ namespace clutseg {
                 result.locate_choice = result.detect_choices[i]; 
 
                 if (do_locate_) {
-                    locate(query, queryCloud, result.locate_choice, locateMatcher);
+                    locate(f2d, query.cloud, result.locate_choice, locateMatcher);
                 }
 
                 cout << "[CLUTSEG] ranking: " << (*ranking_)(result.locate_choice) << endl;
@@ -225,16 +223,16 @@ namespace clutseg {
         return total;
     }
 
-    bool ClutSegmenter::detect(Features2d & query, vector<Guess> & detect_choices, Ptr<Matcher> & detectMatcher) {
+    bool ClutSegmenter::detect(Features2d & queryF2d, vector<Guess> & detect_choices, Ptr<Matcher> & detectMatcher) {
         Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
         Ptr<Recognizer> recognizer;
         initRecognizer(recognizer, detectMatcher, base_, detect_params_, baseDirectory_);
 
-        extractor->detectAndExtract(query);
-        recognizer->match(query, detect_choices);
+        extractor->detectAndExtract(queryF2d);
+        recognizer->match(queryF2d, detect_choices);
 
         { /* begin statistics */
-            stats_.acc_keypoints += query.keypoints.size();
+            stats_.acc_keypoints += queryF2d.keypoints.size();
             stats_.acc_detect_matches += sum_matches(detectMatcher);
             stats_.acc_detect_guesses += detect_choices.size();
             BOOST_FOREACH(const Guess & g, detect_choices) {
@@ -245,7 +243,7 @@ namespace clutseg {
         return detect_choices.empty();
     }
 
-    bool ClutSegmenter::locate(const Features2d & query, const PointCloudT & queryCloud, Guess & locate_choice, Ptr<Matcher> & locateMatcher) {
+    bool ClutSegmenter::locate(const Features2d & queryF2d, const PointCloudT & queryCloud, Guess & locate_choice, Ptr<Matcher> & locateMatcher) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
@@ -272,7 +270,7 @@ namespace clutseg {
         initRecognizer(recognizer, locateMatcher, single, locate_params_, baseDirectory_);
 
         vector<Guess> guesses;
-        recognizer->match(query, guesses); 
+        recognizer->match(queryF2d, guesses); 
 
         cout << "[CLUTSEG] locate_matches: " << sum_matches(locateMatcher) << endl;
         stats_.acc_locate_matches += sum_matches(locateMatcher);
@@ -286,7 +284,7 @@ namespace clutseg {
             return false;
         } else {
             BOOST_FOREACH(Guess & guess, guesses) {
-                mapInliersToCloud(guess.inlierCloud, guess, query.image, queryCloud);
+                mapInliersToCloud(guess.inlierCloud, guess, queryF2d.image, queryCloud);
             }
             sort(guesses.begin(), guesses.end(), GuessComparator(ranking_));
             locate_choice = guesses[0]; 

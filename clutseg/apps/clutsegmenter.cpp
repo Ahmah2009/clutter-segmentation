@@ -61,13 +61,15 @@ int main(int argc, char **argv) {
     // Input: corresponding point cloud
     PointCloudT queryCloud;
 
+    ClutsegQuery query(queryImage, queryCloud);
+
     readInput(argc, argv, queryImage, queryCloud);
 
     // Output: whether an object has been located 
     bool positive;
     Result result;
     // Actual recognition 
-    positive = segmenter.recognize(queryImage, queryCloud, result);
+    positive = segmenter.recognize(query, result);
 
     processOutput(argc, argv, result);
 

@@ -92,8 +92,9 @@ namespace clutseg {
                 pcl::io::loadPCDFile(cloud_path.string(), queryCloud);
                 cout << "[RUN] Loaded query cloud " << cloud_path << endl;
             }
+            ClutsegQuery query(queryImage, queryCloud);
             Result res;
-            bool pos = sgm.recognize(queryImage, queryCloud, res);
+            bool pos = sgm.recognize(query, res);
             cout << "[RUN] Recognized " << (pos ? res.locate_choice.getObject()->name : "NONE") << endl;
             resultSet[img_name] = res;
  

@@ -13,7 +13,8 @@ struct RunnerTest : public ::testing::Test {
 
     void SetUp() {
         TrainFeaturesCache cache("build/train_cache");
-        runner = ExperimentRunner(db, cache);
+        ResultStorage storage("build/results");
+        runner = ExperimentRunner(db, cache, storage);
     }
 
     sqlite3* db;

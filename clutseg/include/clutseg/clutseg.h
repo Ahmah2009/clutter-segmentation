@@ -120,17 +120,15 @@ namespace clutseg {
              * locations. High-ranked guesses are refined by applying more computing
              * resources and by using a object-specific test until the refined guess meets
              * an acceptance criterium, which is given by a ranking threshold. */
-            bool recognize(const cv::Mat & queryImage,
-                            const PointCloudT & queryCloud,
-                            Result & result);
+            bool recognize(const ClutsegQuery & query, Result & result);
 
         private:
 
-            bool detect(tod::Features2d & query,
+            bool detect(tod::Features2d & queryF2d,
                         std::vector<tod::Guess> & detectChoices,
                         cv::Ptr<tod::Matcher> & detectMatcher);
 
-            bool locate(const tod::Features2d & query,
+            bool locate(const tod::Features2d & queryF2d,
                         const PointCloudT & queryCloud,
                         tod::Guess & locateChoice,
                         cv::Ptr<tod::Matcher> & locateMatcher);

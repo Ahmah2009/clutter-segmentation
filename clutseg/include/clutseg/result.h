@@ -43,17 +43,32 @@ namespace clutseg {
         tod::Guess locate_choice;
         std::vector<tod::Guess> detect_choices;
         /** The extracted features from the query image are secondary results
-         * and can be used for analysis. */
+         * and can be used for analysis. They are kind of "leaked" by the recognizer
+         * though they are implementation details. */
         tod::Features2d features; 
+
         std::set<std::string> distinctLabels() const;
 
     };
 
     struct ClutsegQuery {
-    
-        PointCloudT cloud;
-        cv::Mat img;
+        
+        ClutsegQuery() : img_name(), img(), cloud() {}
+        ClutsegQuery(const cv::Mat & img,
+                        const PointCloudT & cloud) :
+                            img_name(),
+                            img(img),
+                            cloud(cloud) {}
+        ClutsegQuery(const std::string & img_name,
+                        const cv::Mat & img,
+                        const PointCloudT & cloud) :
+                            img_name(img_name),
+                            img(img),
+                            cloud(cloud) {}
+
         std::string img_name;
+        cv::Mat img;
+        PointCloudT cloud;
 
     };
 
