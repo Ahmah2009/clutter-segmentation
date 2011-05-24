@@ -4,6 +4,7 @@
 
 #include "clutseg/clutseg.h"
 #include "clutseg/experiment.h"
+#include "clutseg/storage.h"
 
 #include <sqlite3.h>
 
@@ -14,7 +15,8 @@ namespace clutseg {
         public:
 
             ExperimentRunner();
-            ExperimentRunner(sqlite3* db, const TrainFeaturesCache & cache);
+            ExperimentRunner(sqlite3* db, const TrainFeaturesCache & cache,
+                                const ResultStorage & storage);
 
             /** Runs experiments, using configurations provided by a database.  After
              * an experiment has been run, the response is saved into field 'response', the
@@ -31,6 +33,7 @@ namespace clutseg {
 
             sqlite3* db_;
             TrainFeaturesCache cache_;
+            ResultStorage storage_;
 
     };
 

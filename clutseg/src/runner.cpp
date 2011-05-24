@@ -4,6 +4,7 @@
 
 #include "clutseg/runner.h"
 
+#include "clutseg/check.h"
 #include "clutseg/clutseg.h"
 #include "clutseg/experiment.h"
 #include "clutseg/paramsel.h"
@@ -18,6 +19,7 @@
 #include <tod/detecting/Parameters.h>
 
 using namespace cv;
+using namespace opencv_candidate;
 using namespace std;
 using namespace tod;
 
@@ -28,8 +30,9 @@ namespace clutseg {
     ExperimentRunner::ExperimentRunner() {}
 
     ExperimentRunner::ExperimentRunner(sqlite3* db,
-                                       const TrainFeaturesCache & cache) :
-                                        db_(db), cache_(cache) {}
+                                       const TrainFeaturesCache & cache,
+                                       const ResultStorage & storage) :
+                                        db_(db), cache_(cache), storage_(storage) {}
 
     bfs::path cloudPath(const bfs::path & img_path) {
         string fn = img_path.filename();
@@ -49,6 +52,9 @@ namespace clutseg {
         bfs::path test_dir = p / e.test_set;
         SetGroundTruth testdesc = loadSetGroundTruth(test_dir / "testdesc.txt");
         SetResult result;
+        bfs::path camera_path = test_dir / "camera.yml";
+        assert_path_exists(camera_path);
+        Camera camera(camera_path.string(), Camera::TOD_YAML);
         // Loop over all images in the test set
         for (SetGroundTruth::iterator test_it = testdesc.begin(); test_it != testdesc.end(); test_it++) {
             string img_name = test_it->first;
@@ -71,6 +77,9 @@ namespace clutseg {
             bool pos = sgm.recognize(queryImage, queryCloud, res);
             cout << "[RUN] Recognized " << (pos ? res.locate_choice.getObject()->name : "NONE") << endl;
             result[img_name] = res;
+ 
+            storage_.store(e.id, test_dir, img_name, queryImage,
+                            camera, test_it->second, res); 
         }
         // TODO: save experiment results
         CutSseResponseFunction responseFunc;
