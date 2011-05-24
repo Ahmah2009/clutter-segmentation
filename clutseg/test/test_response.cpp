@@ -69,7 +69,7 @@ struct ResponseFunctionTest : public ::testing::Test {
         p = bfs::path(getenv("CLUTSEG_PATH"));
         {
             empty_scene = GroundTruth();
-            at_hm_jc.read(p / "ias_kinect_test_grounded_21/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00008.png.ground.yaml");
+            at_hm_jc.read(p / "ias_kinect_test_grounded_21/at_hm_jc/image_00008.png.ground.yaml");
             Pose atp = poseRtToPose(at_hm_jc.posesOf("assam_tea")[0]);
             at_perfect = createGuess("assam_tea", atp);
             at_ge_max_angle = createGuess("assam_tea", rotatePose(atp, randomOrientation(M_PI / 8)));

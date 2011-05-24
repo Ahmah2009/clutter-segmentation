@@ -51,10 +51,10 @@ class ClutsegTest : public ::testing::Test {
             haltbare_milch_train_img = imread("./data/image_00000.png");
             pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
 
-            clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png");
-            pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/cloud_00000.pcd", clutter_cloud);
+            clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/image_00000.png");
+            pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/cloud_00000.pcd", clutter_cloud);
 
-            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/assam_tea_-15_haltbare_milch_0_jacobs_coffee_13/image_00000.png.ground.yaml");
+            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/image_00000.png.ground.yaml");
             assert(!clutter_truth.labels.empty());
 
             camera = Camera("./data/camera.yml", Camera::TOD_YAML);
@@ -120,7 +120,7 @@ class ClutsegTest : public ::testing::Test {
 
         void recognize(const string & test_name) {
             check_preconditions();
-            ClutsegQuery query(test_name, clutter_img, clutter_cloud);
+            ClutsegQuery query(clutter_img, clutter_cloud);
             sgm.recognize(query, res);
             ASSERT_TRUE(res.guess_made);
             check_postconditions();
