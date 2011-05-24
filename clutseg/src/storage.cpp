@@ -91,6 +91,16 @@ namespace clutseg {
             result.locate_choice.aligned_pose().write(lc_fs);
         }
         lc_fs.release();
+
+        // Save detect choices 
+        bfs::path dc_path = erd / (img_basename + ".detect_choices.yaml.gz");
+        bfs::create_directories(dc_path.parent_path());
+        FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
+        BOOST_FOREACH(const Guess & c, result.detect_choices) {
+            dc_fs << c.getObject()->name;
+            c.aligned_pose().write(dc_fs);
+        }
+        dc_fs.release();
     }
 
 }
