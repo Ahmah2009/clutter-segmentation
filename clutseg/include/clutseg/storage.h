@@ -6,6 +6,7 @@
 #define _STORAGE_H_
 
 #include "clutseg/ground.h" 
+#include "clutseg/report.h" 
 #include "clutseg/result.h" 
 
 #include <boost/filesystem.hpp>
@@ -22,13 +23,7 @@ namespace clutseg {
             ResultStorage(const boost::filesystem::path & result_dir) : result_dir_(result_dir) {}
 
             /** Stores results for one test scene. */
-            void store(int experiment_id,
-                        const boost::filesystem::path & test_dir,
-                        const std::string & img_name,
-                        const cv::Mat & img,
-                        const opencv_candidate::Camera & camera,
-                        const GroundTruth & ground,
-                        const Result & result);
+            void store(const TestReport & report);
 
         private:
 

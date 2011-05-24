@@ -92,14 +92,14 @@ namespace clutseg {
                 pcl::io::loadPCDFile(cloud_path.string(), queryCloud);
                 cout << "[RUN] Loaded query cloud " << cloud_path << endl;
             }
-            ClutsegQuery query(queryImage, queryCloud);
+            ClutsegQuery query(img_name, queryImage, queryCloud);
             Result res;
             sgm.recognize(query, res);
             cout << "[RUN] Recognized " << (res.guess_made ? res.locate_choice.getObject()->name : "NONE") << endl;
             resultSet[img_name] = res;
  
-            storage_.store(e.id, test_dir, img_name, queryImage,
-                            camera, test_it->second, res); 
+            TestReport report(e, query, res, test_it->second, test_dir, camera);
+            storage_.store(report);
         }
         // TODO: save experiment results
         CutSseResponseFunction responseFunc;

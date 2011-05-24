@@ -21,55 +21,29 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    /** Stores results for one test scene. */
-    void ResultStorage::store(int experiment_id,
-                const bfs::path & test_dir,
-                const string & img_name,
-                const Mat & img,
-                const Camera & camera,
-                const GroundTruth & ground,
-                const Result & result) {
-        bfs::path erd = result_dir_ / (str(boost::format("%05d") % experiment_id));
+    void ResultStorage::store(const TestReport & report) {
+        bfs::path erd = result_dir_ / (str(boost::format("%05d") % report.experiment.id));
         if (!bfs::exists(erd)) {
             bfs::create_directory(erd);
         }
 
-        // TODO: extract method
-        size_t offs = img_name.rfind(".");
-        string img_basename;
-        if (offs == string::npos) {
-            img_basename = img_name;
-        } else {
-            img_basename = img_name;
-            img_basename = img_name.substr(0, offs);
-        }
+        cout << boost::format("[STORE] Saving result on '%s' for experiment '%d'") % report.query.img_name % report.experiment.id << endl;
 
-        // TODO: remove dupliation, see response.cpp
-        // Must decide whether trying to collect statistics as you go
-        // or do batch processing afterwards. The latter requires to 
-        // store all necessary information, the former requires code
-        // to be interwoven.
-        bool succ = false;
-        if (result.guess_made) {
-            vector<PoseRT> poses = ground.posesOf(result.locate_choice.getObject()->name);
-            PoseRT truep = poses[0];
-            Pose estp = result.locate_choice.aligned_pose();
-            double t = dist_between(estp, truep); 
-            double a = angle_between(estp, truep); 
-            succ = (a <= M_PI / 9 && t <= 0.03);
+        // TODO: extract method
+        size_t offs = report.query.img_name.rfind(".");
+        string img_basename = report.query.img_name;
+        if (offs == string::npos) {
+        } else {
+            img_basename = img_basename.substr(0, offs);
         }
-        /* // Save image
-        bfs::path img_path = erd / img_basename; 
-        bfs::create_directories(img_path.parent_path());
-        imwrite(img_path.string(), img); */
 
         // Draw locate choice image
-        Mat lci = img.clone();
-        drawGroundTruth(lci, ground, camera);
-        if (result.guess_made) { 
-            drawGuess(lci, result.locate_choice, camera, PoseRT());
+        Mat lci = report.query.img.clone();
+        drawGroundTruth(lci, report.ground, report.camera);
+        if (report.result.guess_made) { 
+            drawGuess(lci, report.result.locate_choice, report.camera, PoseRT());
         }
-        if (succ) {
+        if (report.success()) {
             vector<string> succ_text(1, "SUCCESS");
             drawText(lci, succ_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.2, 2, Scalar(0, 204, 0));
         } else {
@@ -81,10 +55,10 @@ namespace clutseg {
         imwrite(lci_path.string(), lci);
 
         // Draw detect choices image
-        Mat dci = img.clone();
-        drawGroundTruth(dci, ground, camera);
+        Mat dci = report.query.img.clone();
+        drawGroundTruth(dci, report.ground, report.camera);
         vector<PoseRT> dummy;
-        drawGuesses(dci, result.detect_choices, camera, dummy); // TODO: create delegate method or use default parameter
+        drawGuesses(dci, report.result.detect_choices, report.camera, dummy); // TODO: create delegate method or use default parameter
         bfs::path dci_path = erd / (img_basename + ".detect_choices.png");
         bfs::create_directories(dci_path.parent_path());
         imwrite(dci_path.string(), dci);
@@ -101,16 +75,16 @@ namespace clutseg {
         bfs::create_directories(feat_path.parent_path());
         FileStorage feat_fs(feat_path.string(), FileStorage::WRITE);
         feat_fs << Features2d::YAML_NODE_NAME;
-        result.features.write(feat_fs);
+        report.result.features.write(feat_fs);
         feat_fs.release();
 
         // Save locate choice
         bfs::path lc_path = erd / (img_basename + ".locate_choice.yaml.gz");
         bfs::create_directories(lc_path.parent_path());
         FileStorage lc_fs(lc_path.string(), FileStorage::WRITE);
-        if (result.guess_made) {
-            lc_fs << result.locate_choice.getObject()->name;
-            result.locate_choice.aligned_pose().write(lc_fs);
+        if (report.result.guess_made) {
+            lc_fs << report.result.locate_choice.getObject()->name;
+            report.result.locate_choice.aligned_pose().write(lc_fs);
         }
         lc_fs.release();
 
@@ -118,7 +92,7 @@ namespace clutseg {
         bfs::path dc_path = erd / (img_basename + ".detect_choices.yaml.gz");
         bfs::create_directories(dc_path.parent_path());
         FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
-        BOOST_FOREACH(const Guess & c, result.detect_choices) {
+        BOOST_FOREACH(const Guess & c, report.result.detect_choices) {
             dc_fs << c.getObject()->name;
             c.aligned_pose().write(dc_fs);
         }

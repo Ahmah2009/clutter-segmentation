@@ -66,7 +66,7 @@ namespace clutseg {
                             img(img),
                             cloud(cloud) {}
 
-        std::string img_name;
+        std::string img_name; // TODO: move img_name to TestReport 
         cv::Mat img;
         PointCloudT cloud;
 
