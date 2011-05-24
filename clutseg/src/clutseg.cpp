@@ -203,6 +203,7 @@ namespace clutseg {
                         stats_.choices++;
                     } /* end statistics */
 
+                    result.guess_made = true;
                     pos = true;
                     break;
                 }
