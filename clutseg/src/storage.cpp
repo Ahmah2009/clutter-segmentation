@@ -4,6 +4,7 @@
 
 #include "clutseg/storage.h"
 
+#include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
 #include <boost/foreach.hpp>
@@ -32,6 +33,8 @@ namespace clutseg {
         if (!bfs::exists(erd)) {
             bfs::create_directory(erd);
         }
+
+        // TODO: extract method
         size_t offs = img_name.rfind(".");
         string img_basename;
         if (offs == string::npos) {
@@ -41,6 +44,20 @@ namespace clutseg {
             img_basename = img_name.substr(0, offs);
         }
 
+        // TODO: remove dupliation, see response.cpp
+        // Must decide whether trying to collect statistics as you go
+        // or do batch processing afterwards. The latter requires to 
+        // store all necessary information, the former requires code
+        // to be interwoven.
+        bool succ = false;
+        if (result.guess_made) {
+            vector<PoseRT> poses = ground.posesOf(result.locate_choice.getObject()->name);
+            PoseRT truep = poses[0];
+            Pose estp = result.locate_choice.aligned_pose();
+            double t = dist_between(estp, truep); 
+            double a = angle_between(estp, truep); 
+            succ = (a <= M_PI / 9 && t <= 0.03);
+        }
         /* // Save image
         bfs::path img_path = erd / img_basename; 
         bfs::create_directories(img_path.parent_path());
@@ -51,6 +68,13 @@ namespace clutseg {
         drawGroundTruth(lci, ground, camera);
         if (result.guess_made) { 
             drawGuess(lci, result.locate_choice, camera, PoseRT());
+        }
+        if (succ) {
+            vector<string> succ_text(1, "SUCCESS");
+            drawText(lci, succ_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.2, 2, Scalar(0, 204, 0));
+        } else {
+            vector<string> fail_text(1, "FAILURE");
+            drawText(lci, fail_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.2, 2, Scalar(0, 0, 255));
         }
         bfs::path lci_path = erd / (img_basename + ".locate_choice.png");
         bfs::create_directories(lci_path.parent_path());
