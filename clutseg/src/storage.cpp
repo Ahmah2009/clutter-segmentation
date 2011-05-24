@@ -34,6 +34,14 @@ namespace clutseg {
             //throw runtime_error(str(boost::format(
             //    "ERROR: Result directory for experiment %d already exists.") % experiment_id));
         }
+        int offs = img_name.rfind(".");
+        string img_basename;
+        if (offs == string::npos) {
+            img_basename = img_name;
+        } else {
+            img_basename = img_name;
+            img_basename = img_name.substr(0, offs);
+        }
 
         /* // Save image
         bfs::path img_path = erd / img_name; 
@@ -67,7 +75,7 @@ namespace clutseg {
         imwrite(kptsi_path.string(), kptsi);*/
 
         // Save keypoints
-        bfs::path feat_path = erd / (img_name + ".features.yaml.gz");
+        bfs::path feat_path = erd / (img_basename + ".features.yaml.gz");
         bfs::create_directories(feat_path.parent_path());
         FileStorage feat_fs(feat_path.string(), FileStorage::WRITE);
         feat_fs << Features2d::YAML_NODE_NAME;

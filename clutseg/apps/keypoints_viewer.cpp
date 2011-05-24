@@ -4,17 +4,23 @@
  * Shows keypoints for a certain training view.
  */
 
-#include <tod/core/Features2d.h>
+#include "clutseg/check.h"
+
+#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <iostream>
 #include <cv.h>
+#include <iostream>
+#include <opencv2/highgui/highgui.hpp>
+#include <tod/core/Features2d.h>
 
 using namespace std;
+using namespace clutseg;
 using namespace cv;
 using namespace tod;
 using namespace boost;
+
+namespace bfs = boost::filesystem;
 
 int main(int argc, char **argv) {
     if (argc != 4 && argc != 5) {
@@ -24,13 +30,16 @@ int main(int argc, char **argv) {
     string base(argv[1]);
     string subject(argv[2]);
     int view = lexical_cast<int>(argv[3]);
-    string outfile("");
+    bfs::path outfile("");
     if (argc == 5) {
-        outfile = argv[4];
+        outfile = bfs::path(argv[4]);
     }
 
-    string imgp = str(boost::format("%s/%s/image_%05d.png") % base % subject % view);
-    string f2dp = imgp + ".features.yaml.gz";
+    bfs::path imgp = str(boost::format("%s/%s/image_%05d.png") % base % subject % view);
+    bfs::path f2dp = bfs::path(imgp.string() + ".features.yaml.gz");
+
+    assert_path_exists(imgp);
+    assert_path_exists(f2dp);
 
     cout << "base: " << base << endl;
     cout << "subject: " << subject << endl;
@@ -39,11 +48,11 @@ int main(int argc, char **argv) {
     cout << "f2d path: " << f2dp << endl;
 
     // load image
-    Mat gray = imread(imgp, 0); 
-    Mat canvas = imread(imgp);
+    Mat gray = imread(imgp.string(), 0); 
+    Mat canvas = imread(imgp.string());
 
     // load keypoints 
-    FileStorage fs(f2dp, FileStorage::READ);
+    FileStorage fs(f2dp.string(), FileStorage::READ);
     Features2d f2d;
     f2d.read(fs[Features2d::YAML_NODE_NAME]);
     f2d.image = gray;
@@ -51,8 +60,8 @@ int main(int argc, char **argv) {
     // draw image and keypoints
     //f2d.draw(canvas, 0);
     drawKeypoints(f2d.image, f2d.keypoints, canvas, Scalar(0, 0, 255)); 
-    if (outfile != "") {
-        imwrite(outfile, canvas);
+    if (outfile.string() != "") {
+        imwrite(outfile.string(), canvas);
     }
     imshow("features", canvas);
     waitKey(-1);
