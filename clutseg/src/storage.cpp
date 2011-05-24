@@ -27,11 +27,11 @@ namespace clutseg {
             bfs::create_directory(erd);
         }
 
-        cout << boost::format("[STORE] Saving result on '%s' for experiment '%d'") % report.query.img_name % report.experiment.id << endl;
+        cout << boost::format("[STORE] Saving result on '%s' for experiment '%d'") % report.img_name % report.experiment.id << endl;
 
         // TODO: extract method
-        size_t offs = report.query.img_name.rfind(".");
-        string img_basename = report.query.img_name;
+        size_t offs = report.img_name.rfind(".");
+        string img_basename = report.img_name;
         if (offs == string::npos) {
         } else {
             img_basename = img_basename.substr(0, offs);

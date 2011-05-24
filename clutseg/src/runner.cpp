@@ -47,25 +47,26 @@ namespace clutseg {
         return img_path.parent_path() / (img_path.filename() + ".cloud.pcd");
     }
 
-    // The test runner runs in two different levels. First, at the
-    // experiment level, it iterates over different experiment setups.
-    // Second, it iterates over each test scene. We are doing this only,
-    // and really only because we are interested in the statistics and
-    // data for later analysis. Some data is local to each test scene.
-    // Other data is global (or made global by aggregation and averaging
-    // of locally gathered data. We have two main tasks, (1) storing
-    // global results in the database, and (2) storing local results to
-    // the filesystem. All information that is to be stored in the database is coupled
-    // by a Response object (the name 'response' is taken from Alpaydin and refers
-    // to the whole experiment), and local data is written to the disk by a storage
-    // module. Basically, both global and local processors often need the same
-    // data, such as angle error and translational error, success or not, and so on.
-    // Therefore, the experiment runner generates a report for each test scene and
-    // passes this to the global and local processors. There occurs the question, whether
-    // the response object actually shall update itself according to the report.
-    // Also, how much information shall the Result object carry. Actually, it should not
-    // carry any more information than the Clutsegmenter can fill in. It can become a member
-    // of a report specific to a test scene.
+    // The test runner runs in two different levels. First, at the experiment
+    // level, it iterates over different experiment setups.  Second, it
+    // iterates over each test scene. We are doing this only, and really only
+    // because we are interested in the statistics and data for later analysis.
+    // Some data is local to each test scene.  Other data is global (or made
+    // global by aggregation and averaging of locally gathered data. We have
+    // two main tasks, (1) storing global results in the database, and (2)
+    // storing local results to the filesystem. All information that is to be
+    // stored in the database is coupled by a Response object (the name
+    // 'response' is taken from Alpaydin and refers to the whole experiment),
+    // and local data is written to the disk by a storage module. Basically,
+    // both global and local processors often need the same data, such as angle
+    // error and translational error, success or not, and so on.  Therefore,
+    // the experiment runner generates a report for each test scene and passes
+    // this to the global and local processors. There occurs the question,
+    // whether the response object actually shall update itself according to
+    // the report.  Also, how much information shall the Result object carry.
+    // Actually, it should not carry any more information than the
+    // Clutsegmenter can fill in. It can become a member of a report specific
+    // to a test scene.
     void ExperimentRunner::runExperiment(Clutsegmenter & sgm, Experiment & e) {
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / e.test_set;
@@ -92,13 +93,13 @@ namespace clutseg {
                 pcl::io::loadPCDFile(cloud_path.string(), queryCloud);
                 cout << "[RUN] Loaded query cloud " << cloud_path << endl;
             }
-            ClutsegQuery query(img_name, queryImage, queryCloud);
+            ClutsegQuery query(queryImage, queryCloud);
             Result res;
             sgm.recognize(query, res);
             cout << "[RUN] Recognized " << (res.guess_made ? res.locate_choice.getObject()->name : "NONE") << endl;
             resultSet[img_name] = res;
  
-            TestReport report(e, query, res, test_it->second, test_dir, camera);
+            TestReport report(e, query, res, test_it->second, img_name, test_dir, camera);
             storage_.store(report);
         }
         // TODO: save experiment results

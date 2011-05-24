@@ -53,20 +53,15 @@ namespace clutseg {
 
     struct ClutsegQuery {
         
-        ClutsegQuery() : img_name(), img(), cloud() {}
+        ClutsegQuery() : img(), cloud() {}
         ClutsegQuery(const cv::Mat & img,
                         const PointCloudT & cloud) :
-                            img_name(),
                             img(img),
                             cloud(cloud) {}
-        ClutsegQuery(const std::string & img_name,
-                        const cv::Mat & img,
-                        const PointCloudT & cloud) :
-                            img_name(img_name),
+        ClutsegQuery(const PointCloudT & cloud) :
                             img(img),
                             cloud(cloud) {}
 
-        std::string img_name; // TODO: move img_name to TestReport 
         cv::Mat img;
         PointCloudT cloud;
 
