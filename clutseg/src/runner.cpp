@@ -59,7 +59,7 @@ namespace clutseg {
         for (SetGroundTruth::iterator test_it = testdesc.begin(); test_it != testdesc.end(); test_it++) {
             string img_name = test_it->first;
             bfs::path img_path = test_dir / img_name;
-            Mat queryImage = imread(img_path.string(), 0);
+            Mat queryImage = imread(img_path.string());
             if (queryImage.empty()) {
                 throw runtime_error(str(boost::format(
                     "ERROR: Cannot read image '%s' for eeriment with id=%d. Please check\n"

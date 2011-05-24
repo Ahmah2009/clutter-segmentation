@@ -25,23 +25,31 @@ namespace clutseg {
                 const Camera & camera,
                 const GroundTruth & ground,
                 const Result & result) {
-        bfs::path exp_result_dir = result_dir_ / (str(boost::format("%05d") % experiment_id));
-        if (!bfs::exists(exp_result_dir)) {
-            bfs::create_directory(exp_result_dir);
+        bfs::path erd = result_dir_ / (str(boost::format("%05d") % experiment_id));
+        if (!bfs::exists(erd)) {
+            bfs::create_directory(erd);
             //throw runtime_error(str(boost::format(
             //    "ERROR: Result directory for experiment %d already exists.") % experiment_id));
         }
 
         // Draw locate choice image
-        Mat locate_choice_img = img.clone();
-        drawGroundTruth(locate_choice_img, ground, camera);
+        Mat lci = img.clone();
+        drawGroundTruth(lci, ground, camera);
         if (result.guess_made) { // TODO: make locate_choice a method, then throw exception if !guess_made
-            drawGuess(locate_choice_img, result.locate_choice, camera, PoseRT());
+            drawGuess(lci, result.locate_choice, camera, PoseRT());
         }
-        bfs::path locate_choice_img_path = exp_result_dir / (img_name + ".locate_choice.png");
-        bfs::create_directories(locate_choice_img_path.parent_path());
-        imwrite(locate_choice_img_path.string(), locate_choice_img);
-        // Draw locate choice image
+        bfs::path lci_path = erd / (img_name + ".locate_choice.png");
+        bfs::create_directories(lci_path.parent_path());
+        imwrite(lci_path.string(), lci);
+
+        // Draw detect choices image
+        Mat dci = img.clone();
+        drawGroundTruth(dci, ground, camera);
+        vector<PoseRT> dummy;
+        drawGuesses(dci, result.detect_choices, camera, dummy); // TODO: create delegate method or use default parameter
+        bfs::path dci_path = erd / (img_name + ".detect_choices.png");
+        bfs::create_directories(dci_path.parent_path());
+        imwrite(dci_path.string(), dci);
     }
 
 }
