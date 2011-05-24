@@ -120,7 +120,7 @@ namespace clutseg {
              * locations. High-ranked guesses are refined by applying more computing
              * resources and by using a object-specific test until the refined guess meets
              * an acceptance criterium, which is given by a ranking threshold. */
-            bool recognize(const ClutsegQuery & query, Result & result);
+            void recognize(const ClutsegQuery & query, Result & result);
 
         private:
 

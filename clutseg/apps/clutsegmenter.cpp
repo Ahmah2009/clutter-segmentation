@@ -65,11 +65,9 @@ int main(int argc, char **argv) {
 
     readInput(argc, argv, queryImage, queryCloud);
 
-    // Output: whether an object has been located 
-    bool positive;
     Result result;
     // Actual recognition 
-    positive = segmenter.recognize(query, result);
+    segmenter.recognize(query, result);
 
     processOutput(argc, argv, result);
 

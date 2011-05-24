@@ -143,7 +143,7 @@ namespace clutseg {
                              baseDirectory);
     }
 
-    bool ClutSegmenter::recognize(const ClutsegQuery & query, Result & result) {
+    void ClutSegmenter::recognize(const ClutsegQuery & query, Result & result) {
         { /* begin statistics */ 
             stats_.queries++;
         } /* end statistics */
@@ -165,14 +165,9 @@ namespace clutseg {
             mapInliersToCloud(g.inlierCloud, g, query.img, query.cloud);
         }
 
-        if (result.detect_choices.empty()) {
-            // In case there are any objects in the scene, this is kind of the
-            // worst-case. None of the objects has been detected.
-            return false;
-        } else {
+        if (!result.detect_choices.empty()) {
             // Sort the guesses according to the ranking function.
             sort(result.detect_choices.begin(), result.detect_choices.end(), GuessComparator(ranking_));
-            bool pos = false;
             // Iterate over every guess, beginning with the highest ranked
             // guess. If the guess resulting of locating the object got a score
             // larger than the acceptance threshold, this is our best guess.
@@ -204,12 +199,9 @@ namespace clutseg {
                     } /* end statistics */
 
                     result.guess_made = true;
-                    pos = true;
                     break;
                 }
             }
-
-            return pos;
         }
     }
 

@@ -94,8 +94,8 @@ namespace clutseg {
             }
             ClutsegQuery query(queryImage, queryCloud);
             Result res;
-            bool pos = sgm.recognize(query, res);
-            cout << "[RUN] Recognized " << (pos ? res.locate_choice.getObject()->name : "NONE") << endl;
+            sgm.recognize(query, res);
+            cout << "[RUN] Recognized " << (res.guess_made ? res.locate_choice.getObject()->name : "NONE") << endl;
             resultSet[img_name] = res;
  
             storage_.store(e.id, test_dir, img_name, queryImage,

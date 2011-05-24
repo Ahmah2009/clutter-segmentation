@@ -121,8 +121,8 @@ class ClutsegTest : public ::testing::Test {
         void recognize(const string & test_name) {
             check_preconditions();
             ClutsegQuery query(test_name, clutter_img, clutter_cloud);
-            bool positive = sgm.recognize(query, res);
-            ASSERT_TRUE(positive);
+            sgm.recognize(query, res);
+            ASSERT_TRUE(res.guess_made);
             check_postconditions();
             showGuessAndGroundTruth(test_name, res.locate_choice);
         }
@@ -164,8 +164,8 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
  * return with a whole bunch of inliers since it is only a training image. */
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
     ClutsegQuery query(haltbare_milch_train_img, haltbare_milch_train_cloud);
-    bool positive = sgm.recognize(query, res);
-    EXPECT_TRUE(positive);
+    sgm.recognize(query, res);
+    EXPECT_TRUE(res.guess_made);
     EXPECT_EQ("haltbare_milch", res.locate_choice.getObject()->name);
     cout << "detected: " << res.locate_choice.getObject()->name << endl;
     cout << "inliers:  " << res.locate_choice.inliers.size() << endl;
