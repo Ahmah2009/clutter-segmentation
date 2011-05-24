@@ -31,8 +31,6 @@ namespace clutseg {
         bfs::path erd = result_dir_ / (str(boost::format("%05d") % experiment_id));
         if (!bfs::exists(erd)) {
             bfs::create_directory(erd);
-            //throw runtime_error(str(boost::format(
-            //    "ERROR: Result directory for experiment %d already exists.") % experiment_id));
         }
         size_t offs = img_name.rfind(".");
         string img_basename;
@@ -44,17 +42,17 @@ namespace clutseg {
         }
 
         /* // Save image
-        bfs::path img_path = erd / img_name; 
+        bfs::path img_path = erd / img_basename; 
         bfs::create_directories(img_path.parent_path());
         imwrite(img_path.string(), img); */
 
-        /*// Draw locate choice image
+        // Draw locate choice image
         Mat lci = img.clone();
         drawGroundTruth(lci, ground, camera);
         if (result.guess_made) { 
             drawGuess(lci, result.locate_choice, camera, PoseRT());
         }
-        bfs::path lci_path = erd / (img_name + ".locate_choice.png");
+        bfs::path lci_path = erd / (img_basename + ".locate_choice.png");
         bfs::create_directories(lci_path.parent_path());
         imwrite(lci_path.string(), lci);
 
@@ -63,9 +61,9 @@ namespace clutseg {
         drawGroundTruth(dci, ground, camera);
         vector<PoseRT> dummy;
         drawGuesses(dci, result.detect_choices, camera, dummy); // TODO: create delegate method or use default parameter
-        bfs::path dci_path = erd / (img_name + ".detect_choices.png");
+        bfs::path dci_path = erd / (img_basename + ".detect_choices.png");
         bfs::create_directories(dci_path.parent_path());
-        imwrite(dci_path.string(), dci);*/
+        imwrite(dci_path.string(), dci);
 
         /*
         Mat kptsi = img.clone();
