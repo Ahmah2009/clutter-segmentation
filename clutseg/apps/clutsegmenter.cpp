@@ -56,14 +56,9 @@ int main(int argc, char **argv) {
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
     );
 
-    // Input: test image
-    Mat queryImage;
-    // Input: corresponding point cloud
-    PointCloudT queryCloud;
-
     ClutsegQuery query(queryImage, queryCloud);
 
-    readInput(argc, argv, queryImage, queryCloud);
+    readInput(argc, argv, query.img, query.cloud);
 
     Result result;
     // Actual recognition 
