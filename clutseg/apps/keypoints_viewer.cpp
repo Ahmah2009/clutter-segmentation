@@ -21,8 +21,6 @@ int main(int argc, char **argv) {
         cerr << "Usage: keypoints_viewer <base> <subject> <view-number> [<outfile>]" << endl;
         return -1;
     }
-    // string base = "/home/julius/Studium/BA/tod_kinect_train_15/fat_free_milk/";
-    // int view = 0;
     string base(argv[1]);
     string subject(argv[2]);
     int view = lexical_cast<int>(argv[3]);

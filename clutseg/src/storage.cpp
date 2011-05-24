@@ -9,10 +9,13 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <iostream>
+#include <opencv2/highgui/highgui.hpp>
+#include <tod/core/Features2d.h>
 
 using namespace cv;
 using namespace opencv_candidate;
 using namespace std;
+using namespace tod;
 namespace bfs = boost::filesystem;
 
 namespace clutseg {
@@ -32,7 +35,12 @@ namespace clutseg {
             //    "ERROR: Result directory for experiment %d already exists.") % experiment_id));
         }
 
-        // Draw locate choice image
+        /* // Save image
+        bfs::path img_path = erd / img_name; 
+        bfs::create_directories(img_path.parent_path());
+        imwrite(img_path.string(), img); */
+
+        /*// Draw locate choice image
         Mat lci = img.clone();
         drawGroundTruth(lci, ground, camera);
         if (result.guess_made) { // TODO: make locate_choice a method, then throw exception if !guess_made
@@ -49,7 +57,22 @@ namespace clutseg {
         drawGuesses(dci, result.detect_choices, camera, dummy); // TODO: create delegate method or use default parameter
         bfs::path dci_path = erd / (img_name + ".detect_choices.png");
         bfs::create_directories(dci_path.parent_path());
-        imwrite(dci_path.string(), dci);
+        imwrite(dci_path.string(), dci);*/
+
+        /*
+        Mat kptsi = img.clone();
+        clutseg::drawKeypoints(kptsi, result.features.keypoints);
+        bfs::path kptsi_path = erd / (img_name + ".keypoints.png");
+        bfs::create_directories(kptsi_path.parent_path());
+        imwrite(kptsi_path.string(), kptsi);*/
+
+        // Save keypoints
+        bfs::path feat_path = erd / (img_name + ".features.yaml.gz");
+        bfs::create_directories(feat_path.parent_path());
+        FileStorage feat_fs(feat_path.string(), FileStorage::WRITE);
+        feat_fs << Features2d::YAML_NODE_NAME;
+        result.features.write(feat_fs);
+        feat_fs.release();
     }
 
 }

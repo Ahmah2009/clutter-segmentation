@@ -161,6 +161,8 @@ namespace clutseg {
         // detected and there are no misclassifications.
         detect(query, result.detect_choices, detectMatcher);
 
+        result.features = query;
+
         BOOST_FOREACH(Guess & g, result.detect_choices) {
             mapInliersToCloud(g.inlierCloud, g, query.image, queryCloud);
         }
