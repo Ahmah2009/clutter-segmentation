@@ -5,6 +5,8 @@ tags
 *.swp
 *.swo
 *.pyc
+thesis/main.tex
+thesis/chapters/results.tex
 thesis/*.aux
 thesis/*.pdf
 thesis/*.glo
