@@ -38,10 +38,10 @@ function tile() {
 artifact=$(get_arg 0)
 exp=$(printf "%05d" $(get_arg 1))
 geometry="-geometry 625x500+7+7"
-out=$CLUTSEG_ARTIFACT_DIR/$artifacat.$exp.jpg
+out=$CLUTSEG_ARTIFACT_DIR/$artifact.$exp.jpg
 if [ "$artifact" = "locate_choice.collage" ] ; then
     lcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.locate_choice.png" | sort)
-    montage $(tile $images) $geometry $images $out
+    montage $(tile $lcis) $geometry $lcis $out
     eog $out
 elif [ "$artifact" = "detect_choices.collage" ] ; then
     dcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.detect_choices.png" | sort)
