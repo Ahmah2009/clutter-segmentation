@@ -126,7 +126,7 @@ namespace clutseg {
         }
         
         sc.compute_final_score();
-        rsp.sipc_score = sc; 
+        rsp.locate_sipc = sc; 
 
         int n = groundSet.size();
         int tps = tp;

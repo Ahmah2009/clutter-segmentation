@@ -2,6 +2,14 @@
 create table response (
     id integer primary key autoincrement,
     value float not null,
+    -- modified SIPC score for single object
+    locate_sipc float not null,
+    locate_sipc_rscore float not null,
+    locate_sipc_tscore float not null,
+    locate_sipc_cscore float not null,
+    locate_sipc_max_cscore integer not null,
+    locate_sipc_max_rscore integer not null,
+    locate_sipc_max_tscore integer not null,
     -- the following statistics depend only on the one single choice made
     avg_angle_err float not null,
     avg_succ_angle_err float not null,

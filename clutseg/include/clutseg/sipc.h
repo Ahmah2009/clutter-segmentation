@@ -42,9 +42,9 @@ namespace clutseg {
         float rscore;
         float tscore;
         float cscore;
-        float max_cscore;
-        float max_rscore;
-        float max_tscore;
+        int max_cscore;
+        int max_rscore;
+        int max_tscore;
         void compute_final_score();
         void print();
     };
