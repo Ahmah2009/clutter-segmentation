@@ -28,13 +28,26 @@ fi
 expect_arg 0
 expect_arg 1
 
+function tile() {
+    if [ "$(echo $* | wc --words)" = "21" ] ; then
+        echo "-tile 7x3"
+    fi
+}
+
+# first argument currently ignored
 artifact=$(get_arg 0)
 exp=$(printf "%05d" $(get_arg 1))
-images=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.locate_choice.png" | sort)
-outfile=$CLUTSEG_ARTIFACT_DIR/locate_choice.collage.$exp.jpg
-tile=
-if [ "$(echo $images | wc --words)" = "21" ] ; then
-    tile="-tile 7x3"
+geometry="-geometry 625x500+7+7"
+out=$CLUTSEG_ARTIFACT_DIR/$artifacat.$exp.jpg
+if [ "$artifact" = "locate_choice.collage" ] ; then
+    lcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.locate_choice.png" | sort)
+    montage $(tile $images) $geometry $images $out
+    eog $out
+elif [ "$artifact" = "detect_choices.collage" ] ; then
+    dcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.detect_choices.png" | sort)
+    montage $(tile $dcis) $geometry $dcis $out
+    eog $out 
+else
+    echo "Valid artifacts are 'locate_choice.collage' and 'detect_choices.collage'"
+    exit 1
 fi
-montage $tile -geometry 625x500+7+7 $images $outfile
-eog $outfile
