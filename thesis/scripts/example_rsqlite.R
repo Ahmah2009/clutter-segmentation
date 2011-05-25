@@ -1,6 +1,5 @@
 library(RSQLite)
-paste(Sys.getenv("CLUTSEG_PATH"), "/clutter-segmentation/clutseg/data/test.sqlite3")
 con = dbConnect(dbDriver("SQLite"), dbname = paste(Sys.getenv("CLUTSEG_PATH"), "/clutter-segmentation/clutseg/data/test.sqlite3", sep=""))
-# dbListTables(con)
-# dbReadTable(con, "response")
+dbListTables(con)
 dbGetQuery(con, paste("select succ_rate from response join experiment on experiment.response_id=response.id where experiment.id=1"))
+dbReadTable(con, "response")

@@ -1,0 +1,26 @@
+% \chapter{Results}
+% \label{chapter:results}
+
+\section{Performance in Experiments}
+
+<<echo=FALSE>>=
+library(RSQLite)
+con = dbConnect(dbDriver("SQLite"), dbname = paste(Sys.getenv("CLUTSEG_PATH"), "/clutter-segmentation/clutseg/data/test.sqlite3", sep=""))
+@
+
+Results of experiments were stored in a relational database, having the
+following tables and views:
+
+<<echo=FALSE>>=
+dbListTables(con)
+@
+
+Besides other statistics, the database stores the success rate for every single
+experiment run.
+
+<<echo=FALSE>>=
+dbGetQuery(con, paste("select succ_rate from response join experiment on experiment.response_id=response.id where experiment.id=1"))
+@
+
+\section{Future Work}
+\section{Conclusion}
