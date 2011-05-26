@@ -52,10 +52,10 @@ class ClutsegTest : public ::testing::Test {
             pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
 
             // FIXME: 
-            clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/image_00000.png");
-            pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/cloud_00000.pcd", clutter_cloud);
+            clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00031.png");
+            pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/cloud_00031.pcd", clutter_cloud);
 
-            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/image_00000.png.ground.yaml");
+            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00031.png.ground.yaml");
             assert(!clutter_truth.labels.empty());
 
             camera = Camera("./data/camera.yml", Camera::TOD_YAML);
