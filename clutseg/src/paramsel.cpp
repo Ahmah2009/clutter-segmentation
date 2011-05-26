@@ -50,13 +50,14 @@ namespace clutseg {
             "threshold, min_features, max_features, octaves "
             "from pms_fe where id=%d;") % id);
         db_step(read, SQLITE_ROW);
-        pms_fe.detector_type = string((const char*) sqlite3_column_text(read, 0));
-        pms_fe.extractor_type = string((const char*) sqlite3_column_text(read, 1));
-        pms_fe.descriptor_type = string((const char*) sqlite3_column_text(read, 2));
-        pms_fe.detector_params["threshold"] = sqlite3_column_double(read, 3);
-        pms_fe.detector_params["min_features"] = sqlite3_column_int(read, 4);
-        pms_fe.detector_params["max_features"] = sqlite3_column_int(read, 5);
-        pms_fe.extractor_params["octaves"] = sqlite3_column_int(read, 6);
+        int c = 0;
+        pms_fe.detector_type = string((const char*) sqlite3_column_text(read, c++));
+        pms_fe.extractor_type = string((const char*) sqlite3_column_text(read, c++));
+        pms_fe.descriptor_type = string((const char*) sqlite3_column_text(read, c++));
+        pms_fe.detector_params["threshold"] = sqlite3_column_double(read, c++);
+        pms_fe.detector_params["min_features"] = sqlite3_column_int(read, c++);
+        pms_fe.detector_params["max_features"] = sqlite3_column_int(read, c++);
+        pms_fe.extractor_params["octaves"] = sqlite3_column_int(read, c++);
         sqlite3_finalize(read);
     }
 
@@ -78,10 +79,11 @@ namespace clutseg {
             "select matcher_type, knn, do_ratio_test, ratio_threshold "
             "from pms_match where id=%d;") % id);
         db_step(read, SQLITE_ROW);
-        pms_match.type = string((const char*) sqlite3_column_text(read, 0));
-        pms_match.knn = sqlite3_column_int(read, 1);
-        pms_match.doRatioTest = sqlite3_column_int(read, 2);
-        pms_match.ratioThreshold = sqlite3_column_double(read, 3);
+        int c = 0;
+        pms_match.type = string((const char*) sqlite3_column_text(read, c++));
+        pms_match.knn = sqlite3_column_int(read, c++);
+        pms_match.doRatioTest = sqlite3_column_int(read, c++);
+        pms_match.ratioThreshold = sqlite3_column_double(read, c++);
         sqlite3_finalize(read);
     }
 
@@ -100,9 +102,10 @@ namespace clutseg {
             "select ransac_iterations_count, min_inliers_count, max_projection_error "
             "from pms_guess where id=%d;") % id);
         db_step(read, SQLITE_ROW);
-        pms_guess.ransacIterationsCount = sqlite3_column_int(read, 0);
-        pms_guess.minInliersCount = sqlite3_column_int(read, 1);
-        pms_guess.maxProjectionError = sqlite3_column_double(read, 2);
+        int c = 0;
+        pms_guess.ransacIterationsCount = sqlite3_column_int(read, c++);
+        pms_guess.minInliersCount = sqlite3_column_int(read, c++);
+        pms_guess.maxProjectionError = sqlite3_column_double(read, c++);
         sqlite3_finalize(read);
     }
 
@@ -142,13 +145,14 @@ namespace clutseg {
             "locate_pms_match_id, locate_pms_guess_id, "
             "recog_pms_clutseg_id from paramset where id=%d;") % id);
         db_step(read, SQLITE_ROW);
-        train_pms_fe_id = sqlite3_column_int64(read, 0);
-        recog_pms_fe_id = sqlite3_column_int64(read, 1);
-        detect_pms_match_id = sqlite3_column_int64(read, 2);
-        detect_pms_guess_id = sqlite3_column_int64(read, 3);
-        locate_pms_match_id = sqlite3_column_int64(read, 4);
-        locate_pms_guess_id = sqlite3_column_int64(read, 5);
-        pms_clutseg.id = sqlite3_column_int64(read, 6);
+        int c = 0;
+        train_pms_fe_id = sqlite3_column_int64(read, c++);
+        recog_pms_fe_id = sqlite3_column_int64(read, c++);
+        detect_pms_match_id = sqlite3_column_int64(read, c++);
+        detect_pms_guess_id = sqlite3_column_int64(read, c++);
+        locate_pms_match_id = sqlite3_column_int64(read, c++);
+        locate_pms_guess_id = sqlite3_column_int64(read, c++);
+        pms_clutseg.id = sqlite3_column_int64(read, c++);
         sqlite3_finalize(read);
         
         deserialize_pms_fe(db, train_pms_fe, train_pms_fe_id);
@@ -233,37 +237,37 @@ namespace clutseg {
             "from response where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         int c = 0;
-        value = sqlite3_column_double(read, c);
-        detect_sipc.acc_score = sqlite3_column_double(read, ++c);
-        detect_sipc.objects = sqlite3_column_int(read, ++c);
-        locate_sipc.rscore = sqlite3_column_double(read, ++c);
-        locate_sipc.tscore = sqlite3_column_double(read, ++c);
-        locate_sipc.cscore = sqlite3_column_double(read, ++c);
-        locate_sipc.frames = sqlite3_column_int(read, ++c);
-        avg_angle_err = sqlite3_column_double(read, ++c);
-        avg_succ_angle_err = sqlite3_column_double(read, ++c);
-        avg_trans_err = sqlite3_column_double(read, ++c);
-        avg_succ_trans_err = sqlite3_column_double(read, ++c);
-        avg_angle_sq_err = sqlite3_column_double(read, ++c);
-        avg_succ_angle_sq_err = sqlite3_column_double(read, ++c);
-        avg_trans_sq_err = sqlite3_column_double(read, ++c);
-        avg_succ_trans_sq_err = sqlite3_column_double(read, ++c);
-        succ_rate = sqlite3_column_double(read, ++c);
-        mislabel_rate = sqlite3_column_double(read, ++c);
-        none_rate = sqlite3_column_double(read, ++c);
-        avg_keypoints = sqlite3_column_double(read, ++c);
-        avg_detect_matches = sqlite3_column_double(read, ++c);
-        avg_detect_inliers = sqlite3_column_double(read, ++c);
-        avg_detect_choice_matches = sqlite3_column_double(read, ++c);
-        avg_detect_choice_inliers = sqlite3_column_double(read, ++c);
-        detect_tp = sqlite3_column_int(read, ++c);
-        detect_fp = sqlite3_column_int(read, ++c);
-        detect_fn = sqlite3_column_int(read, ++c);
-        detect_tn = sqlite3_column_int(read, ++c);
-        avg_locate_matches = sqlite3_column_double(read, ++c);
-        avg_locate_inliers = sqlite3_column_double(read, ++c);
-        avg_locate_choice_matches = sqlite3_column_double(read, ++c);
-        avg_locate_choice_inliers = sqlite3_column_double(read, ++c);
+        value = sqlite3_column_double(read, c++);
+        detect_sipc.acc_score = sqlite3_column_double(read, c++);
+        detect_sipc.objects = sqlite3_column_int(read, c++);
+        locate_sipc.rscore = sqlite3_column_double(read, c++);
+        locate_sipc.tscore = sqlite3_column_double(read, c++);
+        locate_sipc.cscore = sqlite3_column_double(read, c++);
+        locate_sipc.frames = sqlite3_column_int(read, c++);
+        avg_angle_err = sqlite3_column_double(read, c++);
+        avg_succ_angle_err = sqlite3_column_double(read, c++);
+        avg_trans_err = sqlite3_column_double(read, c++);
+        avg_succ_trans_err = sqlite3_column_double(read, c++);
+        avg_angle_sq_err = sqlite3_column_double(read, c++);
+        avg_succ_angle_sq_err = sqlite3_column_double(read, c++);
+        avg_trans_sq_err = sqlite3_column_double(read, c++);
+        avg_succ_trans_sq_err = sqlite3_column_double(read, c++);
+        succ_rate = sqlite3_column_double(read, c++);
+        mislabel_rate = sqlite3_column_double(read, c++);
+        none_rate = sqlite3_column_double(read, c++);
+        avg_keypoints = sqlite3_column_double(read, c++);
+        avg_detect_matches = sqlite3_column_double(read, c++);
+        avg_detect_inliers = sqlite3_column_double(read, c++);
+        avg_detect_choice_matches = sqlite3_column_double(read, c++);
+        avg_detect_choice_inliers = sqlite3_column_double(read, c++);
+        detect_tp = sqlite3_column_int(read, c++);
+        detect_fp = sqlite3_column_int(read, c++);
+        detect_fn = sqlite3_column_int(read, c++);
+        detect_tn = sqlite3_column_int(read, c++);
+        avg_locate_matches = sqlite3_column_double(read, c++);
+        avg_locate_inliers = sqlite3_column_double(read, c++);
+        avg_locate_choice_matches = sqlite3_column_double(read, c++);
+        avg_locate_choice_inliers = sqlite3_column_double(read, c++);
         sqlite3_finalize(read);
     }
 
@@ -292,30 +296,33 @@ namespace clutseg {
     void Experiment::deserialize(sqlite3* db) {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select "
-            "paramset_id, " // 0
-            "response_id, " // 1
-            "train_set, " // 2
-            "test_set, " // 3
-            "time, " // 4
-            "vcs_commit, " // 5
-            "skip " // 6
+            "paramset_id, "
+            "response_id, "
+            "train_set, "
+            "test_set, "
+            "time, "
+            "vcs_commit, "
+            "skip " 
             "from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
-       
-        has_run = (sqlite3_column_type(read, 1) != SQLITE_NULL);
-        paramset.id = sqlite3_column_int64(read, 0);
+        int c = 0; 
+        paramset.id = sqlite3_column_int64(read, c++);
+        has_run = (sqlite3_column_type(read, c) != SQLITE_NULL);
         if (has_run) {
-            response.id = sqlite3_column_int64(read, 1);
+            response.id = sqlite3_column_int64(read, c++);
         } else {
             response.id = -1;
+            c++;
         }
-        train_set = string((const char*) sqlite3_column_text(read, 2));
-        test_set = string((const char*) sqlite3_column_text(read, 3));
+        train_set = string((const char*) sqlite3_column_text(read, c++));
+        test_set = string((const char*) sqlite3_column_text(read, c++));
         if (has_run) {
-            time = string((const char*) sqlite3_column_text(read, 4));
-            vcs_commit = string((const char*) sqlite3_column_text(read, 5));
+            time = string((const char*) sqlite3_column_text(read, c++));
+            vcs_commit = string((const char*) sqlite3_column_text(read, c++));
+        } else {
+            c += 2;
         }
-        skip = sqlite3_column_int(read, 6) != 0;
+        skip = sqlite3_column_int(read, c++) != 0;
         sqlite3_finalize(read);
         paramset.deserialize(db);
         if (has_run) {
