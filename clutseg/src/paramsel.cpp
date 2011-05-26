@@ -163,10 +163,14 @@ namespace clutseg {
     void Response::serialize(sqlite3* db) {
         MemberMap m;
         setMemberField(m, "value", value);
+        setMemberField(m, "detect_sipc", detect_sipc.score());
+        setMemberField(m, "detect_sipc_acc_score", detect_sipc.acc_score);
+        setMemberField(m, "detect_sipc_objects", detect_sipc.objects);
         setMemberField(m, "locate_sipc", locate_sipc.score());
         setMemberField(m, "locate_sipc_rscore", locate_sipc.rscore);
         setMemberField(m, "locate_sipc_tscore", locate_sipc.tscore);
         setMemberField(m, "locate_sipc_cscore", locate_sipc.cscore);
+        setMemberField(m, "locate_sipc_frames", locate_sipc.frames);
         setMemberField(m, "locate_sipc_max_rscore", locate_sipc.max_rscore);
         setMemberField(m, "locate_sipc_max_tscore", locate_sipc.max_tscore);
         setMemberField(m, "locate_sipc_max_cscore", locate_sipc.max_cscore);
@@ -196,78 +200,91 @@ namespace clutseg {
         setMemberField(m, "avg_locate_choice_inliers", avg_locate_choice_inliers);
         insertOrUpdate(db, "response", m, id);
     }
-
+    // TODO: remove sipc.frames
     void Response::deserialize(sqlite3* db) {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select "
-            "value, " // 0
-            "locate_sipc, " // 1
-            "locate_sipc_rscore, " // 2
-            "locate_sipc_tscore, " // 3
-            "locate_sipc_cscore ," // 4 
-            "locate_sipc_max_rscore, " // 5 
-            "locate_sipc_max_tscore, " // 6 
-            "locate_sipc_max_cscore, " // 7 
-            "avg_angle_err, " // 8 
-            "avg_succ_angle_err, " // 9
-            "avg_trans_err, " // 10
-            "avg_succ_trans_err, " // 11
-            "avg_angle_sq_err, " // 12
-            "avg_succ_angle_sq_err, " // 13
-            "avg_trans_sq_err, " // 14
-            "avg_succ_trans_sq_err, " // 15
-            "succ_rate, " // 16
-            "mislabel_rate, " // 17
-            "none_rate, " // 18
-            "avg_keypoints, " // 19
-            "avg_detect_matches, " // 20
-            "avg_detect_inliers, " // 21
-            "avg_detect_choice_matches, " // 22
-            "avg_detect_choice_inliers, " // 23
-            "detect_tp, " // 24
-            "detect_fp, " // 25
-            "detect_fn, " // 26
-            "detect_tn, " // 27
-            "avg_locate_matches, " // 28
-            "avg_locate_inliers, " // 29
-            "avg_locate_choice_matches, " // 30
-            "avg_locate_choice_inliers " // 31
+            "value, "
+            "detect_sipc, "
+            "detect_sipc_acc_score, "
+            "detect_sipc_objects, "
+            "locate_sipc, "
+            "locate_sipc_rscore, "
+            "locate_sipc_tscore, "
+            "locate_sipc_cscore, "
+            "locate_sipc_frames, "
+            "locate_sipc_max_rscore, "
+            "locate_sipc_max_tscore, "
+            "locate_sipc_max_cscore, "
+            "avg_angle_err, "
+            "avg_succ_angle_err, "
+            "avg_trans_err, "
+            "avg_succ_trans_err, "
+            "avg_angle_sq_err, "
+            "avg_succ_angle_sq_err, "
+            "avg_trans_sq_err, "
+            "avg_succ_trans_sq_err, "
+            "succ_rate, "
+            "mislabel_rate, "
+            "none_rate, "
+            "avg_keypoints, "
+            "avg_detect_matches, "
+            "avg_detect_inliers, "
+            "avg_detect_choice_matches, "
+            "avg_detect_choice_inliers, "
+            "detect_tp, "
+            "detect_fp, "
+            "detect_fn, "
+            "detect_tn, "
+            "avg_locate_matches, "
+            "avg_locate_inliers, "
+            "avg_locate_choice_matches, "
+            "avg_locate_choice_inliers "
             "from response where id=%d;") % id);
         db_step(read, SQLITE_ROW);
-        value = sqlite3_column_double(read, 0);
+        int c = 0;
+        value = sqlite3_column_double(read, c);
         // Do not read this, it's actually duplication TODO:
         // since the final score can be computed from other scores
-        // locate_sipc.score() = sqlite3_column_double(read, 1);
-        locate_sipc.rscore = sqlite3_column_double(read, 2);
-        locate_sipc.tscore = sqlite3_column_double(read, 3);
-        locate_sipc.cscore = sqlite3_column_double(read, 4);
-        locate_sipc.max_rscore = sqlite3_column_int(read, 5);
-        locate_sipc.max_tscore = sqlite3_column_int(read, 6);
-        locate_sipc.max_cscore = sqlite3_column_int(read, 7);
-        avg_angle_err = sqlite3_column_double(read, 8);
-        avg_succ_angle_err = sqlite3_column_double(read, 9);
-        avg_trans_err = sqlite3_column_double(read, 10);
-        avg_succ_trans_err = sqlite3_column_double(read, 11);
-        avg_angle_sq_err = sqlite3_column_double(read, 12);
-        avg_succ_angle_sq_err = sqlite3_column_double(read, 13);
-        avg_trans_sq_err = sqlite3_column_double(read, 14);
-        avg_succ_trans_sq_err = sqlite3_column_double(read, 15);
-        succ_rate = sqlite3_column_double(read, 16);
-        mislabel_rate = sqlite3_column_double(read, 17);
-        none_rate = sqlite3_column_double(read, 18);
-        avg_keypoints = sqlite3_column_double(read, 19);
-        avg_detect_matches = sqlite3_column_double(read, 20);
-        avg_detect_inliers = sqlite3_column_double(read, 21);
-        avg_detect_choice_matches = sqlite3_column_double(read, 22);
-        avg_detect_choice_inliers = sqlite3_column_double(read, 23);
-        detect_tp = sqlite3_column_int(read, 24);
-        detect_fp = sqlite3_column_int(read, 25);
-        detect_fn = sqlite3_column_int(read, 26);
-        detect_tn = sqlite3_column_int(read, 27);
-        avg_locate_matches = sqlite3_column_double(read, 28);
-        avg_locate_inliers = sqlite3_column_double(read, 29);
-        avg_locate_choice_matches = sqlite3_column_double(read, 30);
-        avg_locate_choice_inliers = sqlite3_column_double(read, 31);
+        // detect_sipc = sqlite3_column_double(read, 1);
+        c++; // skip
+        detect_sipc.acc_score = sqlite3_column_double(read, ++c);
+        detect_sipc.objects = sqlite3_column_int(read, ++c);
+        // Do not read this, it's actually duplication TODO:
+        // since the final score can be computed from other scores
+        // locate_sipc.score() = sqlite3_column_double(read, ++c);
+        c++; // skip
+        locate_sipc.rscore = sqlite3_column_double(read, ++c);
+        locate_sipc.tscore = sqlite3_column_double(read, ++c);
+        locate_sipc.cscore = sqlite3_column_double(read, ++c);
+        locate_sipc.frames = sqlite3_column_int(read, ++c);
+        locate_sipc.max_rscore = sqlite3_column_int(read, ++c);
+        locate_sipc.max_tscore = sqlite3_column_int(read, ++c);
+        locate_sipc.max_cscore = sqlite3_column_int(read, ++c);
+        avg_angle_err = sqlite3_column_double(read, ++c);
+        avg_succ_angle_err = sqlite3_column_double(read, ++c);
+        avg_trans_err = sqlite3_column_double(read, ++c);
+        avg_succ_trans_err = sqlite3_column_double(read, ++c);
+        avg_angle_sq_err = sqlite3_column_double(read, ++c);
+        avg_succ_angle_sq_err = sqlite3_column_double(read, ++c);
+        avg_trans_sq_err = sqlite3_column_double(read, ++c);
+        avg_succ_trans_sq_err = sqlite3_column_double(read, ++c);
+        succ_rate = sqlite3_column_double(read, ++c);
+        mislabel_rate = sqlite3_column_double(read, ++c);
+        none_rate = sqlite3_column_double(read, ++c);
+        avg_keypoints = sqlite3_column_double(read, ++c);
+        avg_detect_matches = sqlite3_column_double(read, ++c);
+        avg_detect_inliers = sqlite3_column_double(read, ++c);
+        avg_detect_choice_matches = sqlite3_column_double(read, ++c);
+        avg_detect_choice_inliers = sqlite3_column_double(read, ++c);
+        detect_tp = sqlite3_column_int(read, ++c);
+        detect_fp = sqlite3_column_int(read, ++c);
+        detect_fn = sqlite3_column_int(read, ++c);
+        detect_tn = sqlite3_column_int(read, ++c);
+        avg_locate_matches = sqlite3_column_double(read, ++c);
+        avg_locate_inliers = sqlite3_column_double(read, ++c);
+        avg_locate_choice_matches = sqlite3_column_double(read, ++c);
+        avg_locate_choice_inliers = sqlite3_column_double(read, ++c);
         sqlite3_finalize(read);
     }
 

@@ -69,7 +69,6 @@ namespace clutseg {
             }
         }
         detect_sipc.acc_score += 0.5 * max(0.0, s_h - 0.5 * s_m - s_n + 0.5 *(s_r + s_t));
-        detect_sipc.frames++;
     }
 
     void compute_errors(const Guess & guess, const GroundTruth & ground, double & angle_err, double & trans_err) {

@@ -65,6 +65,8 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.locate_sipc.max_rscore = 21;
         experiment.response.locate_sipc.max_tscore = 21;
         experiment.response.locate_sipc.max_cscore = 21;
+        experiment.response.detect_sipc.acc_score = 40;
+        experiment.response.detect_sipc.objects = 63;
         experiment.response.avg_angle_err = 0.34;
         experiment.response.avg_succ_angle_err = 0.08;
         experiment.response.avg_trans_err = 0.12;
@@ -206,6 +208,9 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_EQ(orig.locate_sipc.max_rscore, rest.locate_sipc.max_rscore);
     EXPECT_EQ(orig.locate_sipc.max_tscore, rest.locate_sipc.max_tscore);
     EXPECT_EQ(orig.locate_sipc.max_cscore, rest.locate_sipc.max_cscore);
+    EXPECT_FLOAT_EQ(orig.detect_sipc.acc_score, rest.detect_sipc.acc_score);
+    EXPECT_EQ(orig.detect_sipc.objects, rest.detect_sipc.objects);
+    EXPECT_FLOAT_EQ(orig.detect_sipc.score(), rest.detect_sipc.score());
     EXPECT_FLOAT_EQ(orig.avg_angle_err, rest.avg_angle_err);
     EXPECT_FLOAT_EQ(orig.avg_succ_angle_err, rest.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(orig.avg_trans_err, rest.avg_trans_err);

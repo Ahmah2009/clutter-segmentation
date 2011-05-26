@@ -1,10 +1,14 @@
 
 insert into response (
     value,
+    detect_sipc,
+    detect_sipc_acc_score,
+    detect_sipc_objects,
     locate_sipc,
     locate_sipc_rscore,
     locate_sipc_tscore,
     locate_sipc_cscore,
+    locate_sipc_frames,
     locate_sipc_max_rscore,
     locate_sipc_max_tscore,
     locate_sipc_max_cscore,
@@ -33,7 +37,7 @@ insert into response (
     avg_locate_choice_matches,
     avg_locate_choice_inliers
     ) values
-    (0.78, 0.75, 0.25, 0.75, 1.0, 21, 21, 21, 0.34, 0.08, 0.12, 0.02, 0.56, 0.15, 0.53, 0.03, 0.63, 0.05, 0.15, 913.0, 652.3, 9.2, 211.9, 13.3, 35, 5, 10, 40, 802.1, 29.8, 802.1, 39.8);
+    (0.78, 0.5714285714285714, 36, 63, 0.75, 0.25, 0.75, 1.0, 21, 21, 21, 21, 0.34, 0.08, 0.12, 0.02, 0.56, 0.15, 0.53, 0.03, 0.63, 0.05, 0.15, 913.0, 652.3, 9.2, 211.9, 13.3, 35, 5, 10, 40, 802.1, 29.8, 802.1, 39.8);
 insert into pms_clutseg (accept_threshold, ranking) values (15, "InliersRanking");
 insert into pms_match (matcher_type, knn, do_ratio_test, ratio_threshold) values ("LSH-BINARY", 3, 1, 0.8);
 insert into pms_match (matcher_type, knn, do_ratio_test, ratio_threshold) values ("LSH-BINARY", 3, 0, null);

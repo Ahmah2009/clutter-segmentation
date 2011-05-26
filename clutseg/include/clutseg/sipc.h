@@ -96,9 +96,8 @@ namespace clutseg {
     };
 
     struct detect_sipc_t {
-        detect_sipc_t() : frames(0), objects(0), acc_score(0) {}
+        detect_sipc_t() : objects(0), acc_score(0) {}
 
-        int frames;
         int objects;
         float acc_score;
         float score();
