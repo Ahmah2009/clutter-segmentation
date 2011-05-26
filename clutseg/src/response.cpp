@@ -127,6 +127,25 @@ namespace clutseg {
         locate_sipc.frames++;
     } 
 
+    void update_detect_roc(const Result & result, const GroundTruth & ground, const set<string> & templateNames, Response & response) {
+        set<string> choice_labels = result.distinctLabels();
+        BOOST_FOREACH(const string & subj, templateNames) {
+            if (ground.onScene(subj)) {
+                if (choice_labels.count(subj) == 1) {
+                    response.detect_tp++;
+                } else {
+                    response.detect_fn++;
+                }
+            } else {
+                if (choice_labels.count(subj) == 0) {
+                    response.detect_tn++;
+                } else {
+                    response.detect_fp++;
+                }
+            }
+        }
+    }
+
     void ResponseFunction::operator()(const SetResult & resultSet,
                                         const SetGroundTruth & groundSet,
                                         const set<string> & templateNames,
@@ -199,22 +218,7 @@ namespace clutseg {
                 }
             }
   
-            set<string> choice_labels = r.distinctLabels();
-            BOOST_FOREACH(const string & subj, templateNames) {
-                if (g.onScene(subj)) {
-                    if (choice_labels.count(subj) == 1) {
-                        rsp.detect_tp++;
-                    } else {
-                        rsp.detect_fn++;
-                    }
-                } else {
-                    if (choice_labels.count(subj) == 0) {
-                        rsp.detect_tn++;
-                    } else {
-                        rsp.detect_fp++;
-                    }
-                }
-            }
+            update_detect_roc(r, g, templateNames, rsp);
 
             update_detect_sipc(r, g, templateNames, rsp.detect_sipc);
             update_locate_sipc(r, g, templateNames, rsp.locate_sipc);
