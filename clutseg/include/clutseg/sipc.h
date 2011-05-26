@@ -2,21 +2,41 @@
  * Author: Julius Adorf
  *
  * This module helps computing the score as defined by Solutions in Perception
- * Challenge 2011 (from now on referred to as SIPC) at ICRA in Shanghai. There
- * is a notable difference between the SIPC score and this score since we try
- * only to recognize one object. The score calculation remains the same. It is
- * true that the scores cannot be directly compared to the contestants' scores.
- * Yet, the recognizer that tries only to locate one object can be regarded as
- * a classifier/estimator with a priori information about all but one object in
- * the scene.
+ * Challenge 2011 (from now on referred to as SIPC) at ICRA in Shanghai. This
+ * challenge asked the contestants to correctly label and locate objects in
+ * multiple test scenes. Every test scene may contain more than one object.
+ * The SIPC score is used to rank the contestants, and it is a linear
+ * combination of pure classification results and pure estimation results.  By
+ * classifying each test scene (i.e. labeling each object correctly), one can
+ * already gain 50% of the maximum score. For each correctly labeled object,
+ * scores are assigned according to error of estimated pose. The error is
+ * bounded though, and inversely, the score as well and cannot be negative.
+ * Bad pose estimation therefore does not negatively influence final results,
+ * but locating objects precisely will give you additional score. The maximum
+ * score of 100% can only be reached if all objects are classified correctly
+ * and each of them is located up to error margins of 3cm in translation, and
+ * 20 degrees in rotational error.
+ * 
+ * In the case, we only recognize one of the objects, we do not make any
+ * statement about true negatives, and the SIPC score can still be calculated
+ * with slight modification that you can achieve full classificaton score by
+ * always correctly labeling any object in each image. Besides from that the
+ * calculation remains the same. The scores achieved by attempting to recognize
+ * all objects, or (likely) easier cannot be compared directly. Yet, since we
+ * assume that being able to choose one already labeled object for pose estimation
+ * will decrease expected estimation error, and the scores on all objects shall 
+ * provide a baseline for comparison.
  *
  * See "How To Read a Detailed Score Report (ICRA2011 Solutions in Perception
  * Challenge)", in the following referred to as SIPC11 for a description.
  *
- * Note that the SIPC scoring system does not give any scores for empty scenes,
- * and I extended the scoring system to cover it.
+ * Note that the SIPC scoring system does not give any scores for empty scenes.
+ * A sensible extension would be to just assign full score for an image if it
+ * has been correctly classified to not show any objects, and give zero score
+ * otherwise.
  *
- * The following cases can happen in a test scene:
+ * The following cases can happen in a test scene (when attempting to recognize
+ * single objects only).
  *
  *  scene type          choice                      n.score     ROC terminology 
  * ----------------------------------------------------------------------------
