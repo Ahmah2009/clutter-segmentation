@@ -100,12 +100,14 @@ namespace clutseg {
             avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
             detect_tp(0), detect_fp(0), detect_fn(0), detect_tn(0), avg_locate_matches(0),
             avg_locate_inliers(0), avg_locate_choice_matches(0), avg_locate_choice_inliers(0)
-            { locate_sipc = sipc_t(); }
+            { locate_sipc = locate_sipc_t(); detect_sipc = detect_sipc_t(); }
 
         /** Average of the values returned by the response function */
         float value;
-        /** SIPC score, see sipc.h */
-        sipc_t locate_sipc;
+        /** Locate SIPC score, see sipc.h */
+        locate_sipc_t locate_sipc;
+        /** Detect SIPC score, see sipc.h */
+        detect_sipc_t detect_sipc;
         /** Average of query images where locating (up to error margins)
          * succeeded. Depends on max_angle_error and max_trans_error. */
         float succ_rate;

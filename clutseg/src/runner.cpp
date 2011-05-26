@@ -141,7 +141,6 @@ namespace clutseg {
                             // This is a critical part where the experiment runner
                             // should not be interrupted. Also proper closing of
                             // the database has to be ensured by a database handler
-                            // FIXME:
                             tr_feat.generate();
                             cache_.addTrainFeatures(tr_feat);
                         }

@@ -36,12 +36,16 @@ namespace clutseg {
             return 1 - (trans_err - min_t) / (max_t - min_t);
         }
     }
-
-    void sipc_t::compute_final_score() {
+    // TODO: make this a function final_score() and remove member variable
+    void locate_sipc_t::compute_final_score() {
         final_score = (0.5 * cscore + 0.25 * rscore + 0.25 * tscore) / frames;
     }
 
-    void sipc_t::print() {
+    float detect_sipc_t::score() {
+        return acc_score / objects;
+    }
+
+    void locate_sipc_t::print() {
         cout << "SIPC Results" << endl
             << "---------------------------------------------------------------" << endl
             << "    Number of frames = " << frames << endl

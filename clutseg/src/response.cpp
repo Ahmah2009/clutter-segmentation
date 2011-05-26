@@ -40,7 +40,9 @@ namespace clutseg {
         int nones = 0;
         int tp = 0;
 
-        sipc_t sc;
+        rsp.detect_sipc = detect_sipc_t();
+        rsp.locate_sipc = locate_sipc_t();
+
         for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
             GroundTruth g = it->second;
@@ -50,18 +52,18 @@ namespace clutseg {
             Result r = resultSet.find(img_name)->second;
 
             if (g.emptyScene()) {
-                sc.max_cscore += 2;
+                rsp.locate_sipc.max_cscore += 2;
                 if (r.guess_made) {
                     // False positive
                     mislabelings++;
                 } else {
                     // True negative
-                    sc.cscore += 2;
+                    rsp.locate_sipc.cscore += 2;
                 }
             } else {
-                sc.max_cscore++;
-                sc.max_rscore++;
-                sc.max_tscore++;
+                rsp.locate_sipc.max_cscore++;
+                rsp.locate_sipc.max_rscore++;
+                rsp.locate_sipc.max_tscore++;
                 if (r.guess_made) {
                     if (g.onScene(r.locate_choice.getObject()->name)) {
                         // True positive
@@ -90,9 +92,9 @@ namespace clutseg {
                             acc_succ_trans_sq_err += t * t;
                         }
                         
-                        sc.rscore += compute_rscore(a);  
-                        sc.tscore += compute_tscore(t);
-                        sc.cscore++;
+                        rsp.locate_sipc.rscore += compute_rscore(a);  
+                        rsp.locate_sipc.tscore += compute_tscore(t);
+                        rsp.locate_sipc.cscore++;
                         tp++;
                     } else {
                         // False positive
@@ -103,30 +105,62 @@ namespace clutseg {
                     nones++;
                 }
             }
-    
+  
+            cout << img_name << endl; 
+            int s_h = 0;
+            int s_m = 0;
+            int s_n = 0;
+            float s_r = 0;
+            float s_t = 0;
             set<string> choice_labels = r.distinctLabels();
             BOOST_FOREACH(const string & subj, templateNames) {
                 if (g.onScene(subj)) {
+                    rsp.detect_sipc.objects++;
                     if (choice_labels.count(subj) == 1) {
                         rsp.detect_tp++;
+                        s_h++;
+                        
+                        vector<PoseRT> poses = g.posesOf(subj);
+                        if (poses.size() > 1) {
+                            throw runtime_error(
+                                "ERROR: Response function does not allow for comparing \n"
+                                "test result with ground truth, when there are multiple \n"
+                                "instances of the same template object on the scene.");
+                        }
+                        PoseRT truep = poses[0];
+                        Pose estp;
+                        cout << subj << endl;
+                        BOOST_FOREACH(const Guess & c, r.detect_choices) {
+                            if (c.getObject()->name == subj) {
+                                estp = c.aligned_pose();
+                                break;
+                            }
+                        }
+                        double t = dist_between(estp, truep); 
+                        double a = angle_between(estp, truep); 
+                        s_t += compute_tscore(t);
+                        s_r += compute_rscore(a);
                     } else {
                         rsp.detect_fn++;
+                        s_m++;
                     }
                 } else {
                     if (choice_labels.count(subj) == 0) {
                         rsp.detect_tn++;
                     } else {
                         rsp.detect_fp++;
+                        s_n++;
                     }
                 }
             }
-
-
-            sc.frames++;
+            cout << "s_r = " << s_r << endl;
+            cout << "s_t = " << s_t << endl;
+            rsp.detect_sipc.acc_score += 0.5 * max(0.0, s_h - 0.5 * s_m - s_n + 0.5 *(s_r + s_t));
+            rsp.detect_sipc.frames++;
+            rsp.locate_sipc.frames++;
         }
         
-        sc.compute_final_score();
-        rsp.locate_sipc = sc; 
+        rsp.locate_sipc.compute_final_score();
 
         int n = groundSet.size();
         int tps = tp;

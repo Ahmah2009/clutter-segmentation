@@ -28,7 +28,10 @@
  * provide a baseline for comparison.
  *
  * See "How To Read a Detailed Score Report (ICRA2011 Solutions in Perception
- * Challenge)", in the following referred to as SIPC11 for a description.
+ * Challenge)", in the following referred to as SIPC11 for a description. The
+ * report is not always precise and instead one can look at the source code
+ * that implements the score at
+ * http://opencv.willowgarage.com/wiki/SolutionsInPerceptionChallenge?action=AttachFile&do=view&target=GroundTruth_And_Scripts.tgz
  *
  * Note that the SIPC scoring system does not give any scores for empty scenes.
  * A sensible extension would be to just assign full score for an image if it
@@ -45,6 +48,30 @@
  *   not empty          none                        0.0         false negative
  *   not empty          some object on scene        0.5 + x     true positive
  *   not empty          some object not on scene    0.0         false positive
+ *
+ * These test bags do not show any scene where two instances are visible that
+ * belong to the same template object. Yet, the SIPC documentation (2011-05-26)
+ * says it is possible that "duplicate objects" might appear in several poses on
+ * the very same test scene. Also, the source code for computing these scores
+ * has a matching routine that associates detected objects with ground truth
+ * objects. The most sensible approach is here to match instances to the closest
+ * ground truth instances, and in case the number of detected duplicates does not
+ * match the number of ground truth objects, there are either false negatives, or
+ * false positives.
+ *
+ * The guys from the Challenge haven't answered to my questions yet, and I was
+ * unable to obtain detailed reports about the contestants' performance. I am
+ * therefore very much not inclined to either use their code for scoring. A
+ * simple escape would be to just not care about duplicates. That's a
+ * simplification, and having prior knowledge about the test data leads to bias
+ * of the classifier/estimator (e.g. can discard duplicate guesses right away
+ * to improve SIPC score, if we knew in advance whether test scenes will
+ * contain duplicates or not). For sake of simplicity, I take this shortcut,
+ * but will document this decision.
+ *
+ * See 
+ * http://vault.willowgarage.com/wgdata1/vol1/solutions_in_perception/Willow_Final_Test_Set/tests.zip
+ * for some test data.
  */
 
 #ifndef _SIPC_H_
@@ -54,8 +81,8 @@
 
 namespace clutseg {
 
-    struct sipc_t {
-        sipc_t() : final_score(0), frames(0), rscore(0), tscore(0), cscore(0),
+    struct locate_sipc_t {
+        locate_sipc_t() : final_score(0), frames(0), rscore(0), tscore(0), cscore(0),
                     max_cscore(0), max_rscore(0), max_tscore(0) {}
         float final_score;
         int frames;
@@ -67,6 +94,15 @@ namespace clutseg {
         int max_tscore;
         void compute_final_score();
         void print();
+    };
+
+    struct detect_sipc_t {
+        detect_sipc_t() : frames(0), objects(0), acc_score(0) {}
+
+        int frames;
+        int objects;
+        float acc_score;
+        float score();
     };
 
     float compute_rscore(float angle_err);

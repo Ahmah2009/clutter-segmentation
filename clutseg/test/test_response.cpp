@@ -48,13 +48,18 @@ struct ResponseFunctionTest : public ::testing::Test {
     // guesses and their names indicate their characteristics relative to
     // ground truth at_hm_jc.
     Guess at_perfect;
+    Guess hm_perfect;
     Guess at_ge_max_angle;
     Guess at_ge_max_trans;
     Guess at_ge_max_trans_angle;
+    Guess hm_ge_max_trans_angle;
+    Guess jc_ge_max_trans_angle;
     Guess it_ge_max_angle;
     Guess it_ge_max_trans;
     Guess at_close;
-    Guess it_close;
+    Guess it_close_fp;
+    Guess hm_close;
+    Guess jc_close;
     Guess at_max_trans;
     Guess at_max_angle;
     Guess at_max_trans_angle;
@@ -71,14 +76,21 @@ struct ResponseFunctionTest : public ::testing::Test {
             empty_scene = GroundTruth();
             at_hm_jc.read(p / "ias_kinect_test_grounded_21/at_hm_jc/image_00008.png.ground.yaml");
             Pose atp = poseRtToPose(at_hm_jc.posesOf("assam_tea")[0]);
+            Pose hmp = poseRtToPose(at_hm_jc.posesOf("haltbare_milch")[0]);
+            Pose jcp = poseRtToPose(at_hm_jc.posesOf("jacobs_coffee")[0]);
             at_perfect = createGuess("assam_tea", atp);
+            hm_perfect = createGuess("haltbare_milch", hmp);
             at_ge_max_angle = createGuess("assam_tea", rotatePose(atp, randomOrientation(M_PI / 8)));
             at_ge_max_trans = createGuess("assam_tea", translatePose(atp, (Mat_<double>(3, 1) << 0.02, 0.03, 0.01)));
             at_ge_max_trans_angle = createGuess("assam_tea", translatePose(rotatePose(atp, randomOrientation(M_PI / 8)), (Mat_<double>(3, 1) << 0.02, 0.02, 0.03)));
+            hm_ge_max_trans_angle = createGuess("haltbare_milch", translatePose(rotatePose(hmp, randomOrientation(M_PI / 8)), (Mat_<double>(3, 1) << 0.02, 0.02, 0.03)));
+            jc_ge_max_trans_angle = createGuess("jacobs_coffee", translatePose(rotatePose(jcp, randomOrientation(M_PI / 8)), (Mat_<double>(3, 1) << 0.02, 0.02, 0.03)));
             it_ge_max_angle = createGuess("icedtea", rotatePose(atp, randomOrientation(M_PI / 8)));
             it_ge_max_trans = createGuess("icedtea", translatePose(atp, (Mat_<double>(3, 1) << 0.02, 0.03, 0.01)));
             at_close = createGuess("assam_tea", translatePose(rotatePose(atp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.01, 0.01)));
-            it_close = createGuess("icedtea", translatePose(rotatePose(atp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.01, 0.01)));
+            it_close_fp = createGuess("icedtea", translatePose(rotatePose(atp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.01, 0.01)));
+            hm_close = createGuess("haltbare_milch", translatePose(rotatePose(hmp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.01, 0.01)));
+            jc_close = createGuess("jacobs_coffee", translatePose(rotatePose(jcp, randomOrientation(M_PI / 18)), (Mat_<double>(3, 1) << 0.02, 0.01, 0.01)));
             at_max_angle = createGuess("assam_tea", rotatePose(atp, randomOrientation(M_PI / 9)));
             at_max_trans = createGuess("assam_tea", translatePose(atp, (Mat_<double>(3, 1)  << 0.02, 0.02, 0.008)));
             at_max_trans_angle = createGuess("assam_tea", translatePose(rotatePose(atp, randomOrientation(M_PI / 9 - 0.02)), (Mat_<double>(3, 1) << 0.02, 0.02, 0.008)));
@@ -321,8 +333,8 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
  * on the scene. */
 TEST_F(ResponseFunctionTest, MislabelingsOnly) {
     SetResult r;
-    r["at_hm_jc_1"] = Result(it_close);
-    r["at_hm_jc_1"].detect_choices.push_back(it_close);
+    r["at_hm_jc_1"] = Result(it_close_fp);
+    r["at_hm_jc_1"].detect_choices.push_back(it_close_fp);
     r["at_hm_jc_2"] = Result(it_ge_max_angle);
     r["at_hm_jc_2"].detect_choices.push_back(it_ge_max_angle);
     r["at_hm_jc_3"] = Result(it_ge_max_trans);
@@ -354,8 +366,8 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
     r["at_hm_jc_2"] = Result();
-    r["at_hm_jc_3"] = Result(it_close);
-    r["at_hm_jc_3"].detect_choices.push_back(it_close);
+    r["at_hm_jc_3"] = Result(it_close_fp);
+    r["at_hm_jc_3"].detect_choices.push_back(it_close_fp);
     r["at_hm_jc_4"] = Result(at_close);
     r["at_hm_jc_4"].detect_choices.push_back(at_close);
     r["at_hm_jc_5"] = Result(at_ge_max_trans_angle);
@@ -409,4 +421,49 @@ TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
     EXPECT_NEAR(0, rsp.none_rate, 1e-6);
     EXPECT_NEAR(0.5, rsp.locate_sipc.final_score, 1e-6);
     rsp.locate_sipc.print();
+}
+
+TEST_F(ResponseFunctionTest, DetectSipcClassification) {
+    SetResult r;
+    r["at_hm_jc_1"] = Result(at_perfect);
+    r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_trans_angle);
+    r["at_hm_jc_1"].detect_choices.push_back(hm_ge_max_trans_angle);
+    r["at_hm_jc_1"].detect_choices.push_back(jc_ge_max_trans_angle);
+    r["at_hm_jc_2"] = Result(hm_close);
+    r["at_hm_jc_2"].detect_choices.push_back(hm_ge_max_trans_angle);
+    r["at_hm_jc_2"].detect_choices.push_back(jc_ge_max_trans_angle);
+    r["at_hm_jc_3"] = Result(it_close_fp);
+    r["at_hm_jc_3"].detect_choices.push_back(it_close_fp);
+    SetGroundTruth g;
+    g["at_hm_jc_1"] = at_hm_jc;
+    g["at_hm_jc_2"] = at_hm_jc;
+    g["at_hm_jc_3"] = at_hm_jc;
+    sse_response_function(r, g, templateNames, rsp);
+    // max. class. score 3 per image. Image 1: 3/3, Image 2: 1.5/3, Image 3: 0/3
+    // classification score weighted by 0.5
+    EXPECT_NEAR(0.5 * 4.5 / 9, rsp.detect_sipc.score(), 1e-6);
+}
+
+TEST_F(ResponseFunctionTest, DetectSipcPose) {
+    SetResult r;
+    r["at_hm_jc_1"] = Result(at_perfect);
+    r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
+    r["at_hm_jc_1"].detect_choices.push_back(hm_ge_max_trans_angle);
+    r["at_hm_jc_1"].detect_choices.push_back(jc_ge_max_trans_angle);
+    r["at_hm_jc_2"] = Result(it_close_fp); // must not matter!
+    r["at_hm_jc_2"].detect_choices.push_back(hm_perfect);
+    r["at_hm_jc_2"].detect_choices.push_back(jc_ge_max_trans_angle);
+    r["at_hm_jc_3"] = Result(it_close_fp);
+    r["at_hm_jc_3"].detect_choices.push_back(it_close_fp);
+    SetGroundTruth g;
+    g["at_hm_jc_1"] = at_hm_jc;
+    g["at_hm_jc_2"] = at_hm_jc;
+    g["at_hm_jc_3"] = at_hm_jc;
+    sse_response_function(r, g, templateNames, rsp);
+    // max. class. score 3 per image. Image 1: 3/3, Image 2: 1.5/3, Image 3: 0/3
+    // max. pose score 3 per image. Image 1: 1/3, Image 2: 1/3, Image 3: 0/3
+    // classification score 4.5/9 weighted by 0.5, 
+    // pose score 2/9 weighted by 0.5, 
+    EXPECT_NEAR(0.5 * (4.5 + 2) / 9, rsp.detect_sipc.score(), 1e-6);
+
 }
