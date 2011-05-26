@@ -163,7 +163,7 @@ namespace clutseg {
     void Response::serialize(sqlite3* db) {
         MemberMap m;
         setMemberField(m, "value", value);
-        setMemberField(m, "locate_sipc", locate_sipc.final_score);
+        setMemberField(m, "locate_sipc", locate_sipc.score());
         setMemberField(m, "locate_sipc_rscore", locate_sipc.rscore);
         setMemberField(m, "locate_sipc_tscore", locate_sipc.tscore);
         setMemberField(m, "locate_sipc_cscore", locate_sipc.cscore);
@@ -235,7 +235,9 @@ namespace clutseg {
             "from response where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         value = sqlite3_column_double(read, 0);
-        locate_sipc.final_score = sqlite3_column_double(read, 1);
+        // Do not read this, it's actually duplication TODO:
+        // since the final score can be computed from other scores
+        // locate_sipc.score() = sqlite3_column_double(read, 1);
         locate_sipc.rscore = sqlite3_column_double(read, 2);
         locate_sipc.tscore = sqlite3_column_double(read, 3);
         locate_sipc.cscore = sqlite3_column_double(read, 4);

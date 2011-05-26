@@ -36,9 +36,9 @@ namespace clutseg {
             return 1 - (trans_err - min_t) / (max_t - min_t);
         }
     }
-    // TODO: make this a function final_score() and remove member variable
-    void locate_sipc_t::compute_final_score() {
-        final_score = (0.5 * cscore + 0.25 * rscore + 0.25 * tscore) / frames;
+    // TODO: make this a function score()() and remove member variable
+    float locate_sipc_t::score() {
+        return (0.5 * cscore + 0.25 * rscore + 0.25 * tscore) / frames;
     }
 
     float detect_sipc_t::score() {
@@ -59,6 +59,6 @@ namespace clutseg {
             << "    Total (equally weighted) = " << 0.5 * (rscore + tscore) << endl
             << endl
             << " Combined Score = " <<  0.5 * (cscore + 0.5 * (rscore + tscore)) << endl
-            << " Final Score    = " << final_score << endl;
+            << " Final Score    = " << score() << endl;
     }
 }

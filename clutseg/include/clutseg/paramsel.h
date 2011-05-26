@@ -98,8 +98,9 @@ namespace clutseg {
             avg_angle_sq_err(0), avg_succ_angle_sq_err(0), avg_trans_sq_err(0),
             avg_succ_trans_sq_err(0), mislabel_rate(0), none_rate(0), avg_keypoints(0),
             avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
-            detect_tp(0), detect_fp(0), detect_fn(0), detect_tn(0), avg_locate_matches(0),
-            avg_locate_inliers(0), avg_locate_choice_matches(0), avg_locate_choice_inliers(0)
+            avg_detect_choice_inliers(0), detect_tp(0), detect_fp(0), detect_fn(0),
+            detect_tn(0), avg_locate_matches(0), avg_locate_inliers(0),
+            avg_locate_choice_matches(0), avg_locate_choice_inliers(0)
             { locate_sipc = locate_sipc_t(); detect_sipc = detect_sipc_t(); }
 
         /** Average of the values returned by the response function */

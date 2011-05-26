@@ -221,8 +221,6 @@ namespace clutseg {
             update_locate_sipc(r, g, templateNames, rsp.locate_sipc);
         }
         
-        rsp.locate_sipc.compute_final_score();
-
         int n = groundSet.size();
         int tps = tp;
         // 'successes' might as well be zero. In that case, we cannot compute

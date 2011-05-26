@@ -59,7 +59,6 @@ struct ParamSelTest : public ::testing::Test {
         experiment.paramset.locate_pms_guess.minInliersCount = 5; 
         experiment.paramset.locate_pms_guess.maxProjectionError = 12; 
         experiment.response.value = 0.87;
-        experiment.response.locate_sipc.final_score = 0.75; // TODO: make this a function, duplication!
         experiment.response.locate_sipc.rscore = 0.25;
         experiment.response.locate_sipc.tscore = 0.75;
         experiment.response.locate_sipc.cscore = 1.0;
@@ -105,7 +104,7 @@ struct ParamSelTest : public ::testing::Test {
 TEST_F(ParamSelTest, Initialization) {
     Experiment exp;
     EXPECT_FLOAT_EQ(0, exp.response.value);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.final_score);
+    EXPECT_TRUE(isnan(exp.response.locate_sipc.score()));
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.rscore);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.tscore);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.cscore);
@@ -135,13 +134,13 @@ TEST_F(ParamSelTest, Initialization) {
 
     Response r;
     EXPECT_FLOAT_EQ(0, r.value);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.final_score);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.rscore);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.tscore);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.cscore);
-    EXPECT_EQ(0, exp.response.locate_sipc.max_rscore);
-    EXPECT_EQ(0, exp.response.locate_sipc.max_tscore);
-    EXPECT_EQ(0, exp.response.locate_sipc.max_cscore);
+    EXPECT_TRUE(isnan(r.locate_sipc.score()));
+    EXPECT_FLOAT_EQ(0, r.locate_sipc.rscore);
+    EXPECT_FLOAT_EQ(0, r.locate_sipc.tscore);
+    EXPECT_FLOAT_EQ(0, r.locate_sipc.cscore);
+    EXPECT_EQ(0, r.locate_sipc.max_rscore);
+    EXPECT_EQ(0, r.locate_sipc.max_tscore);
+    EXPECT_EQ(0, r.locate_sipc.max_cscore);
     EXPECT_FLOAT_EQ(0, r.avg_angle_err);
     EXPECT_FLOAT_EQ(0, r.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(0, r.avg_trans_err);
@@ -200,7 +199,7 @@ TEST_F(ParamSelTest, response_write_read) {
     rest.id = orig.id;
     rest.deserialize(db); 
     EXPECT_FLOAT_EQ(orig.value, rest.value);
-    EXPECT_FLOAT_EQ(orig.locate_sipc.final_score, rest.locate_sipc.final_score);
+    EXPECT_FLOAT_EQ(orig.locate_sipc.score(), rest.locate_sipc.score());
     EXPECT_FLOAT_EQ(orig.locate_sipc.rscore, rest.locate_sipc.rscore);
     EXPECT_FLOAT_EQ(orig.locate_sipc.tscore, rest.locate_sipc.tscore);
     EXPECT_FLOAT_EQ(orig.locate_sipc.cscore, rest.locate_sipc.cscore);
