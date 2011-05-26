@@ -23,6 +23,8 @@ namespace clutseg {
      * for storing results to the filesystem. */
     struct TestReport {
 
+        TestReport() {}
+
         TestReport(const Experiment & experiment,
                     const ClutsegQuery & query,
                     const Result & result,

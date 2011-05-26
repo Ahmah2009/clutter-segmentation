@@ -19,6 +19,56 @@ using namespace tod;
 
 namespace clutseg {
 
+    void update_detect_sipc(const Result & result,
+                            const GroundTruth & ground,
+                            const set<string> & templateNames,
+                            detect_sipc_t & detect_sipc) {
+        int s_h = 0;
+        int s_m = 0;
+        int s_n = 0;
+        float s_r = 0;
+        float s_t = 0;
+        set<string> choice_labels = result.distinctLabels();
+        BOOST_FOREACH(const string & subj, templateNames) {
+            if (ground.onScene(subj)) {
+                detect_sipc.objects++;
+                if (choice_labels.count(subj) == 1) {
+                    s_h++;
+                    
+                    vector<PoseRT> poses = ground.posesOf(subj);
+                    if (poses.size() > 1) {
+                        throw runtime_error(
+                            "ERROR: Response function does not allow for comparing \n"
+                            "test result with ground truth, when there are multiple \n"
+                            "instances of the same template object on the scene.");
+                    }
+                    PoseRT truep = poses[0];
+                    Pose estp;
+                    BOOST_FOREACH(const Guess & c, result.detect_choices) {
+                        if (c.getObject()->name == subj) {
+                            estp = c.aligned_pose();
+                            break;
+                        }
+                    }
+                    double t = dist_between(estp, truep); 
+                    double a = angle_between(estp, truep); 
+                    s_t += compute_tscore(t);
+                    s_r += compute_rscore(a);
+                } else {
+                    s_m++;
+                }
+            } else {
+                if (choice_labels.count(subj) == 0) {
+                    // just do nothing
+                } else {
+                    s_n++;
+                }
+            }
+        }
+        detect_sipc.acc_score += 0.5 * max(0.0, s_h - 0.5 * s_m - s_n + 0.5 *(s_r + s_t));
+        detect_sipc.frames++;
+    }
+
     void ResponseFunction::operator()(const SetResult & resultSet,
                                         const SetGroundTruth & groundSet,
                                         const set<string> & templateNames,
@@ -106,58 +156,24 @@ namespace clutseg {
                 }
             }
   
-            cout << img_name << endl; 
-            int s_h = 0;
-            int s_m = 0;
-            int s_n = 0;
-            float s_r = 0;
-            float s_t = 0;
             set<string> choice_labels = r.distinctLabels();
             BOOST_FOREACH(const string & subj, templateNames) {
                 if (g.onScene(subj)) {
-                    rsp.detect_sipc.objects++;
                     if (choice_labels.count(subj) == 1) {
                         rsp.detect_tp++;
-                        s_h++;
-                        
-                        vector<PoseRT> poses = g.posesOf(subj);
-                        if (poses.size() > 1) {
-                            throw runtime_error(
-                                "ERROR: Response function does not allow for comparing \n"
-                                "test result with ground truth, when there are multiple \n"
-                                "instances of the same template object on the scene.");
-                        }
-                        PoseRT truep = poses[0];
-                        Pose estp;
-                        cout << subj << endl;
-                        BOOST_FOREACH(const Guess & c, r.detect_choices) {
-                            if (c.getObject()->name == subj) {
-                                estp = c.aligned_pose();
-                                break;
-                            }
-                        }
-                        double t = dist_between(estp, truep); 
-                        double a = angle_between(estp, truep); 
-                        s_t += compute_tscore(t);
-                        s_r += compute_rscore(a);
                     } else {
                         rsp.detect_fn++;
-                        s_m++;
                     }
                 } else {
                     if (choice_labels.count(subj) == 0) {
                         rsp.detect_tn++;
                     } else {
                         rsp.detect_fp++;
-                        s_n++;
                     }
                 }
             }
-            cout << "s_r = " << s_r << endl;
-            cout << "s_t = " << s_t << endl;
-            rsp.detect_sipc.acc_score += 0.5 * max(0.0, s_h - 0.5 * s_m - s_n + 0.5 *(s_r + s_t));
-            rsp.detect_sipc.frames++;
             rsp.locate_sipc.frames++;
+            update_detect_sipc(r, g, templateNames, rsp.detect_sipc);
         }
         
         rsp.locate_sipc.compute_final_score();
