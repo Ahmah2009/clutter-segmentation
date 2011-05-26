@@ -62,9 +62,6 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.locate_sipc.rscore = 0.25;
         experiment.response.locate_sipc.tscore = 0.75;
         experiment.response.locate_sipc.cscore = 1.0;
-        experiment.response.locate_sipc.max_rscore = 21;
-        experiment.response.locate_sipc.max_tscore = 21;
-        experiment.response.locate_sipc.max_cscore = 21;
         experiment.response.detect_sipc.acc_score = 40;
         experiment.response.detect_sipc.objects = 63;
         experiment.response.avg_angle_err = 0.34;
@@ -106,13 +103,9 @@ struct ParamSelTest : public ::testing::Test {
 TEST_F(ParamSelTest, Initialization) {
     Experiment exp;
     EXPECT_FLOAT_EQ(0, exp.response.value);
-    EXPECT_TRUE(isnan(exp.response.locate_sipc.score()));
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.rscore);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.tscore);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.cscore);
-    EXPECT_EQ(0, exp.response.locate_sipc.max_rscore);
-    EXPECT_EQ(0, exp.response.locate_sipc.max_tscore);
-    EXPECT_EQ(0, exp.response.locate_sipc.max_cscore);
     EXPECT_FLOAT_EQ(0, exp.response.avg_angle_err);
     EXPECT_FLOAT_EQ(0, exp.response.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(0, exp.response.avg_trans_err);
@@ -136,13 +129,9 @@ TEST_F(ParamSelTest, Initialization) {
 
     Response r;
     EXPECT_FLOAT_EQ(0, r.value);
-    EXPECT_TRUE(isnan(r.locate_sipc.score()));
     EXPECT_FLOAT_EQ(0, r.locate_sipc.rscore);
     EXPECT_FLOAT_EQ(0, r.locate_sipc.tscore);
     EXPECT_FLOAT_EQ(0, r.locate_sipc.cscore);
-    EXPECT_EQ(0, r.locate_sipc.max_rscore);
-    EXPECT_EQ(0, r.locate_sipc.max_tscore);
-    EXPECT_EQ(0, r.locate_sipc.max_cscore);
     EXPECT_FLOAT_EQ(0, r.avg_angle_err);
     EXPECT_FLOAT_EQ(0, r.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(0, r.avg_trans_err);
@@ -201,16 +190,13 @@ TEST_F(ParamSelTest, response_write_read) {
     rest.id = orig.id;
     rest.deserialize(db); 
     EXPECT_FLOAT_EQ(orig.value, rest.value);
-    EXPECT_FLOAT_EQ(orig.locate_sipc.score(), rest.locate_sipc.score());
-    EXPECT_FLOAT_EQ(orig.locate_sipc.rscore, rest.locate_sipc.rscore);
-    EXPECT_FLOAT_EQ(orig.locate_sipc.tscore, rest.locate_sipc.tscore);
-    EXPECT_FLOAT_EQ(orig.locate_sipc.cscore, rest.locate_sipc.cscore);
-    EXPECT_EQ(orig.locate_sipc.max_rscore, rest.locate_sipc.max_rscore);
-    EXPECT_EQ(orig.locate_sipc.max_tscore, rest.locate_sipc.max_tscore);
-    EXPECT_EQ(orig.locate_sipc.max_cscore, rest.locate_sipc.max_cscore);
     EXPECT_FLOAT_EQ(orig.detect_sipc.acc_score, rest.detect_sipc.acc_score);
     EXPECT_EQ(orig.detect_sipc.objects, rest.detect_sipc.objects);
     EXPECT_FLOAT_EQ(orig.detect_sipc.score(), rest.detect_sipc.score());
+    EXPECT_FLOAT_EQ(orig.locate_sipc.rscore, rest.locate_sipc.rscore);
+    EXPECT_FLOAT_EQ(orig.locate_sipc.tscore, rest.locate_sipc.tscore);
+    EXPECT_FLOAT_EQ(orig.locate_sipc.cscore, rest.locate_sipc.cscore);
+    EXPECT_FLOAT_EQ(orig.locate_sipc.score(), rest.locate_sipc.score());
     EXPECT_FLOAT_EQ(orig.avg_angle_err, rest.avg_angle_err);
     EXPECT_FLOAT_EQ(orig.avg_succ_angle_err, rest.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(orig.avg_trans_err, rest.avg_trans_err);

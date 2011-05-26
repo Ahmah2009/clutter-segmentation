@@ -82,15 +82,11 @@
 namespace clutseg {
 
     struct locate_sipc_t {
-        locate_sipc_t() : frames(0), rscore(0), tscore(0), cscore(0),
-                    max_cscore(0), max_rscore(0), max_tscore(0) {}
+        locate_sipc_t() : frames(0), rscore(0), tscore(0), cscore(0) {}
         int frames;
         float rscore;
         float tscore;
         float cscore;
-        int max_cscore;
-        int max_rscore;
-        int max_tscore;
         float score();
         void print();
     };

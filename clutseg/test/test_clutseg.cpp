@@ -51,6 +51,7 @@ class ClutsegTest : public ::testing::Test {
             haltbare_milch_train_img = imread("./data/image_00000.png");
             pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
 
+            // FIXME: 
             clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/image_00000.png");
             pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded/at_hm_jc/cloud_00000.pcd", clutter_cloud);
 

@@ -23,3 +23,8 @@ create view view_experiment_detect_roc as
         1.0 * detect_fp / (detect_fp + detect_tn) as detect_fp_rate
     from view_experiment_response;
  
+create view view_experiment_detect_sipc as
+    select experiment_id,
+        (1.0 * detect_sipc_acc_score / detect_sipc_objects) as detect_sipc
+    from view_experiment_response;
+ 

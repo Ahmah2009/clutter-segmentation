@@ -163,17 +163,12 @@ namespace clutseg {
     void Response::serialize(sqlite3* db) {
         MemberMap m;
         setMemberField(m, "value", value);
-        setMemberField(m, "detect_sipc", detect_sipc.score());
         setMemberField(m, "detect_sipc_acc_score", detect_sipc.acc_score);
         setMemberField(m, "detect_sipc_objects", detect_sipc.objects);
-        setMemberField(m, "locate_sipc", locate_sipc.score());
         setMemberField(m, "locate_sipc_rscore", locate_sipc.rscore);
         setMemberField(m, "locate_sipc_tscore", locate_sipc.tscore);
         setMemberField(m, "locate_sipc_cscore", locate_sipc.cscore);
         setMemberField(m, "locate_sipc_frames", locate_sipc.frames);
-        setMemberField(m, "locate_sipc_max_rscore", locate_sipc.max_rscore);
-        setMemberField(m, "locate_sipc_max_tscore", locate_sipc.max_tscore);
-        setMemberField(m, "locate_sipc_max_cscore", locate_sipc.max_cscore);
         setMemberField(m, "avg_angle_err", avg_angle_err);
         setMemberField(m, "avg_succ_angle_err", avg_succ_angle_err);
         setMemberField(m, "avg_trans_err", avg_trans_err);
@@ -205,17 +200,12 @@ namespace clutseg {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select "
             "value, "
-            "detect_sipc, "
             "detect_sipc_acc_score, "
             "detect_sipc_objects, "
-            "locate_sipc, "
             "locate_sipc_rscore, "
             "locate_sipc_tscore, "
             "locate_sipc_cscore, "
             "locate_sipc_frames, "
-            "locate_sipc_max_rscore, "
-            "locate_sipc_max_tscore, "
-            "locate_sipc_max_cscore, "
             "avg_angle_err, "
             "avg_succ_angle_err, "
             "avg_trans_err, "
@@ -244,23 +234,12 @@ namespace clutseg {
         db_step(read, SQLITE_ROW);
         int c = 0;
         value = sqlite3_column_double(read, c);
-        // Do not read this, it's actually duplication TODO:
-        // since the final score can be computed from other scores
-        // detect_sipc = sqlite3_column_double(read, 1);
-        c++; // skip
         detect_sipc.acc_score = sqlite3_column_double(read, ++c);
         detect_sipc.objects = sqlite3_column_int(read, ++c);
-        // Do not read this, it's actually duplication TODO:
-        // since the final score can be computed from other scores
-        // locate_sipc.score() = sqlite3_column_double(read, ++c);
-        c++; // skip
         locate_sipc.rscore = sqlite3_column_double(read, ++c);
         locate_sipc.tscore = sqlite3_column_double(read, ++c);
         locate_sipc.cscore = sqlite3_column_double(read, ++c);
         locate_sipc.frames = sqlite3_column_int(read, ++c);
-        locate_sipc.max_rscore = sqlite3_column_int(read, ++c);
-        locate_sipc.max_tscore = sqlite3_column_int(read, ++c);
-        locate_sipc.max_cscore = sqlite3_column_int(read, ++c);
         avg_angle_err = sqlite3_column_double(read, ++c);
         avg_succ_angle_err = sqlite3_column_double(read, ++c);
         avg_trans_err = sqlite3_column_double(read, ++c);

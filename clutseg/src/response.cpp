@@ -91,7 +91,6 @@ namespace clutseg {
                             const set<string> & templateNames,
                             locate_sipc_t & locate_sipc) {
         if (ground.emptyScene()) {
-            locate_sipc.max_cscore += 2;
             if (result.guess_made) {
                 // False positive
                 // Do nothing 
@@ -100,9 +99,6 @@ namespace clutseg {
                 locate_sipc.cscore += 2;
             }
         } else {
-            locate_sipc.max_cscore++;
-            locate_sipc.max_rscore++;
-            locate_sipc.max_tscore++;
             if (result.guess_made) {
                 Guess lc = result.locate_choice;
                 if (ground.onScene(lc.getObject()->name)) {

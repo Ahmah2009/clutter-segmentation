@@ -50,10 +50,10 @@ namespace clutseg {
             << "---------------------------------------------------------------" << endl
             << "    Number of frames = " << frames << endl
             << endl
-            << "  Recognition Score: (max possible score = " << float(max_cscore) << ")" << endl
+            << "  Recognition Score: " << endl
             << "    Total = " << cscore << endl
             << endl
-            << "  Pose Score: (max possible weighted score = " << float(0.5 * max_rscore + 0.5 * max_tscore) << ")" << endl
+            << "  Pose Score: " << endl
             << "    Rotation    = " << rscore << endl
             << "    Translation = " << tscore << endl
             << "    Total (equally weighted) = " << 0.5 * (rscore + tscore) << endl
