@@ -46,6 +46,7 @@ namespace clutseg {
                     }
                     PoseRT truep = poses[0];
                     Pose estp;
+                    // choose the first (best-ranked), ignore all others
                     BOOST_FOREACH(const Guess & c, result.detect_choices) {
                         if (c.getObject()->name == subj) {
                             estp = c.aligned_pose();
@@ -71,6 +72,20 @@ namespace clutseg {
         detect_sipc.frames++;
     }
 
+    void compute_errors(const Guess & guess, const GroundTruth & ground, double & angle_err, double & trans_err) {
+        vector<PoseRT> poses = ground.posesOf(guess.getObject()->name);
+        if (poses.size() > 1) {
+            throw runtime_error(
+            "ERROR: Response function does not allow for comparing \n"
+            "test result with ground truth, when there are multiple \n"
+            "instances of the same template object on the scene.");
+        }
+        PoseRT truep = poses[0];
+        Pose estp = guess.aligned_pose();
+        angle_err = angle_between(estp, truep); 
+        trans_err = dist_between(estp, truep); 
+    }
+
     /** Computes score for one single test scene */
     void update_locate_sipc(const Result & result,
                             const GroundTruth & ground,
@@ -93,17 +108,9 @@ namespace clutseg {
                 Guess lc = result.locate_choice;
                 if (ground.onScene(lc.getObject()->name)) {
                     // True positive
-                    vector<PoseRT> poses = ground.posesOf(lc.getObject()->name);
-                    if (poses.size() > 1) {
-                        throw runtime_error(
-                            "ERROR: Response function does not allow for comparing \n"
-                            "test result with ground truth, when there are multiple \n"
-                            "instances of the same template object on the scene.");
-                    }
-                    PoseRT truep = poses[0];
-                    Pose estp = lc.aligned_pose();
-                    double t = dist_between(estp, truep); 
-                    double a = angle_between(estp, truep); 
+                    double a;
+                    double t;
+                    compute_errors(lc, ground, a, t);
                     locate_sipc.rscore += compute_rscore(a);  
                     locate_sipc.tscore += compute_tscore(t);
                     locate_sipc.cscore++;
@@ -164,17 +171,9 @@ namespace clutseg {
                 if (r.guess_made) {
                     if (g.onScene(r.locate_choice.getObject()->name)) {
                         // True positive
-                        vector<PoseRT> poses = g.posesOf(r.locate_choice.getObject()->name);
-                        if (poses.size() > 1) {
-                            throw runtime_error(
-                                "ERROR: Response function does not allow for comparing \n"
-                                "test result with ground truth, when there are multiple \n"
-                                "instances of the same template object on the scene.");
-                        }
-                        PoseRT truep = poses[0];
-                        Pose estp = r.locate_choice.aligned_pose();
-                        double t = dist_between(estp, truep); 
-                        double a = angle_between(estp, truep); 
+                        double a;
+                        double t;
+                        compute_errors(r.locate_choice, g, a, t);
                         acc_angle_err += abs(a);
                         acc_angle_sq_err += a * a;
                         acc_trans_err += abs(t);
