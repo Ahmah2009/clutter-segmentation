@@ -398,6 +398,7 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     EXPECT_NEAR(1./5, rsp.none_rate, 1e-6);
     EXPECT_NEAR(3./15, rsp.detect_tp_rate(), 1e-6);
     EXPECT_NEAR(1./5, rsp.detect_fp_rate(), 1e-6);
+    rsp.locate_sipc.print();
 }
 
 TEST_F(ResponseFunctionTest, EmptyScenesOnly) {

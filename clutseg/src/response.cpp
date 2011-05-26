@@ -153,7 +153,6 @@ namespace clutseg {
             Result r = resultSet.find(img_name)->second;
 
             if (g.emptyScene()) {
-                rsp.locate_sipc.max_cscore += 2;
                 if (r.guess_made) {
                     // False positive
                     mislabelings++;
@@ -162,9 +161,6 @@ namespace clutseg {
                     // Do nothing
                 }
             } else {
-                rsp.locate_sipc.max_cscore++;
-                rsp.locate_sipc.max_rscore++;
-                rsp.locate_sipc.max_tscore++;
                 if (r.guess_made) {
                     if (g.onScene(r.locate_choice.getObject()->name)) {
                         // True positive
