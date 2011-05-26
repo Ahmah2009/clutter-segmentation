@@ -146,13 +146,10 @@ namespace clutseg {
         }
     }
 
-    void ResponseFunction::operator()(const SetResult & resultSet,
-                                        const SetGroundTruth & groundSet,
-                                        const set<string> & templateNames,
-                                        Response & rsp) {
-        rsp = Response();
-        rsp.value = 0.0;
-
+    void update_locate_errors(const SetResult & resultSet,
+                                const SetGroundTruth & groundSet,
+                                const set<string> & templateNames,
+                                Response & rsp) {
         float acc_angle_err = 0;
         float acc_succ_angle_err = 0;
         float acc_trans_err = 0;
@@ -166,9 +163,6 @@ namespace clutseg {
         int mislabelings = 0;
         int nones = 0;
         int tp = 0;
-
-        rsp.detect_sipc = detect_sipc_t();
-        rsp.locate_sipc = locate_sipc_t();
 
         for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
@@ -217,11 +211,6 @@ namespace clutseg {
                     nones++;
                 }
             }
-  
-            update_detect_roc(r, g, templateNames, rsp);
-
-            update_detect_sipc(r, g, templateNames, rsp.detect_sipc);
-            update_locate_sipc(r, g, templateNames, rsp.locate_sipc);
         }
         
         int n = groundSet.size();
@@ -239,6 +228,31 @@ namespace clutseg {
         rsp.succ_rate = float(successes) / n;
         rsp.mislabel_rate = float(mislabelings) / n;
         rsp.none_rate = float(nones) / n;
+    }
+
+    void ResponseFunction::operator()(const SetResult & resultSet,
+                                        const SetGroundTruth & groundSet,
+                                        const set<string> & templateNames,
+                                        Response & rsp) {
+        rsp = Response();
+        rsp.value = 0.0;
+
+        rsp.detect_sipc = detect_sipc_t();
+        rsp.locate_sipc = locate_sipc_t();
+
+        for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
+            string img_name = it->first;
+            GroundTruth g = it->second;
+            if (resultSet.find(img_name) == resultSet.end()) {
+                throw runtime_error(str(boost::format("ERROR: No result for image '%s'") % img_name));
+            }
+            Result r = resultSet.find(img_name)->second;
+            update_detect_roc(r, g, templateNames, rsp);
+            update_detect_sipc(r, g, templateNames, rsp.detect_sipc);
+            update_locate_sipc(r, g, templateNames, rsp.locate_sipc);
+        }
+        
+        update_locate_errors(resultSet, groundSet, templateNames, rsp);
     }
 
 
@@ -260,6 +274,9 @@ namespace clutseg {
                 Pose estp = result.locate_choice.aligned_pose();
                 double r = 1.0;
                 vector<PoseRT> poses = g.posesOf(result.locate_choice.getObject()->name);
+                // This is support for multiple objects corresponding to the
+                // very same template object.  This is not supported throughout
+                // the code.
                 BOOST_FOREACH(const PoseRT & truep, poses) {
                     double dt = dist_between(estp, truep); 
                     double da = angle_between(estp, truep); 
