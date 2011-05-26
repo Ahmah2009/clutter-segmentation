@@ -14,8 +14,8 @@ using namespace std;
 namespace clutseg {
 
     float compute_rscore(float angle_err) {
-        float min_a = M_PI / 90;
-        float max_a = M_PI / 9;
+        float min_a = CLUTSEG_SIPC_MIN_ANGLE;
+        float max_a = CLUTSEG_SIPC_MAX_ANGLE;
         if (angle_err > max_a) {
             return 0;
         } else if (angle_err <= min_a) {
@@ -26,8 +26,8 @@ namespace clutseg {
     }
 
     float compute_tscore(float trans_err) {
-        float min_t = 0.01;
-        float max_t = 0.03;
+        float min_t = CLUTSEG_SIPC_MIN_TRANS;
+        float max_t = CLUTSEG_SIPC_MAX_TRANS;
         if (trans_err > max_t) {
             return 0;
         } else if (trans_err <= min_t) {

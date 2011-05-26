@@ -34,7 +34,7 @@ namespace clutseg {
     }
 
     bool TestReport::success() const {
-        return result.guess_made && (angle_error() <= M_PI / 9 && trans_error() <= 0.03);
+        return result.guess_made && (angle_error() <= CLUTSEG_SIPC_MAX_ANGLE && trans_error() <= CLUTSEG_SIPC_MAX_TRANS);
     }
 
 }

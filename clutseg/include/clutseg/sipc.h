@@ -79,6 +79,11 @@
 
 #include <vector>
 
+#define CLUTSEG_SIPC_MIN_TRANS 0.01
+#define CLUTSEG_SIPC_MAX_TRANS 0.03
+#define CLUTSEG_SIPC_MIN_ANGLE (M_PI/90)
+#define CLUTSEG_SIPC_MAX_ANGLE (M_PI/9)
+
 namespace clutseg {
 
     struct locate_sipc_t {
