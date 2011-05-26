@@ -19,6 +19,8 @@ using namespace tod;
 
 namespace clutseg {
 
+
+    /** Computes score for one single test scene */
     void update_detect_sipc(const Result & result,
                             const GroundTruth & ground,
                             const set<string> & templateNames,
@@ -69,6 +71,55 @@ namespace clutseg {
         detect_sipc.frames++;
     }
 
+    /** Computes score for one single test scene */
+    void update_locate_sipc(const Result & result,
+                            const GroundTruth & ground,
+                            const set<string> & templateNames,
+                            locate_sipc_t & locate_sipc) {
+        if (ground.emptyScene()) {
+            locate_sipc.max_cscore += 2;
+            if (result.guess_made) {
+                // False positive
+                // Do nothing 
+            } else {
+                // True negative
+                locate_sipc.cscore += 2;
+            }
+        } else {
+            locate_sipc.max_cscore++;
+            locate_sipc.max_rscore++;
+            locate_sipc.max_tscore++;
+            if (result.guess_made) {
+                Guess lc = result.locate_choice;
+                if (ground.onScene(lc.getObject()->name)) {
+                    // True positive
+                    vector<PoseRT> poses = ground.posesOf(lc.getObject()->name);
+                    if (poses.size() > 1) {
+                        throw runtime_error(
+                            "ERROR: Response function does not allow for comparing \n"
+                            "test result with ground truth, when there are multiple \n"
+                            "instances of the same template object on the scene.");
+                    }
+                    PoseRT truep = poses[0];
+                    Pose estp = lc.aligned_pose();
+                    double t = dist_between(estp, truep); 
+                    double a = angle_between(estp, truep); 
+                    locate_sipc.rscore += compute_rscore(a);  
+                    locate_sipc.tscore += compute_tscore(t);
+                    locate_sipc.cscore++;
+                } else {
+                    // False positive
+                    // Do nothing
+                }
+            } else {
+                // False negative
+                // Do nothing
+            }
+        }
+
+        locate_sipc.frames++;
+    } 
+
     void ResponseFunction::operator()(const SetResult & resultSet,
                                         const SetGroundTruth & groundSet,
                                         const set<string> & templateNames,
@@ -108,7 +159,7 @@ namespace clutseg {
                     mislabelings++;
                 } else {
                     // True negative
-                    rsp.locate_sipc.cscore += 2;
+                    // Do nothing
                 }
             } else {
                 rsp.locate_sipc.max_cscore++;
@@ -142,9 +193,6 @@ namespace clutseg {
                             acc_succ_trans_sq_err += t * t;
                         }
                         
-                        rsp.locate_sipc.rscore += compute_rscore(a);  
-                        rsp.locate_sipc.tscore += compute_tscore(t);
-                        rsp.locate_sipc.cscore++;
                         tp++;
                     } else {
                         // False positive
@@ -172,8 +220,9 @@ namespace clutseg {
                     }
                 }
             }
-            rsp.locate_sipc.frames++;
+
             update_detect_sipc(r, g, templateNames, rsp.detect_sipc);
+            update_locate_sipc(r, g, templateNames, rsp.locate_sipc);
         }
         
         rsp.locate_sipc.compute_final_score();
