@@ -46,25 +46,14 @@ class ClutsegTest : public ::testing::Test {
                 lp.read(lp_in[TODParameters::YAML_NODE_NAME]);
                 lp_in.release();
 
-                TrainFeaturesCache cache("build/train_cache");
-                TrainFeatures tr_feat("ias_kinect_train_v2", fp);
+                cache = TrainFeaturesCache("build/train_cache");
+                tr_feat = TrainFeatures("ias_kinect_train_v2", fp);
                 if (!cache.trainFeaturesExist(tr_feat)) {
                     tr_feat.generate();
                     cache.addTrainFeatures(tr_feat);
                 }
 
-                 sgm = Clutsegmenter(cache.trainFeaturesDir(tr_feat).string(), dp, lp);
-                   /** // FIXME: This is a mistake. We cannot use
-                    // ias_kinect_test_grounded and ias_kinect_train together.
-                    // The ground poses will not match due to different model
-                    // coordinate systems. Recognition and estimation of poses
-                    // should still work, but comparison to ground truth
-                    // becomes invalid.  Also, we must verify that the feature
-                    // configurations for training and querying roughly match! 
-                    string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
-                    string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
-                    string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
-                );*/
+                sgm = Clutsegmenter(cache.trainFeaturesDir(tr_feat).string(), dp, lp);
                 loaded = true;
             }
 
@@ -87,6 +76,8 @@ class ClutsegTest : public ::testing::Test {
 
         static Clutsegmenter sgm;
         static bool loaded;
+        TrainFeaturesCache cache;
+        TrainFeatures tr_feat;
         Mat haltbare_milch_train_img;
         PointCloudT haltbare_milch_train_cloud;
         Mat clutter_img;
@@ -164,7 +155,7 @@ TEST_F(ClutsegTest, ConstructorOpaque) {
     TODParameters locate_params;
 
     Clutsegmenter s(
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
+        cache.trainFeaturesDir(tr_feat).string(),
         detect_params,
         locate_params
     );
@@ -200,7 +191,7 @@ TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
 /** Check whether loading a single training base works without failing */
 TEST_F(ClutsegTest, LoadSingleTrainingBase) {
     vector<Ptr<TexturedObject> > objects;
-    Loader loader(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train");
+    Loader loader(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train_v2");
     loader.readTexturedObjects(objects);
     objects.erase(objects.begin() + 1, objects.end());
     EXPECT_EQ(1, objects.size());
@@ -246,7 +237,7 @@ TEST_F(ClutsegTest, RecognizeForemostInClutter) {
 
     Ptr<GuessRanking> prox_ranking = new ProximityRanking();
     Clutsegmenter s(
-        string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
+        cache.trainFeaturesDir(tr_feat).string(),
         detect_params,
         locate_params,
         prox_ranking
@@ -267,6 +258,7 @@ TEST_F(ClutsegTest, Reconfigure) {
     exp.deserialize(db);
     EXPECT_GT(-10, sgm.getAcceptThreshold());
     sgm.reconfigure(exp.paramset);
+    EXPECT_EQ("FAST", sgm.getLocateParams().feParams.detector_type);
     EXPECT_FLOAT_EQ(15.0, sgm.getAcceptThreshold());
 }
 
