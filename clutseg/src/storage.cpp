@@ -111,14 +111,10 @@ namespace clutseg {
         }
         dc_fs.release();
 
-        {
-            TODParameters dp = report.experiment.paramset.toDetectTodParameters();
-            store_config(erd / "detect.config.yaml", dp);
-        }
+        TODParameters dp = report.experiment.paramset.toDetectTodParameters();
+        store_config(erd / "detect.config.yaml", dp);
 
-        {
-            TODParameters lp = report.experiment.paramset.toLocateTodParameters();
-            store_config(erd / "locate.config.yaml", lp);
-        }
+        TODParameters lp = report.experiment.paramset.toLocateTodParameters();
+        store_config(erd / "locate.config.yaml", lp);
     }
 }

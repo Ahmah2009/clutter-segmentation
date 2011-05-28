@@ -281,7 +281,7 @@ namespace clutseg {
                 r_acc += r;
             }
         }
-        rsp.value = r_acc / groundSet.size();
+        rsp.value = 1.0 - r_acc / groundSet.size();
     }
 
 }
