@@ -1,8 +1,6 @@
 #!/usr/bin/env Rscript
-
 library(RSQLite)
 con = dbConnect(dbDriver("SQLite"), dbname = paste(Sys.getenv("CLUTSEG_PATH"), "/clutter-segmentation/clutseg/build/paramsel.sqlite3", sep=""))
-dbListTables(con)
 f = dbGetQuery(con, "select detect_fp_rate, detect_tp_rate from view_experiment_detect_roc")
 attach(f)
 png(paste(Sys.getenv("CLUTSEG_ARTIFACT_DIR"), "/detect_roc.png", sep=""))
