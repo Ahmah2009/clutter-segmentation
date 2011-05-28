@@ -7,6 +7,7 @@
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
 #include "clutseg/db.h"
+#include "clutseg/experiment.h"
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
@@ -29,8 +30,31 @@ class ClutsegTest : public ::testing::Test {
 
         virtual void SetUp() {
             if (!loaded) {
-                 sgm = Clutsegmenter(
-                    // FIXME: This is a mistake. We cannot use
+                // TODO: use read method
+                FeatureExtractionParams fp;
+                FileStorage fp_in("data/test_clutseg.features.config.yaml", FileStorage::READ);
+                fp.read(fp_in[FeatureExtractionParams::YAML_NODE_NAME]);
+                fp_in.release();
+
+                TODParameters dp;
+                FileStorage dp_in("data/test_clutseg.detect.config.yaml", FileStorage::READ);
+                dp.read(dp_in[TODParameters::YAML_NODE_NAME]);
+                dp_in.release();
+
+                TODParameters lp;
+                FileStorage lp_in("data/test_clutseg.locate.config.yaml", FileStorage::READ);
+                lp.read(lp_in[TODParameters::YAML_NODE_NAME]);
+                lp_in.release();
+
+                TrainFeaturesCache cache("build/train_cache");
+                TrainFeatures tr_feat("ias_kinect_train_v2", fp);
+                if (!cache.trainFeaturesExist(tr_feat)) {
+                    tr_feat.generate();
+                    cache.addTrainFeatures(tr_feat);
+                }
+
+                 sgm = Clutsegmenter(cache.trainFeaturesDir(tr_feat).string(), dp, lp);
+                   /** // FIXME: This is a mistake. We cannot use
                     // ias_kinect_test_grounded and ias_kinect_train together.
                     // The ground poses will not match due to different model
                     // coordinate systems. Recognition and estimation of poses
@@ -40,7 +64,7 @@ class ClutsegTest : public ::testing::Test {
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml",
                     string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
-                );
+                );*/
                 loaded = true;
             }
 
@@ -52,10 +76,10 @@ class ClutsegTest : public ::testing::Test {
             pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
 
             // FIXME: 
-            clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00031.png");
-            pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/cloud_00031.pcd", clutter_cloud);
+            clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png");
+            pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/cloud_00022.pcd", clutter_cloud);
 
-            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00031.png.ground.yaml");
+            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png.ground.yaml");
             assert(!clutter_truth.labels.empty());
 
             camera = Camera("./data/camera.yml", Camera::TOD_YAML);
@@ -221,14 +245,14 @@ TEST_F(ClutsegTest, RecognizeForemostInClutter) {
     locate_params.guessParams.minInliersCount = 30;
 
     Ptr<GuessRanking> prox_ranking = new ProximityRanking();
-    sgm = Clutsegmenter(
+    Clutsegmenter s(
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train",
         detect_params,
         locate_params,
         prox_ranking
     );
 
-    ASSERT_TRUE(sgm.isDoLocate());
+    ASSERT_TRUE(s.isDoLocate());
     recognize("RecognizeForemostInClutter");
 }
 
@@ -241,10 +265,8 @@ TEST_F(ClutsegTest, Reconfigure) {
     boost::filesystem::copy_file("./data/test.sqlite3", fn);
     db_open(db, fn);
     exp.deserialize(db);
-    EXPECT_EQ("DynamicFAST", sgm.getLocateParams().feParams.detector_type);
     EXPECT_GT(-10, sgm.getAcceptThreshold());
     sgm.reconfigure(exp.paramset);
-    EXPECT_EQ("FAST", sgm.getLocateParams().feParams.detector_type);
     EXPECT_FLOAT_EQ(15.0, sgm.getAcceptThreshold());
 }
 

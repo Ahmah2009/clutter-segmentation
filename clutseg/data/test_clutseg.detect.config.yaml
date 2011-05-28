@@ -1,0 +1,31 @@
+%YAML:1.0
+# TODParameters
+TODParameters:
+   # GuessParameters
+   GuessParameters:
+      min_cluster_size: 225
+      min_inliers_count: 6
+      ransac_iterations_count: 1000
+      max_projection_error: 15.
+      descriptor_distance_threshold: 0.
+      min_stddev_factor: 0.
+   # FeatureExtractionParams
+   feature_extraction_params:
+      detector_type: FAST
+      extractor_type: multi-scale
+      descriptor_type: rBRIEF
+      detector_params:
+         max_features: 0.
+         min_features: 0.
+         threshold: 40.
+      extractor_params:
+         octaves: 3.
+   # MatcherParameters
+   MatcherParameters:
+      matcher_type: LSH-BINARY
+      ratio_threshold: 8.0000001192092896e-01
+      knn: 3
+      do_ratio_test: 1
+   # ClusterParameters
+   ClusterParameters:
+      max_distance: -1028637952
