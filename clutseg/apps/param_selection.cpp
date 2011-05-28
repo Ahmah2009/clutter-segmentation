@@ -25,6 +25,47 @@ using namespace tod;
 
 namespace bfs = boost::filesystem;
 
+/** Generates a prototype for an experiment setup that can be replicated,
+ * adapted and written to the database (i.e. enqueuing the setup for being
+ * carried out). The returned experiment setup is initialized to have some
+ * reasonable defaults. */
+Experiment createExperiment() {
+    Experiment e;
+    experiment.train_set = "ias_kinect_train_v2";
+    experiment.test_set = "ias_kinect_test_grounded_21";
+    experiment.paramset.pms_clutseg.accept_threshold = 10;
+    experiment.paramset.pms_clutseg.ranking = "InliersRanking";
+    experiment.paramset.train_pms_fe.detector_type = "FAST";
+    experiment.paramset.train_pms_fe.extractor_type = "multi-scale";
+    experiment.paramset.train_pms_fe.descriptor_type = "rBRIEF";
+    experiment.paramset.train_pms_fe.detector_params["min_features"] = 0;
+    experiment.paramset.train_pms_fe.detector_params["max_features"] = 0;
+    experiment.paramset.train_pms_fe.detector_params["threshold"] = 25;
+    experiment.paramset.train_pms_fe.extractor_params["octaves"] = 3;
+    experiment.paramset.recog_pms_fe.detector_type = "FAST";
+    experiment.paramset.recog_pms_fe.extractor_type = "multi-scale";
+    experiment.paramset.recog_pms_fe.descriptor_type = "rBRIEF";
+    experiment.paramset.recog_pms_fe.detector_params["min_features"] = 0;
+    experiment.paramset.recog_pms_fe.detector_params["max_features"] = 0;
+    experiment.paramset.recog_pms_fe.detector_params["threshold"] = 30;
+    experiment.paramset.recog_pms_fe.extractor_params["octaves"] = 3;
+    experiment.paramset.detect_pms_match.type = "LSH-BINARY";
+    experiment.paramset.detect_pms_match.knn = 3; 
+    experiment.paramset.detect_pms_match.doRatioTest = true; 
+    experiment.paramset.detect_pms_match.ratioThreshold= 0.8;
+    experiment.paramset.detect_pms_guess.ransacIterationsCount = 1000; 
+    experiment.paramset.detect_pms_guess.minInliersCount = 10; 
+    experiment.paramset.detect_pms_guess.maxProjectionError = 15; 
+    experiment.paramset.locate_pms_match.type = "LSH-BINARY";
+    experiment.paramset.locate_pms_match.knn = 3; 
+    experiment.paramset.locate_pms_match.doRatioTest = false; 
+    experiment.paramset.locate_pms_match.ratioThreshold= 0;
+    experiment.paramset.locate_pms_guess.ransacIterationsCount = 1000; 
+    experiment.paramset.locate_pms_guess.minInliersCount = 15; 
+    experiment.paramset.locate_pms_guess.maxProjectionError = 12; 
+    return e;
+}
+
 int main(int argc, char **argv) {
     // ... in order to convert it to a ROS node
     // #include <ros/ros.h>
