@@ -81,6 +81,9 @@ namespace clutseg {
          * success. */
         float max_angle_error;
 
+        tod::TODParameters toDetectTodParameters() const;
+        tod::TODParameters toLocateTodParameters() const;
+
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
 

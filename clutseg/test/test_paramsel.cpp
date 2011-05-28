@@ -392,3 +392,14 @@ TEST_F(ParamSelTest, SortExperimentsByTrainFeatures) {
     EXPECT_TRUE(exps[0].id == e2.id || exps[2].id == e2.id);
 }
 
+TEST_F(ParamSelTest, ToDetectTodParameters) {
+    TODParameters dp = experiment.paramset.toDetectTodParameters();
+    EXPECT_EQ(experiment.paramset.detect_pms_guess.minInliersCount, 5);
+    EXPECT_EQ(dp.guessParams.minInliersCount, 5);
+    dp.guessParams.minInliersCount = 10;
+    EXPECT_EQ(dp.guessParams.minInliersCount, 10);
+    EXPECT_EQ(experiment.paramset.detect_pms_guess.minInliersCount, 5);
+    experiment.paramset.detect_pms_guess.minInliersCount = 15;
+    EXPECT_EQ(dp.guessParams.minInliersCount, 10);
+    EXPECT_EQ(experiment.paramset.detect_pms_guess.minInliersCount, 15);
+}

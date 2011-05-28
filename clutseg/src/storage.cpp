@@ -21,6 +21,14 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
+    void store_config(const bfs::path & filename, const TODParameters & params) {
+        bfs::create_directories(filename.parent_path());
+        FileStorage fs(filename.string(), FileStorage::WRITE);
+        fs << TODParameters::YAML_NODE_NAME;
+        params.write(fs);
+        fs.release();
+    }
+
     void ResultStorage::store(const TestReport & report) {
         bfs::path erd = result_dir_ / (str(boost::format("%05d") % report.experiment.id));
         if (!bfs::exists(erd)) {
@@ -103,33 +111,14 @@ namespace clutseg {
         }
         dc_fs.release();
 
+        {
+            TODParameters dp = report.experiment.paramset.toDetectTodParameters();
+            store_config(erd / "detect.config.yaml", dp);
+        }
 
-        // Store detect.config.yaml
-        TODParameters dp;
-        // TODO: create function in Paramset that allows to convert
-        // to TODParameters, see also src/clutseg.cpp, the following
-        // lines show duplication
-        dp.feParams = report.experiment.paramset.recog_pms_fe;
-        dp.matcherParams = report.experiment.paramset.detect_pms_match;
-        dp.guessParams = report.experiment.paramset.detect_pms_guess;
-        bfs::path dp_path = erd / "detect.config.yaml";
-        bfs::create_directories(dp_path.parent_path());
-        FileStorage dp_fs(dp_path.string(), FileStorage::WRITE);
-        dp_fs << TODParameters::YAML_NODE_NAME;
-        dp.write(dp_fs);
-        dp_fs.release();
-
-        // Store locate.config.yaml
-        TODParameters lp;
-        lp.feParams = report.experiment.paramset.recog_pms_fe;
-        lp.matcherParams = report.experiment.paramset.locate_pms_match;
-        lp.guessParams = report.experiment.paramset.locate_pms_guess;
-        bfs::path lp_path = erd / "locate.config.yaml";
-        bfs::create_directories(lp_path.parent_path());
-        FileStorage lp_fs(lp_path.string(), FileStorage::WRITE);
-        lp_fs << TODParameters::YAML_NODE_NAME;
-        lp.write(lp_fs);
-        lp_fs.release();
+        {
+            TODParameters lp = report.experiment.paramset.toLocateTodParameters();
+            store_config(erd / "locate.config.yaml", lp);
+        }
     }
-
 }

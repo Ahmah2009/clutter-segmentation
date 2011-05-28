@@ -116,6 +116,22 @@ namespace clutseg {
         setMemberField(m, "max_projection_error", pms_guess.maxProjectionError);
         insertOrUpdate(db, "pms_guess", m, id);
     }
+        
+    tod::TODParameters Paramset::toDetectTodParameters() const {
+        TODParameters p;
+        p.feParams = recog_pms_fe;
+        p.matcherParams = detect_pms_match;
+        p.guessParams = detect_pms_guess;
+        return p;
+    }
+
+    tod::TODParameters Paramset::toLocateTodParameters() const {
+        TODParameters p;
+        p.feParams = recog_pms_fe;
+        p.matcherParams = locate_pms_match;
+        p.guessParams = locate_pms_guess;
+        return p;
+    } 
 
     void Paramset::serialize(sqlite3* db) {
         serialize_pms_fe(db, train_pms_fe, train_pms_fe_id);
