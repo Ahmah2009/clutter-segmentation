@@ -102,6 +102,34 @@ namespace clutseg {
             c.aligned_pose().write(dc_fs);
         }
         dc_fs.release();
+
+
+        // Store detect.config.yaml
+        TODParameters dp;
+        // TODO: create function in Paramset that allows to convert
+        // to TODParameters, see also src/clutseg.cpp, the following
+        // lines show duplication
+        dp.feParams = report.experiment.paramset.recog_pms_fe;
+        dp.matcherParams = report.experiment.paramset.detect_pms_match;
+        dp.guessParams = report.experiment.paramset.detect_pms_guess;
+        bfs::path dp_path = erd / "detect.config.yaml";
+        bfs::create_directories(dp_path.parent_path());
+        FileStorage dp_fs(dp_path.string(), FileStorage::WRITE);
+        dp_fs << TODParameters::YAML_NODE_NAME;
+        dp.write(dp_fs);
+        dp_fs.release();
+
+        // Store locate.config.yaml
+        TODParameters lp;
+        lp.feParams = report.experiment.paramset.recog_pms_fe;
+        lp.matcherParams = report.experiment.paramset.locate_pms_match;
+        lp.guessParams = report.experiment.paramset.locate_pms_guess;
+        bfs::path lp_path = erd / "locate.config.yaml";
+        bfs::create_directories(lp_path.parent_path());
+        FileStorage lp_fs(lp_path.string(), FileStorage::WRITE);
+        lp_fs << TODParameters::YAML_NODE_NAME;
+        lp.write(lp_fs);
+        lp_fs.release();
     }
 
 }
