@@ -293,6 +293,7 @@ namespace clutseg {
         }
         paramset.serialize(db);
         MemberMap m;
+        setMemberField(m, "name", name);
         setMemberField(m, "paramset_id", paramset.id);
         if (has_run) {
             setMemberField(m, "response_id", response.id);
@@ -312,6 +313,7 @@ namespace clutseg {
     void Experiment::deserialize(sqlite3* db) {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select "
+            "name, "
             "paramset_id, "
             "response_id, "
             "train_set, "
@@ -322,6 +324,7 @@ namespace clutseg {
             "from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         int c = 0; 
+        name = string((const char*) sqlite3_column_text(read, c++));
         paramset.id = sqlite3_column_int64(read, c++);
         has_run = (sqlite3_column_type(read, c) != SQLITE_NULL);
         if (has_run) {

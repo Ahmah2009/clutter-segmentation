@@ -213,6 +213,7 @@ namespace clutseg {
  
         Paramset paramset; 
         Response response;
+        std::string name;
         std::string train_set;
         std::string test_set;
         std::string time;

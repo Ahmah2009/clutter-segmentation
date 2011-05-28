@@ -25,6 +25,7 @@ struct ParamSelTest : public ::testing::Test {
         db_open(db, fn);
 
         experiment.id = -1;
+        experiment.name = "some-unique-experiment-name";
         experiment.time = "2011-01-02 20:12:23";
         experiment.train_set = "hypothetical_train_set";
         experiment.test_set = "hypothetical_test_set";
@@ -102,6 +103,7 @@ struct ParamSelTest : public ::testing::Test {
 
 TEST_F(ParamSelTest, Initialization) {
     Experiment exp;
+    EXPECT_EQ("", exp.name);
     EXPECT_FLOAT_EQ(0, exp.response.value);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.rscore);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.tscore);
@@ -298,6 +300,7 @@ TEST_F(ParamSelTest, experiment_read) {
     Experiment e;
     e.id = 1;
     e.deserialize(db); 
+    EXPECT_EQ("some-experiment", e.name);
     EXPECT_EQ("train", e.train_set);
     EXPECT_EQ("test", e.test_set);
 }
@@ -355,6 +358,9 @@ TEST_F(ParamSelTest, SelectExperimentsNotRun) {
     e1.has_run = true;
     e2.has_run = false;
     e3.has_run = false;
+    e1.name = "e1";
+    e2.name = "e2";
+    e3.name = "e3";
     e3.paramset.pms_clutseg.ranking = "ProximityRanking";
     e1.serialize(db);
     e2.serialize(db);
@@ -382,6 +388,9 @@ TEST_F(ParamSelTest, SortExperimentsByTrainFeatures) {
     Experiment e2 = experiment;
     Experiment e3 = experiment;
     e2.paramset.train_pms_fe = FeatureExtractionParams::CreateSampleParams();
+    e1.name = "e1";
+    e2.name = "e2";
+    e3.name = "e3";
     e1.serialize(db);
     e2.serialize(db);
     e3.serialize(db);
