@@ -34,7 +34,7 @@ namespace clutseg {
     }
 
     bool TestReport::success() const {
-        return result.guess_made && (angle_error() <= CLUTSEG_SIPC_MAX_ANGLE && trans_error() <= CLUTSEG_SIPC_MAX_TRANS);
+        return result.guess_made && ground.onScene(result.locate_choice.getObject()->name) && (angle_error() <= CLUTSEG_SIPC_MAX_ANGLE && trans_error() <= CLUTSEG_SIPC_MAX_TRANS);
     }
 
 }
