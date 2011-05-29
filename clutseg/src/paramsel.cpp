@@ -461,6 +461,7 @@ namespace clutseg {
             ids.push_back(sqlite3_column_int(select, 0));
         }
         exps.resize(ids.size());
+        sort(ids.begin(), ids.end());
         for (size_t i = 0; i < ids.size(); i++) {
             exps[i].id = ids[i];
             exps[i].deserialize(db);
