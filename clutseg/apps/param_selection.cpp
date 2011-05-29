@@ -82,14 +82,25 @@ void insert_if_not_exist(sqlite3* & db, Experiment & e) {
 }
 
 void insert_experiments(sqlite3* & db) {
-    // FAST  + rBRIEF + LSH-BINARY
+    // FAST + rBRIEF + LSH-BINARY
     {
+        // This configuration works quite well compared to others, achieving
+        // success rates up to 67% on the ias_kinect_test_grounded_21 test
+        // dataset, getting classification right on up to 17/21 images. It is
+        // also very fast in training and detection. Hence, this configuration
+        // must be further investigated into, looking for further improvement
+        // by exploring neighbored parameter space.
         Experiment e = createExperiment();
         e.name = "single-fast-rbrief-lsh-binary";
         insert_if_not_exist(db, e);
     }
+
     // SIFT + rBRIEF + LSH-BINARY
     {
+        // This one is a full-blown failure, not producing anything to start
+        // with.  Either there is an important parameter set to a bad value or
+        // there is still some bug somewhere, probably already during training.
+        // NOTE: I forgot to change the extractor_type to 'sequential' here.
         Experiment e = createExperiment();
         e.name = "single-sift-rbrief-lsh-binary";
         e.paramset.train_pms_fe.detector_type = "SIFT";
@@ -98,22 +109,32 @@ void insert_experiments(sqlite3* & db) {
     }
     // SURF + rBRIEF + LSH-BINARY
     {
+        // This one is a full-blown failure, not producing anything to start
+        // with.  Either there is an important parameter set to a bad value or
+        // there is still some bug somewhere, probably already during training.
+        // NOTE: I forgot to change the extractor_type to 'sequential' here.
         Experiment e = createExperiment();
         e.name = "single-surf-rbrief-lsh-binary";
         e.paramset.train_pms_fe.detector_type = "SURF";
         e.paramset.recog_pms_fe.detector_type = "SURF";
         insert_if_not_exist(db, e);
     }
+
     // STAR + rBRIEF + LSH-BINARY
     {
+        // Works only one one or two pictures. Seems to be an issue with
+        // thresholds and other parameters, but should work in principle. 
         Experiment e = createExperiment();
         e.name = "single-star-rbrief-lsh-binary";
         e.paramset.train_pms_fe.detector_type = "STAR";
         e.paramset.recog_pms_fe.detector_type = "STAR";
         insert_if_not_exist(db, e);
     }
+
     // ORB + LSH-BINARY
     {
+        // Achieves success rates up to 50%. Seems to be a prospective
+        // candidate for further investigation.
         Experiment e = createExperiment();
         e.name = "single-orb-lsh-binary";
         e.paramset.train_pms_fe.detector_type = "ORB";
