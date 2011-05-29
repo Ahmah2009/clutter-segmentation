@@ -42,4 +42,7 @@
 }
 - other: {local-name: /opt/ros/diamondback/ros}
 - other: {local-name: /opt/ros/diamondback/stacks}
+- other: {
+    local-name: vision_opencv
+}
 
