@@ -33,7 +33,7 @@ fi
 out=$CLUTSEG_ARTIFACT_DIR/results.html
 
 echo > $out
-tee $out <<START
+tee $out <<EOF
 <html>
 <style>
 
@@ -60,13 +60,15 @@ th, td {
 th {
     background-color: rgb(255, 203, 153);
 }
+
+p {
+    width: 500px;
+}
 </style>
 <body>
-START
+EOF
 
 function table() {
-    echo $1
-    echo $2
     echo "<h1>$1</h1>" >> $out
     echo "<table>" >> $out
     sqlite3 -header -html $CLUTSEG_EXPERIMENT_DB "$2"  >> $out
@@ -74,12 +76,38 @@ function table() {
 }
 
 set -f
+
+echo "<h1>Target</h1>" >> $out
+result-best-succ-rate
+echo "<img src='best_succ_rate.png' />" >> $out
+tee --append $out <<EOF
+<p>The ultimate target in this experiment to achieve a very high success rate.
+The bar indicates the best success rate achieved so far in any experiment that
+has been carried out so far. 100% success is achieved if on every test scene,
+one object is correctly labeled and located correctly up to a certain margin of
+error for rotation and translation.</p>
+EOF
+
+table "Scores" "select * from view_experiment_scores"
+tee --append $out <<EOF
+<p>If many objects have been successfully located, yet with comparatively large
+errors, then <tt>locate_sipc</tt> is smaller than <tt>succ_rate</tt>. In case,
+many objects have been correctly classified but not correctly located, then
+<tt>succ_rate</tt> will be smaller than <tt>locate_sipc</tt>.</p>
+EOF
+
+table "Locate SIPC Scores" "select * from view_experiment_locate_sipc"
+
+table "Detect SIPC Scores" "select * from view_experiment_detect_sipc"
+
 table "Receiver Operating Characteristics" "select * from view_experiment_detect_roc"
 result-roc
 echo "<img src='detect_roc.png' />" >> $out
-table "Scores" "select * from view_experiment_scores"
-table "Errors" "select * from view_experiment_error"
-result-best-succ-rate
-echo "<img src='best_succ_rate.png' />" >> $out
 
+table "Errors" "select * from view_experiment_error"
 echo "</body></html>" >> $out
+
+scp $CLUTSEG_ARTIFACT_DIR/detect_roc.png rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
+scp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
+scp $out rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
+
