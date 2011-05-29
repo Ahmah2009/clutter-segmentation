@@ -18,14 +18,11 @@
  * 20 degrees in rotational error.
  * 
  * In the case, we only recognize one of the objects, we do not make any
- * statement about true negatives, and the SIPC score can still be calculated
- * with slight modification that you can achieve full classificaton score by
- * always correctly labeling any object in each image. Besides from that the
- * calculation remains the same. The scores achieved by attempting to recognize
- * all objects, or (likely) easier cannot be compared directly. Yet, since we
- * assume that being able to choose one already labeled object for pose estimation
- * will decrease expected estimation error, and the scores on all objects shall 
- * provide a baseline for comparison.
+ * statement about true negatives, but the SIPC score can still be calculated
+ * if we make the decision that you can achieve full classificaton score by
+ * always correctly labeling exactly one object in each image. Besides from
+ * that, the calculation remains the same. Locating all objects is more difficult
+ * than locating only one object (at least that is what I expect).
  *
  * See "How To Read a Detailed Score Report (ICRA2011 Solutions in Perception
  * Challenge)", in the following referred to as SIPC11 for a description. The
