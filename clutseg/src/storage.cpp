@@ -48,7 +48,7 @@ namespace clutseg {
         // Draw locate choice image
         Mat lci = report.query.img.clone();
         drawGroundTruth(lci, report.ground, report.camera);
-        if (report.result.guess_made) { 
+        if (report.result.guess_made && report.ground.onScene(report.result.locate_choice.getObject()->name)) { 
             drawGuess(lci, report.result.locate_choice, report.camera, PoseRT());
             vector<string> err_text;
             err_text.push_back(str(boost::format("angle_error: %4.2f deg") % (report.angle_error() * 360 / (2 * M_PI))));
