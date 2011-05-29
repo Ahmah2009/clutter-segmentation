@@ -27,12 +27,13 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    ExperimentRunner::ExperimentRunner() {}
+    ExperimentRunner::ExperimentRunner() : terminate(false) {}
 
     ExperimentRunner::ExperimentRunner(sqlite3* db,
                                        const TrainFeaturesCache & cache,
                                        const ResultStorage & storage) :
-                                        db_(db), cache_(cache), storage_(storage) {}
+                                        terminate(false), db_(db),
+                                        cache_(cache), storage_(storage) {}
 
     bfs::path cloudPath(const bfs::path & img_path) {
         string fn = img_path.filename();
@@ -101,6 +102,10 @@ namespace clutseg {
  
             TestReport report(e, query, res, test_it->second, img_name, test_dir, camera);
             storage_.store(report);
+
+            if (terminate) {
+                cout << "[RUN] Registered termination request. Program will be terminated as soon as the experiment has been carried out completely." << endl;
+            }
         }
         // TODO: save experiment results
         CutSseResponseFunction responseFunc;
@@ -113,7 +118,7 @@ namespace clutseg {
     }
 
     void ExperimentRunner::run() {
-        while (true) {
+        while (!terminate) {
             cout << "[RUN] Querying database for experiments to carry out..." << endl;
             vector<Experiment> exps;
             selectExperimentsNotRun(db_, exps);
@@ -131,7 +136,9 @@ namespace clutseg {
             TrainFeatures cur_tr_feat;
             Clutsegmenter *sgm = NULL;
             BOOST_FOREACH(Experiment & e, exps) {
-                if (e.skip) {
+                if (terminate) {
+                    break;
+                } else if (e.skip) {
                     cerr << "[RUN]: Skipping experiment (id=" << e.id << ")" << endl;
                 } else {
                     TrainFeatures tr_feat(e.train_set, e.paramset.train_pms_fe);

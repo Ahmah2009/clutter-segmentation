@@ -15,6 +15,9 @@
 #include "clutseg/runner.h"
 #include "clutseg/storage.h"
 
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 
@@ -75,10 +78,8 @@ void insert_if_not_exist(sqlite3* & db, Experiment & e) {
     } catch (...) {
         cout << "[PARAMSEL] Skipping the insertion of " + e.name + ", already exists." << endl;
     }
-
+    sqlite3_finalize(read);
 }
-
-// FIXME: signal handling!
 
 void insert_experiments(sqlite3* & db) {
     // FAST  + rBRIEF + LSH-BINARY
@@ -127,6 +128,12 @@ void insert_experiments(sqlite3* & db) {
     }
 }
 
+ExperimentRunner runner;
+
+void terminate(int s) {
+    runner.terminate = true;
+}
+
 int main(int argc, char **argv) {
     // ... in order to convert it to a ROS node
     // #include <ros/ros.h>
@@ -154,7 +161,13 @@ int main(int argc, char **argv) {
     TrainFeaturesCache cache(cache_dir);
     ResultStorage storage(result_dir);
     cout << "Running experiments ..." << endl;
-    ExperimentRunner runner(db, cache, storage);
+    runner = ExperimentRunner(db, cache, storage);
+
+    // Use custom signal handler
+    void (*prev_fn)(int);
+    prev_fn = signal (SIGINT, terminate);
+    if (prev_fn==SIG_IGN) signal (SIGINT,SIG_IGN);
+
     runner.run();
     db_close(db);
     return 0;

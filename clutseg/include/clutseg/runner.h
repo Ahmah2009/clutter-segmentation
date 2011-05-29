@@ -27,6 +27,8 @@ namespace clutseg {
              * account. */
             void run();
 
+            bool terminate;
+
         private:
 
             void runExperiment(Clutsegmenter & segmenter, Experiment & exp);
