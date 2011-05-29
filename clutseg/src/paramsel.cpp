@@ -452,7 +452,7 @@ namespace clutseg {
 
    void selectExperimentsNotRun(sqlite3* & db, vector<Experiment> & exps) {
         sqlite3_stmt *select;
-        string sql = "select id from experiment where response_id is null;";
+        string sql = "select id from experiment where response_id is null order by id asc;";
         db_prepare(db, select, sql);
         // TODO: clear interface for logging sql statements, is there any hook in sqlite3?
         cout << "[SQL] " << sql << endl;
