@@ -185,7 +185,7 @@ TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
     EXPECT_EQ("haltbare_milch", res.locate_choice.getObject()->name);
     cout << "detected: " << res.locate_choice.getObject()->name << endl;
     cout << "inliers:  " << res.locate_choice.inliers.size() << endl;
-    EXPECT_GT(res.locate_choice.inliers.size(), 500);
+    EXPECT_GT(res.locate_choice.inliers.size(), 10);
 }
 
 /** Check whether loading a single training base works without failing */
