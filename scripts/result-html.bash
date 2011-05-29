@@ -33,7 +33,7 @@ fi
 out=$CLUTSEG_ARTIFACT_DIR/results.html
 
 echo > $out
-tee $out <<EOF
+cat >> $out <<EOF
 <html>
 <style>
 
@@ -80,7 +80,7 @@ set -f
 echo "<h1>Target</h1>" >> $out
 result-best-succ-rate
 echo "<img src='best_succ_rate.png' />" >> $out
-tee --append $out <<EOF
+cat >> $out <<EOF
 <p>The ultimate target in this experiment to achieve a very high success rate.
 The bar indicates the best success rate achieved so far in any experiment that
 has been carried out so far. 100% success is achieved if on every test scene,
