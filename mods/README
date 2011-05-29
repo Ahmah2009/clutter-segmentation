@@ -53,3 +53,9 @@ See also http://answers.ros.org/question/867/how-to-use-very-latest-opencv-versi
 This recipe might not be complete, since haven't traced every single step. But
 it's a rough guideline and it finally worked.
 
+Update 2011-05-29: It's better to not modify any package files. The same can be
+achieved by overlaying the vision_opencv stack. Steps 3, 4, 5, 6 still apply.
+clutter-segmentation.rosinstall has accordingly modified to use an overlay in a
+local directory. I am not completely sure whether it is necessary to
+pre-emptively add the local vision_opencv overlay directory to
+ROS_PACKAGE_PATH.
