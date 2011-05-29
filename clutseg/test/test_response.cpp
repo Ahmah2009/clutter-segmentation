@@ -130,7 +130,7 @@ struct ResponseFunctionTest : public ::testing::Test {
 };
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
-    expect_sse_response_single(0.0, pose);
+    expect_sse_response_single(1.0, pose);
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
@@ -138,7 +138,7 @@ TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
 }
 
 TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
-    expect_sse_response_single(0.25, rotatePose(pose, randomOrientation(M_PI / 18)));
+    expect_sse_response_single(0.75, rotatePose(pose, randomOrientation(M_PI / 18)));
 }
 
 TEST_F(ResponseFunctionTest, TestErrorStatistics) {
