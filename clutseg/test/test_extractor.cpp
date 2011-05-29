@@ -76,7 +76,7 @@ class ExtractorTest : public ::testing::Test {
             test_images.push_back(imread(p + "/ias_kinect_test_all/all01/image_00000.jpg", 0));
             test_images.push_back(imread(p + "/ias_kinect_test_all/all02/image_00000.jpg", 0));
             test_images.push_back(imread(p + "/ias_kinect_test_all/all03/image_00000.jpg", 0));
-            test_images.push_back(imread(p + "/ias_kinect_test_grounded/at_hm_jc/image_00000.png", 0));
+            test_images.push_back(imread(p + "/ias_kinect_test_grounded_21/at_hm_jc/image_00008.png", 0));
 
             {
                 feparams["orb_harrisfast"] = &orb_harrisfast;
