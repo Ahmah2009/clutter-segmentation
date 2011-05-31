@@ -19,7 +19,7 @@ pushd $CLUTSEG_PATH/clutter-segmentation/clutseg > /dev/null
     if [ "$?" = 0 ] ; then
         cp data/paramsel.sqlite3 build
         mkdir -p build/train_cache -p build/results
-        $debug param_selection build/paramsel.sqlite3 build/train_cache build/results
+        $debug param_selection build/paramsel.sqlite3 build/train_cache build/results $CLUTSEG_POST_RUN_CMD
     fi
 popd > /dev/null
 

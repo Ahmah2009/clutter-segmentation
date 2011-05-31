@@ -200,8 +200,8 @@ int main(int argc, char **argv) {
     // ros::init(argc, argv, "param_selection");
     // ros::NodeHandle n;
 
-    if (argc != 4) {
-        cerr << "Usage: param_selection <database> <train_cache> <result_dir>" << endl;
+    if (argc != 4 && argc != 5) {
+        cerr << "Usage: param_selection <database> <train_cache> <result_dir> [<post_run_cmd>]" << endl;
         return -1;
     }
     bfs::path db_path = argv[1];
@@ -221,6 +221,10 @@ int main(int argc, char **argv) {
     ResultStorage storage(result_dir);
     cout << "Running experiments ..." << endl;
     runner = ExperimentRunner(db, cache, storage);
+
+    if (argc == 5) {
+        runner.setPostRunCmd(argv[4]);
+    }
 
     // Use custom signal handler
     void (*prev_fn)(int);

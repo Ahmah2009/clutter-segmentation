@@ -107,7 +107,6 @@ namespace clutseg {
                 cout << "[RUN] Registered termination request. Program will be terminated as soon as the experiment has been carried out completely." << endl;
             }
         }
-        // TODO: save experiment results
         CutSseResponseFunction responseFunc;
         responseFunc(resultSet, testdesc, sgm.getTemplateNames(), e.response);
 
@@ -167,10 +166,23 @@ namespace clutseg {
                         runExperiment(*sgm, e);
                         e.serialize(db_);
 
-                        // Re-generate report
-                        FILE *in;
-                        in = popen("result-html", "r");
-                    pclose(in);
+                        try {
+                            // Re-generate report
+                            FILE *in;
+                            in = popen("result-html", "r");
+                            pclose(in);
+                        } catch ( ... ) {
+                            cerr << "[RUN]: Generating HTML report failed." << endl;
+                        }
+
+                        try {
+                            // Run post-experiment command.
+                            FILE *in2;
+                            in2 = popen(post_run_cmd_.c_str(), "r");
+                            pclose(in2);
+                        } catch (...) {
+                            cerr << "[RUN]: Post run command failed." << endl;
+                        }
                     } catch( runtime_error & err ) {
                         cerr << "[RUN]: " << err.what() << endl;
                         cerr << "[RUN]: ERROR, experiment failed, no results recorded (id=" << e.id << ")" << endl;
@@ -186,6 +198,14 @@ namespace clutseg {
 
             sleep(3);
         }
+    }
+
+    void ExperimentRunner::setPostRunCmd(const string & post_run_cmd) {
+        post_run_cmd_ = post_run_cmd;
+    }
+
+    string ExperimentRunner::getPostRunCmd() const {
+        return post_run_cmd_;
     }
 
 }

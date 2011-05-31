@@ -2,11 +2,11 @@
 
 function usage() {
     cat <<USAGE
-Usage: result-html
+Usage: result-html [post-trigger-cmd]
 
 Generates a HTML overview about experiment results. Requires
-CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be
-set in the environment. Requires R and sqlite3 installed.
+CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be set in
+the environment. Requires R and sqlite3 command line interface installed.
 USAGE
 }
 
@@ -123,9 +123,4 @@ EOF
 
 
 echo "</body></html>" >> $out
-
-# TODO:
-scp $CLUTSEG_ARTIFACT_DIR/detect_roc.png rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
-scp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
-scp $out rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
 
