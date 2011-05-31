@@ -91,32 +91,55 @@ void insert_experiments(sqlite3* & db) {
         // must be further investigated into, looking for further improvement
         // by exploring neighbored parameter space.
         Experiment e = createExperiment();
-        e.name = "single-fast-rbrief-lsh-binary";
+        e.name = "fast-rbrief-lsh-binary";
         insert_if_not_exist(db, e);
     }
 
-    // SIFT + rBRIEF + LSH-BINARY
+    // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
     {
         // This one is a full-blown failure, not producing anything to start
         // with.  Either there is an important parameter set to a bad value or
         // there is still some bug somewhere, probably already during training.
         // NOTE: I forgot to change the extractor_type to 'sequential' here.
+        // Leave it for comparison.
         Experiment e = createExperiment();
-        e.name = "single-sift-rbrief-lsh-binary";
+        e.name = "sift-rbrief-lsh-binary-extractor-multiscale";
         e.paramset.train_pms_fe.detector_type = "SIFT";
         e.paramset.recog_pms_fe.detector_type = "SIFT";
         insert_if_not_exist(db, e);
     }
-    // SURF + rBRIEF + LSH-BINARY
+    // SURF + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
     {
         // This one is a full-blown failure, not producing anything to start
         // with.  Either there is an important parameter set to a bad value or
         // there is still some bug somewhere, probably already during training.
         // NOTE: I forgot to change the extractor_type to 'sequential' here.
+        // Leave it for comparison.
         Experiment e = createExperiment();
-        e.name = "single-surf-rbrief-lsh-binary";
+        e.name = "surf-rbrief-lsh-binary-extractor-multi-scale";
         e.paramset.train_pms_fe.detector_type = "SURF";
         e.paramset.recog_pms_fe.detector_type = "SURF";
+        insert_if_not_exist(db, e);
+    }
+
+    // SIFT + rBRIEF + LSH-BINARY (extractor_type=sequential)
+    {
+        Experiment e = createExperiment();
+        e.name = "sift-rbrief-lsh-binary-extractor-sequential";
+        e.paramset.train_pms_fe.detector_type = "SIFT";
+        e.paramset.recog_pms_fe.detector_type = "SIFT";
+        e.paramset.train_pms_fe.extractor_type = "sequential";
+        e.paramset.recog_pms_fe.extractor_type = "sequential";
+        insert_if_not_exist(db, e);
+    }
+    // SURF + rBRIEF + LSH-BINARY (extractor_type=sequential)
+    {
+        Experiment e = createExperiment();
+        e.name = "surf-rbrief-lsh-binary-extractor-multi-scale";
+        e.paramset.train_pms_fe.detector_type = "SURF";
+        e.paramset.recog_pms_fe.detector_type = "SURF";
+        e.paramset.train_pms_fe.extractor_type = "sequential";
+        e.paramset.recog_pms_fe.extractor_type = "sequential";
         insert_if_not_exist(db, e);
     }
 
@@ -125,7 +148,7 @@ void insert_experiments(sqlite3* & db) {
         // Works only one one or two pictures. Seems to be an issue with
         // thresholds and other parameters, but should work in principle. 
         Experiment e = createExperiment();
-        e.name = "single-star-rbrief-lsh-binary";
+        e.name = "star-rbrief-lsh-binary";
         e.paramset.train_pms_fe.detector_type = "STAR";
         e.paramset.recog_pms_fe.detector_type = "STAR";
         insert_if_not_exist(db, e);
@@ -136,7 +159,7 @@ void insert_experiments(sqlite3* & db) {
         // Achieves success rates up to 50%. Seems to be a prospective
         // candidate for further investigation.
         Experiment e = createExperiment();
-        e.name = "single-orb-lsh-binary";
+        e.name = "orb-lsh-binary";
         e.paramset.train_pms_fe.detector_type = "ORB";
         e.paramset.train_pms_fe.extractor_type = "ORB";
         e.paramset.train_pms_fe.descriptor_type = "ORB";
@@ -145,6 +168,21 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.recog_pms_fe.extractor_type = "ORB";
         e.paramset.recog_pms_fe.descriptor_type = "ORB";
         e.paramset.recog_pms_fe.detector_params["threshold"] = 0.000001;
+        insert_if_not_exist(db, e);
+    }
+
+    // ORB + LSH-BINARY + low-threshold
+    {
+        Experiment e = createExperiment();
+        e.name = "orb-lsh-binary-low-threshold";
+        e.paramset.train_pms_fe.detector_type = "ORB";
+        e.paramset.train_pms_fe.extractor_type = "ORB";
+        e.paramset.train_pms_fe.descriptor_type = "ORB";
+        e.paramset.train_pms_fe.detector_params["threshold"] = 0.0000001;
+        e.paramset.recog_pms_fe.detector_type = "ORB";
+        e.paramset.recog_pms_fe.extractor_type = "ORB";
+        e.paramset.recog_pms_fe.descriptor_type = "ORB";
+        e.paramset.recog_pms_fe.detector_params["threshold"] = 0.0000001;
         insert_if_not_exist(db, e);
     }
 }
