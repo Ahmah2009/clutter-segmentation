@@ -4,6 +4,7 @@
 
 #include "clutseg/experiment.h"
 
+#include "clutseg/check.h"
 #include "clutseg/flags.h"
 
 #include <boost/filesystem.hpp>
@@ -36,6 +37,9 @@ namespace clutseg {
         bfs::path p(getenv("CLUTSEG_PATH"));
         bfs::path train_dir = p / train_set;
         bfs::path gen_bash = train_dir / "generate.bash";
+
+        assert_path_exists(p);
+        assert_path_exists(train_dir);
         
         // Mark the training directory as dirty while we are operating on it.
         // In case the process is interrupted for some reason, we can detect a
