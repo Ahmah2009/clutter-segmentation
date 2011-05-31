@@ -91,7 +91,7 @@ void insert_experiments(sqlite3* & db) {
         // must be further investigated into, looking for further improvement
         // by exploring neighbored parameter space.
         Experiment e = createExperiment();
-        e.name = "fast-rbrief-lsh-binary";
+        e.name = "fast-rbrief-multiscale-lshbinary";
         insert_if_not_exist(db, e);
     }
 
@@ -103,7 +103,7 @@ void insert_experiments(sqlite3* & db) {
         // NOTE: I forgot to change the extractor_type to 'sequential' here.
         // Leave it for comparison.
         Experiment e = createExperiment();
-        e.name = "sift-rbrief-lsh-binary-extractor-multiscale";
+        e.name = "sift-rbrief-multiscale-lshbinary";
         e.paramset.train_pms_fe.detector_type = "SIFT";
         e.paramset.recog_pms_fe.detector_type = "SIFT";
         insert_if_not_exist(db, e);
@@ -116,7 +116,7 @@ void insert_experiments(sqlite3* & db) {
         // NOTE: I forgot to change the extractor_type to 'sequential' here.
         // Leave it for comparison.
         Experiment e = createExperiment();
-        e.name = "surf-rbrief-lsh-binary-extractor-multi-scale";
+        e.name = "surf-rbrief-multiscale-lshbinary";
         e.paramset.train_pms_fe.detector_type = "SURF";
         e.paramset.recog_pms_fe.detector_type = "SURF";
         insert_if_not_exist(db, e);
@@ -125,21 +125,78 @@ void insert_experiments(sqlite3* & db) {
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=sequential)
     {
         Experiment e = createExperiment();
-        e.name = "sift-rbrief-lsh-binary-extractor-sequential";
+        e.name = "sift-rbrief-sequential-lshbinary";
         e.paramset.train_pms_fe.detector_type = "SIFT";
         e.paramset.recog_pms_fe.detector_type = "SIFT";
         e.paramset.train_pms_fe.extractor_type = "sequential";
         e.paramset.recog_pms_fe.extractor_type = "sequential";
         insert_if_not_exist(db, e);
     }
+
+    // SIFT + rBRIEF + FLANN (extractor_type=sequential)
+    {
+        Experiment e = createExperiment();
+        e.name = "sift-rbrief-sequential-flann";
+        e.paramset.train_pms_fe.detector_type = "SIFT";
+        e.paramset.recog_pms_fe.detector_type = "SIFT";
+        e.paramset.train_pms_fe.extractor_type = "sequential";
+        e.paramset.recog_pms_fe.extractor_type = "sequential";
+        e.paramset.detect_pms_match.type = "FLANN";
+        e.paramset.locate_pms_match.type = "FLANN";
+        insert_if_not_exist(db, e);
+    }
+
+    // SIFT + FLANN (extractor_type=sequential)
+    {
+        Experiment e = createExperiment();
+        e.name = "sift-sequential-flann";
+        e.paramset.train_pms_fe.detector_type = "SIFT";
+        e.paramset.recog_pms_fe.detector_type = "SIFT";
+        e.paramset.train_pms_fe.descriptor_type = "SIFT";
+        e.paramset.recog_pms_fe.descriptor_type = "SIFT";
+        e.paramset.train_pms_fe.extractor_type = "sequential";
+        e.paramset.recog_pms_fe.extractor_type = "sequential";
+        e.paramset.detect_pms_match.type = "FLANN";
+        e.paramset.locate_pms_match.type = "FLANN";
+        insert_if_not_exist(db, e);
+    }
+
     // SURF + rBRIEF + LSH-BINARY (extractor_type=sequential)
     {
         Experiment e = createExperiment();
-        e.name = "surf-rbrief-lsh-binary-extractor-multi-scale";
+        e.name = "surf-rbrief-sequential-lshbinary";
         e.paramset.train_pms_fe.detector_type = "SURF";
         e.paramset.recog_pms_fe.detector_type = "SURF";
         e.paramset.train_pms_fe.extractor_type = "sequential";
         e.paramset.recog_pms_fe.extractor_type = "sequential";
+        insert_if_not_exist(db, e);
+    }
+
+    // SURF + rBRIEF + FLANN (extractor_type=sequential)
+    {
+        Experiment e = createExperiment();
+        e.name = "surf-rbrief-sequential-flann";
+        e.paramset.train_pms_fe.detector_type = "SURF";
+        e.paramset.recog_pms_fe.detector_type = "SURF";
+        e.paramset.train_pms_fe.extractor_type = "sequential";
+        e.paramset.recog_pms_fe.extractor_type = "sequential";
+        e.paramset.detect_pms_match.type = "FLANN";
+        e.paramset.locate_pms_match.type = "FLANN";
+        insert_if_not_exist(db, e);
+    }
+
+    // SURF + FLANN (extractor_type=sequential)
+    {
+        Experiment e = createExperiment();
+        e.name = "surf-sequential-flann";
+        e.paramset.train_pms_fe.detector_type = "SURF";
+        e.paramset.recog_pms_fe.detector_type = "SURF";
+        e.paramset.train_pms_fe.descriptor_type = "SURF";
+        e.paramset.recog_pms_fe.descriptor_type = "SURF";
+        e.paramset.train_pms_fe.extractor_type = "sequential";
+        e.paramset.recog_pms_fe.extractor_type = "sequential";
+        e.paramset.detect_pms_match.type = "FLANN";
+        e.paramset.locate_pms_match.type = "FLANN";
         insert_if_not_exist(db, e);
     }
 
@@ -148,7 +205,7 @@ void insert_experiments(sqlite3* & db) {
         // Works only one one or two pictures. Seems to be an issue with
         // thresholds and other parameters, but should work in principle. 
         Experiment e = createExperiment();
-        e.name = "star-rbrief-lsh-binary";
+        e.name = "star-rbrief-multiscale-lshbinary";
         e.paramset.train_pms_fe.detector_type = "STAR";
         e.paramset.recog_pms_fe.detector_type = "STAR";
         insert_if_not_exist(db, e);
@@ -159,7 +216,7 @@ void insert_experiments(sqlite3* & db) {
         // Achieves success rates up to 50%. Seems to be a prospective
         // candidate for further investigation.
         Experiment e = createExperiment();
-        e.name = "orb-lsh-binary";
+        e.name = "orb-lshbinary";
         e.paramset.train_pms_fe.detector_type = "ORB";
         e.paramset.train_pms_fe.extractor_type = "ORB";
         e.paramset.train_pms_fe.descriptor_type = "ORB";
@@ -171,10 +228,26 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }
 
-    // ORB + LSH-BINARY + low-threshold
+    // ORB + LSH-BINARY + gridded (AMMSFast)
     {
         Experiment e = createExperiment();
-        e.name = "orb-lsh-binary-low-threshold";
+        e.name = "orb-gridded-lshbinary";
+        e.paramset.train_pms_fe.detector_type = "gridded";
+        e.paramset.train_pms_fe.extractor_type = "ORB";
+        e.paramset.train_pms_fe.descriptor_type = "ORB";
+        e.paramset.train_pms_fe.detector_params["threshold"] = 0.000001;
+        e.paramset.recog_pms_fe.detector_type = "gridded";
+        e.paramset.recog_pms_fe.extractor_type = "ORB";
+        e.paramset.recog_pms_fe.descriptor_type = "ORB";
+        e.paramset.recog_pms_fe.detector_params["threshold"] = 0.000001;
+        insert_if_not_exist(db, e);
+    }
+
+    // ORB + LSH-BINARY + low-threshold
+    {
+        // Wasn't bad, but not as good as with the standard threshold.
+        Experiment e = createExperiment();
+        e.name = "orb-lowthreshold-lshbinary";
         e.paramset.train_pms_fe.detector_type = "ORB";
         e.paramset.train_pms_fe.extractor_type = "ORB";
         e.paramset.train_pms_fe.descriptor_type = "ORB";
