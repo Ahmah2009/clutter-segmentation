@@ -6,7 +6,7 @@ Usage: result-html
 
 Generates a HTML overview about experiment results. Requires
 CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be
-set in the environment.
+set in the environment. Requires R and sqlite3 installed.
 USAGE
 }
 
@@ -89,7 +89,7 @@ error for rotation and translation.</p>
 EOF
 
 table "Scores" "select * from view_experiment_scores"
-tee --append $out <<EOF
+cat >> $out <<EOF
 <p>If many objects have been successfully located, yet with comparatively large
 errors, then <tt>locate_sipc</tt> is smaller than <tt>succ_rate</tt>. In case,
 many objects have been correctly classified but not correctly located, then
@@ -97,16 +97,34 @@ many objects have been correctly classified but not correctly located, then
 EOF
 
 table "Locate SIPC Scores" "select * from view_experiment_locate_sipc"
+cat >> $out <<EOF
+<p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
+sipc.h</a> for a description.</p>
+EOF
 
 table "Detect SIPC Scores" "select * from view_experiment_detect_sipc"
+cat >> $out <<EOF
+<p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
+sipc.h</a> for a description.</p>
+EOF
 
 table "Receiver Operating Characteristics" "select * from view_experiment_detect_roc"
 result-roc
 echo "<img src='detect_roc.png' />" >> $out
 
 table "Errors" "select * from view_experiment_error"
+
+echo "<h1>Test data</h1>" >> $out
+echo "<a href='image_all.jpg'><img src='image_all.jpg' width='500' /></a>" >> $out
+
+cat >> $out <<EOF
+<p>This is the set of 21 test images, for which we have ground truth.</p>
+EOF
+
+
 echo "</body></html>" >> $out
 
+# TODO:
 scp $CLUTSEG_ARTIFACT_DIR/detect_roc.png rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
 scp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
 scp $out rayhalle.informatik.tu-muenchen.de:home_page/html-data/tmp/
