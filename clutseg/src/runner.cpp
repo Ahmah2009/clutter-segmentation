@@ -141,10 +141,20 @@ namespace clutseg {
             // and whoever to blame, it's important to fail early such that not
             // so much time is wasted.
             BOOST_FOREACH(Experiment & e, exps) {
-                cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied train features config works" << endl;
-                FeatureExtractor::create(e.paramset.train_pms_fe);
-                cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied test features configconfig works" << endl;
-                FeatureExtractor::create(e.paramset.recog_pms_fe);
+                try {
+                    cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied train features config works" << endl;
+                    FeatureExtractor::create(e.paramset.train_pms_fe);
+                } catch (...) {
+                    cerr << "[RUN]: " << e.name << " - ERROR, cannot construct FeatureExtractor instance from supplied test features config" << endl;
+                    e.skip = true; 
+                }
+                try {
+                    cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied test features config works" << endl;
+                    FeatureExtractor::create(e.paramset.recog_pms_fe);
+                } catch (...) {
+                    cerr << "[RUN]: " << e.name << " - ERROR, cannot construct FeatureExtractor instance from supplied test features config" << endl;
+                    e.skip = true; 
+                }
             }
 
             BOOST_FOREACH(Experiment & e, exps) {
