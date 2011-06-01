@@ -306,6 +306,11 @@ namespace clutseg {
         if (vcs_commit != "") {
             setMemberField(m, "vcs_commit", vcs_commit);
         }
+        if (vcs_commit != "") {
+            setMemberField(m, "vcs_commit", vcs_commit);
+        }
+        setMemberField(m, "human_note", human_note);
+        setMemberField(m, "machine_note", machine_note);
         setMemberField(m, "skip", skip);
         insertOrUpdate(db, "experiment", m, id);
     }
@@ -320,6 +325,8 @@ namespace clutseg {
             "test_set, "
             "time, "
             "vcs_commit, "
+            "human_note, "
+            "machine_note, "
             "skip " 
             "from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
@@ -341,6 +348,8 @@ namespace clutseg {
         } else {
             c += 2;
         }
+        human_note = string((const char*) sqlite3_column_text(read, c++));
+        machine_note = string((const char*) sqlite3_column_text(read, c++));
         skip = sqlite3_column_int(read, c++) != 0;
         sqlite3_finalize(read);
         paramset.deserialize(db);

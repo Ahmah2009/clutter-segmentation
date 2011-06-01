@@ -218,6 +218,10 @@ namespace clutseg {
         std::string test_set;
         std::string time;
         std::string vcs_commit;
+        /** This is a column for manual annotation */
+        std::string human_note;
+        /** This is a column for automatic annotation, might contain additional hints about failures */
+        std::string machine_note;
 
         /** Specifies whether to skip this experiment when carrying out
          * experiments that have not yet been run. This allows for temporarily

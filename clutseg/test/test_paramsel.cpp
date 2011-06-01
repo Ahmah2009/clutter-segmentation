@@ -29,6 +29,8 @@ struct ParamSelTest : public ::testing::Test {
         experiment.time = "2011-01-02 20:12:23";
         experiment.train_set = "hypothetical_train_set";
         experiment.test_set = "hypothetical_test_set";
+        experiment.human_note = "a note inserted by a human";
+        experiment.machine_note = "a note made by the machine";
         experiment.paramset.pms_clutseg.accept_threshold = 15;
         experiment.paramset.pms_clutseg.ranking = "InliersRanking";
         experiment.paramset.train_pms_fe.detector_type = "FAST";
@@ -104,6 +106,8 @@ struct ParamSelTest : public ::testing::Test {
 TEST_F(ParamSelTest, Initialization) {
     Experiment exp;
     EXPECT_EQ("", exp.name);
+    EXPECT_EQ("", exp.human_note);
+    EXPECT_EQ("", exp.machine_note);
     EXPECT_FLOAT_EQ(0, exp.response.value);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.rscore);
     EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.tscore);
@@ -338,6 +342,8 @@ TEST_F(ParamSelTest, experiment_write_read) {
     rest.deserialize(db); 
     EXPECT_EQ(experiment.train_set, rest.train_set);
     EXPECT_EQ(experiment.test_set, rest.test_set);
+    EXPECT_EQ(experiment.human_note, rest.human_note);
+    EXPECT_EQ(experiment.machine_note, rest.machine_note);
     EXPECT_EQ(13, rest.response.value);
     EXPECT_EQ(true, rest.has_run);
 }

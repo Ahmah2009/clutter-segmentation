@@ -7,6 +7,8 @@ create table experiment (
     test_set varchar(255) not null,
     time datetime,
     vcs_commit varchar(255),
+    human_note varchar(255) DEFAULT(''),
+    machine_note varchar(255) DEFAULT(''),
     skip boolean default 0
 );
 
