@@ -13,7 +13,8 @@ if has_opt --debug ; then
 fi
 
 pushd $CLUTSEG_PATH/clutter-segmentation/clutseg > /dev/null
-    make
+    mods-link
+    rosmake clutseg
     if [ "$?" = 0 ] ; then
         # TODO: create YAML file that couples all information
         # necessary to run an experiment
