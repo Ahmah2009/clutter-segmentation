@@ -13,6 +13,7 @@
 #include "clutseg/ground.h"
 
 #include <boost/foreach.hpp>
+#include <ctime>
 #include <cv.h>
 #include <pcl/io/pcd_io.h>
 #include <string>
@@ -110,7 +111,15 @@ namespace clutseg {
             if (terminate) {
                 cout << "[RUN] Registered termination request. Program will be terminated as soon as the experiment has been carried out completely." << endl;
             }
+
+            // The heavy load on both CPU and IO often makes the operating
+            // system very unresponsive, so take a little break.
+            timespec t;
+            t.tv_sec = 0;
+            t.tv_nsec = int(1e8);
+            nanosleep(&t, NULL);
         }
+
         CutSseResponseFunction responseFunc;
         responseFunc(resultSet, testdesc, sgm.getTemplateNames(), e.response);
 
