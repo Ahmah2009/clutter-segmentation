@@ -39,3 +39,7 @@ TEST_F(RunnerTest, CloudName) {
     }
 }
 
+TEST_F(RunnerTest, PrintNumberOfProcessorsOnline) {
+    cout << sysconf(_SC_NPROCESSORS_ONLN) << endl;
+}
+
