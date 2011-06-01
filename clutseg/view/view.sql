@@ -1,4 +1,6 @@
 drop view if exists view_experiment_response;
+drop view if exists view_experiment_note;
+drop view if exists view_experiment_runtime;
 drop view if exists view_experiment_error;
 drop view if exists view_experiment_detect_roc;
 drop view if exists view_experiment_scores;
@@ -6,9 +8,23 @@ drop view if exists view_experiment_detect_sipc;
 drop view if exists view_experiment_locate_sipc;
 
 create view view_experiment_response as
-    select experiment.id as experiment_id, experiment.name as experiment_name, response.*
+    select experiment.id as experiment_id,
+        experiment.name as experiment_name, response.*
         from experiment
         join response on experiment.response_id = response.id;
+
+create view view_experiment_note as
+    select id as experiment_id,
+        human_note,
+        machine_note,
+        skip
+    from experiment;
+
+create view view_experiment_runtime as
+    select experiment_id,
+        train_runtime,
+        test_runtime
+    from view_experiment_response;
 
 create view view_experiment_error as
     select experiment_id,

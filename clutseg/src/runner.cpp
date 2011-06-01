@@ -122,6 +122,71 @@ namespace clutseg {
         e.has_run = true;
     }
 
+    void ExperimentRunner::skipExperimentsWhereFeatureExtractorCreateFailed(vector<Experiment> & exps) {
+        // This is a workaround. Some feature configurations might be
+        // invalid, or even some assertion failure might happen in
+        // tod_training/src/feature_extraction.cpp Whatever the reason is
+        // and whoever to blame, it's important to fail early such that not
+        // so much time is wasted.
+        BOOST_FOREACH(Experiment & e, exps) {
+            if (!e.skip) {
+                try {
+                    cout << "[RUN]: Verifying that constructing a FeatureExtractor instance from supplied train features config works: " << e.name << endl;
+                    FeatureExtractor::create(e.paramset.train_pms_fe);
+                } catch (...) {
+                    cerr << "[RUN]: ERROR, cannot construct FeatureExtractor instance from supplied test features config: " << e.name << endl;
+                    e.machine_note = "Bad train_pms_fe, FeatureExtractor::create failed";
+                    e.skip = true; 
+                    e.serialize(db_);
+                }
+                try {
+                    cout << "[RUN]: Verifying that constructing a FeatureExtractor instance from supplied test features config works: " << e.name << endl;
+                    FeatureExtractor::create(e.paramset.recog_pms_fe);
+                } catch (...) {
+                    cerr << "[RUN]: ERROR, cannot construct FeatureExtractor instance from supplied test features config: " << e.name << endl;
+                    e.machine_note = "Bad recog_pms_fe, FeatureExtractor::create failed";
+                    e.skip = true; 
+                    e.serialize(db_);
+                }
+            }
+        }
+    }
+
+    void ExperimentRunner::skipExperimentsWhereNoFeaturesExtracted(vector<Experiment> & exps) {
+        // Quickly verify whether the feature extraction params actually lead to the extraction
+        // of any features. This quickly finds broken configurations that will never lead anywhere.
+        Mat ver_img = imread("data/image_00000.png", 0);
+        BOOST_FOREACH(Experiment & e, exps) {
+            if (!e.skip) {
+                cout << "[RUN]: Verifying that features are extracted when using train features config: " << e.name << endl;
+                Ptr<FeatureExtractor> x = FeatureExtractor::create(e.paramset.train_pms_fe);
+                Features2d xf;
+                xf.image = ver_img.clone();
+                x->detectAndExtract(xf);
+                if (xf.keypoints.size() == 0) {
+                    cerr << "[RUN]: " << e.name << " - ERROR, no features extracted when using train features config: " << e.name << endl;
+                    e.machine_note = "Bad train_pms_fe, no features extracted";
+                    e.skip = true; 
+                    e.serialize(db_);
+                } else {
+                    cout << "[RUN]: " << xf.keypoints.size() << " keypoints extracted on a validation image using train_pms_fe of " << e.name << endl;
+                }
+                Ptr<FeatureExtractor> y = FeatureExtractor::create(e.paramset.recog_pms_fe);
+                Features2d yf;
+                yf.image = ver_img.clone();
+                y->detectAndExtract(yf);
+                if (yf.keypoints.size() == 0) {
+                    cout << "[RUN]: ERROR, no features extracted when using test features config: " << e.name << endl;
+                    e.machine_note = "Bad recog_pms_fe, no features extracted";
+                    e.skip = true; 
+                    e.serialize(db_);
+                } else {
+                    cout << "[RUN]: " << yf.keypoints.size() << " keypoints extracted on a validation image using recog_pms_fe of " << e.name << endl;
+                }
+            }
+        }
+    }
+
     void ExperimentRunner::run() {
         while (!terminate) {
             cout << "[RUN] Querying database for experiments to carry out..." << endl;
@@ -141,31 +206,8 @@ namespace clutseg {
             TrainFeatures cur_tr_feat;
             Clutsegmenter *sgm = NULL;
 
-            // This is a workaround. Some feature configurations might be
-            // invalid, or even some assertion failure might happen in
-            // tod_training/src/feature_extraction.cpp Whatever the reason is
-            // and whoever to blame, it's important to fail early such that not
-            // so much time is wasted.
-            BOOST_FOREACH(Experiment & e, exps) {
-                try {
-                    cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied train features config works" << endl;
-                    FeatureExtractor::create(e.paramset.train_pms_fe);
-                } catch (...) {
-                    cerr << "[RUN]: " << e.name << " - ERROR, cannot construct FeatureExtractor instance from supplied test features config" << endl;
-                    e.machine_note = "Bad train_pms_fe, FeatureExtractor::create failed";
-                    e.skip = true; 
-                    e.serialize(db_);
-                }
-                try {
-                    cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied test features config works" << endl;
-                    FeatureExtractor::create(e.paramset.recog_pms_fe);
-                } catch (...) {
-                    cerr << "[RUN]: " << e.name << " - ERROR, cannot construct FeatureExtractor instance from supplied test features config" << endl;
-                    e.machine_note = "Bad recog_pms_fe, FeatureExtractor::create failed";
-                    e.skip = true; 
-                    e.serialize(db_);
-                }
-            }
+            skipExperimentsWhereFeatureExtractorCreateFailed(exps);
+            skipExperimentsWhereNoFeaturesExtracted(exps);
 
             BOOST_FOREACH(Experiment & e, exps) {
                 if (terminate) {

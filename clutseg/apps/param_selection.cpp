@@ -95,6 +95,7 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }
 
+    /* that one is nonsense
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
     {
         // This one is a full-blown failure, not producing anything to start
@@ -107,7 +108,9 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.detector_type = "SIFT";
         e.paramset.recog_pms_fe.detector_type = "SIFT";
         insert_if_not_exist(db, e);
-    }
+    } */
+
+    /* that one is nonsense
     // SURF + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
     {
         // This one is a full-blown failure, not producing anything to start
@@ -120,7 +123,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.detector_type = "SURF";
         e.paramset.recog_pms_fe.detector_type = "SURF";
         insert_if_not_exist(db, e);
-    }
+    }*/
 
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=sequential)
     {
@@ -146,7 +149,9 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.recog_pms_fe.extractor_type = "sequential";
         e.paramset.detect_pms_match.type = "FLANN";
         e.paramset.locate_pms_match.type = "FLANN";
-        // insert_if_not_exist(db, e);
+        e.skip = true;
+        e.human_note = "fails in FLANN";
+        insert_if_not_exist(db, e);
     }
 
     // SIFT + FLANN (extractor_type=sequential)

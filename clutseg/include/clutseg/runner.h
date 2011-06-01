@@ -35,6 +35,8 @@ namespace clutseg {
         private:
 
             void runExperiment(Clutsegmenter & segmenter, Experiment & exp);
+            void skipExperimentsWhereNoFeaturesExtracted(std::vector<Experiment> & exps);
+            void skipExperimentsWhereFeatureExtractorCreateFailed(std::vector<Experiment> & exps);
 
             sqlite3* db_;
             TrainFeaturesCache cache_;

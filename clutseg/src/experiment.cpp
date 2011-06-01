@@ -99,6 +99,7 @@ namespace clutseg {
         FILE *f;
         f = fopen((train_dir / "train_runtime").string().c_str(), "w");
         fprintf(f, "%f", (clock() - b) / float(CLOCKS_PER_SEC));
+        fclose(f);
 
         // We're done with this work.
         dirty.clear();
@@ -131,6 +132,7 @@ namespace clutseg {
             f = fopen((trainFeaturesDir(tr_feat) / "train_runtime").string().c_str(), "r");
             float t;
             fscanf(f, "%f", &t);
+            fclose(f);
             return t;
         } else {
             return NAN;
