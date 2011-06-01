@@ -91,6 +91,8 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.avg_locate_inliers = 29.8;
         experiment.response.avg_locate_choice_matches = 802.1;
         experiment.response.avg_locate_choice_inliers = 39.8;
+        experiment.response.train_runtime = 320.5;
+        experiment.response.test_runtime = 214.8;
         experiment.record_commit();
     }
 
@@ -132,6 +134,8 @@ TEST_F(ParamSelTest, Initialization) {
     EXPECT_FLOAT_EQ(0, exp.response.avg_locate_inliers);
     EXPECT_FLOAT_EQ(0, exp.response.avg_locate_choice_matches);
     EXPECT_FLOAT_EQ(0, exp.response.avg_locate_choice_inliers);
+    EXPECT_FLOAT_EQ(0, exp.response.train_runtime);
+    EXPECT_FLOAT_EQ(0, exp.response.test_runtime);
 
     Response r;
     EXPECT_FLOAT_EQ(0, r.value);
@@ -158,6 +162,8 @@ TEST_F(ParamSelTest, Initialization) {
     EXPECT_FLOAT_EQ(0, r.avg_locate_inliers);
     EXPECT_FLOAT_EQ(0, r.avg_locate_choice_matches);
     EXPECT_FLOAT_EQ(0, r.avg_locate_choice_inliers);
+    EXPECT_FLOAT_EQ(0, r.train_runtime);
+    EXPECT_FLOAT_EQ(0, r.test_runtime);
 }
 
 TEST_F(ParamSelTest, GetVcsCommit) {
@@ -227,6 +233,8 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.avg_locate_inliers, rest.avg_locate_inliers);
     EXPECT_FLOAT_EQ(orig.avg_locate_choice_matches, rest.avg_locate_choice_matches);
     EXPECT_FLOAT_EQ(orig.avg_locate_choice_inliers, rest.avg_locate_choice_inliers);
+    EXPECT_FLOAT_EQ(orig.train_runtime, rest.train_runtime);
+    EXPECT_FLOAT_EQ(orig.test_runtime, rest.test_runtime);
 }
 
 TEST_F(ParamSelTest, pms_fe_read) {

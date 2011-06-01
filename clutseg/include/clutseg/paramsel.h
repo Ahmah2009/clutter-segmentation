@@ -103,7 +103,8 @@ namespace clutseg {
             avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
             avg_detect_choice_inliers(0), detect_tp(0), detect_fp(0), detect_fn(0),
             detect_tn(0), avg_locate_matches(0), avg_locate_inliers(0),
-            avg_locate_choice_matches(0), avg_locate_choice_inliers(0)
+            avg_locate_choice_matches(0), avg_locate_choice_inliers(0),
+            train_runtime(0), test_runtime(0)
             { locate_sipc = locate_sipc_t(); detect_sipc = detect_sipc_t(); }
 
         /** Average of the values returned by the response function */
@@ -169,6 +170,14 @@ namespace clutseg {
         float avg_locate_choice_matches;
         /** Average number of inliers for the best guess object in locating stage */
         float avg_locate_choice_inliers;
+
+        /** Time in seconds that was necessary to construct train features.
+         * This number might either be measured directly, or read from the cache
+         * directory in case training features were loaded from cache. */
+        float train_runtime;
+        /** Time in seconds that was necessary to run all tests. This includes
+         * only the time spent in ClutSegmenter::recognize */
+        float test_runtime;
 
         inline float fail_rate() const {
             return 1 - succ_rate;

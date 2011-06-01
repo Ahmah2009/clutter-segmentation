@@ -35,6 +35,9 @@ create table response (
     avg_locate_matches float not null,
     avg_locate_inliers float not null,
     avg_locate_choice_matches float not null,
-    avg_locate_choice_inliers float not null
+    avg_locate_choice_inliers float not null,
+    -- timing stats --
+    train_runtime float not null,
+    test_runtime float not null
 );
 

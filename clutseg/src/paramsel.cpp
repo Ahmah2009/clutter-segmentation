@@ -213,6 +213,8 @@ namespace clutseg {
         setMemberField(m, "avg_locate_inliers", avg_locate_inliers);
         setMemberField(m, "avg_locate_choice_matches", avg_locate_choice_matches);
         setMemberField(m, "avg_locate_choice_inliers", avg_locate_choice_inliers);
+        setMemberField(m, "train_runtime", train_runtime);
+        setMemberField(m, "test_runtime", test_runtime);
         insertOrUpdate(db, "response", m, id);
     }
     // TODO: remove sipc.frames
@@ -249,7 +251,9 @@ namespace clutseg {
             "avg_locate_matches, "
             "avg_locate_inliers, "
             "avg_locate_choice_matches, "
-            "avg_locate_choice_inliers "
+            "avg_locate_choice_inliers, "
+            "train_runtime, "
+            "test_runtime "
             "from response where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         int c = 0;
@@ -284,6 +288,8 @@ namespace clutseg {
         avg_locate_inliers = sqlite3_column_double(read, c++);
         avg_locate_choice_matches = sqlite3_column_double(read, c++);
         avg_locate_choice_inliers = sqlite3_column_double(read, c++);
+        train_runtime = sqlite3_column_double(read, c++);
+        test_runtime = sqlite3_column_double(read, c++);
         sqlite3_finalize(read);
     }
 
