@@ -89,7 +89,7 @@ namespace clutseg {
                     "whether image file exists. Full path is '%s'."
                 ) % img_name % e.id % img_path));
             }
-            cout << "[RUN] Loaded image " << img_path << endl;
+            cout << "[RUN] " << e.name << " - loaded image " << img_path << endl;
             PointCloudT queryCloud;
             bfs::path cloud_path = cloudPath(img_path);
             if (bfs::exists(cloud_path)) {
@@ -203,7 +203,7 @@ namespace clutseg {
                             in = popen("result-html", "r");
                             pclose(in);
                         } catch ( ... ) {
-                            cerr << "[RUN]: Generating HTML report failed." << endl;
+                            cerr << "[RUN]: ERROR, Generating HTML report failed." << endl;
                         }
 
                         try {
@@ -212,7 +212,7 @@ namespace clutseg {
                             in2 = popen(post_run_cmd_.c_str(), "r");
                             pclose(in2);
                         } catch (...) {
-                            cerr << "[RUN]: Post run command failed." << endl;
+                            cerr << "[RUN]: ERROR, Post run command failed." << endl;
                         }
                     } catch( runtime_error & err ) {
                         cerr << "[RUN]: " << err.what() << endl;
