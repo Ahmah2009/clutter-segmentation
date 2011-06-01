@@ -114,6 +114,10 @@ echo "<img src='detect_roc.png' />" >> $out
 
 table "Errors" "select * from view_experiment_error"
 
+table "Runtimes" "select * from view_experiment_runtime"
+
+table "Notes" "select * from view_experiment_note"
+
 echo "<h1>Test data</h1>" >> $out
 echo "<a href='image_all.jpg'><img src='image_all.jpg' width='500' /></a>" >> $out
 
