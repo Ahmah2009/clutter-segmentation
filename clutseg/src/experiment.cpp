@@ -76,7 +76,9 @@ namespace clutseg {
         cmd << endl;
         cmd.close();
              
-        // start a subprocess
+        // start a subprocess for feature detection (which again calls tod_training/apps/detector.cpp)
+        // http://www.gnu.org/s/libc/manual/html_mono/libc.html#CPU-Time
+        clock_t b = clock();
         FILE *in;
         in = popen(("bash " + gen_bash.string() + " " + train_dir.string()).c_str(), "r");
         ssize_t len;
@@ -93,6 +95,10 @@ namespace clutseg {
             }
         } while (len != -1);
         pclose(in);
+
+        FILE *f;
+        f = fopen((train_dir / "train_runtime").string().c_str(), "w");
+        fprintf(f, "%f", (clock() - b) / float(CLOCKS_PER_SEC));
 
         // We're done with this work.
         dirty.clear();
@@ -119,6 +125,18 @@ namespace clutseg {
         return bfs::exists(trainFeaturesDir(tr_feat));
     }
 
+    float TrainFeaturesCache::trainRuntime(const TrainFeatures & tr_feat) {
+        if (trainFeaturesExist(tr_feat)) {
+            FILE *f;
+            f = fopen((trainFeaturesDir(tr_feat) / "train_runtime").string().c_str(), "r");
+            float t;
+            fscanf(f, "%f", &t);
+            return t;
+        } else {
+            return NAN;
+        }
+    }
+
     void generateConfigTxt(const bfs::path & tr_feat_dir, set<string> templates) {
         ofstream cfg_out;
         cfg_out.open((tr_feat_dir / "config.txt").string().c_str());
@@ -132,6 +150,10 @@ namespace clutseg {
         BOOST_FOREACH(const string & subj, templates) {
             bfs::copy_file(train_dir / subj / "detector_stats.yaml", tr_feat_dir / subj / "detector_stats.yaml");
         }
+    }
+
+    void copyTrainRuntime(const bfs::path & train_dir, const bfs::path & tr_feat_dir) {
+        bfs::copy_file(train_dir / "train_runtime", tr_feat_dir / "train_runtime");
     }
 
     void copyF3dArchives(const bfs::path & train_dir, const bfs::path & tr_feat_dir, set<string> templates) {
@@ -186,6 +208,7 @@ namespace clutseg {
             generateConfigTxt(tr_feat_dir, templates);
             copyF3dArchives(train_dir, tr_feat_dir, templates);
             copyDetectorStats(train_dir, tr_feat_dir, templates);
+            copyTrainRuntime(train_dir, tr_feat_dir);
             writeFeParams(tr_feat_dir / "features.config.yaml", tr_feat.fe_params);
         }
     }

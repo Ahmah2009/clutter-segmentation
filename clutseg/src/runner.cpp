@@ -76,6 +76,8 @@ namespace clutseg {
         bfs::path camera_path = test_dir / "camera.yml";
         assert_path_exists(camera_path);
         Camera camera(camera_path.string(), Camera::TOD_YAML);
+        // http://www.gnu.org/s/libc/manual/html_mono/libc.html#CPU-Time
+        float rt = 0;
         // Loop over all images in the test set
         for (SetGroundTruth::iterator test_it = testdesc.begin(); test_it != testdesc.end(); test_it++) {
             string img_name = test_it->first;
@@ -96,7 +98,9 @@ namespace clutseg {
             }
             ClutsegQuery query(queryImage, queryCloud);
             Result res;
+            clock_t b = clock();
             sgm.recognize(query, res);
+            rt += float(b - clock()) / CLOCKS_PER_SEC;
             cout << "[RUN] Recognized " << (res.guess_made ? res.locate_choice.getObject()->name : "NONE") << endl;
             resultSet[img_name] = res;
  
@@ -109,6 +113,8 @@ namespace clutseg {
         }
         CutSseResponseFunction responseFunc;
         responseFunc(resultSet, testdesc, sgm.getTemplateNames(), e.response);
+
+        e.response.test_runtime = rt;
 
         sgm.getStats().populateResponse(e.response);
         e.record_time();
@@ -178,6 +184,8 @@ namespace clutseg {
                             cache_.trainFeaturesDir(tr_feat).string(),
                             TODParameters(), TODParameters());
                     }
+
+                    e.response.train_runtime = cache_.trainRuntime(tr_feat);                    
 
                     // Clear statistics        
                     sgm->resetStats();

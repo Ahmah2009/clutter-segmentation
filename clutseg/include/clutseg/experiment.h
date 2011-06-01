@@ -81,6 +81,8 @@ namespace clutseg {
 
             bool trainFeaturesExist(const TrainFeatures & tr_feat);
 
+            float trainRuntime(const TrainFeatures & tr_feat);
+
             void addTrainFeatures(const TrainFeatures & tr_feat, bool consistency_check = true);
 
         private:
