@@ -20,6 +20,7 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <ctime>
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -124,6 +125,13 @@ struct features_worker
     foreach(string x,images)
           {
             sync(stats_lock, stats.img_cnt++);
+
+            // The heavy load on both CPU and IO often makes the operating
+            // system very unresponsive, so take a little break.
+            timespec t;
+            t.tv_sec = 0;
+            t.tv_nsec = int(1e8);
+            nanosleep(&t, NULL);
 
             string maskfile = filename(x + ".mask.png");
             FileMasker masker(maskfile);
