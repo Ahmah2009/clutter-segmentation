@@ -27,6 +27,10 @@ namespace clutseg {
         throw ios_base::failure("Cannot deserialize, not implemented.");
     }
 
+    void Serializable::detach() {
+        id = -1;
+    }
+
     void ClutsegParams::serialize(sqlite3* db) {
         MemberMap m;
         setMemberField(m, "accept_threshold", accept_threshold);
@@ -41,6 +45,10 @@ namespace clutseg {
         accept_threshold = sqlite3_column_double(read, 0);
         ranking = string((const char*) sqlite3_column_text(read, 1));
         sqlite3_finalize(read);
+    }
+     
+    void ClutsegParams::detach() {
+        id = -1;
     }
 
     void deserialize_pms_fe(sqlite3* db, FeatureExtractionParams & pms_fe, int64_t & id) {
@@ -180,6 +188,17 @@ namespace clutseg {
         pms_clutseg.deserialize(db);
     }
 
+    void Paramset::detach() {
+        id = -1;
+        train_pms_fe_id = -1;
+        recog_pms_fe_id = -1; 
+        detect_pms_match_id = -1; 
+        detect_pms_guess_id = -1; 
+        locate_pms_match_id = -1; 
+        locate_pms_guess_id = -1; 
+        pms_clutseg.detach();
+    }
+
     void Response::serialize(sqlite3* db) {
         MemberMap m;
         setMemberField(m, "value", value);
@@ -293,6 +312,11 @@ namespace clutseg {
         sqlite3_finalize(read);
     }
 
+    void Response::detach() {
+        id = -1;
+    }
+
+
     void Experiment::serialize(sqlite3* db) {
         if (has_run) {
             response.serialize(db);
@@ -362,6 +386,12 @@ namespace clutseg {
         if (has_run) {
             response.deserialize(db);
         }
+    }
+
+    void Experiment::detach() {
+        id = -1;
+        paramset.detach();
+        response.detach();
     }
 
     void Experiment::record_time() {

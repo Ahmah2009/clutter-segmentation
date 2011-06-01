@@ -36,6 +36,11 @@ namespace clutseg {
         /** Reads member values from database. */
         virtual void deserialize(sqlite3* db);
 
+        /** Destroys the link (i.e. resets the id) to the database entry. If
+         * the object is written to the database there-after, it will be stored in a
+         * new database entry, and will then be attached again. */
+        virtual void detach();
+
     };
 
     struct ClutsegParams : public Serializable {
@@ -45,6 +50,7 @@ namespace clutseg {
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
+        virtual void detach();
 
     };
 
@@ -86,6 +92,7 @@ namespace clutseg {
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
+        virtual void detach();
 
     };
 
@@ -209,6 +216,7 @@ namespace clutseg {
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
+        virtual void detach();
 
     };
 
@@ -247,6 +255,7 @@ namespace clutseg {
 
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
+        virtual void detach();
 
     };
 

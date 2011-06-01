@@ -237,6 +237,11 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.test_runtime, rest.test_runtime);
 }
 
+TEST_F(ParamSelTest, response_detach) {
+    experiment.response.detach();
+    EXPECT_EQ(-1, experiment.response.id);
+}
+
 TEST_F(ParamSelTest, pms_fe_read) {
     // Validate against data as given by data/test.sql
     FeatureExtractionParams feParams;
@@ -307,6 +312,11 @@ TEST_F(ParamSelTest, pms_clutseg_write_read) {
     EXPECT_EQ(orig.ranking, rest.ranking);
 }
 
+TEST_F(ParamSelTest, pms_clutseg_detach) {
+    experiment.paramset.pms_clutseg.detach();
+    EXPECT_EQ(-1, experiment.paramset.pms_clutseg.id);
+}
+
 TEST_F(ParamSelTest, experiment_read) {
     // Validate against data as given by data/test.sql
     Experiment e;
@@ -354,6 +364,18 @@ TEST_F(ParamSelTest, experiment_write_read) {
     EXPECT_EQ(experiment.machine_note, rest.machine_note);
     EXPECT_EQ(13, rest.response.value);
     EXPECT_EQ(true, rest.has_run);
+}
+
+TEST_F(ParamSelTest, experiment_detach) {
+    experiment.detach();
+    EXPECT_EQ(-1, experiment.response.id);
+    EXPECT_EQ(-1, experiment.paramset.pms_clutseg.id);
+    EXPECT_EQ(-1, experiment.paramset.train_pms_fe_id);
+    EXPECT_EQ(-1, experiment.paramset.recog_pms_fe_id);
+    EXPECT_EQ(-1, experiment.paramset.detect_pms_match_id);
+    EXPECT_EQ(-1, experiment.paramset.detect_pms_guess_id);
+    EXPECT_EQ(-1, experiment.paramset.locate_pms_match_id);
+    EXPECT_EQ(-1, experiment.paramset.locate_pms_guess_id);
 }
 
 TEST_F(ParamSelTest, experiment_vcs_commit) {
