@@ -135,6 +135,9 @@ void insert_experiments(sqlite3* & db) {
 
     // SIFT + rBRIEF + FLANN (extractor_type=sequential)
     {
+        // This does not work. I think FLANN cannot be used
+        // with binary feature descriptors. It also fails with
+        // an error.
         Experiment e = createExperiment();
         e.name = "sift-rbrief-sequential-flann";
         e.paramset.train_pms_fe.detector_type = "SIFT";
@@ -143,7 +146,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.recog_pms_fe.extractor_type = "sequential";
         e.paramset.detect_pms_match.type = "FLANN";
         e.paramset.locate_pms_match.type = "FLANN";
-        insert_if_not_exist(db, e);
+        // insert_if_not_exist(db, e);
     }
 
     // SIFT + FLANN (extractor_type=sequential)
