@@ -1,9 +1,9 @@
-drop view view_experiment_response;
-drop view view_experiment_error;
-drop view view_experiment_detect_roc;
-drop view view_experiment_scores;
-drop view view_experiment_detect_sipc;
-drop view view_experiment_locate_sipc;
+drop view if exists view_experiment_response;
+drop view if exists view_experiment_error;
+drop view if exists view_experiment_detect_roc;
+drop view if exists view_experiment_scores;
+drop view if exists view_experiment_detect_sipc;
+drop view if exists view_experiment_locate_sipc;
 
 create view view_experiment_response as
     select experiment.id as experiment_id, experiment.name as experiment_name, response.*
