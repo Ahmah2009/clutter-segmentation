@@ -134,6 +134,19 @@ namespace clutseg {
             sortExperimentsByTrainFeatures(exps);
             TrainFeatures cur_tr_feat;
             Clutsegmenter *sgm = NULL;
+
+            // This is a workaround. Some feature configurations might be
+            // invalid, or even some assertion failure might happen in
+            // tod_training/src/feature_extraction.cpp Whatever the reason is
+            // and whoever to blame, it's important to fail early such that not
+            // so much time is wasted.
+            BOOST_FOREACH(Experiment & e, exps) {
+                cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied train features config works" << endl;
+                FeatureExtractor::create(e.paramset.train_pms_fe);
+                cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied test features configconfig works" << endl;
+                FeatureExtractor::create(e.paramset.recog_pms_fe);
+            }
+
             BOOST_FOREACH(Experiment & e, exps) {
                 if (terminate) {
                     break;
