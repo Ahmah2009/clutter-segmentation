@@ -61,15 +61,22 @@ namespace clutseg {
             << "# overwritten without notification. " << endl
             << "cd $1" << endl << endl;
 
+        // Number of jobs shall be twice the number of processors, this should
+        // avoid thrashing experienced on a single-processor machine with
+        // running 8 threads in parallel. 8 is too much, but there should be
+        // more threads than CPUs, since the threads are quite heavy on IO.
+        // http://www.gnu.org/s/hello/manual/libc/Processor-Resources.html
+        int j = 2 * sysconf(_SC_NPROCESSORS_ONLN);
+
         set<string> templates = listTemplateNames(train_dir);
         BOOST_FOREACH(const string & subj, templates) {
             cmd << "echo 'cleaning features for template " << subj << "'" << endl
                 << "rm -v -f " << subj << "/*.features.yaml.gz" << endl
                 << "rm -v -f " << subj << "/*.f3d.yaml.gz" << endl
                 << "echo 'extracting features for template " << subj << "'" << endl
-                << "rosrun tod_training detector -d " << subj << " -j8" << endl
+                << "rosrun tod_training detector -d " << subj << " -j" << j << endl
                 << "echo '2d-3d-mapping for template " << subj << "'" << endl
-                << "rosrun tod_training f3d_creator -d " << subj << " -j8" << endl
+                << "rosrun tod_training f3d_creator -d " << subj << " -j" << j << endl
                 << endl;
         }
 
