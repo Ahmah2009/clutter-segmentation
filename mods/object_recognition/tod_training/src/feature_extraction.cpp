@@ -11,6 +11,7 @@
 #include <iostream>
 #include <rbrief/detectors.h>
 #include <typeinfo>
+#include <exception>
 
 using std::cout;
 using namespace cv;
@@ -132,7 +133,11 @@ namespace tod
             stats.internal_detector = "cv::GoodFeaturesToTrackDetector";
             stats.pm_threshold_used = true;
         } else {
-            assert(0);
+            // julius: This assertion sometimes fails. I wonder whether this indicates
+            // that user-provided data is incorrect, or whether this is a bug. Whatever
+            // since an assertion is fatal, better throw an exception.
+            // assert(0);
+            throw std::runtime_error("ERROR: FeatureExtractor::createDetector failed, check whether detector_type '" + detectorType + "' is valid.");
         }
         return fd;
     }

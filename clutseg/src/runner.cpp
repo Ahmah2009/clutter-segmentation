@@ -152,14 +152,18 @@ namespace clutseg {
                     FeatureExtractor::create(e.paramset.train_pms_fe);
                 } catch (...) {
                     cerr << "[RUN]: " << e.name << " - ERROR, cannot construct FeatureExtractor instance from supplied test features config" << endl;
+                    e.machine_note = "Bad train_pms_fe, FeatureExtractor::create failed";
                     e.skip = true; 
+                    e.serialize(db_);
                 }
                 try {
                     cout << "[RUN]: " << e.name << " - Verifying that constructing a FeatureExtractor instance from supplied test features config works" << endl;
                     FeatureExtractor::create(e.paramset.recog_pms_fe);
                 } catch (...) {
                     cerr << "[RUN]: " << e.name << " - ERROR, cannot construct FeatureExtractor instance from supplied test features config" << endl;
+                    e.machine_note = "Bad recog_pms_fe, FeatureExtractor::create failed";
                     e.skip = true; 
+                    e.serialize(db_);
                 }
             }
 
