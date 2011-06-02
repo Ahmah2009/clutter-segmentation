@@ -80,6 +80,7 @@ set -f
 echo "<h1>Target</h1>" >> $out
 result-best-succ-rate
 echo "<img src='best_succ_rate.png' />" >> $out
+echo "<img src='best_succ_rate.locate_choice.collage.jpg' />" >> $out
 cat >> $out <<EOF
 <p>The ultimate target in this experiment to achieve a very high success rate.
 The bar indicates the best success rate achieved so far in any experiment that

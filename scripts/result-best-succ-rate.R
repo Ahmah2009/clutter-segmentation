@@ -1,7 +1,10 @@
 #!/usr/bin/env Rscript
 library(RSQLite)
 con = dbConnect(dbDriver("SQLite"), dbname = Sys.getenv("CLUTSEG_EXPERIMENT_DB"))
-f = dbGetQuery(con, "select succ_rate from response order by succ_rate DESC limit 1")
+f = dbGetQuery(con, "select experiment_id, succ_rate from view_experiment_response order by succ_rate DESC limit 1")
 attach(f)
-png(paste(Sys.getenv("CLUTSEG_ARTIFACT_DIR"), "/best_succ_rate.png", sep=""))
+artifact_dir = Sys.getenv("CLUTSEG_ARTIFACT_DIR")
+png(paste(artifact_dir, "/best_succ_rate.png", sep=""))
 barplot(matrix(c(succ_rate, 1-succ_rate), 2, 1), names.arg=c("Best Success Rate"), horiz=TRUE, col=c("GREEN", "RED"))
+system(gettextf("result-montage locate_choice.collage %05d", experiment_id[1]))
+system(gettextf("cp %s/locate_choice.collage.%05d.jpg %s/best_succ_rate.locate_choice.collage.jpg", artifact_dir, experiment_id[1], artifact_dir))
