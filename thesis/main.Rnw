@@ -116,6 +116,14 @@
 
 
   \clearemptydoublepage
+
+    \nocite{Calonder2010}
+    \nocite{Fawcett2006}
+    \nocite{Muja2009}
+    \nocite{Agrawal2008}
+    \nocite{Slaney2008}
+    \nocite{Lowe1999}
+    \nocite{Tuytelaars2007}
   
 	\bibliography{bibliography/literature}
 	
