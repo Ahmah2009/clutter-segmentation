@@ -27,6 +27,7 @@ namespace clutseg {
 
         bool operator==(const TrainFeatures & rhs) const;
         bool operator!=(const TrainFeatures & rhs) const;
+        bool operator<(const TrainFeatures & rhs) const;
 
     };
 
@@ -85,11 +86,17 @@ namespace clutseg {
 
             void addTrainFeatures(const TrainFeatures & tr_feat, bool consistency_check = true);
 
+            bool trainFeaturesBlacklisted(const TrainFeatures & tr_feat);
+            
+            void blacklistTrainFeatures(const TrainFeatures & tr_feat);
+
         private:
             
             bool initialized_;
             
             boost::filesystem::path cache_dir_;
+
+            std::set<TrainFeatures> blacklist_;
 
     };
 

@@ -7,10 +7,11 @@
 #include "clutseg/check.h"
 #include "clutseg/flags.h"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
-#include <boost/algorithm/string.hpp>
+#include <boost/thread.hpp>
 #include <ctype.h>
 #include <cv.h>
 #include <fstream>
@@ -18,6 +19,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <stdio.h>
 #include <string>
+#include <sys/wait.h>
 
 using namespace boost;
 using namespace std;
@@ -46,7 +48,7 @@ namespace clutseg {
         // possibly inconsistent state. 
         FileFlag dirty(train_dir / "dirty.flag");
         dirty.set();
-
+        cerr << (train_dir / "features.config.yaml").string() << endl;
         writeFeParams(train_dir / "features.config.yaml", fe_params);
 
         // As tod_training/apps/detector.cpp and
@@ -67,6 +69,7 @@ namespace clutseg {
         // more threads than CPUs, since the threads are quite heavy on IO.
         // http://www.gnu.org/s/hello/manual/libc/Processor-Resources.html
         int j = 2 * sysconf(_SC_NPROCESSORS_ONLN);
+        assert(j > 0);
 
         set<string> templates = listTemplateNames(train_dir);
         BOOST_FOREACH(const string & subj, templates) {
@@ -84,28 +87,34 @@ namespace clutseg {
         cmd.close();
              
         // start a subprocess for feature detection (which again calls tod_training/apps/detector.cpp)
-        // http://www.gnu.org/s/libc/manual/html_mono/libc.html#CPU-Time
-        clock_t b = clock();
-        FILE *in;
-        in = popen(("bash " + gen_bash.string() + " " + train_dir.string()).c_str(), "r");
-        ssize_t len;
-        do {
-            char *line = NULL;
-            size_t n = 0;
-            len = getline(&line, &n, in);
-            stringstream s;
-            for (ssize_t i = 0; i < len; i++) {
-                s << line[i];
+        int t = 0;
+        // Need to be able to kill tod_training processes, therefore fork a new subprocess
+        // save its process id and kill it if necessary.
+        pid_t pid = fork();
+        if (pid < 0) {
+            throw runtime_error("Unable to fork child process");
+        } else if (pid == 0) {
+            execl("/bin/bash", "/bin/bash/", gen_bash.string().c_str(), train_dir.string().c_str(), (char *) NULL);
+            _exit(EXIT_FAILURE);
+        } else {
+            // parent process
+            while (waitpid(pid, NULL, WNOHANG) == 0) {
+                if (boost::this_thread::interruption_requested()) {
+                    kill(pid, SIGTERM);
+                    boost::this_thread::interruption_point();
+                }
+                sleep(1);
+                t += 1;
             }
-            if (s.str().find("WARNING") || s.str().find("ERROR")) {
-                cout << s.str();
-            }
-        } while (len != -1);
-        pclose(in);
+            cout << "[EXPERIMENT]: Finished training" << endl;
+        }
 
+        // This is wall-time rather than clock cycles but no requirement on
+        // more exact data.
         FILE *f;
         f = fopen((train_dir / "train_runtime").string().c_str(), "w");
-        fprintf(f, "%f", (clock() - b) / float(CLOCKS_PER_SEC));
+        printf("[EXPERIMENT]: Training took around %d seconds\n", t);
+        fprintf(f, "%f", float(t));
         fclose(f);
 
         // We're done with this work.
@@ -118,6 +127,11 @@ namespace clutseg {
 
     bool TrainFeatures::operator!=(const TrainFeatures & rhs) const {
         return !operator==(rhs);
+    }
+
+    bool TrainFeatures::operator<(const TrainFeatures & rhs) const {
+        return (train_set < rhs.train_set) ? true :
+                sha1(fe_params) < sha1(rhs.fe_params);
     }
 
     // TODO: fix problems with empty parameter constructors
@@ -138,7 +152,9 @@ namespace clutseg {
             FILE *f;
             f = fopen((trainFeaturesDir(tr_feat) / "train_runtime").string().c_str(), "r");
             float t;
-            fscanf(f, "%f", &t);
+            if (fscanf(f, "%f", &t) < 0) {
+                t = NAN;
+            }
             fclose(f);
             return t;
         } else {
@@ -220,6 +236,14 @@ namespace clutseg {
             copyTrainRuntime(train_dir, tr_feat_dir);
             writeFeParams(tr_feat_dir / "features.config.yaml", tr_feat.fe_params);
         }
+    }
+
+    bool TrainFeaturesCache::trainFeaturesBlacklisted(const TrainFeatures & tr_feat) {
+        return blacklist_.count(tr_feat) == 1;
+    }
+
+    void TrainFeaturesCache::blacklistTrainFeatures(const TrainFeatures & tr_feat) {
+        blacklist_.insert(tr_feat);
     }
 
     string sha1(const string & file) {

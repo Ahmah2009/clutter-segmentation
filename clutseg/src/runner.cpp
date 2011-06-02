@@ -12,7 +12,9 @@
 #include "clutseg/response.h"
 #include "clutseg/ground.h"
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/foreach.hpp>
+#include <boost/thread.hpp>
 #include <ctime>
 #include <cv.h>
 #include <pcl/io/pcd_io.h>
@@ -138,7 +140,9 @@ namespace clutseg {
         // and whoever to blame, it's important to fail early such that not
         // so much time is wasted.
         BOOST_FOREACH(Experiment & e, exps) {
-            if (!e.skip) {
+            if (terminate) {
+                return;
+            } else if (!e.skip) {
                 try {
                     cout << "[RUN]: Verifying that constructing a FeatureExtractor instance from supplied train features config works: " << e.name << endl;
                     FeatureExtractor::create(e.paramset.train_pms_fe);
@@ -166,7 +170,9 @@ namespace clutseg {
         // of any features. This quickly finds broken configurations that will never lead anywhere.
         Mat ver_img = imread("data/image_00000.png", 0);
         BOOST_FOREACH(Experiment & e, exps) {
-            if (!e.skip) {
+            if (terminate) {
+                return;
+            } else if (!e.skip) {
                 cout << "[RUN]: Verifying that features are extracted when using train features config: " << e.name << endl;
                 Ptr<FeatureExtractor> x = FeatureExtractor::create(e.paramset.train_pms_fe);
                 Features2d xf;
@@ -196,6 +202,10 @@ namespace clutseg {
         }
     }
 
+    void generate(TrainFeatures & tr_feat) {
+        tr_feat.generate();
+    }
+
     void ExperimentRunner::run() {
         while (!terminate) {
             cout << "[RUN] Querying database for experiments to carry out..." << endl;
@@ -216,7 +226,13 @@ namespace clutseg {
             Clutsegmenter *sgm = NULL;
 
             skipExperimentsWhereFeatureExtractorCreateFailed(exps);
+            if (terminate) {
+                return;
+            }
             skipExperimentsWhereNoFeaturesExtracted(exps);
+            if (terminate) {
+                return;
+            }
 
             BOOST_FOREACH(Experiment & e, exps) {
                 if (terminate) {
@@ -227,12 +243,34 @@ namespace clutseg {
                     TrainFeatures tr_feat(e.train_set, e.paramset.train_pms_fe);
                     if (tr_feat != cur_tr_feat) {
                         if (!cache_.trainFeaturesExist(tr_feat)) {
-                            // TODO: catch error where train directory does not exist
+                            // FIXME: this has either to be specified in setup or derived from number of images
+                            int max_seconds = 2400;
+                            if (cache_.trainFeaturesBlacklisted(tr_feat)) {
+                                e.skip = true;
+                                e.machine_note = str(boost::format("took longer than %d for training") % max_seconds);
+                                e.serialize(db_);
+                                continue;
+                            }
                             // This is a critical part where the experiment runner
                             // should not be interrupted. Also proper closing of
                             // the database has to be ensured by a database handler
-                            tr_feat.generate();
-                            cache_.addTrainFeatures(tr_feat);
+                            boost::thread g(generate, tr_feat);
+                            // 10 seconds per picture max, 4*60 = 240 pictures in total
+                            // so maximum 2400 seconds = 40 minutes.
+                            if (g.timed_join(boost::posix_time::seconds(max_seconds))) {
+                                if (terminate) break;
+                                cerr << "[RUN]: Adding training features to cache " << e.name << endl;
+                                cache_.addTrainFeatures(tr_feat);
+                            } else {
+                                cache_.blacklistTrainFeatures(tr_feat);
+                                e.skip = true;
+                                e.machine_note = str(boost::format("took longer than %d for training") % max_seconds);
+                                e.serialize(db_);
+                                g.interrupt();
+                                g.join();
+                                cerr << "[RUN]: ERROR, took more than " << max_seconds << " seconds for training: " << e.name << endl;
+                                continue;
+                            }
                         }
                         delete sgm;
                         sgm = new Clutsegmenter(

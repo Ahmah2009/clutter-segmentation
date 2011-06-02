@@ -173,3 +173,9 @@ TEST_F(ExperimentTest, ListTemplateNames) {
     EXPECT_EQ(1, tNames.count("jacobs_coffee"));
     EXPECT_EQ(4, tNames.size());
 }
+
+TEST_F(ExperimentTest, Blacklist) {
+    ASSERT_FALSE(cache.trainFeaturesBlacklisted(tr_feat));
+    cache.blacklistTrainFeatures(tr_feat);
+    ASSERT_TRUE(cache.trainFeaturesBlacklisted(tr_feat));
+}
