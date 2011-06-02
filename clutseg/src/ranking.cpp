@@ -23,7 +23,7 @@ namespace clutseg {
         return (*ranking_)(a) > (*ranking_)(b);
     }
 
-    float UniformRanking::operator()(const Guess & guess) const {
+    float UniformRanking::operator()(const Guess & /* guess */) const {
         return 1.0;
     }
 

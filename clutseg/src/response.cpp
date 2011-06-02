@@ -88,7 +88,7 @@ namespace clutseg {
     /** Computes score for one single test scene */
     void update_locate_sipc(const Result & result,
                             const GroundTruth & ground,
-                            const set<string> & templateNames,
+                            const set<string> & /* templateNames */,
                             locate_sipc_t & locate_sipc) {
         if (ground.emptyScene()) {
             if (result.guess_made) {
@@ -143,7 +143,7 @@ namespace clutseg {
 
     void update_locate_errors(const SetResult & resultSet,
                                 const SetGroundTruth & groundSet,
-                                const set<string> & templateNames,
+                                const set<string> & /* templateNames */,
                                 Response & rsp) {
         float acc_angle_err = 0;
         float acc_succ_angle_err = 0;
