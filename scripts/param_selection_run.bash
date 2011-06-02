@@ -18,7 +18,7 @@ pushd $CLUTSEG_PATH/clutter-segmentation/clutseg > /dev/null
     if [ "$?" = 0 ] ; then
         # TODO: create YAML file that couples all information
         # necessary to run an experiment
-        nice -n 15 $debug param_selection $CLUTSEG_EXPERIMENT_DB $CLUTSEG_TRAIN_CACHE_DIR $CLUTSEG_RESULT_DIR $CLUTSEG_POST_RUN_CMD
+        nice -n 3 $debug param_selection $CLUTSEG_EXPERIMENT_DB $CLUTSEG_TRAIN_CACHE_DIR $CLUTSEG_RESULT_DIR $CLUTSEG_POST_RUN_CMD
     fi
 popd > /dev/null
 
