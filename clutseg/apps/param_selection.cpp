@@ -95,6 +95,14 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }
 
+
+    for (int i = 3; i <= 50; i += 2) {
+        Experiment e = createExperiment();
+        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-detect-min-inliers-count-%d") % i);
+        e.paramset.detect_pms_guess.minInliersCount = i;
+        insert_if_not_exist(db, e);
+    }
+
     /* that one is nonsense
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
     {
@@ -125,6 +133,7 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }*/
 
+    /*
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=sequential)
     {
         Experiment e = createExperiment();
@@ -217,7 +226,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.detector_type = "STAR";
         e.paramset.recog_pms_fe.detector_type = "STAR";
         insert_if_not_exist(db, e);
-    }
+    }*/
 
     // ORB + LSH-BINARY
     {
