@@ -133,6 +133,12 @@ namespace clutseg {
         }
     }
 
+    void drawGuesses(cv::Mat & canvas, const std::vector<tod::Guess> & guesses,
+                        const opencv_candidate::Camera & camera) {
+        vector<PoseRT> dummy;
+        drawGuesses(dci, report.result.detect_choices, report.camera, dummy);
+    }
+
     void drawLabelAtOrigin(Mat & canvas, const PoseRT & pose, const Camera & camera, const string & label, const Scalar & color) {
         Point topleft = projectOrigin(pose, camera); 
         vector<string> legend;

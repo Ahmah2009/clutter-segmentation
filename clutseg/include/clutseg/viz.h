@@ -58,7 +58,11 @@ namespace clutseg {
      * distinguishable anyway.
      */
     void drawGuesses(cv::Mat & canvas, const std::vector<tod::Guess> & guesses,
-                        const opencv_candidate::Camera & camera, const std::vector<opencv_candidate::PoseRT> & ground_poses);
+                        const opencv_candidate::Camera & camera,
+                        const std::vector<opencv_candidate::PoseRT> & ground_poses);
+
+    void drawGuesses(cv::Mat & canvas, const std::vector<tod::Guess> & guesses,
+                        const opencv_candidate::Camera & camera);
 
     /** \brief Convenience method, just delegates to drawGuesses */
     void drawGuess(cv::Mat & canvas, const tod::Guess & guess,

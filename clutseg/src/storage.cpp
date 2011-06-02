@@ -29,6 +29,16 @@ namespace clutseg {
         fs.release();
     }
 
+    string cut_file_extension(const string & filename) {
+        size_t offs = report.img_name.rfind(".");
+        string img_basename = report.img_name;
+        if (offs == string::npos) {
+            return report.img_name;
+        } else {
+            return img_basename.substr(0, offs);
+        }
+    }
+
     void ResultStorage::store(const TestReport & report) {
         bfs::path erd = result_dir_ / (str(boost::format("%05d") % report.experiment.id));
         if (!bfs::exists(erd)) {
@@ -37,13 +47,7 @@ namespace clutseg {
 
         cout << boost::format("[STORE] Saving result on '%s' for experiment '%d'") % report.img_name % report.experiment.id << endl;
 
-        // TODO: extract method
-        size_t offs = report.img_name.rfind(".");
-        string img_basename = report.img_name;
-        if (offs == string::npos) {
-        } else {
-            img_basename = img_basename.substr(0, offs);
-        }
+        string img_basename = cut_file_extension(report.img_name);
 
         // Draw locate choice image
         Mat lci = report.query.img.clone();
@@ -70,20 +74,13 @@ namespace clutseg {
         // Draw detect choices image
         Mat dci = report.query.img.clone();
         drawGroundTruth(dci, report.ground, report.camera);
-        vector<PoseRT> dummy;
-        drawGuesses(dci, report.result.detect_choices, report.camera, dummy); // TODO: create delegate method or use default parameter
+        drawGuesses(dci, report.result.detect_choices, report.camera);
         bfs::path dci_path = erd / (img_basename + ".detect_choices.png");
         bfs::create_directories(dci_path.parent_path());
         imwrite(dci_path.string(), dci);
 
-        /*
-        Mat kptsi = img.clone();
-        clutseg::drawKeypoints(kptsi, result.features.keypoints);
-        bfs::path kptsi_path = erd / (img_name + ".keypoints.png");
-        bfs::create_directories(kptsi_path.parent_path());
-        imwrite(kptsi_path.string(), kptsi);*/
-
         // Save keypoints
+        // TODO: extract method
         bfs::path feat_path = erd / (img_basename + ".features.yaml.gz");
         bfs::create_directories(feat_path.parent_path());
         FileStorage feat_fs(feat_path.string(), FileStorage::WRITE);
@@ -92,6 +89,7 @@ namespace clutseg {
         feat_fs.release();
 
         // Save locate choice
+        // TODO: extract method
         bfs::path lc_path = erd / (img_basename + ".locate_choice.yaml.gz");
         bfs::create_directories(lc_path.parent_path());
         FileStorage lc_fs(lc_path.string(), FileStorage::WRITE);
@@ -102,6 +100,7 @@ namespace clutseg {
         lc_fs.release();
 
         // Save detect choices 
+        // TODO: extract method
         bfs::path dc_path = erd / (img_basename + ".detect_choices.yaml.gz");
         bfs::create_directories(dc_path.parent_path());
         FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
