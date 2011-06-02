@@ -99,12 +99,26 @@ void insert_experiments(sqlite3* & db) {
 
     if (term) return;
 
-    for (int i = 3; i <= 50; i += 2) {
-        Experiment e = createExperiment();
-        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-detect-min-inliers-count-%d") % i);
-        e.paramset.detect_pms_guess.minInliersCount = i;
-        insert_if_not_exist(db, e);
-        if (term) return;
+
+    int i = 0;
+    for (int detectMinInliersCount = 5; detectMinInliersCount <= 25; detectMinInliersCount += 5) { // 5
+        for (int detectMaxProjectionError = 6; detectMaxProjectionError <= 18; detectMaxProjectionError += 3) { // 5
+            for (int locateMinInliersCount = 5; locateMinInliersCount <= 30; locateMinInliersCount += 5) { // 6
+                for (int locateMaxProjectionError = 6; locateMaxProjectionError <= 18; locateMaxProjectionError += 3) { // 5
+                    // 5 * 6 * 5 * 5 = 30 * 25 = 750 
+                    // needs approximately 12 hours to compute 
+                    Experiment e = createExperiment();
+                    e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % i);
+                    e.paramset.detect_pms_guess.minInliersCount = detectMinInliersCount;
+                    e.paramset.detect_pms_guess.maxProjectionError = detectMaxProjectionError;
+                    e.paramset.locate_pms_guess.minInliersCount = locateMinInliersCount;
+                    e.paramset.locate_pms_guess.maxProjectionError = locateMaxProjectionError;
+                    insert_if_not_exist(db, e);
+                    if (term) return;
+                    i++;
+                }
+            }
+        }
     }
 
     /* that one is nonsense
