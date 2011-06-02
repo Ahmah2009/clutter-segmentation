@@ -116,6 +116,7 @@ namespace clutseg {
 
             // The heavy load on both CPU and IO often makes the operating
             // system very unresponsive, so take a little break.
+            // TODO: test whether this can be achieved by using 'nice' value
             timespec t;
             t.tv_sec = 0;
             t.tv_nsec = int(1e8);
@@ -125,6 +126,7 @@ namespace clutseg {
         CutSseResponseFunction responseFunc;
         responseFunc(resultSet, testdesc, sgm.getTemplateNames(), e.response);
 
+        e.response.train_runtime = cache_.trainRuntime(tr_feat);                    
         e.response.test_runtime = rt;
 
         sgm.getStats().populateResponse(e.response);
@@ -277,8 +279,6 @@ namespace clutseg {
                             cache_.trainFeaturesDir(tr_feat).string(),
                             TODParameters(), TODParameters());
                     }
-
-                    e.response.train_runtime = cache_.trainRuntime(tr_feat);                    
 
                     // Clear statistics        
                     sgm->resetStats();
