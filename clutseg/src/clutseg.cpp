@@ -148,8 +148,8 @@ namespace clutseg {
         f2d.image = query.img;
         
         // For statistics, we need access to the matchers at this level.
-        Ptr<Matcher> detectMatcher;
-        Ptr<Matcher> locateMatcher;
+        Ptr<Matcher> detectMatcher = NULL;
+        Ptr<Matcher> locateMatcher = NULL;
 
         // Generate a couple of guesses. Ideally, each object on the scene is
         // detected and there are no misclassifications.
@@ -213,7 +213,7 @@ namespace clutseg {
 
     bool Clutsegmenter::detect(Features2d & queryF2d, vector<Guess> & detect_choices, Ptr<Matcher> & detectMatcher) {
         Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
-        Ptr<Recognizer> recognizer;
+        Ptr<Recognizer> recognizer = NULL;
         initRecognizer(recognizer, detectMatcher, base_, detect_params_, baseDirectory_);
 
         extractor->detectAndExtract(queryF2d);
