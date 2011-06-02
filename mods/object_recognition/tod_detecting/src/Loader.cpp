@@ -164,7 +164,6 @@ void Loader::readTexturedObjects(vector<Ptr<TexturedObject> >& objects)
               {
 
                 string f3dName = itr->string();
-                cout << "[LOADER] Loading view " << f3dName << endl;
 
                 FileStorage fs = FileStorage(f3dName, FileStorage::READ);
                 if (fs.isOpened())
@@ -185,7 +184,6 @@ void Loader::readTexturedObjects(vector<Ptr<TexturedObject> >& objects)
             foreach(const string& imageName, imageNames)
                   {
                     string f3dName = filename(name + "/" + imageName + POSTFIX);
-                    cout << "[LOADER] Loading view " << f3dName << endl;
 
                     FileStorage fs = FileStorage(f3dName, FileStorage::READ);
                     if (fs.isOpened())

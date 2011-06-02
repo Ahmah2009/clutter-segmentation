@@ -69,6 +69,8 @@ Experiment createExperiment() {
     return e;
 }
 
+bool term;
+
 void insert_if_not_exist(sqlite3* & db, Experiment & e) {
     sqlite3_stmt *read;
     db_prepare(db, read, "select name from experiment where name='"+e.name+"'");
@@ -95,12 +97,14 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }
 
+    if (term) return;
 
     for (int i = 3; i <= 50; i += 2) {
         Experiment e = createExperiment();
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-detect-min-inliers-count-%d") % i);
         e.paramset.detect_pms_guess.minInliersCount = i;
         insert_if_not_exist(db, e);
+        if (term) return;
     }
 
     /* that one is nonsense
@@ -245,6 +249,8 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }
 
+    if (term) return;
+
     // ORB + LSH-BINARY + gridded (AMMSFast)
     {
         Experiment e = createExperiment();
@@ -259,6 +265,8 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.recog_pms_fe.detector_params["threshold"] = 0.000001;
         insert_if_not_exist(db, e);
     }
+
+    if (term) return;
 
     // ORB + LSH-BINARY + low-threshold
     {
@@ -279,8 +287,10 @@ void insert_experiments(sqlite3* & db) {
 
 ExperimentRunner runner;
 
-void terminate(int s) {
+void terminate_hnd(int s) {
+    cout << "Received SIGINT" << endl;
     runner.terminate = true;
+    term = true;
 }
 
 int main(int argc, char **argv) {
@@ -302,11 +312,22 @@ int main(int argc, char **argv) {
     assert_path_exists(cache_dir);
     assert_path_exists(result_dir);
 
+    term = false;
+
+    // Use custom signal handler
+    void (*prev_fn)(int);
+    prev_fn = signal (SIGINT, terminate_hnd);
+    if (prev_fn==SIG_IGN) signal (SIGINT,SIG_IGN);
+
     sqlite3* db;
     cout << "Opening database ..." << endl;
     db_open(db, db_path);
+
     cout << "Inserting experiment setups ..." << endl;
     insert_experiments(db);
+
+    if (term) return 1;
+
     TrainFeaturesCache cache(cache_dir);
     ResultStorage storage(result_dir);
     cout << "Running experiments ..." << endl;
@@ -315,11 +336,6 @@ int main(int argc, char **argv) {
     if (argc == 5) {
         runner.setPostRunCmd(argv[4]);
     }
-
-    // Use custom signal handler
-    void (*prev_fn)(int);
-    prev_fn = signal (SIGINT, terminate);
-    if (prev_fn==SIG_IGN) signal (SIGINT,SIG_IGN);
 
     runner.run();
     db_close(db);

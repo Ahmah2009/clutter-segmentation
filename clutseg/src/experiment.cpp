@@ -48,7 +48,7 @@ namespace clutseg {
         // possibly inconsistent state. 
         FileFlag dirty(train_dir / "dirty.flag");
         dirty.set();
-        cerr << (train_dir / "features.config.yaml").string() << endl;
+
         writeFeParams(train_dir / "features.config.yaml", fe_params);
 
         // As tod_training/apps/detector.cpp and

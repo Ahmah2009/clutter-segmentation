@@ -126,7 +126,6 @@ namespace clutseg {
         CutSseResponseFunction responseFunc;
         responseFunc(resultSet, testdesc, sgm.getTemplateNames(), e.response);
 
-        e.response.train_runtime = cache_.trainRuntime(tr_feat);                    
         e.response.test_runtime = rt;
 
         sgm.getStats().populateResponse(e.response);
@@ -279,6 +278,8 @@ namespace clutseg {
                             cache_.trainFeaturesDir(tr_feat).string(),
                             TODParameters(), TODParameters());
                     }
+
+                    e.response.train_runtime = cache_.trainRuntime(tr_feat);                    
 
                     // Clear statistics        
                     sgm->resetStats();

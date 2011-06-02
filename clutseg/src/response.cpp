@@ -229,7 +229,6 @@ namespace clutseg {
                                         const SetGroundTruth & groundSet,
                                         const set<string> & templateNames,
                                         Response & rsp) {
-        rsp = Response();
         rsp.value = 0.0;
 
         rsp.detect_sipc = detect_sipc_t();
