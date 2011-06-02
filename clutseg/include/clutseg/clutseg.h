@@ -17,6 +17,7 @@
 #include <set>
 #include <tod/detecting/GuessGenerator.h>
 #include <tod/detecting/Recognizer.h>
+#include <vector>
 
 namespace clutseg {
 
@@ -126,12 +127,12 @@ namespace clutseg {
 
             bool detect(tod::Features2d & queryF2d,
                         std::vector<tod::Guess> & detectChoices,
-                        cv::Ptr<tod::Matcher> & detectMatcher);
+                        std::vector<std::pair<int, int> > & matches);
 
             bool locate(const tod::Features2d & queryF2d,
                         const PointCloudT & queryCloud,
                         tod::Guess & locateChoice,
-                        cv::Ptr<tod::Matcher> & locateMatcher);
+                        std::vector<std::pair<int, int> > & matches);
 
             void loadParams(const std::string & config,
                             tod::TODParameters & params);

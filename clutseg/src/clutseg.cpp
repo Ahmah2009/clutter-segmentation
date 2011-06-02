@@ -131,14 +131,6 @@ namespace clutseg {
         return do_locate_;
     }
 
-    void initRecognizer(Ptr<Recognizer> & recognizer, Ptr<Matcher> & matcher, TrainingBase & base, TODParameters params, const string & baseDirectory) {
-        matcher = Matcher::create(params.matcherParams);
-        matcher->add(base);
-        recognizer = new KinectRecognizer(&base, matcher,
-                            &params.guessParams, 0 /* verbose */,
-                             baseDirectory);
-    }
-
     void Clutsegmenter::recognize(const ClutsegQuery & query, Result & result) {
         { /* begin statistics */ 
             stats_.queries++;
@@ -147,13 +139,10 @@ namespace clutseg {
         Features2d f2d;
         f2d.image = query.img;
         
-        // For statistics, we need access to the matchers at this level.
-        Ptr<Matcher> detectMatcher = NULL;
-        Ptr<Matcher> locateMatcher = NULL;
-
         // Generate a couple of guesses. Ideally, each object on the scene is
         // detected and there are no misclassifications.
-        detect(f2d, result.detect_choices, detectMatcher);
+        vector<pair<int, int> > ds;
+        detect(f2d, result.detect_choices, ds);
 
         result.features = f2d;
 
@@ -170,8 +159,9 @@ namespace clutseg {
             for (size_t i = 0; i < result.detect_choices.size(); i++) {
                 result.locate_choice = result.detect_choices[i]; 
 
+                vector<pair<int, int> > ls; 
                 if (do_locate_) {
-                    locate(f2d, query.cloud, result.locate_choice, locateMatcher);
+                    locate(f2d, query.cloud, result.locate_choice, ls);
                 }
 
                 cout << "[CLUTSEG] ranking: " << (*ranking_)(result.locate_choice) << endl;
@@ -181,13 +171,9 @@ namespace clutseg {
                     cout << "[CLUTSEG] Inliers before:  " << result.detect_choices[i].inliers.size() << ", and after: " << result.locate_choice.inliers.size() << endl;
 
                     { /* begin statistics */ 
-                        vector<pair<int, int> > ds; 
-                        detectMatcher->getLabelSizes(ds);
                         stats_.acc_detect_choice_matches += ds[result.detect_choices[i].getObject()->id].second;
                         stats_.acc_detect_choice_inliers += result.detect_choices[i].inliers.size();
                         if (do_locate_) {
-                            vector<pair<int, int> > ls; 
-                            locateMatcher->getLabelSizes(ls);
                             stats_.acc_locate_choice_matches += ls[result.locate_choice.getObject()->id].second;
                             stats_.acc_locate_choice_inliers += result.locate_choice.inliers.size();
                         } 
@@ -211,13 +197,19 @@ namespace clutseg {
         return total;
     }
 
-    bool Clutsegmenter::detect(Features2d & queryF2d, vector<Guess> & detect_choices, Ptr<Matcher> & detectMatcher) {
+    bool Clutsegmenter::detect(Features2d & queryF2d, vector<Guess> & detect_choices, vector<pair<int, int> > & matches) {
         Ptr<FeatureExtractor> extractor = FeatureExtractor::create(detect_params_.feParams);
-        Ptr<Recognizer> recognizer = NULL;
-        initRecognizer(recognizer, detectMatcher, base_, detect_params_, baseDirectory_);
-
         extractor->detectAndExtract(queryF2d);
+
+        Ptr<Matcher> detectMatcher = Matcher::create(detect_params_.matcherParams);
+        detectMatcher->add(base_);
+
+        Ptr<Recognizer> recognizer = new KinectRecognizer(&base_, detectMatcher,
+                            &detect_params_.guessParams, 0,
+                             baseDirectory_);
+
         recognizer->match(queryF2d, detect_choices);
+        detectMatcher->getLabelSizes(matches);
 
         { /* begin statistics */
             stats_.acc_keypoints += queryF2d.keypoints.size();
@@ -231,7 +223,7 @@ namespace clutseg {
         return detect_choices.empty();
     }
 
-    bool Clutsegmenter::locate(const Features2d & queryF2d, const PointCloudT & queryCloud, Guess & locate_choice, Ptr<Matcher> & locateMatcher) {
+    bool Clutsegmenter::locate(const Features2d & queryF2d, const PointCloudT & queryCloud, Guess & locate_choice, vector<pair<int, int> > & matches) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }
@@ -254,11 +246,16 @@ namespace clutseg {
         }
         TrainingBase single(so);
 
-        Ptr<Recognizer> recognizer;
-        initRecognizer(recognizer, locateMatcher, single, locate_params_, baseDirectory_);
+        Ptr<Matcher> locateMatcher = Matcher::create(locate_params_.matcherParams);
+        locateMatcher->add(single);
+
+        Ptr<Recognizer> recognizer = new KinectRecognizer(&single, locateMatcher,
+                            &locate_params_.guessParams, 0,
+                             baseDirectory_);
 
         vector<Guess> guesses;
         recognizer->match(queryF2d, guesses); 
+        locateMatcher->getLabelSizes(matches);
 
         cout << "[CLUTSEG] locate_matches: " << sum_matches(locateMatcher) << endl;
         stats_.acc_locate_matches += sum_matches(locateMatcher);
