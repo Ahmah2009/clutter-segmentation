@@ -11,13 +11,17 @@
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
-#include <gtest/gtest.h>
-#include <limits.h>
-#include <tod/detecting/Loader.h>
-#include <pcl/io/pcd_io.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <iostream>
-#include <stdlib.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <gtest/gtest.h>
+    #include <limits.h>
+    #include <tod/detecting/Loader.h>
+    #include <pcl/io/pcd_io.h>
+    #include <opencv2/highgui/highgui.hpp>
+    #include <iostream>
+    #include <stdlib.h>
+#include "clutseg/gcc_diagnostic_enable.h"
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 using namespace clutseg;
 using namespace cv;

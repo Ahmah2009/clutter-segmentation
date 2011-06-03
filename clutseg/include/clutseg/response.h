@@ -9,10 +9,12 @@
 #include "clutseg/paramsel.h"
 #include "clutseg/result.h"
 
-#include <map>
-#include <set>
-#include <string>
-#include <tod/detecting/GuessGenerator.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <map>
+    #include <set>
+    #include <string>
+    #include <tod/detecting/GuessGenerator.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

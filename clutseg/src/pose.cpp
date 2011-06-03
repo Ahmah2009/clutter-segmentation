@@ -6,6 +6,7 @@
 
 #include "clutseg/check.h"
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <fiducial/fiducial.h>
 #include <opencv/cxeigen.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
@@ -13,6 +14,7 @@
 #include <boost/random.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace fiducial;
 using namespace cv;

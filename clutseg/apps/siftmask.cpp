@@ -1,9 +1,11 @@
 
-#include <cv.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <vector>
-#include <iostream>
-#include <stdlib.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <cv.h>
+    #include <opencv2/highgui/highgui.hpp>
+    #include <vector>
+    #include <iostream>
+    #include <stdlib.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace cv;

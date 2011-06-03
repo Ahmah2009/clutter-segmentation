@@ -7,13 +7,15 @@
 
 #include "clutseg/ground.h"
 
-#include <cv.h>
-#include <opencv_candidate/Camera.h>
-#include <opencv_candidate/PoseRT.h>
-#include <tod/detecting/GuessGenerator.h>
-#include <tod/core/TrainingBase.h>
-#include <tod/core/Features2d.h>
-#include <tod/detecting/Matcher.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <cv.h>
+    #include <opencv_candidate/Camera.h>
+    #include <opencv_candidate/PoseRT.h>
+    #include <tod/detecting/GuessGenerator.h>
+    #include <tod/core/TrainingBase.h>
+    #include <tod/core/Features2d.h>
+    #include <tod/detecting/Matcher.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

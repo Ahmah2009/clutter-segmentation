@@ -6,6 +6,7 @@
 
 #include "clutseg/check.h"
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
@@ -13,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <set>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
 using namespace opencv_candidate;

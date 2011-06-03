@@ -7,13 +7,15 @@
 
 #include "clutseg/sipc.h"
 
-#include <boost/format.hpp>
-#include <map>
-#include <sqlite3.h>
-#include <tod/training/feature_extraction.h>
-#include <tod/detecting/GuessGenerator.h>
-#include <tod/detecting/Parameters.h>
-#include <vector>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/format.hpp>
+    #include <map>
+    #include <sqlite3.h>
+    #include <tod/training/feature_extraction.h>
+    #include <tod/detecting/GuessGenerator.h>
+    #include <tod/detecting/Parameters.h>
+    #include <vector>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

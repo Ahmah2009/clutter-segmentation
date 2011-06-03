@@ -7,12 +7,14 @@
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
-#include <gtest/gtest.h>
-#include <fiducial/fiducial.h>
-#include <cv.h>
-#include <opencv_candidate/PoseRT.h>
-#include <opencv_candidate/Camera.h>
-#include <opencv2/highgui/highgui.hpp>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <gtest/gtest.h>
+    #include <fiducial/fiducial.h>
+    #include <cv.h>
+    #include <opencv_candidate/PoseRT.h>
+    #include <opencv_candidate/Camera.h>
+    #include <opencv2/highgui/highgui.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
 using namespace opencv_candidate;

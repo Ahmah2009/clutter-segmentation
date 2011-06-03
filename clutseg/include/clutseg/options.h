@@ -5,8 +5,10 @@
 #ifndef _CONN_COMP_H_
 #define _CONN_COMP_H_
 
-#include <string>
-#include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <string>
+    #include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

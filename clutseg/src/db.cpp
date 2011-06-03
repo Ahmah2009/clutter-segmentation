@@ -4,9 +4,11 @@
 
 #include <clutseg/db.h>
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <boost/format.hpp>
 #include <iostream>
 #include <string>
+#include "clutseg/gcc_diagnostic_enable.h"
  
 using namespace std;
 using namespace boost;

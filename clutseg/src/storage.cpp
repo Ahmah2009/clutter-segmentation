@@ -7,11 +7,13 @@
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <tod/core/Features2d.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
 using namespace opencv_candidate;

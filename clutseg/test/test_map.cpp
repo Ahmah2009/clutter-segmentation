@@ -10,10 +10,13 @@
 #include "clutseg/pcl_visualization_addons.h"
 #include "clutseg/map.h"
 
-#include <cv.h>
-#include <boost/format.hpp>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <cv.h>
+    #include <boost/format.hpp>
+    #include <pcl_visualization/pcl_visualizer.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
-#include <pcl_visualization/pcl_visualizer.h>
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 using namespace std;
 using namespace cv;

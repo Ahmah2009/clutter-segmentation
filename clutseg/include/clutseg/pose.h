@@ -14,10 +14,13 @@
 #ifndef _POSE_UTIL_H_
 #define _POSE_UTIL_H_
 
-#include <boost/filesystem.hpp>
-#include <cv.h>
-#include <opencv_candidate/Camera.h>
-#include <opencv_candidate/PoseRT.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <cv.h>
+    #include <opencv_candidate/Camera.h>
+    #include <opencv_candidate/PoseRT.h>
+#include "clutseg/gcc_diagnostic_enable.h"
+//#pragma GCC diagnostic pop
 
 namespace clutseg {
 

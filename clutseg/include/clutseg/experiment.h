@@ -6,11 +6,13 @@
 #define _EXPERIMENT_H_
 
 // TODO: responsibilities between experiment.h and paramsel.h are unclear
-#include <boost/filesystem.hpp>
-#include <set>
-#include <string>
-#include <tod/training/feature_extraction.h>
-#include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <set>
+    #include <string>
+    #include <tod/training/feature_extraction.h>
+    #include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

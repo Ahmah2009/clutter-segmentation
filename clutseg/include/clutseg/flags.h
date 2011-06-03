@@ -2,7 +2,9 @@
  * Author: Julius Adorf
  */
 
-#include <boost/filesystem.hpp>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 #ifndef _FLAGS_H_
 #define _FLAGS_H_

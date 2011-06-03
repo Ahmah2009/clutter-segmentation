@@ -9,10 +9,12 @@
 #ifndef _DB_H_
 #define _DB_H_
 
-#include <boost/filesystem.hpp>
-#include <boost/format/format_class.hpp>
-#include <sqlite3.h>
-#include <string>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <boost/format/format_class.hpp>
+    #include <sqlite3.h>
+    #include <string>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
     

@@ -5,11 +5,12 @@
 #ifndef _TESTDESC_H_
 #define _TESTDESC_H_
 
-#include <boost/filesystem.hpp>
-#include <map>
-#include <string>
-#include <opencv_candidate/PoseRT.h>
-#include <vector>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <map>
+    #include <string>
+    #include <opencv_candidate/PoseRT.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

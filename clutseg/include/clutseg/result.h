@@ -7,11 +7,13 @@
 
 #include "clutseg/common.h"
 
-#include <map>
-#include <set>
-#include <string>
-#include <tod/core/Features2d.h>
-#include <tod/detecting/GuessGenerator.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <map>
+    #include <set>
+    #include <string>
+    #include <tod/core/Features2d.h>
+    #include <tod/detecting/GuessGenerator.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

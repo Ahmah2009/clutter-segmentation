@@ -6,12 +6,14 @@
 #include "clutseg/experiment.h"
 #include "clutseg/paramsel.h"
 
-#include <boost/format.hpp>
-#include <iostream>
-#include <sqlite3.h>
-#include <sstream>
-#include <string>
-#include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/format.hpp>
+    #include <iostream>
+    #include <sqlite3.h>
+    #include <sstream>
+    #include <string>
+    #include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace clutseg;
 using namespace std;

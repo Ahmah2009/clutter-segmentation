@@ -6,16 +6,22 @@
 
 #include "clutseg/common.h"
 
-#include <opencv_candidate/PoseRT.h>
-#include <pcl_visualization/pcl_visualizer.h>
-#include <cv.h>
-#include <assert.h>
-#include <boost/format.hpp>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <opencv_candidate/PoseRT.h>
+    #include <pcl_visualization/pcl_visualizer.h>
+    #include <cv.h>
+    #include <assert.h>
+    #include <boost/format.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace pcl;
 using namespace pcl_visualization;
 using namespace opencv_candidate;
 using namespace cv;
+
+// see (pending?)
+// http://stackoverflow.com/questions/6227420/how-to-use-gcc-diagnostic-pragma-with-c-template-functions
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 namespace clutseg {
 

@@ -6,7 +6,9 @@
 #include "clutseg/experiment.h"
 #include "clutseg/storage.h"
 
-#include <sqlite3.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <sqlite3.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

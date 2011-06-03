@@ -2,13 +2,15 @@
  * Author: Julius Adorf
  */
 
-#include <stdlib.h>
-#include <iostream>
-#include <boost/filesystem.hpp>
-#include <boost/format.hpp>
-#include <boost/algorithm/string.hpp>
-#include <cv.h>
-#include <opencv_candidate/PoseRT.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <stdlib.h>
+    #include <iostream>
+    #include <boost/filesystem.hpp>
+    #include <boost/format.hpp>
+    #include <boost/algorithm/string.hpp>
+    #include <cv.h>
+    #include <opencv_candidate/PoseRT.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace cv;

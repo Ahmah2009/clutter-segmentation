@@ -7,9 +7,11 @@
 #include "clutseg/common.h"
 #include "clutseg/map.h"
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <tod/detecting/Loader.h>
 #include <boost/foreach.hpp>
 #include <limits>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace cv;

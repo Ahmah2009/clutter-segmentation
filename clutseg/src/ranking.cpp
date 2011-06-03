@@ -6,8 +6,10 @@
 
 #include "clutseg/common.h"
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <pcl/point_types.h>
 #include <boost/foreach.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
 using namespace std;

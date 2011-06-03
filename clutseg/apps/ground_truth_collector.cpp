@@ -6,12 +6,14 @@
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string.hpp>
-#include <cassert>
-#include <cv.h>
-#include <opencv2/highgui/highgui.hpp>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <boost/foreach.hpp>
+    #include <boost/algorithm/string.hpp>
+    #include <cassert>
+    #include <cv.h>
+    #include <opencv2/highgui/highgui.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace clutseg;
 using namespace cv;

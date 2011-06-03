@@ -4,9 +4,11 @@
 
 #include "clutseg/conn_comp.h"
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <cv.h>
 #include <stdint.h>
 #include <iostream>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
 using namespace std;

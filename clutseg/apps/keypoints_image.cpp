@@ -2,10 +2,12 @@
  * Author: Julius Adorf
  */
 
-#include <boost/filesystem.hpp>
-#include <cv.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <tod/core/Features2d.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <cv.h>
+    #include <opencv2/highgui/highgui.hpp>
+    #include <tod/core/Features2d.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace cv;

@@ -15,7 +15,7 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DOPENCV_R5024=OPENCV_R5024")
 
 # enable lots of compiler warnings, because I'm fucking hardcore
 # see http://www.ros.org/wiki/rosbuild
-set(ROS_COMPILE_FLAGS "-W -Wall -Wextra")
+set(ROS_COMPILE_FLAGS "-W -Wall -Wextra -Wno-deprecated -Werror -fdiagnostics-show-option")
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

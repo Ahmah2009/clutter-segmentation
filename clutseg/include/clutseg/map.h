@@ -7,12 +7,14 @@
 
 #include "clutseg/common.h"
 
-#include <cv.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#include <sqlite3.h>
-#include <tod/detecting/GuessGenerator.h>
-#include <vector>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <cv.h>
+    #include <pcl/point_cloud.h>
+    #include <pcl/point_types.h>
+    #include <sqlite3.h>
+    #include <tod/detecting/GuessGenerator.h>
+    #include <vector>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

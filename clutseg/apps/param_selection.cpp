@@ -15,11 +15,13 @@
 #include "clutseg/runner.h"
 #include "clutseg/storage.h"
 
-#include <csignal>
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-#include <vector>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <csignal>
+    #include <cstdio>
+    #include <cstdlib>
+    #include <iostream>
+    #include <vector>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 
 using namespace clutseg;
@@ -120,6 +122,10 @@ void insert_experiments(sqlite3* & db) {
             }
         }
     }
+
+    // TODO: select best 10% and try knn = 3..4..5 and ratioThreshold=0.6,0.7,0.8,0.9 and
+    //       play with threshold 20,30,40
+    // 750 / 10 = 150, 150 * 3 * 4 * 3 = 3600 
 
     /* that one is nonsense
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
@@ -246,6 +252,15 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }*/
 
+    // STAR + rBRIEF + LSH-BINARY
+    {
+        Experiment e = createExperiment();
+        e.name = "star-rbrief-multiscale-lshbinary";
+        e.paramset.train_pms_fe.detector_type = "STAR";
+        e.paramset.recog_pms_fe.detector_type = "STAR";
+        insert_if_not_exist(db, e);
+    }
+
     // ORB + LSH-BINARY
     {
         // Achieves success rates up to 50%. Seems to be a prospective
@@ -301,7 +316,7 @@ void insert_experiments(sqlite3* & db) {
 
 ExperimentRunner runner;
 
-void terminate_hnd(int s) {
+void terminate_hnd(int /* s */) {
     cout << "Received SIGINT" << endl;
     runner.terminate = true;
     term = true;

@@ -7,15 +7,21 @@
 #include "clutseg/common.h"
 #include "clutseg/pose.h"
 
-#include <pcl/io/pcd_io.h>
-#include <stdlib.h>
-#include <iostream>
-#include <string>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <pcl/io/pcd_io.h>
+    #include <stdlib.h>
+    #include <iostream>
+    #include <string>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace cv;
 using namespace pcl;
 using namespace clutseg;
+
+// TODO: enable -Wunused-parameter for this file
+// http://stackoverflow.com/questions/6227420/how-to-use-gcc-diagnostic-pragma-with-c-template-functions
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 void readInput(int argc, char **argv, Mat & queryImage, PointCloudT & queryCloud) {
     // Read input

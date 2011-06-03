@@ -6,13 +6,15 @@
 
 #include "clutseg/check.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
-#include <cv.h>
-#include <iostream>
-#include <opencv2/highgui/highgui.hpp>
-#include <tod/core/Features2d.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <boost/format.hpp>
+    #include <boost/lexical_cast.hpp>
+    #include <cv.h>
+    #include <iostream>
+    #include <opencv2/highgui/highgui.hpp>
+    #include <tod/core/Features2d.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace clutseg;

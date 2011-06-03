@@ -12,14 +12,16 @@
 #include "clutseg/response.h"
 #include "clutseg/ground.h"
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/foreach.hpp>
-#include <boost/thread.hpp>
-#include <ctime>
-#include <cv.h>
-#include <pcl/io/pcd_io.h>
-#include <string>
-#include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/date_time/posix_time/posix_time.hpp>
+    #include <boost/foreach.hpp>
+    #include <boost/thread.hpp>
+    #include <ctime>
+    #include <cv.h>
+    #include <pcl/io/pcd_io.h>
+    #include <string>
+    #include <tod/detecting/Parameters.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
 using namespace opencv_candidate;
@@ -71,6 +73,7 @@ namespace clutseg {
     // Actually, it should not carry any more information than the
     // Clutsegmenter can fill in. It can become a member of a report specific
     // to a test scene.
+    #pragma GCC diagnostic ignored "-Wunused-parameter"
     void ExperimentRunner::runExperiment(Clutsegmenter & sgm, Experiment & e) {
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / e.test_set;

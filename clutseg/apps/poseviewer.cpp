@@ -5,14 +5,17 @@
 #include "clutseg/ground.h"
 #include "clutseg/pcl_visualization_addons.h"
 #include "clutseg/pose.h"
-#include <iostream>
-#include <boost/lexical_cast.hpp>
-#include <boost/format.hpp>
-#include <boost/algorithm/string.hpp>
-#include <opencv_candidate/PoseRT.h>
-#include <cv.h>
-#include <pcl/point_types.h>
-#include <pcl/io/pcd_io.h>
+
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <iostream>
+    #include <boost/lexical_cast.hpp>
+    #include <boost/format.hpp>
+    #include <boost/algorithm/string.hpp>
+    #include <opencv_candidate/PoseRT.h>
+    #include <cv.h>
+    #include <pcl/point_types.h>
+    #include <pcl/io/pcd_io.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace cv;
@@ -20,6 +23,10 @@ using namespace opencv_candidate;
 using namespace pcl;
 using namespace pcl_visualization;
 using namespace clutseg;
+
+// TODO: enable -Wunused-parameter for this file
+// http://stackoverflow.com/questions/6227420/how-to-use-gcc-diagnostic-pragma-with-c-template-functions
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 int main(int argc, char *argv[]) {
     // Read arguments

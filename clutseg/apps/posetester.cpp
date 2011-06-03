@@ -16,14 +16,16 @@
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
-#include <iostream>
-#include <cv.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv_candidate/PoseRT.h>
-#include <opencv_candidate/Camera.h>
-#include <fiducial/fiducial.h>
-#include <boost/filesystem.hpp>
-#include <boost/format.hpp>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <iostream>
+    #include <cv.h>
+    #include <opencv2/highgui/highgui.hpp>
+    #include <opencv_candidate/PoseRT.h>
+    #include <opencv_candidate/Camera.h>
+    #include <fiducial/fiducial.h>
+    #include <boost/filesystem.hpp>
+    #include <boost/format.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace cv;

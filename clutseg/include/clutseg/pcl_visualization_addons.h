@@ -7,9 +7,11 @@
 
 #include "clutseg/common.h"
 
-#include <opencv_candidate/PoseRT.h>
-#include <pcl/point_types.h>
-#include <pcl_visualization/pcl_visualizer.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <opencv_candidate/PoseRT.h>
+    #include <pcl/point_types.h>
+    #include <pcl_visualization/pcl_visualizer.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

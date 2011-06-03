@@ -5,9 +5,11 @@
 #ifndef _RANKING_H_
 #define _RANKING_H_
 
-#include <cv.h>
-#include <tod/detecting/GuessGenerator.h>
-#include <map>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <cv.h>
+    #include <tod/detecting/GuessGenerator.h>
+    #include <map>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 // IDEA: create ranking by ratio between inliers and object matches
 // IDEA: create ranking by ratio between inliers and object keypoints 

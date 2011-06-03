@@ -10,14 +10,16 @@
 #include "clutseg/options.h"
 #include "clutseg/ranking.h"
 #include "clutseg/result.h"
-
-#include <cv.h>
-#include <limits>
-#include <pcl/point_types.h>
-#include <set>
-#include <tod/detecting/GuessGenerator.h>
-#include <tod/detecting/Recognizer.h>
-#include <vector>
+	
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <cv.h>
+    #include <limits>
+    #include <pcl/point_types.h>
+    #include <set>
+    #include <tod/detecting/GuessGenerator.h>
+    #include <tod/detecting/Recognizer.h>
+    #include <vector>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

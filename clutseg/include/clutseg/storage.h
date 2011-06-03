@@ -9,9 +9,11 @@
 #include "clutseg/report.h" 
 #include "clutseg/result.h" 
 
-#include <boost/filesystem.hpp>
-#include <cv.h>
-#include <opencv_candidate/Camera.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <boost/filesystem.hpp>
+    #include <cv.h>
+    #include <opencv_candidate/Camera.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
 

@@ -7,6 +7,7 @@
 #include "clutseg/check.h"
 #include "clutseg/flags.h"
 
+#include "clutseg/gcc_diagnostic_disable.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
@@ -20,6 +21,7 @@
 #include <stdio.h>
 #include <string>
 #include <sys/wait.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace boost;
 using namespace std;

@@ -3,16 +3,22 @@
  * Author: Julius Adorf
  */
 
-#include <iostream>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string/predicate.hpp>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <iostream>
+    #include <pcl/io/pcd_io.h>
+    #include <pcl/point_types.h>
+    #include <boost/filesystem.hpp>
+    #include <boost/algorithm/string/predicate.hpp>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
 using namespace pcl;
 using namespace boost::filesystem;
 using namespace boost::algorithm;
+
+// TODO: enable -Wunused-parameter for this file
+// http://stackoverflow.com/questions/6227420/how-to-use-gcc-diagnostic-pragma-with-c-template-functions
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 /** \brief Reads XYZ point clouds from files in a directory and writes XYZRGB
  * point clouds back to files in the same directory.

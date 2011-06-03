@@ -2,17 +2,21 @@
  * Author: Julius Adorf
  */
 
-#include <stdlib.h>
-#include <iostream>
-#include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random.hpp>
-#include <cv.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <stdlib.h>
+    #include <iostream>
+    #include <boost/filesystem.hpp>
+    #include <boost/lexical_cast.hpp>
+    #include <boost/algorithm/string/predicate.hpp>
+    #include <boost/random/normal_distribution.hpp>
+    #include <boost/random.hpp>
+    #include <cv.h>
+#include "clutseg/gcc_diagnostic_enable.h"
 
 #include "clutseg/pcl_visualization_addons.h"
 #include "clutseg/pose.h"
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 using namespace std;
 using namespace pcl;

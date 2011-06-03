@@ -31,23 +31,27 @@
 #include "clutseg/options.h"
 #include "clutseg/viz.h"
 
-#include <tod/training/stats.h>
-#include <tod/detecting/Loader.h>
-#include <tod/detecting/Recognizer.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#include <pcl/io/pcd_io.h>
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string/replace.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv_candidate/PoseRT.h>
-#include <iostream>
-#include <fstream>
-#include <set>
-#include <string>
-#include <time.h>
+#include "clutseg/gcc_diagnostic_disable.h"
+    #include <tod/training/stats.h>
+    #include <tod/detecting/Loader.h>
+    #include <tod/detecting/Recognizer.h>
+    #include <pcl/point_cloud.h>
+    #include <pcl/point_types.h>
+    #include <pcl/io/pcd_io.h>
+    #include <boost/foreach.hpp>
+    #include <boost/format.hpp>
+    #include <boost/filesystem.hpp>
+    #include <boost/algorithm/string/replace.hpp>
+    #include <opencv2/highgui/highgui.hpp>
+    #include <opencv_candidate/PoseRT.h>
+    #include <iostream>
+    #include <fstream>
+    #include <set>
+    #include <string>
+    #include <time.h>
+#include "clutseg/gcc_diagnostic_enable.h"
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 #define foreach BOOST_FOREACH
 
