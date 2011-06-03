@@ -57,14 +57,14 @@ namespace clutseg {
             vector<string> err_text;
             err_text.push_back(str(boost::format("angle_error: %4.2f deg") % (report.angle_error() * 360 / (2 * M_PI))));
             err_text.push_back(str(boost::format("trans_error: %4.2f cm") % (report.trans_error() * 100)));
-            drawText(lci, err_text, Point(20, 60), CV_FONT_HERSHEY_SIMPLEX, 0.7, 1, Scalar(255, 255, 255));
+            drawText(lci, err_text, Point(20, 80), CV_FONT_HERSHEY_SIMPLEX, 0.7, 1, Scalar(255, 255, 255));
         }
         if (report.success()) {
             vector<string> succ_text(1, "SUCCESS");
-            drawText(lci, succ_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.2, 3, Scalar(0, 204, 0));
+            drawText(lci, succ_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.6, 3, Scalar(0, 204, 0));
         } else {
             vector<string> fail_text(1, "FAILURE");
-            drawText(lci, fail_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.2, 3, Scalar(0, 0, 255));
+            drawText(lci, fail_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.6, 3, Scalar(0, 0, 255));
         }
 
         bfs::path lci_path = erd / (img_basename + ".locate_choice.png");
