@@ -30,10 +30,10 @@ namespace clutseg {
     }
 
     string cut_file_extension(const string & filename) {
-        size_t offs = report.img_name.rfind(".");
-        string img_basename = report.img_name;
+        size_t offs = filename.rfind(".");
+        string img_basename = filename;
         if (offs == string::npos) {
-            return report.img_name;
+            return filename;
         } else {
             return img_basename.substr(0, offs);
         }

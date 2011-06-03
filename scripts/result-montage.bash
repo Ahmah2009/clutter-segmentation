@@ -2,7 +2,7 @@
 
 function usage() {
     cat <<USAGE
-Usage: result-montage <artifact> <experiment-id>
+Usage: result-montage <artifact> <experiment-id> [--show]
 
 Constructs a collage picture from experiment results. Requires variable
 CLUTSEG_RESULT_DIR to be set in the environment. Generated pictures will be
@@ -42,11 +42,15 @@ out=$CLUTSEG_ARTIFACT_DIR/$artifact.$exp.jpg
 if [ "$artifact" = "locate_choice.collage" ] ; then
     lcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.locate_choice.png" | sort)
     montage $(tile $lcis) $geometry $lcis $out
-    eog $out
+    if has_opt --show ; then
+        eog $out
+    fi
 elif [ "$artifact" = "detect_choices.collage" ] ; then
     dcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.detect_choices.png" | sort)
     montage $(tile $dcis) $geometry $dcis $out
-    eog $out 
+    if has_opt --show ; then
+        eog $out
+    fi
 else
     echo "Valid artifacts are 'locate_choice.collage' and 'detect_choices.collage'"
     exit 1

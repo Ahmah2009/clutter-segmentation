@@ -19,11 +19,11 @@ using namespace tod;
 
 namespace clutseg {
 
-    void Serializable::serialize(sqlite3* db) {
+    void Serializable::serialize(sqlite3* /* db */) {
         throw ios_base::failure("Cannot serialize, not implemented.");
     }
 
-    void Serializable::deserialize(sqlite3* db) {
+    void Serializable::deserialize(sqlite3* /* db */) {
         throw ios_base::failure("Cannot deserialize, not implemented.");
     }
 
