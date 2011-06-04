@@ -3,27 +3,27 @@
 # where tod_training and tod_detecting were in a working state.
 - svn: {
     local-name: object_recognition,
-    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition',
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition@50974',
     version: '-r 50974'
 }
 - svn: {
     local-name: object_recognition_experimental,
-    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental',
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental@50974',
     version: '-r 50974'
 }
 - svn: {
     local-name: perception_pcl_addons,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk',
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk@36588',
     version: '-r 36588'
 }
 - svn: {
     local-name: vslam,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vslam/trunk',
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vslam/trunk@36486',
     version: '-r 36486' 
 }
 - svn: {
     local-name: opencv_candidate,
-    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/vision_bleeding/opencv_candidate',
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/vision_bleeding/opencv_candidate@50974',
     version: '-r 50974'
 }
 - git: {
@@ -32,12 +32,12 @@
 }
 - svn: {
     local-name: pano_py,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_py',
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_py@36588',
     version: '-r 36588'
 }
 - svn: {
     local-name: pano_core,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_core',
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/pano/trunk/pano_core@36588',
     version: '-r 36588'
 }
 - other: {local-name: /opt/ros/diamondback/ros}
