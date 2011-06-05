@@ -11,7 +11,10 @@
   <depend package="tod_detecting" />
 
   <rosdep name="sqlite3" />
+  <rosdep name="imagemagick" />
   <rosdep name="sha1sum" />
+  <rosdep name="r-recommended" />
+  <rosdep name="r-cran-dbi" />
 
   <export>
       <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lclutseg_util -lsqlite3" />

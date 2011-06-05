@@ -1,4 +1,10 @@
 sqlite3:
-    ubuntu: libsqlite3-dev
+    ubuntu: libsqlite3-dev sqlite3
+imagemagick:
+    ubuntu: imagemagick
+r-recommended:
+    ubuntu: r-recommended 
+r-cran-dbi:
+    ubuntu: r-cran-dbi 
 sha1sum:
     ubuntu: coreutils
