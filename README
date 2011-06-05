@@ -11,82 +11,70 @@ tested on ROS Diamondback running on a Ubuntu 10.10 Maverick Meerkat. You can
 follow this recipe to get it running. It admittably requires a couple of
 really nasty workarounds.
 
-    1. sudo aptitude install ros-diamondback-desktop-full \\
-                             r-cran-recommended \\
-                             r-cran-dbi \\
-                             sqlite3 \\
-                             git
-
-The ROS installation is of course mandatory. The sqlite3 command line
-interface and R do not have to be installed but reports of experiments depend
-on it, some features won't work without them. You only require git in case
-you want to retrieve sources from the repository.
-
-    2. Install RSQlite
-
-You can get it from http://cran.r-project.org/web/packages/RSQLite, as this R
-package is not prepackaged for Ubuntu Meerkat. Follow the installation
-instructions on the website.
-
-    3. Create an installation directory and open it in a terminal 
+    1. Create an installation directory and open it in a terminal 
 
 This directory is called CLUTSEG_PATH and will later contain the clutseg
 repository and the required ROS overlays.
 
-    4. git clone indefero@code.in.tum.de:clutter-segmentation.git
+    2. git clone indefero@code.in.tum.de:clutter-segmentation.git
 
 Your CLUTSEG_PATH directory should now contain the repository
 clutter-segmentation.
 
-    5. sudo easy_install rosinstall
+    3. sudo easy_install rosinstall
 
 If you don't have python-setuptools installed, you can also get the tool
 directly from http://pypi.python.org/pypi/rosinstall
 
-    6. tar xvzf clutter-segmentation/3rdparty/opencv_candidate.50974.tar.gz
+    4. tar xvzf clutter-segmentation/3rdparty/opencv_candidate.50974.tar.gz
 
 This is a workaround for issue described on answers.ros.org, for an
 explanation, see the detailed description on
 http://answers.ros.org/question/1125/no-longer-able-to-checkout-opencv_candidate-in
 
-    7. rosinstall . clutter-segmentation/clutter-segmentation.rosinstall
+    5. rosinstall . clutter-segmentation/clutter-segmentation.rosinstall
 
 This will setup dependencies and ROS overlays. Hit 's' for skip when being asked
 for what action to take on repository clutter-segmentation. Including it in the
 clutter-segmentation.rosinstall file will make sure that clutseg is included in
 the ROS environment configured via setup.bash.
 
-    8. source setup.bash
+    6. source setup.bash
 
 Depending on your needs, you might add this to your ~/.bashrc file.
 
-    9. rosdep install clutseg
+    7. rosdep install clutseg
 
-   10. export CLUTSEG_PATH=$(pwd)
+    8. export CLUTSEG_PATH=$(pwd)
 
 This environment variable is used by ROS package clutseg in various occasions
 It is recommended to add this to your ~./.bashrc file.
 
-   11. export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
+    9. export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
 
 Depending on your needs, you might add this to your ~/.bashrc file, as well.
 
-   12. cp -r /opt/ros/diamondback/stacks/vision_opencv .
+   10. cp -r /opt/ros/diamondback/stacks/vision_opencv .
 
 This prepares ground for OpenCV overlay that backports bugfixes.
 
-   13. rm vision_opencv/opencv2/ROS_NOBUILD
+   11. rm vision_opencv/opencv2/ROS_NOBUILD
 
-   14. rm vision_opencv/cv_bridge/ROS_NOBUILD
+   12. rm vision_opencv/cv_bridge/ROS_NOBUILD
 
-   15. mods-link
+   13. mods-link
 
 Apply patches on tod_training, tod_detecting, rbrief, fiducial and some other
 places where serious bugs were blocking progress or blackbox behaviour was
 blocking the gain of valuable information.
 
-   15. rosmake clutseg
+   14. rosmake --rosdep-install clutseg
 
+   15. Install RSQlite
+
+You can get it from http://cran.r-project.org/web/packages/RSQLite, as this R
+package is not prepackaged for Ubuntu Meerkat. Follow the installation
+instructions on the website.
 
 .SH Running tests
 
