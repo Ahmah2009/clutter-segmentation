@@ -48,11 +48,14 @@ Depending on your needs, you might add this to your ~/.bashrc file.
     8. export CLUTSEG_PATH=$(pwd)
 
 This environment variable is used by ROS package clutseg in various occasions
-It is recommended to add this to your ~./.bashrc file.
+It is recommended to add this to your ~./.bashrc file. Note that environment
+variables defined in ~/.bashrc are usually not read in non-interactive session,
+such as cron. Most of the scripts in clutseg that require CLUTSEG_PATH will
+therefore read ~/.env (non-standard) before executing.
 
     9. export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
 
-Depending on your needs, you might add this to your ~/.bashrc file, as well.
+Depending on your needs, you might add this to ~/.bashrc as well.
 
    10. cp -r /opt/ros/diamondback/stacks/vision_opencv .
 
