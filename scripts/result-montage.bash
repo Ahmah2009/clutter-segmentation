@@ -12,6 +12,7 @@ USAGE
 }
 
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $CLUTSEG_PATH/experiment_setup.bash
 
 if [ "$CLUTSEG_RESULT_DIR" = "" ] ; then
     usage

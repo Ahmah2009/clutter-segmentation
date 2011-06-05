@@ -13,6 +13,8 @@ USAGE
 
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
+source $CLUTSEG_PATH/experiment.bash
+
 if [ "$CLUTSEG_EXPERIMENT_DB" = "" ] ; then
     usage
     echo "CLUTSEG_EXPERIMENT_DB not set."
@@ -129,12 +131,11 @@ EOF
 
 echo "</body></html>" >> $out
 
-url=$(get_arg 0)
-if [ "$url" != "" ] ; then
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/results.html $url
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/image_all.jpg $url
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/detect_roc.jpg $url
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png $url
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.locate_choice.collage.png $url
+if [ "$CLUTSEG_RESULT_URL" != "" ] ; then
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/results.html $CLUTSEG_RESULT_URL
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/image_all.jpg $CLUTSEG_RESULT_URL
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/detect_roc.jpg $CLUTSEG_RESULT_URL
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png $CLUTSEG_RESULT_URL
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.locate_choice.collage.png $CLUTSEG_RESULT_URL
 fi
 
