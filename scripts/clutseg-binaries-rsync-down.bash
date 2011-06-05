@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+function usage() {
+cat <<USAGE
+Usage: clutseg-binaries-rsync-down
+USAGE
+}
+
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 rsync --recursive --archive municware.com:clutseg/ $CLUTSEG_PATH/
 

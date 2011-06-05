@@ -2,18 +2,16 @@
 
 function usage() {
     cat <<USAGE
-Usage: result-html [url]
+Usage: result-html
 
 Generates a HTML overview about experiment results. Requires
 CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be set in
-the environment. Requires R and sqlite3 command line interface installed. If
-url is given, the results will be transferred via rsync to this directory. 
+the environment. Requires R and sqlite3 command line interface installed.
 USAGE
 }
 
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
-
-source $CLUTSEG_PATH/experiment.bash
+source $CLUTSEG_PATH/experiment_setup.bash
 
 if [ "$CLUTSEG_EXPERIMENT_DB" = "" ] ; then
     usage

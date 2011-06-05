@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+function usage() {
+cat <<USAGE
+Usage: clutseg-binaries-rsync-up
+USAGE
+}
+
+
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 trap "exit" INT TERM EXIT
