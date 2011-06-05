@@ -2,11 +2,12 @@
 
 function usage() {
     cat <<USAGE
-Usage: result-html [post-trigger-cmd]
+Usage: result-html [url]
 
 Generates a HTML overview about experiment results. Requires
 CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be set in
-the environment. Requires R and sqlite3 command line interface installed.
+the environment. Requires R and sqlite3 command line interface installed. If
+url is given, the results will be transferred via rsync to this directory. 
 USAGE
 }
 
@@ -126,6 +127,14 @@ cat >> $out <<EOF
 <p>This is the set of 21 test images, for which we have ground truth.</p>
 EOF
 
-
 echo "</body></html>" >> $out
+
+url=$(get_arg 0)
+if [ "$url" != "" ] ; then
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/results.html $url
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/image_all.jpg $url
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/detect_roc.jpg $url
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png $url
+    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.locate_choice.collage.png $url
+fi
 
