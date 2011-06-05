@@ -6,8 +6,8 @@ rsync --recursive --archive municware.com:clutseg/ $CLUTSEG_PATH/
 trap "exit" INT TERM EXIT
 
 pushd $CLUTSEG_PATH > /dev/null
-    libs=$(ssh municware.com "find clutseg -type d -iname 'lib'")
-    bins=$(ssh municware.com "find clutseg -type d -iname 'bins'")
+    libs=$(ssh municware.com "cd clutseg && find . -type d -iname 'lib'")
+    bins=$(ssh municware.com "cd clutseg && find . -type d -iname 'bins'")
 
     for lib in $libs ; do
         printf "Downloading %-60s " $lib
