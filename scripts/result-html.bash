@@ -10,8 +10,15 @@ the environment. Requires R and sqlite3 command line interface installed.
 USAGE
 }
 
+echo "cron.log" > /home/julius/Desktop/cron.log
+date >> /home/julius/Desktop/cron.log
+source ~/.profile
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 source $CLUTSEG_PATH/experiment_setup.bash
+
+echo "CLUTSEG_EXPERIMENT_DB: <$CLUTSEG_EXPERIMENT_DB>" >> /home/julius/Desktop/cron.log
+echo "CLUTSEG_RESULT_DIR: <$CLUTSEG_RESULT_DIR>" >> /home/julius/Desktop/cron.log
+echo "CLUTSEG_ARTIFACT_DIR: <$CLUTSEG_ARTIFACT_DIR>" >> /home/julius/Desktop/cron.log
 
 if [ "$CLUTSEG_EXPERIMENT_DB" = "" ] ; then
     usage

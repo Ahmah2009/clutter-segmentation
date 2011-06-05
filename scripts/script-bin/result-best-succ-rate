@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
+source ~/.profile 
 source $CLUTSEG_PATH/experiment_setup.bash
 $CLUTSEG_PATH/clutter-segmentation/scripts/result-best-succ-rate.R

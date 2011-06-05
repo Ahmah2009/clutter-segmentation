@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source ~/.profile
+
 function script_init() {
     if has_opt -h || has_opt --help ; then
         usage

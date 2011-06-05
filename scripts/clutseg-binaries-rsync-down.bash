@@ -6,8 +6,8 @@ Usage: clutseg-binaries-rsync-down
 USAGE
 }
 
+source ~/.profile
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
-rsync --recursive --archive municware.com:clutseg/ $CLUTSEG_PATH/
 
 trap "exit" INT TERM EXIT
 

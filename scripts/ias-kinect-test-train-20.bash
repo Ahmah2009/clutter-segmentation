@@ -10,6 +10,7 @@ HELP
     exit
 fi
 
+source ~/.profile
 if [ ! "$CLUTSEG_PATH" ] ; then
     echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
     exit

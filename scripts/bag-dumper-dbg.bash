@@ -7,10 +7,8 @@ HELP
     exit
 fi
 
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+source ~/.profile
+source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 pkg_tod_training=$(rospack find tod_training)
 gdb --args $pkg_tod_training/bin/bag_dumper \

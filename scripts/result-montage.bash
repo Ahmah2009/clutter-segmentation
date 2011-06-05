@@ -11,6 +11,7 @@ environment).
 USAGE
 }
 
+source ~/.profile
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 source $CLUTSEG_PATH/experiment_setup.bash
 

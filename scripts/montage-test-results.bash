@@ -8,6 +8,7 @@ Creates montages using imagemagick for a test result
 USAGE
 }
 
+source ~/.profile
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 testbase=$CLUTSEG_PATH/$1
