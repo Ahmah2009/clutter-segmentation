@@ -293,15 +293,6 @@ namespace clutseg {
                     try {
                         runExperiment(*sgm, e);
                         e.serialize(db_);
-
-                        try {
-                            // Re-generate report
-                            FILE *in;
-                            in = popen("result-html", "r");
-                            pclose(in);
-                        } catch ( ... ) {
-                            cerr << "[RUN]: ERROR, Generating HTML report failed." << endl;
-                        }
                     } catch( runtime_error & err ) {
                         cerr << "[RUN]: " << err.what() << endl;
                         cerr << "[RUN]: ERROR, experiment failed, no results recorded (id=" << e.id << ")" << endl;
