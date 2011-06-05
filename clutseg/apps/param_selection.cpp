@@ -85,6 +85,23 @@ void insert_if_not_exist(sqlite3* & db, Experiment & e) {
     sqlite3_finalize(read);
 }
 
+// IDEA: We could use a branch-and-bound technique (skip) for stopping an
+// experiment after we find (checking a couple of pictures) that it will
+// definitely have lower success rate than others. The experiment must be set
+// to 'skip' state since we cannot compute any result on it. Also a comment or
+// some state flag must be set in order to make this decision transparent to
+// the user. Finally, we must select the criteria we are interested in. Also,
+// we should be careful, because if we skip experiments using FAST feature
+// detector because ORB performed faster, we might lose valuable information.
+// Also, in order to analyze WHY some configuration was bad, it might be better
+// to run the experiment upon completion. Also, if the best experiment achieved
+// 60% success rate, we still have to evaluate at least 9 pictures for deciding
+// whether to stop the experiment. Another idea would be to take a very
+// aggressive approach. We set the lower bound to maybe 75% and if we see more
+// than 6 test scenes failing, we abandon this experiment. This will give a
+// speed-up of factor 3.5. For ORB, this might be very much possible since I
+// know that it's possible to achieve 66%.
+
 void insert_experiments(sqlite3* & db) {
     // FAST + rBRIEF + LSH-BINARY
     {
@@ -330,7 +347,7 @@ int main(int argc, char **argv) {
     // ros::NodeHandle n;
 
     if (argc != 4 && argc != 5) {
-        cerr << "Usage: param_selection <database> <train_cache> <result_dir> [<post_run_cmd>]" << endl;
+        cerr << "Usage: param_selection <database> <train_cache> <result_dir>" << endl;
         return -1;
     }
     bfs::path db_path = argv[1];
@@ -361,10 +378,6 @@ int main(int argc, char **argv) {
     ResultStorage storage(result_dir);
     cout << "Running experiments ..." << endl;
     runner = ExperimentRunner(db, cache, storage);
-
-    if (argc == 5) {
-        runner.setPostRunCmd(argv[4]);
-    }
 
     runner.run();
     db_close(db);

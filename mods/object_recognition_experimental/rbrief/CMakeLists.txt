@@ -11,10 +11,6 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 set(ROS_BUILD_TYPE Release)
 rosbuild_init()
 
-# patch
-# include_directories("/home/julius/Desktop/vision_opencv/opencv2/opencv/include")
-# include_directories("/opt/ros/diamondback/stacks/vision_opencv/opencv2/lib")
-	
 set(ROS_COMPILE_FLAGS ${ROS_COMPILE_FLAGS} " -Wno-deprecated -Wno-long-long")
 
 #set the default path for built executables to the "bin" directory

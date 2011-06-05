@@ -31,9 +31,6 @@ namespace clutseg {
 
             bool terminate;
 
-            void setPostRunCmd(const std::string & post_run_cmd);
-            std::string getPostRunCmd() const;
-
         private:
 
             void runExperiment(Clutsegmenter & segmenter, Experiment & exp);
@@ -43,7 +40,6 @@ namespace clutseg {
             sqlite3* db_;
             TrainFeaturesCache cache_;
             ResultStorage storage_;
-            std::string post_run_cmd_;
 
     };
 
