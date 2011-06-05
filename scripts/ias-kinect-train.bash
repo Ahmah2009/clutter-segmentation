@@ -8,7 +8,7 @@ Creates a training base from IAS kinect bags.
 USAGE
 }
 
-source ~/.profile
+source ~/.env
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 if has_no_arg --no-dump $*; then

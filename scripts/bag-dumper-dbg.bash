@@ -7,7 +7,7 @@ HELP
     exit
 fi
 
-source ~/.profile
+source ~/.env
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 pkg_tod_training=$(rospack find tod_training)

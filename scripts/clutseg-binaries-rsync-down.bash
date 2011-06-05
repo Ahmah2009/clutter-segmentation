@@ -6,7 +6,7 @@ Usage: clutseg-binaries-rsync-down
 USAGE
 }
 
-source ~/.profile
+source ~/.env
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 trap "exit" INT TERM EXIT

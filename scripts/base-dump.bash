@@ -9,7 +9,7 @@ or replaced in the training or testing base.
 USAGE
 }
 
-source ~/.profile
+source ~/.env
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 expect_arg $1

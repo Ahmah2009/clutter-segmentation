@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-source ~/.profile 
+source ~/.env 
 source $CLUTSEG_PATH/experiment_setup.bash
 $CLUTSEG_PATH/clutter-segmentation/scripts/result-roc.R

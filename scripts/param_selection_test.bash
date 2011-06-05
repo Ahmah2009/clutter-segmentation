@@ -8,7 +8,7 @@ See script for documentation.
 USAGE
 }
 
-source ~/.profile
+source ~/.env
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 if has_opt --debug ; then

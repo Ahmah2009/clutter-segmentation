@@ -12,7 +12,7 @@ USAGE
 
 echo "cron.log" > /home/julius/Desktop/cron.log
 date >> /home/julius/Desktop/cron.log
-source ~/.profile
+source ~/.env
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 source $CLUTSEG_PATH/experiment_setup.bash
 
