@@ -40,13 +40,18 @@ int main(int argc, char *argv[]) {
             PointCloud<PointXYZ> cloud_xyz;
             PointCloud<PointXYZRGB> cloud_xyzrgb;
             io::loadPCDFile(dir + "/" + f, cloud_xyz);
-            cloud_xyzrgb.points.resize(cloud_xyz.size());
+//            cloud_xyzrgb.points.resize(cloud_xyz.size());
+
+            PointCloud<PointXYZRGB> cloud_xyzrgb2;
+            cloud_xyzrgb2.points.resize(cloud_xyz.size());
             for (unsigned int i = 0; i < cloud_xyz.points.size(); i++) {
-                cloud_xyzrgb.points[i].x = cloud_xyz.points[i].x;
-                cloud_xyzrgb.points[i].y = cloud_xyz.points[i].y;
-                cloud_xyzrgb.points[i].z = cloud_xyz.points[i].z;
+                cloud_xyzrgb2.points[i].x = cloud_xyz.points[i].x;
+                cloud_xyzrgb2.points[i].y = cloud_xyz.points[i].y;
+                cloud_xyzrgb2.points[i].z = cloud_xyz.points[i].z;
             }
+            copyPointCloud(cloud_xyz, cloud_xyzrgb);
             io::savePCDFileASCII(dir + "/" + fnew, cloud_xyzrgb);
+            io::savePCDFileASCII(dir + "/_" + fnew, cloud_xyzrgb2);
         }
     }
 }
