@@ -97,7 +97,7 @@ one object is correctly labeled and located correctly up to a certain margin of
 error for rotation and translation.</p>
 EOF
 
-table "Scores" "select * from view_experiment_scores"
+table "Scores" "select * from view_experiment_scores order by succ_rate desc"
 cat >> $out <<EOF
 <p>If many objects have been successfully located, yet with comparatively large
 errors, then <tt>locate_sipc</tt> is smaller than <tt>succ_rate</tt>. In case,
@@ -105,7 +105,7 @@ many objects have been correctly classified but not correctly located, then
 <tt>succ_rate</tt> will be smaller than <tt>locate_sipc</tt>.</p>
 EOF
 
-table "Locate SIPC Scores" "select * from view_experiment_locate_sipc"
+table "Locate SIPC Scores" "select * from view_experiment_locate_sipc order by locate_sipc desc"
 cat >> $out <<EOF
 <p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
 sipc.h</a> for a description.</p>
@@ -117,7 +117,7 @@ cat >> $out <<EOF
 sipc.h</a> for a description.</p>
 EOF
 
-table "Receiver Operating Characteristics" "select * from view_experiment_detect_roc"
+table "Receiver Operating Characteristics" "select * from view_experiment_detect_roc order by detect_tp_rate / detect_fp_rate desc"
 result-roc
 echo "<img src='detect_roc.png' />" >> $out
 
