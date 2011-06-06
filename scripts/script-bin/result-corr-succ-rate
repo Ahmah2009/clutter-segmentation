@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+if [ -f "~./env" ] ; then
+    source ~/.env 
+fi
+source $CLUTSEG_PATH/experiment_setup.bash
+$CLUTSEG_PATH/clutter-segmentation/scripts/result-corr-succ-rate.R "$@"

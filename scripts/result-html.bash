@@ -4,21 +4,45 @@ function usage() {
     cat <<USAGE
 Usage: result-html
 
-Generates a HTML overview about experiment results. Requires
+Generates a HTML report about the experiments and their results. Requires
 CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be set in
 the environment. Requires R and sqlite3 command line interface installed.
+
+It generates a directory <CLUTSEG_ARTIFACT_DIR>/report, and will contain HTML
+pages and images. The report is designed to be stand-alone and will be uploaded
+using rsync if CLUTSEG_RESULT_URL is set. The report consists of the following
+artifacts
+
+    (1) Tables
+
+    Each table covers a certain topic, and views columns that are relevant for
+    this topic. The row order in the table is also chosen with respect to the
+    topic. For example, when showing scores, experiments are orderd by success rate.
+
+    (2) Correlation graphs
+
+    It is impossible to exhaustively search the whole parameter space, and most
+    of the parameters are highly dependent on each other. Good configurations have
+    a choice of parameters that together lead to a high success rate. In order to
+    decide which region of the parameter space should be explored next, we still
+    need to select "promising" regions, that is exploring the neighborhood of
+    already quite good configurations. Also, we need to see which levels are worth
+    to be considered in the search. Scatter plots are used here to show correlation
+    between a factor and success rate, or between two factors and the success rate,
+    where the later is encoded by coloring the points in the scatter plot.
+    Examples for correlation graphs that might be useful are scatter plots of
+    - succ_rate and value: how much do these measures for success differ?
+    - detect_sipc and locate_sipc: are they positively correlated?
+    - min_inliers_count, max_projection_error and succ_rate
+
 USAGE
 }
 
-echo "cron.log" > /home/julius/Desktop/cron.log
-date >> /home/julius/Desktop/cron.log
-source ~/.env
+if [ -f "~./env" ] ; then
+    source ~/.env 
+fi
 source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 source $CLUTSEG_PATH/experiment_setup.bash
-
-echo "CLUTSEG_EXPERIMENT_DB: <$CLUTSEG_EXPERIMENT_DB>" >> /home/julius/Desktop/cron.log
-echo "CLUTSEG_RESULT_DIR: <$CLUTSEG_RESULT_DIR>" >> /home/julius/Desktop/cron.log
-echo "CLUTSEG_ARTIFACT_DIR: <$CLUTSEG_ARTIFACT_DIR>" >> /home/julius/Desktop/cron.log
 
 if [ "$CLUTSEG_EXPERIMENT_DB" = "" ] ; then
     usage
@@ -38,13 +62,12 @@ if [ "$CLUTSEG_ARTIFACT_DIR" = "" ] ; then
     exit 1
 fi
 
-out=$CLUTSEG_ARTIFACT_DIR/results.html
+report_dir=$CLUTSEG_ARTIFACT_DIR/report
+mkdir -p $report_dir
 
-echo > $out
-cat >> $out <<EOF
-<html>
-<style>
 
+css=$report_dir/style.css
+cat >> $css <<EOF
 body {
     margin: 20px 60px;
 }
@@ -72,12 +95,26 @@ th {
 p {
     width: 500px;
 }
-</style>
-<body>
 EOF
 
+function head() {
+    echo > $1
+    cat >> $1 <<EOF
+<html><head>
+<link rel='stylesheet' type='text/css' href='style.css' />
+</head><body>
+<h1>$2</h1>
+EOF
+}
+
+function foot() {
+    cat >> $1 <<EOF
+</body></html>
+EOF
+}
+
 function table() {
-    echo "<h1>$1</h1>" >> $out
+    echo "<h2>$1</h2>" >> $out
     echo "<table>" >> $out
     sqlite3 -header -html $CLUTSEG_EXPERIMENT_DB "$2"  >> $out
     echo "</table>" >> $out
@@ -85,62 +122,143 @@ function table() {
 
 set -f
 
-echo "<h1>Target</h1>" >> $out
-result-best-succ-rate
-echo "<img src='best_succ_rate.png' />" >> $out
-echo "<img src='best_succ_rate.locate_choice.collage.jpg' />" >> $out
-cat >> $out <<EOF
-<p>The ultimate target in this experiment to achieve a very high success rate.
-The bar indicates the best success rate achieved so far in any experiment that
-has been carried out so far. 100% success is achieved if on every test scene,
-one object is correctly labeled and located correctly up to a certain margin of
-error for rotation and translation.</p>
+function report_tables() {
+    out=$report_dir/tables.html
+    head $out "Tables"
+
+    echo "<h2>Target</h2>" >> $out
+    result-best-succ-rate
+    echo "<img src='best_succ_rate.png' />" >> $out
+    echo "<img src='best_succ_rate.locate_choice.collage.jpg' />" >> $out
+    cat >> $out <<EOF
+    <p>The ultimate target in this experiment to achieve a very high success rate.
+    The bar indicates the best success rate achieved so far in any experiment that
+    has been carried out so far. 100% success is achieved if on every test scene,
+    one object is correctly labeled and located correctly up to a certain margin of
+    error for rotation and translation.</p>
 EOF
 
-table "Scores" "select * from view_experiment_scores order by succ_rate desc"
-cat >> $out <<EOF
-<p>If many objects have been successfully located, yet with comparatively large
-errors, then <tt>locate_sipc</tt> is smaller than <tt>succ_rate</tt>. In case,
-many objects have been correctly classified but not correctly located, then
-<tt>succ_rate</tt> will be smaller than <tt>locate_sipc</tt>.</p>
+    table "Scores" "select * from view_experiment_scores order by succ_rate desc"
+    cat >> $out <<EOF
+    <p>If many objects have been successfully located, yet with comparatively large
+    errors, then <tt>locate_sipc</tt> is smaller than <tt>succ_rate</tt>. In case,
+    many objects have been correctly classified but not correctly located, then
+    <tt>succ_rate</tt> will be smaller than <tt>locate_sipc</tt>.</p>
 EOF
 
-table "Locate SIPC Scores" "select * from view_experiment_locate_sipc order by locate_sipc desc"
-cat >> $out <<EOF
-<p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
-sipc.h</a> for a description.</p>
+    table "Locate SIPC Scores" "select * from view_experiment_locate_sipc order by locate_sipc desc"
+    cat >> $out <<EOF
+    <p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
+    sipc.h</a> for a description.</p>
 EOF
 
-table "Detect SIPC Scores" "select * from view_experiment_detect_sipc"
-cat >> $out <<EOF
-<p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
-sipc.h</a> for a description.</p>
+    table "Detect SIPC Scores" "select * from view_experiment_detect_sipc"
+    cat >> $out <<EOF
+    <p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
+    sipc.h</a> for a description.</p>
 EOF
 
-table "Receiver Operating Characteristics" "select * from view_experiment_detect_roc order by detect_tp_rate / detect_fp_rate desc"
-result-roc
-echo "<img src='detect_roc.png' />" >> $out
+    table "Receiver Operating Characteristics" "select * from view_experiment_detect_roc order by detect_tp_rate / detect_fp_rate desc"
+    result-roc
+    echo "<img src='detect_roc.png' />" >> $out
 
-table "Errors" "select * from view_experiment_error"
+    table "Errors" "select * from view_experiment_error"
 
-table "Runtimes" "select * from view_experiment_runtime"
+    table "Runtimes" "select * from view_experiment_runtime"
 
-table "Notes" "select * from view_experiment_note"
+    table "Notes" "select * from view_experiment_note"
 
-echo "<h1>Test data</h1>" >> $out
-echo "<a href='image_all.jpg'><img src='image_all.jpg' width='500' /></a>" >> $out
+    echo "<h2>Test data</h2>" >> $out
+    echo "<a href='image_all.jpg'><img src='image_all.jpg' width='500' /></a>" >> $out
 
-cat >> $out <<EOF
-<p>This is the set of 21 test images, for which we have ground truth.</p>
+    cat >> $out <<EOF
+    <p>This is the set of 21 test images, for which we have ground truth.</p>
 EOF
+    foot $out
+}
 
-echo "</body></html>" >> $out
+function plot() {
+    fn=corr.$2.$3.$(uuidgen).png
+    result-corr-succ-rate "$1" "$2" "$3" "$4" $report_dir/$fn "$5" "$6" > /dev/null
+    echo "<img src='$fn' />"
+}
 
-if [ "$CLUTSEG_RESULT_URL" != "" ] ; then
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/results.html $CLUTSEG_RESULT_URL
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/image_all.jpg $CLUTSEG_RESULT_URL
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/detect_roc.jpg $CLUTSEG_RESULT_URL
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png $CLUTSEG_RESULT_URL
-    rsync --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/best_succ_rate.locate_choice.collage.png $CLUTSEG_RESULT_URL
+function report_plots() {
+    plots=$report_dir/plots.html
+    head $plots "Plots"
+
+    plot "Success rate vs. value" \
+        succ_rate value \
+        "view_experiment_response" \
+        0,1 0,1 >> $plots
+
+    plot "Detector Receiver Operating Characteristics" \
+        detect_fp_rate \
+        detect_tp_rate \
+        "view_experiment_detect_roc" \
+        0,1 0,1 >> $plots
+
+    plot "SIPC Scores" \
+        detect_sipc \
+        locate_sipc \
+        "view_experiment_scores" \
+        0,1 0,1 >> $plots
+
+    plot "Avg. angle and avg. translation error (successes only)" \
+        avg_succ_angle_err \
+        avg_succ_trans_err \
+        "view_experiment_error" >> $plots
+
+    plot "Avg. translation error (successes only)" \
+        succ_rate \
+        avg_succ_trans_err \
+        "view_experiment_error" >> $plots
+
+    plot "Avg. angle error (successes only)" \
+      succ_rate \
+      avg_succ_angle_err \
+      "view_experiment_error" >> $plots
+
+    plot "Detector min_inliers_count vs. max_projection_error" \
+        min_inliers_count \
+        max_projection_error \
+        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess g on p.detect_pms_guess_id = g.id" >> $plots
+
+    plot "Locator min_inliers_count vs. max_projection_error" \
+        min_inliers_count \
+        max_projection_error \
+        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess g on p.locate_pms_guess_id = g.id" >> $plots
+
+    plot "Detector min_inliers_count vs. Locator min_inliers_count" \
+        detect.min_inliers_count \
+        locate.min_inliers_count \
+        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess detect on p.detect_pms_guess_id = detect.id join pms_guess locate on p.locate_pms_guess_id = locate.id" >> $plots
+
+    plot "Detector max_projection_error vs. Locator max_projection_error" \
+        detect.max_projection_error \
+        locate.max_projection_error \
+        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess detect on p.detect_pms_guess_id = detect.id join pms_guess locate on p.locate_pms_guess_id = locate.id" >> $plots
+
+    foot $plots
+}
+
+function report_index() {
+    index=$report_dir/index.html
+    head $index "Index"
+    cat >> $index <<EOF
+    <ul>
+    <li><a href='tables.html'>Tables</a></li>
+    <li><a href='plots.html'>Plots</a></li>
+    </ul>
+EOF
+    foot $index
+}
+
+report_tables
+report_plots 
+report_index
+
+if has_opt --upload && [ "$CLUTSEG_RESULT_URL" != "" ] ; then
+    rsync --recursive --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/report/ $CLUTSEG_RESULT_URL
 fi
 
