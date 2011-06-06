@@ -29,6 +29,7 @@ create view view_experiment_runtime as
 create view view_experiment_error as
     select experiment_id,
         experiment_name,
+        succ_rate,
         avg_angle_err,
         avg_trans_err,
         avg_succ_angle_err,
@@ -38,6 +39,7 @@ create view view_experiment_error as
 create view view_experiment_detect_roc as
     select experiment_id,
         experiment_name,
+        succ_rate,
         detect_tp,
         detect_fp,
         detect_fn,
@@ -58,6 +60,7 @@ create view view_experiment_scores as
 create view view_experiment_detect_sipc as
     select experiment_id,
         experiment_name,
+        succ_rate,
         (1.0 * detect_sipc_acc_score / detect_sipc_objects) as detect_sipc,
         detect_sipc_acc_score,
         detect_sipc_objects
@@ -66,6 +69,7 @@ create view view_experiment_detect_sipc as
 create view view_experiment_locate_sipc as
     select experiment_id,
         experiment_name,
+        succ_rate,
         (0.5 * locate_sipc_cscore + 0.25 * locate_sipc_rscore + 0.25 * locate_sipc_tscore) / locate_sipc_frames as locate_sipc,
         locate_sipc_cscore,
         locate_sipc_rscore,

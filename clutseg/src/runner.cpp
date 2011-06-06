@@ -146,7 +146,7 @@ namespace clutseg {
         BOOST_FOREACH(Experiment & e, exps) {
             if (terminate) {
                 return;
-            } else if (!e.skip) {
+            } else if (!e.skip && !(e.flags & Experiment::FLAG_FEPARAMS_VALID) && !(e.flags & Experiment::FLAG_FEPARAMS_INVALID)) {
                 try {
                     cout << "[RUN]: Verifying that constructing a FeatureExtractor instance from supplied train features config works: " << e.name << endl;
                     FeatureExtractor::create(e.paramset.train_pms_fe);
@@ -154,7 +154,9 @@ namespace clutseg {
                     cerr << "[RUN]: ERROR, cannot construct FeatureExtractor instance from supplied test features config: " << e.name << endl;
                     e.machine_note = "Bad train_pms_fe, FeatureExtractor::create failed";
                     e.skip = true; 
+                    e.flags |= Experiment::FLAG_FEPARAMS_INVALID;
                     e.serialize(db_);
+                    continue;
                 }
                 try {
                     cout << "[RUN]: Verifying that constructing a FeatureExtractor instance from supplied test features config works: " << e.name << endl;
@@ -163,8 +165,11 @@ namespace clutseg {
                     cerr << "[RUN]: ERROR, cannot construct FeatureExtractor instance from supplied test features config: " << e.name << endl;
                     e.machine_note = "Bad recog_pms_fe, FeatureExtractor::create failed";
                     e.skip = true; 
+                    e.flags |= Experiment::FLAG_FEPARAMS_INVALID;
                     e.serialize(db_);
+                    continue;
                 }
+                e.flags |= Experiment::FLAG_FEPARAMS_VALID;
             }
         }
     }
@@ -176,7 +181,7 @@ namespace clutseg {
         BOOST_FOREACH(Experiment & e, exps) {
             if (terminate) {
                 return;
-            } else if (!e.skip) {
+            } else if (!e.skip && !(e.flags & Experiment::FLAG_FEPARAMS_GOOD) && !(e.flags & Experiment::FLAG_FEPARAMS_BAD)) {
                 cout << "[RUN]: Verifying that features are extracted when using train features config: " << e.name << endl;
                 Ptr<FeatureExtractor> x = FeatureExtractor::create(e.paramset.train_pms_fe);
                 Features2d xf;
@@ -186,7 +191,9 @@ namespace clutseg {
                     cerr << "[RUN]: " << e.name << " - ERROR, no features extracted when using train features config: " << e.name << endl;
                     e.machine_note = "Bad train_pms_fe, no features extracted";
                     e.skip = true; 
+                    e.flags |= Experiment::FLAG_FEPARAMS_BAD;
                     e.serialize(db_);
+                    continue;
                 } else {
                     cout << "[RUN]: " << xf.keypoints.size() << " keypoints extracted on a validation image using train_pms_fe of " << e.name << endl;
                 }
@@ -198,10 +205,13 @@ namespace clutseg {
                     cout << "[RUN]: ERROR, no features extracted when using test features config: " << e.name << endl;
                     e.machine_note = "Bad recog_pms_fe, no features extracted";
                     e.skip = true; 
+                    e.flags |= Experiment::FLAG_FEPARAMS_BAD;
                     e.serialize(db_);
+                    continue;
                 } else {
                     cout << "[RUN]: " << yf.keypoints.size() << " keypoints extracted on a validation image using recog_pms_fe of " << e.name << endl;
                 }
+                e.flags |= Experiment::FLAG_FEPARAMS_GOOD;
             }
         }
     }
@@ -251,6 +261,7 @@ namespace clutseg {
                             int max_seconds = 2400;
                             if (cache_.trainFeaturesBlacklisted(tr_feat)) {
                                 e.skip = true;
+                                e.flags |= Experiment::FLAG_TRAIN_TIMEOUT;
                                 e.machine_note = str(boost::format("took longer than %d for training") % max_seconds);
                                 e.serialize(db_);
                                 continue;
@@ -268,6 +279,7 @@ namespace clutseg {
                             } else {
                                 cache_.blacklistTrainFeatures(tr_feat);
                                 e.skip = true;
+                                e.flags |= Experiment::FLAG_TRAIN_TIMEOUT;
                                 e.machine_note = str(boost::format("took longer than %d for training") % max_seconds);
                                 e.serialize(db_);
                                 g.interrupt();

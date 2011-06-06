@@ -316,8 +316,11 @@ namespace clutseg {
         id = -1;
     }
 
-    const uint32_t Experiment::FLAG_FEPARAMS_VALIDATED = 1;
+    const uint32_t Experiment::FLAG_FEPARAMS_VALID = 1;
     const uint32_t Experiment::FLAG_FEPARAMS_INVALID = 2;
+    const uint32_t Experiment::FLAG_FEPARAMS_GOOD = 4;
+    const uint32_t Experiment::FLAG_FEPARAMS_BAD = 8;
+    const uint32_t Experiment::FLAG_TRAIN_TIMEOUT = 16;
 
     void Experiment::serialize(sqlite3* db) {
         if (has_run) {

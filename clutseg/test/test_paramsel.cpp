@@ -31,7 +31,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.test_set = "hypothetical_test_set";
         experiment.human_note = "a note inserted by a human";
         experiment.machine_note = "a note made by the machine";
-        experiment.flags = Experiment::FLAG_FEPARAMS_VALIDATED;
+        experiment.flags = Experiment::FLAG_FEPARAMS_VALID;
         experiment.paramset.pms_clutseg.accept_threshold = 15;
         experiment.paramset.pms_clutseg.ranking = "InliersRanking";
         experiment.paramset.train_pms_fe.detector_type = "FAST";
@@ -391,19 +391,19 @@ TEST_F(ParamSelTest, experiment_vcs_commit) {
 }
 
 TEST_F(ParamSelTest, experiment_flags) {
-    EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_VALIDATED);
+    EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_VALID);
     EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
-    experiment.flags |= Experiment::FLAG_FEPARAMS_VALIDATED; 
-    EXPECT_TRUE(experiment.flags & Experiment::FLAG_FEPARAMS_VALIDATED);
+    experiment.flags |= Experiment::FLAG_FEPARAMS_VALID; 
+    EXPECT_TRUE(experiment.flags & Experiment::FLAG_FEPARAMS_VALID);
     EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
     experiment.flags |= Experiment::FLAG_FEPARAMS_INVALID; 
-    EXPECT_TRUE(experiment.flags & Experiment::FLAG_FEPARAMS_VALIDATED);
+    EXPECT_TRUE(experiment.flags & Experiment::FLAG_FEPARAMS_VALID);
     EXPECT_TRUE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
-    experiment.flags &= ~Experiment::FLAG_FEPARAMS_VALIDATED;
-    EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_VALIDATED);
+    experiment.flags &= ~Experiment::FLAG_FEPARAMS_VALID;
+    EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_VALID);
     EXPECT_TRUE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
     experiment.flags &= ~Experiment::FLAG_FEPARAMS_INVALID;
-    EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_VALIDATED);
+    EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_VALID);
     EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
 }
 

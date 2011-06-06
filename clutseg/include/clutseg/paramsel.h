@@ -263,8 +263,11 @@ namespace clutseg {
         virtual void deserialize(sqlite3* db);
         virtual void detach();
 
-        static const uint32_t FLAG_FEPARAMS_VALIDATED;
+        static const uint32_t FLAG_FEPARAMS_VALID;
         static const uint32_t FLAG_FEPARAMS_INVALID;
+        static const uint32_t FLAG_FEPARAMS_GOOD;
+        static const uint32_t FLAG_FEPARAMS_BAD;
+        static const uint32_t FLAG_TRAIN_TIMEOUT;
 
     };
 
