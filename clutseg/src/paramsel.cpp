@@ -316,6 +316,8 @@ namespace clutseg {
         id = -1;
     }
 
+    const uint32_t Experiment::FLAG_FEPARAMS_VALIDATED = 1;
+    const uint32_t Experiment::FLAG_FEPARAMS_INVALID = 2;
 
     void Experiment::serialize(sqlite3* db) {
         if (has_run) {
@@ -342,6 +344,7 @@ namespace clutseg {
         setMemberField(m, "human_note", human_note);
         setMemberField(m, "machine_note", machine_note);
         setMemberField(m, "skip", skip);
+        setMemberField(m, "flags", flags);
         insertOrUpdate(db, "experiment", m, id);
     }
     
@@ -357,7 +360,8 @@ namespace clutseg {
             "vcs_commit, "
             "human_note, "
             "machine_note, "
-            "skip " 
+            "skip, " 
+            "flags " 
             "from experiment where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         int c = 0; 
@@ -381,6 +385,7 @@ namespace clutseg {
         human_note = string((const char*) sqlite3_column_text(read, c++));
         machine_note = string((const char*) sqlite3_column_text(read, c++));
         skip = sqlite3_column_int(read, c++) != 0;
+        flags = sqlite3_column_int(read, c++);
         sqlite3_finalize(read);
         paramset.deserialize(db);
         if (has_run) {
@@ -429,6 +434,10 @@ namespace clutseg {
     }
 
     void setMemberField(MemberMap & m, const std::string & field, int val) {
+        m[field] = str(boost::format("%d") % val);
+    }
+
+    void setMemberField(MemberMap & m, const std::string & field, uint32_t val) {
         m[field] = str(boost::format("%d") % val);
     }
 

@@ -224,7 +224,7 @@ namespace clutseg {
 
     struct Experiment : public Serializable {
       
-        Experiment() : skip(false), has_run(false) {
+        Experiment() : skip(false), flags(0), has_run(false) {
             // What's the standard
             paramset = Paramset(); 
             response = Response(); 
@@ -246,6 +246,10 @@ namespace clutseg {
          * experiments that have not yet been run. This allows for temporarily
          * disabling experiments. */
         bool skip;
+        /** Contains status bits that encode error information or status for
+         * optimization. The skip flag is separate because this flag is likely to be
+         * set and cleared not only by the machine. */
+        uint32_t flags;
         /** Specifies whether this experiment has already been carried out. In case
          * it has been carried out, and the experiment is serialized to the database
          * column response_id will be a valid reference into table response. If not
@@ -258,6 +262,9 @@ namespace clutseg {
         virtual void serialize(sqlite3* db);
         virtual void deserialize(sqlite3* db);
         virtual void detach();
+
+        static const uint32_t FLAG_FEPARAMS_VALIDATED;
+        static const uint32_t FLAG_FEPARAMS_INVALID;
 
     };
 
@@ -281,6 +288,7 @@ namespace clutseg {
     void setMemberField(MemberMap & m, const std::string & field, double val);
     void setMemberField(MemberMap & m, const std::string & field, int val);
     void setMemberField(MemberMap & m, const std::string & field, int64_t val);
+    void setMemberField(MemberMap & m, const std::string & field, uint32_t val);
     void setMemberField(MemberMap & m, const std::string & field, bool val);
     void setMemberField(MemberMap & m, const std::string & field, const std::string & val);
 

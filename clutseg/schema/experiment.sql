@@ -9,6 +9,7 @@ create table experiment (
     vcs_commit varchar(255),
     human_note varchar(255) DEFAULT(''),
     machine_note varchar(255) DEFAULT(''),
-    skip boolean default 0
+    skip boolean default 0,
+    flags integer default 0
 );
 
