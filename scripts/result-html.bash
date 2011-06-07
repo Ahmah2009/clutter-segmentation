@@ -239,6 +239,47 @@ function report_plots() {
         locate.max_projection_error \
         "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess detect on p.detect_pms_guess_id = detect.id join pms_guess locate on p.locate_pms_guess_id = locate.id" >> $plots
 
+    plot "Success rate vs. Locator avg. matches" \
+        succ_rate \
+        avg_locate_matches \
+	"view_experiment_response" >> $plots
+
+    plot "Success rate vs. Locator choice avg. inliers" \
+        succ_rate \
+        avg_locate_choice_inliers \
+	"view_experiment_response" >> $plots
+
+    plot "Locator avg. matches vs. Locator choice avg. inliers" \
+        avg_locate_matches \
+        avg_locate_choice_inliers \
+	"view_experiment_response" >> $plots
+
+    plot "Locator avg. matches vs. Locator avg. inliers" \
+        avg_locate_matches \
+        avg_locate_inliers \
+	"view_experiment_response" >> $plots
+
+    plot "Success rate vs. Detector avg. matches" \
+        succ_rate \
+        avg_detect_choice_inliers \
+	"view_experiment_response" >> $plots
+
+    plot "Success rate vs. Detector choice avg. inliers" \
+        succ_rate \
+        avg_detect_choice_inliers \
+	"view_experiment_response" >> $plots
+
+    plot "Detector avg. matches vs. Detector choice avg. inliers" \
+        avg_detect_matches \
+        avg_detect_choice_inliers \
+	"view_experiment_response" >> $plots
+
+    plot "Detector avg. matches vs. Detector avg. inliers" \
+        avg_detect_matches \
+        avg_detect_inliers \
+	"view_experiment_response" >> $plots
+
+
     foot $plots
 }
 
