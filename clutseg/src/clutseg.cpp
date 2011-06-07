@@ -286,7 +286,7 @@ namespace clutseg {
         r.avg_detect_choice_matches = float(acc_detect_choice_matches) / choices;
         r.avg_detect_choice_inliers = float(acc_detect_choice_inliers) / choices;
         r.avg_locate_matches = float(acc_locate_matches) / queries;
-        r.avg_locate_inliers = float(acc_locate_inliers) / acc_detect_guesses;
+        r.avg_locate_inliers = float(acc_locate_inliers) / acc_locate_guesses;
         r.avg_locate_choice_matches = float(acc_locate_choice_matches) / choices;
         r.avg_locate_choice_inliers = float(acc_locate_choice_inliers) / choices;
     }
