@@ -346,6 +346,7 @@ namespace clutseg {
         }
         setMemberField(m, "human_note", human_note);
         setMemberField(m, "machine_note", machine_note);
+        setMemberField(m, "batch", batch);
         setMemberField(m, "skip", skip);
         setMemberField(m, "flags", flags);
         insertOrUpdate(db, "experiment", m, id);
@@ -363,6 +364,7 @@ namespace clutseg {
             "vcs_commit, "
             "human_note, "
             "machine_note, "
+            "batch, "
             "skip, " 
             "flags " 
             "from experiment where id=%d;") % id);
@@ -387,6 +389,7 @@ namespace clutseg {
         }
         human_note = string((const char*) sqlite3_column_text(read, c++));
         machine_note = string((const char*) sqlite3_column_text(read, c++));
+        batch = string((const char*) sqlite3_column_text(read, c++));
         skip = sqlite3_column_int(read, c++) != 0;
         flags = sqlite3_column_int(read, c++);
         sqlite3_finalize(read);

@@ -31,7 +31,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.test_set = "hypothetical_test_set";
         experiment.human_note = "a note inserted by a human";
         experiment.machine_note = "a note made by the machine";
-        experiment.flags = Experiment::FLAG_FEPARAMS_VALID;
+        experiment.batch = "some_group";
         experiment.paramset.pms_clutseg.accept_threshold = 15;
         experiment.paramset.pms_clutseg.ranking = "InliersRanking";
         experiment.paramset.train_pms_fe.detector_type = "FAST";
@@ -343,6 +343,7 @@ TEST_F(ParamSelTest, experiment_update) {
     EXPECT_EQ(e.train_set, e2.train_set);
     EXPECT_EQ(e.test_set, e2.test_set);
     EXPECT_EQ(e.vcs_commit, e2.vcs_commit);
+    EXPECT_EQ(e.batch, e2.batch);
     EXPECT_EQ(e.skip, e2.skip);
     EXPECT_EQ(e.flags, e2.flags);
     EXPECT_EQ(1, e2.id);
@@ -365,6 +366,7 @@ TEST_F(ParamSelTest, experiment_write_read) {
     EXPECT_EQ(experiment.test_set, rest.test_set);
     EXPECT_EQ(experiment.human_note, rest.human_note);
     EXPECT_EQ(experiment.machine_note, rest.machine_note);
+    EXPECT_EQ(experiment.batch, rest.batch);
     EXPECT_EQ(experiment.skip, rest.skip);
     EXPECT_EQ(experiment.flags, rest.flags);
     EXPECT_EQ(13, rest.response.value);

@@ -241,6 +241,8 @@ namespace clutseg {
         std::string human_note;
         /** This is a column for automatic annotation, might contain additional hints about failures */
         std::string machine_note;
+        /** Can be used to group experiments. Is not named 'group' because this is a SQL keyword. */
+        std::string batch;
 
         /** Specifies whether to skip this experiment when carrying out
          * experiments that have not yet been run. This allows for temporarily
