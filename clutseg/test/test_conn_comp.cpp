@@ -2,6 +2,8 @@
  * Author: Julius Adorf
  */
 
+#include "test.h"
+
 #include "clutseg/conn_comp.h"
 
 #include <gtest/gtest.h>
@@ -11,7 +13,7 @@
 using namespace cv;
 using namespace std;
 
-struct ConnCompTest : public ::testing::Test {
+struct conn_comp : public ::testing::Test {
 
     void SetUp() {
         img = imread("./data/mask.png", 0);
@@ -20,7 +22,7 @@ struct ConnCompTest : public ::testing::Test {
     Mat img;
 };
 
-TEST_F(ConnCompTest, ReadMask) {
+TEST_F(conn_comp, read_mask) {
     for (int i = 0; i < img.rows; i++) {
         for (int j = 0; j < img.cols; j++) {
             EXPECT_TRUE(img.at<uint8_t>(i, j) == 0 || img.at<uint8_t>(i, j) == 255);
@@ -28,11 +30,14 @@ TEST_F(ConnCompTest, ReadMask) {
     }
 }
 
-TEST_F(ConnCompTest, FillSmallConnectedComponents) {
+TEST_F(conn_comp, largest_connected_component) {
     ASSERT_FALSE(img.empty());
     img = img > 1;
     imshow("Source",img);
     largestConnectedComponent(img);
-    imshow("Components", img);
-    waitKey(0);
+
+    if (!fast()) {
+        imshow("Components", img);
+        waitKey(0);
+    }
 }

@@ -84,67 +84,59 @@ class Viz : public ::testing::Test {
         vector<string> text;
 };
 
+void imshow_and_wait(const string & name, const Mat & canvas) {
+    if (!fast()) {
+        imshow(name, canvas);
+        waitKey(-1);
+    }
+}
+
 TEST_F(Viz, DrawKeypoints) {
-    Mat canvas = colorImage;
-    EXPECT_EQ(CV_8UC3, canvas.type());
+    EXPECT_EQ(CV_8UC3, colorImage.type());
     EXPECT_EQ(CV_8UC1, f2d.image.type());
-    clutseg::drawKeypoints(canvas, f2d.keypoints);
-    EXPECT_EQ(CV_8UC3, canvas.type());
-    imshow("DrawKeypoints", canvas);
-    waitKey(-1);
+    clutseg::drawKeypoints(colorImage, f2d.keypoints);
+    EXPECT_EQ(CV_8UC3, colorImage.type());
+    imshow_and_wait("DrawKeypoints", colorImage);
 }
 
 TEST_F(Viz, DrawInliers) {
-    Mat canvas = colorImage; 
-    drawInliers(canvas, guess1); 
-    imshow("DrawInliers", canvas);
-    waitKey(-1);
+    drawInliers(colorImage, guess1); 
+    imshow_and_wait("DrawInliers", colorImage);
 }
 
 TEST_F(Viz, DrawInliersBlue) {
-    Mat canvas = colorImage; 
-    drawInliers(canvas, guess1, Scalar(255, 0, 0)); 
-    imshow("DrawInliersBlue", canvas);
-    waitKey(-1);
+    drawInliers(colorImage, guess1, Scalar(255, 0, 0)); 
+    imshow_and_wait("DrawInliersBlue", colorImage);
 }
 
 TEST_F(Viz, DrawInliersRandomColor) {
-    Mat canvas = colorImage; 
     Scalar color = Scalar(rand() % 256, rand() % 256, rand() % 256);
-    drawInliers(canvas, guess1, color); 
-    imshow("DrawInliersRandomColor", canvas);
-    waitKey(-1);
+    drawInliers(colorImage, guess1, color); 
+    imshow_and_wait("DrawInliersRandomColor", colorImage);
 }
 
 TEST_F(Viz, DrawMoreInliers) {
-    Mat canvas = colorImage; 
-    drawInliers(canvas, guess1); 
-    drawInliers(canvas, guess2, Scalar(255, 30, 0)); 
-    imshow("DrawMoreInliers", canvas);
-    waitKey(-1);
+    drawInliers(colorImage, guess1); 
+    drawInliers(colorImage, guess2, Scalar(255, 30, 0)); 
+    imshow_and_wait("DrawMoreInliers", colorImage);
 }
 
 TEST_F(Viz, DrawInliersAndKeypoints) {
-    Mat canvas = colorImage; 
-    drawKeypoints(canvas, f2d.keypoints); 
-    drawInliers(canvas, guess1); 
-    imshow("DrawInliersAndKeypoints", canvas);
-    waitKey(-1);
+    drawKeypoints(colorImage, f2d.keypoints); 
+    drawInliers(colorImage, guess1); 
+    imshow_and_wait("DrawInliersAndKeypoints", colorImage);
 }
 
 TEST_F(Viz, DrawPose) {
-    Mat canvas = colorImage; 
-    drawPose(canvas, pose1, camera);
-    imshow("DrawPose", canvas);
-    waitKey(0);
+    drawPose(colorImage, pose1, camera);
+    imshow_and_wait("DrawPose", colorImage);
 }
 
 TEST_F(Viz, DrawPoseOnWhiteCanvas) {
     Mat canvas = Mat::zeros(1024, 1280, CV_8UC3);
     canvas = Scalar(255, 255, 255);
     drawPose(canvas, pose1, camera);
-    imshow("DrawPoseOnWhiteCanvas", canvas);
-    waitKey(0);
+    imshow_and_wait("DrawPoseOnWhiteCanvas", canvas);
 }
 
 TEST_F(Viz, DrawPoseInliersKeypoints) {
@@ -153,33 +145,28 @@ TEST_F(Viz, DrawPoseInliersKeypoints) {
     drawKeypoints(canvas, f2d.keypoints);
     drawInliers(canvas, guess1);
     drawPose(canvas, pose1, camera);
-    imshow("DrawPoseInliersKeypoints", canvas);
-    waitKey(0);
+    imshow_and_wait("DrawPoseInliersKeypoints", canvas);
 }
 
 TEST_F(Viz, DrawText) {
     Mat canvas = Mat::zeros(300, 300, CV_8UC3);
     Rect rect = drawText(canvas, text, Point(0, 0), FONT_HERSHEY_PLAIN, 1.0, 2, Scalar::all(255));
     rectangle(canvas, rect.tl(), rect.br(), Scalar::all(204));
-    imshow("DrawText", canvas);
-    waitKey(0);
+    imshow_and_wait("DrawText", canvas);
 }
 
 TEST_F(Viz, DrawGuesses) {
-    Mat canvas = colorImage;
     vector<Guess> guesses;
     vector<PoseRT> poses;
     guesses.push_back(guess1);
     guesses.push_back(guess2);
     poses.push_back(pose1);
-    drawGuesses(canvas, guesses, camera, poses);
-    imshow("DrawGuesses", canvas);
-    waitKey(0);
+    drawGuesses(colorImage, guesses, camera, poses);
+    imshow_and_wait("DrawGuesses", colorImage);
 }
 
 TEST_F(Viz, DrawManyGuesses) {
     // check whether we're running out of colors
-    Mat canvas = colorImage;
     vector<Guess> guesses;
     vector<PoseRT> poses;
     for (int i = 0; i < 30; i++) {
@@ -187,8 +174,7 @@ TEST_F(Viz, DrawManyGuesses) {
         guesses.push_back(guess2);
     }
     poses.push_back(pose1);
-    drawGuesses(canvas, guesses, camera, poses);
-    imshow("DrawManyGuesses", canvas);
-    waitKey(0);
+    drawGuesses(colorImage, guesses, camera, poses);
+    imshow_and_wait("DrawManyGuesses", colorImage);
 }
 

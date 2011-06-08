@@ -305,6 +305,8 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_uses_max_features) {
 }
 
 TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_max_features) {
+    SKIP_IF_FAST
+
     expectUsesMaxFeatures(dynamicsurf_sequential_rbrief, 0, 1000, 100);
 }
 
@@ -321,6 +323,8 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_uses_min_features) {
 }
 
 TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_min_features) {
+    SKIP_IF_FAST
+
     expectUsesMinFeatures(dynamicsurf_sequential_rbrief, 1200, 1000, 500);
 }
 
@@ -329,6 +333,8 @@ TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_min_features) {
 // ---------------------------------------------------------------------------
 
 TEST_F(ExtractorTest, masking_works) {
+    SKIP_IF_FAST
+
     map<const string, FeatureExtractionParams*>::iterator it = feparams.begin();
     map<const string, FeatureExtractionParams*>::iterator end = feparams.end();
     while (it != end) {
@@ -382,6 +388,8 @@ TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_config) {
 // ---------------------------------------------------------------------------
 
 TEST_F(ExtractorTest, times) {
+    SKIP_IF_FAST
+
     map<const string, FeatureExtractionParams*>::iterator it = feparams.begin();
     map<const string, FeatureExtractionParams*>::iterator end = feparams.end();
     ofstream out("build/ExtractorTest.times");
@@ -436,6 +444,8 @@ struct min_max_features_win {
 };
 
 TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_windows) {
+    SKIP_IF_FAST
+
     // Take a single image and a mask and detect features using different [min_features, max_features]
     // windows. Collect results in a map.
     map<min_max_features_win, int> res;

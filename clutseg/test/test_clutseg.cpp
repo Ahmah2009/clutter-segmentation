@@ -49,18 +49,19 @@ class ClutsegTest : public ::testing::Test {
 
                 cache = TrainFeaturesCache("build/train_cache");
                 tr_feat = TrainFeatures("ias_kinect_train_v2", fp);
-                if (!cache.trainFeaturesExist(tr_feat)) {
+                if (!fast() && !cache.trainFeaturesExist(tr_feat)) {
                     tr_feat.generate();
                     cache.addTrainFeatures(tr_feat);
-                }
-
-                sgm = Clutsegmenter(cache.trainFeaturesDir(tr_feat).string(), dp, lp);
-                loaded = true;
+               }
+               sgm = Clutsegmenter(cache.trainFeaturesDir(tr_feat).string(), dp, lp);
             }
+            loaded = true;
 
-            sgm.setDoLocate(true);
-            sgm.resetStats();               
-            sgm.getLocateParams().matcherParams.doRatioTest = false;
+            if (!fast()) {
+                sgm.setDoLocate(true);
+                sgm.resetStats();               
+                sgm.getLocateParams().matcherParams.doRatioTest = false;
+            }
 
             haltbare_milch_train_img = imread("./data/image_00000.png");
             pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
@@ -151,6 +152,8 @@ bool ClutsegTest::loaded;
 /** Verify that changes to parameters do not affect existing Clutsegmenter
  * instances, i.e. that parameters are properly copied in constructor. */
 TEST_F(ClutsegTest, ConstructorOpaque) {
+    SKIP_IF_FAST 
+
     TODParameters detect_params;
     TODParameters locate_params;
 
@@ -170,6 +173,8 @@ TEST_F(ClutsegTest, ConstructorOpaque) {
  * parameter configuration can be changed easily without having to reload the
  * training base. */
 TEST_F(ClutsegTest, ChangeParamsOnline) {
+    SKIP_IF_FAST 
+
     EXPECT_FALSE(sgm.getLocateParams().matcherParams.doRatioTest);
     TODParameters & params = sgm.getLocateParams();
     params.matcherParams.doRatioTest = true;
@@ -179,6 +184,8 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 /** Check whether detection works for a training image. This is expected to
  * return with a whole bunch of inliers since it is only a training image. */
 TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
+    SKIP_IF_FAST 
+
     ClutsegQuery query(haltbare_milch_train_img, haltbare_milch_train_cloud);
     sgm.recognize(query, res);
     EXPECT_TRUE(res.guess_made);
@@ -190,6 +197,8 @@ TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
 
 /** Check whether loading a single training base works without failing */
 TEST_F(ClutsegTest, LoadSingleTrainingBase) {
+    SKIP_IF_FAST 
+
     vector<Ptr<TexturedObject> > objects;
     Loader loader(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train_v2");
     loader.readTexturedObjects(objects);
@@ -200,6 +209,8 @@ TEST_F(ClutsegTest, LoadSingleTrainingBase) {
 
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeInClutter) {
+    SKIP_IF_FAST 
+
     TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
@@ -215,6 +226,8 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
 
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
+    SKIP_IF_FAST 
+
     TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 10.0;
     detect_params.guessParams.ransacIterationsCount = 1000;
@@ -227,6 +240,8 @@ TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
 
 /** Check whether an object is at least detected in clutter */
 TEST_F(ClutsegTest, RecognizeForemostInClutter) {
+    SKIP_IF_FAST 
+
     TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
@@ -248,6 +263,8 @@ TEST_F(ClutsegTest, RecognizeForemostInClutter) {
 }
 
 TEST_F(ClutsegTest, Reconfigure) {
+    SKIP_IF_FAST 
+
     Experiment exp;
     exp.id = 1;
     sqlite3* db;

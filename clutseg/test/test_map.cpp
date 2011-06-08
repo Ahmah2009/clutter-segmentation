@@ -43,6 +43,8 @@ class Map : public ::testing::Test {
 
 // TODO: move to test_pcl_visualization_addons
 TEST_F(Map, AddMarker3d) {
+    SKIP_IF_FAST
+
     PCLVisualizer vis;
     PointXYZ p(pose.tvec.at<double>(0, 0), pose.tvec.at<double>(1, 0), pose.tvec.at<double>(2, 0));
     addMarker3d(vis, p);
@@ -51,6 +53,8 @@ TEST_F(Map, AddMarker3d) {
 }
 
 TEST_F(Map, MapImageCorners) {
+    SKIP_IF_FAST
+
     vector<Point> corners;
     // select points close to corners, avoid NaNs
     int margin = 160;
@@ -76,6 +80,8 @@ TEST_F(Map, MapImageCorners) {
 }
 
 TEST_F(Map, MapMarkers) {
+    SKIP_IF_FAST
+
     vector<Point> red2d;
     vector<Point> green2d;
     vector<Point> yellow2d;

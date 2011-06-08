@@ -11,6 +11,10 @@
 #include <pcl/point_cloud.h>
 #include <opencv_candidate/PoseRT.h>
 
+#define SKIP_IF_FAST if (fast()) { fast_warning(); return; }
+
+bool fast();
+void fast_warning();
 void sampleColorImage(cv::Mat & img);
 void samplePose(opencv_candidate::PoseRT & pose);
 void sampleCloud(clutseg::PointCloudT & cloud);

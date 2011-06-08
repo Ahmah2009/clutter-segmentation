@@ -2,10 +2,11 @@
  * Author: Julius Adorf
  */
 
-#include "clutseg/experiment.h"
+#include "test.h"
 
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
+#include "clutseg/experiment.h"
 #include "clutseg/flags.h"
 
 #include <boost/filesystem.hpp>
@@ -134,6 +135,8 @@ TEST_F(ExperimentTest, AddTrainFeatures) {
 }
 
 TEST_F(ExperimentTest, GenerateAndUseTrainFeatures) {
+    SKIP_IF_FAST
+
     cache.addTrainFeatures(tr_feat, false);
     TrainFeatures new_tr_feat;
     new_tr_feat.train_set = tr_feat.train_set;
