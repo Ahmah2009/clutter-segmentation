@@ -7,13 +7,13 @@
 #include "clutseg/check.h"
 
 #include "clutseg/gcc_diagnostic_disable.h"
-#include <boost/algorithm/string.hpp>
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
-#include <cv.h>
-#include <fstream>
-#include <iostream>
-#include <set>
+    #include <boost/algorithm/string.hpp>
+    #include <boost/foreach.hpp>
+    #include <boost/format.hpp>
+    #include <cv.h>
+    #include <fstream>
+    #include <iostream>
+    #include <set>
 #include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
@@ -23,6 +23,16 @@ using namespace std;
 namespace bfs = boost::filesystem;
 
 namespace clutseg {
+
+    void LabeledPose::write(cv::FileStorage& fs) const {
+        fs << name;
+        pose.write(fs);
+    }
+
+    void LabeledPose::read(const cv::FileNode& fn) {
+        name = fn.name();
+        pose.read(fn);
+    }
 
     bool GroundTruth::onScene(const string & name) const {
         // slow 
@@ -59,18 +69,17 @@ namespace clutseg {
         FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
         // iterate over objects
         for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
-            LabeledPose np((*n_it).name());
-            np.pose.read(*n_it);
+            LabeledPose np;
+            np.read(*n_it);
             np.pose.estimated = true;
             labels.push_back(np);  
         }
     }
 
-    void GroundTruth::write(const bfs::path & filename) {
+    void GroundTruth::write(const bfs::path & filename) const {
         FileStorage fs(filename.string(), FileStorage::WRITE);
         BOOST_FOREACH(const LabeledPose & np, labels) {
-            fs << np.name;
-            np.pose.write(fs);
+            np.write(fs);
         }
         fs.release();
     } 
@@ -130,5 +139,6 @@ namespace clutseg {
         f.close();
         return m; 
     }
+
 }
 
