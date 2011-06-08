@@ -5,29 +5,16 @@
 #ifndef _TESTDESC_H_
 #define _TESTDESC_H_
 
+#include "clutseg/pose.h"
+
 #include "clutseg/gcc_diagnostic_disable.h"
     #include <boost/filesystem.hpp>
     #include <map>
-    #include <string>
     #include <opencv_candidate/PoseRT.h>
+    #include <string>
 #include "clutseg/gcc_diagnostic_enable.h"
 
 namespace clutseg {
-
-    struct LabeledPose {
-
-        LabeledPose() : name("") {}
-        LabeledPose(const std::string & name) : name(name) {}
-        LabeledPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
-
-        std::string name;
-        /** The pose of the object. Check pose.estimated whether it is available. */
-        opencv_candidate::PoseRT pose; 
-
-        void write(cv::FileStorage& fs) const;
-        void read(const cv::FileNode& fn);
-
-    };
 
     struct GroundTruth {
 

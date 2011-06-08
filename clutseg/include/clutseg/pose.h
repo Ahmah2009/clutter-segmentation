@@ -27,6 +27,26 @@
 
 namespace clutseg {
 
+    /** A label is just a name with a pose. A set of labels fully describes
+     * what objects can be seen where on the scene. The ground truth is a set of
+     * labels. The result of recognition is conceptually also a set of labels. For
+     * measuring performance, we can take the ground truth label set and the
+     * recognized label set and compare them. */
+    struct LabeledPose {
+
+        LabeledPose() : name("") {}
+        LabeledPose(const std::string & name) : name(name) {}
+        LabeledPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
+
+        std::string name;
+        /** The pose of the object. Check pose.estimated whether it is available. */
+        opencv_candidate::PoseRT pose; 
+
+        void write(cv::FileStorage& fs) const;
+        void read(const cv::FileNode& fn);
+
+    };
+
     cv::Point projectOrigin(const opencv_candidate::PoseRT & pose, const opencv_candidate::Camera & camera);
 
     /** @deprecated     randomization of orientation is rather arbitrarily */
