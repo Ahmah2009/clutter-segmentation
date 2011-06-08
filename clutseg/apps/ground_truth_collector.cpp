@@ -80,7 +80,10 @@ int main(int argc, char **argv) {
 
             bfs::path ground_truth_file = test_dir / (img_name + ".ground.yaml");
             cout << "[GENERAL] Writing ground truth file " << ground_truth_file.string() << endl;
-            g.write(ground_truth_file);
+            FileStorage fs(ground_truth_file.string(), FileStorage::WRITE);
+            fs << "labels";
+            g.write(fs);
+            fs.release();
 
            if (verbose) {
                 Mat canvas3;

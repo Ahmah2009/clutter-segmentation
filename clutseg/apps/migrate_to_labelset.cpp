@@ -31,7 +31,11 @@ int main(int argc, char *argv[]) {
     }
     string f = argv[1];
     string tmpf = tmpnam(NULL);
-    if (0 != std::system(str(boost::format("zcat %s > %s") % f % tmpf).c_str())) {
+    string cmd = "cat";
+    if (algorithm::ends_with(f, ".gz")) {
+        cmd = "zcat";
+    }
+    if (0 != std::system(str(boost::format("%s %s > %s") % cmd % f % tmpf).c_str())) {
         return 1;
     }
     ifstream fin;

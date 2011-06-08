@@ -53,7 +53,9 @@ int main(int argc, char *argv[]) {
             visualizer.addPointCloud(cloud, str(boost::format("cloud-%d") % i));
         } else if (boost::algorithm::ends_with(arg, ".ground.yaml")) {
             LabelSet g;
-            g.read(arg);
+            FileStorage fs(arg, FileStorage::READ);
+            g.read(fs["labels"]);
+            fs.release();
             BOOST_FOREACH(Label np, g.labels) {
                 addPose(visualizer, np.pose, str(boost::format("pose-%d-%d") % i % rand()));
             }
