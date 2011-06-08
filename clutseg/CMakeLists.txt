@@ -68,14 +68,17 @@ target_link_libraries(poseviewer ${PROJECT_NAME})
 rosbuild_add_executable(poserandomizer apps/poserandomizer.cpp)
 target_link_libraries(poserandomizer ${PROJECT_NAME})
 
-rosbuild_add_executable(xyz_to_xyzrgb apps/xyz_to_xyzrgb.cpp)
-target_link_libraries(xyz_to_xyzrgb ${PROJECT_NAME})
-
 rosbuild_add_executable(poseinfo apps/poseinfo.cpp)
 target_link_libraries(poseinfo ${PROJECT_NAME})
 
+rosbuild_add_executable(pose_to_posert apps/pose_to_posert.cpp)
+target_link_libraries(pose_to_posert ${PROJECT_NAME})
+
 rosbuild_add_executable(siftmask apps/siftmask.cpp)
 target_link_libraries(siftmask ${PROJECT_NAME})
+
+rosbuild_add_executable(xyz_to_xyzrgb apps/xyz_to_xyzrgb.cpp)
+target_link_libraries(xyz_to_xyzrgb ${PROJECT_NAME})
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)

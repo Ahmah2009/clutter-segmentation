@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
         cerr << "     where <directory> refers to a folder that contains " << endl;
         cerr << "     PCD files with XYZ point data. Original files will " << endl;
         cerr << "     not be overwritten." << endl;
+        return 1;
     }
     string dir(argv[1]);
     for (directory_iterator it(dir), end; it != end; ++it) {
@@ -40,7 +41,6 @@ int main(int argc, char *argv[]) {
             PointCloud<PointXYZ> cloud_xyz;
             PointCloud<PointXYZRGB> cloud_xyzrgb;
             io::loadPCDFile(dir + "/" + f, cloud_xyz);
-//            cloud_xyzrgb.points.resize(cloud_xyz.size());
 
             PointCloud<PointXYZRGB> cloud_xyzrgb2;
             cloud_xyzrgb2.points.resize(cloud_xyz.size());
@@ -53,6 +53,7 @@ int main(int argc, char *argv[]) {
             io::savePCDFileASCII(dir + "/" + fnew, cloud_xyzrgb);
             io::savePCDFileASCII(dir + "/_" + fnew, cloud_xyzrgb2);
         }
+        return 0;
     }
 }
 
