@@ -29,13 +29,17 @@ namespace bfs = boost::filesystem;
 namespace clutseg {
 
     void Label::write(cv::FileStorage& fs) const {
+        fs << "{";
+        fs << "name";
         fs << name;
+        fs << "pose";
         pose.write(fs);
+        fs << "}";
     }
 
     void Label::read(const cv::FileNode& fn) {
-        name = fn.name();
-        pose.read(fn);
+        name = string(fn["name"]);
+        pose.read(fn["pose"]);
     }
 
     bool LabelSet::onScene(const string & name) const {
@@ -162,10 +166,18 @@ namespace clutseg {
         f.release();
     }
 
-    void convertPoseFileToDouble(const boost::filesystem::path & src, const boost::filesystem::path & dst) {
+    void convertLegacyPoseFileToDouble(const boost::filesystem::path & src, const boost::filesystem::path & dst) {
         assert_path_exists(src);
         map<string, PoseRT> poses;
-        FileStorage in(src.string(), FileStorage::READ);
+        FileStorage in;
+        try {
+            in.open(src.string(), FileStorage::READ);
+        } catch (cv::Exception & e) {
+            // probably empty, FileStorage::FileStorage() fails on empty files
+            // might be another problem though
+            FileStorage out(dst.string(), FileStorage::WRITE);
+            out.release();
+        }
         for (FileNodeIterator n_it = in.root().begin(); n_it != in.root().end(); n_it++) {
             Pose p;
             p.read(*n_it);

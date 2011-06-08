@@ -233,23 +233,22 @@ TEST_F(PoseTest, RotatePose) {
     EXPECT_NEAR(M_PI / 9.0, angle_between(p, q), 1e-10);
 }
 
-/* FIXME:
-TEST_F(PoseTest, ConvertFilePoseToDoubleEmpty) {
+TEST_F(PoseTest, ConvertLegacyFilePoseToDoubleEmpty) {
     bfs::path p("build/image_00054.detect_choices.yaml.gz");
-    convertPoseFileToDouble("./data/image_00054.detect_choices.yaml.gz", p);
-}*/
+    convertLegacyPoseFileToDouble("./data/image_00054.detect_choices.yaml.gz", p);
+}
 
-TEST_F(PoseTest, ConvertFilePoseToDouble) {
+TEST_F(PoseTest, ConvertLegacyFilePoseToDouble) {
     bfs::path p("build/image_00040.locate_choice.yaml.gz");
-    convertPoseFileToDouble("./data/image_00040.locate_choice.yaml.gz", p);
+    convertLegacyPoseFileToDouble("./data/image_00040.locate_choice.yaml.gz", p);
     PoseRT pose;
     readPose(p, pose);
     EXPECT_DOUBLE_EQ(2.2760460376739502, pose.rvec.at<double>(0, 0));
 }
 
-TEST_F(PoseTest, ConvertFilePoseToDoubleMany) {
+TEST_F(PoseTest, ConvertLegacyFilePoseToDoubleMany) {
     bfs::path p("build/image_00022.detect_choices.yaml.gz");
-    convertPoseFileToDouble("./data/image_00022.detect_choices.yaml.gz", p);
+    convertLegacyPoseFileToDouble("./data/image_00022.detect_choices.yaml.gz", p);
     FileStorage in(p.string(), FileStorage::READ);
     PoseRT poses[2];
     poses[0].read(in["haltbare_milch"]);
@@ -270,3 +269,25 @@ TEST_F(PoseTest, ReadLabels) {
         p.read((*n_it)["pose"]);
     }
 }
+
+TEST_F(PoseTest, ReadYamlCollection) {
+    ofstream fout;
+    fout.open("build/collection.yaml"); 
+    fout << "%YAML:1.0" << endl
+        << "-" << endl
+        << "    alpha: 3" << endl
+        << "    beta: 4" << endl
+        << "-" << endl
+        << "    alpha: 9" << endl
+        << "    beta: 8" << endl;
+    fout.close();
+    FileStorage fs("build/collection.yaml", FileStorage::READ);
+    for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
+        FileNode fn = *n_it;
+        cout << "-----------------------" << endl;
+        cout << "alpha = " << int(fn["alpha"]) << endl;
+        cout << "beta  = " << int(fn["beta"]) << endl;
+    }
+    fs.release();
+}
+

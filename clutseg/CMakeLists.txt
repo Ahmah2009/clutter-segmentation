@@ -56,6 +56,9 @@ target_link_libraries(keypoints_viewer ${PROJECT_NAME})
 rosbuild_add_executable(keypoints_image apps/keypoints_image.cpp)
 target_link_libraries(keypoints_image ${PROJECT_NAME})
 
+rosbuild_add_executable(migrate_to_labelset apps/migrate_to_labelset.cpp)
+target_link_libraries(migrate_to_labelset ${PROJECT_NAME})
+
 rosbuild_add_executable(param_selection apps/param_selection.cpp)
 target_link_libraries(param_selection ${PROJECT_NAME})
 
@@ -70,9 +73,6 @@ target_link_libraries(poserandomizer ${PROJECT_NAME})
 
 rosbuild_add_executable(poseinfo apps/poseinfo.cpp)
 target_link_libraries(poseinfo ${PROJECT_NAME})
-
-rosbuild_add_executable(pose_to_posert apps/pose_to_posert.cpp)
-target_link_libraries(pose_to_posert ${PROJECT_NAME})
 
 rosbuild_add_executable(siftmask apps/siftmask.cpp)
 target_link_libraries(siftmask ${PROJECT_NAME})

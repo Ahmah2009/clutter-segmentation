@@ -88,7 +88,7 @@ namespace clutseg {
      * file contains multiple top level nodes, all of them are converted. Passing
      * the same filename as source and destination means converting in-place and is
      * supported. */
-    void convertPoseFileToDouble(const boost::filesystem::path & src, const boost::filesystem::path & dst);
+    void convertLegacyPoseFileToDouble(const boost::filesystem::path & src, const boost::filesystem::path & dst);
 
     void modelToView(const cv::Mat & mvtrans, const cv::Mat & mvrot, const cv::Mat & mpt, cv::Mat & vpt);
 
