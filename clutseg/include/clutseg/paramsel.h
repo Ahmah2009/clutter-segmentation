@@ -109,11 +109,11 @@ namespace clutseg {
             avg_succ_angle_err(0), avg_trans_err(0), avg_succ_trans_err(0),
             avg_angle_sq_err(0), avg_succ_angle_sq_err(0), avg_trans_sq_err(0),
             avg_succ_trans_sq_err(0), mislabel_rate(0), none_rate(0), avg_keypoints(0),
-            avg_detect_matches(0), avg_detect_inliers(0), avg_detect_choice_matches(0),
-            avg_detect_choice_inliers(0), detect_tp(0), detect_fp(0), detect_fn(0),
-            detect_tn(0), avg_locate_matches(0), avg_locate_inliers(0),
-            avg_locate_choice_matches(0), avg_locate_choice_inliers(0),
-            train_runtime(0), test_runtime(0)
+            avg_detect_guesses(0), avg_detect_matches(0), avg_detect_inliers(0),
+            avg_detect_choice_matches(0), avg_detect_choice_inliers(0), detect_tp(0),
+            detect_fp(0), detect_fn(0), detect_tn(0), avg_locate_guesses(0),
+            avg_locate_matches(0), avg_locate_inliers(0), avg_locate_choice_matches(0),
+            avg_locate_choice_inliers(0), train_runtime(0), test_runtime(0)
             { locate_sipc = locate_sipc_t(); detect_sipc = detect_sipc_t(); }
 
         /** Average of the values returned by the response function */
@@ -153,6 +153,8 @@ namespace clutseg {
 
         /** Average number of extracted keypoints per image */
         float avg_keypoints;
+        /** Average number of guesses in detection stage */
+        float avg_detect_guesses;
         /** Average number of matches in detection stage */
         float avg_detect_matches;
         /** Average number of inliers of all guesses in detection stage */
@@ -171,6 +173,8 @@ namespace clutseg {
         /** ROC true negatives for detection stage */
         int detect_tn;
 
+        /** Average number of guesses in locating stage */
+        float avg_locate_guesses;
         /** Average number of matches in locating stage */
         float avg_locate_matches;
         /** Average number of inliers of all guesses in locating stage */

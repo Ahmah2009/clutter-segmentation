@@ -220,6 +220,7 @@ namespace clutseg {
         setMemberField(m, "mislabel_rate", mislabel_rate);
         setMemberField(m, "none_rate", none_rate);
         setMemberField(m, "avg_keypoints", avg_keypoints);
+        setMemberField(m, "avg_detect_guesses", avg_detect_guesses);
         setMemberField(m, "avg_detect_matches", avg_detect_matches);
         setMemberField(m, "avg_detect_inliers", avg_detect_inliers);
         setMemberField(m, "avg_detect_choice_matches", avg_detect_choice_matches);
@@ -228,6 +229,7 @@ namespace clutseg {
         setMemberField(m, "detect_fp", detect_fp);
         setMemberField(m, "detect_fn", detect_fn);
         setMemberField(m, "detect_tn", detect_tn);
+        setMemberField(m, "avg_locate_guesses", avg_locate_guesses);
         setMemberField(m, "avg_locate_matches", avg_locate_matches);
         setMemberField(m, "avg_locate_inliers", avg_locate_inliers);
         setMemberField(m, "avg_locate_choice_matches", avg_locate_choice_matches);
@@ -259,6 +261,7 @@ namespace clutseg {
             "mislabel_rate, "
             "none_rate, "
             "avg_keypoints, "
+            "avg_detect_guesses, "
             "avg_detect_matches, "
             "avg_detect_inliers, "
             "avg_detect_choice_matches, "
@@ -267,6 +270,7 @@ namespace clutseg {
             "detect_fp, "
             "detect_fn, "
             "detect_tn, "
+            "avg_locate_guesses, "
             "avg_locate_matches, "
             "avg_locate_inliers, "
             "avg_locate_choice_matches, "
@@ -295,6 +299,7 @@ namespace clutseg {
         mislabel_rate = sqlite3_column_double(read, c++);
         none_rate = sqlite3_column_double(read, c++);
         avg_keypoints = sqlite3_column_double(read, c++);
+        avg_detect_guesses = sqlite3_column_double(read, c++);
         avg_detect_matches = sqlite3_column_double(read, c++);
         avg_detect_inliers = sqlite3_column_double(read, c++);
         avg_detect_choice_matches = sqlite3_column_double(read, c++);
@@ -303,6 +308,7 @@ namespace clutseg {
         detect_fp = sqlite3_column_int(read, c++);
         detect_fn = sqlite3_column_int(read, c++);
         detect_tn = sqlite3_column_int(read, c++);
+        avg_locate_guesses = sqlite3_column_double(read, c++);
         avg_locate_matches = sqlite3_column_double(read, c++);
         avg_locate_inliers = sqlite3_column_double(read, c++);
         avg_locate_choice_matches = sqlite3_column_double(read, c++);

@@ -281,10 +281,12 @@ namespace clutseg {
 
     void ClutsegmenterStats::populateResponse(Response & r) const {
         r.avg_keypoints = float(acc_keypoints) / queries;
+        r.avg_detect_guesses = float(acc_detect_guesses) / queries;
         r.avg_detect_matches = float(acc_detect_matches) / queries;
         r.avg_detect_inliers = float(acc_detect_inliers) / acc_detect_guesses;
         r.avg_detect_choice_matches = float(acc_detect_choice_matches) / choices;
         r.avg_detect_choice_inliers = float(acc_detect_choice_inliers) / choices;
+        r.avg_locate_guesses = float(acc_locate_guesses) / queries;
         r.avg_locate_matches = float(acc_locate_matches) / queries;
         r.avg_locate_inliers = float(acc_locate_inliers) / acc_locate_guesses;
         r.avg_locate_choice_matches = float(acc_locate_choice_matches) / choices;

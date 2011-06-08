@@ -23,6 +23,7 @@ create table response (
     mislabel_rate float not null,
     none_rate float not null,
     avg_keypoints float not null,
+    avg_detect_guesses float not null,
     avg_detect_matches float not null,
     avg_detect_inliers float not null,
     avg_detect_choice_matches float not null,
@@ -32,6 +33,7 @@ create table response (
     detect_fn integer not null,
     detect_tn integer not null,
     -- the following statistics are only valid if locating step is performed
+    avg_locate_guesses float not null,
     avg_locate_matches float not null,
     avg_locate_inliers float not null,
     avg_locate_choice_matches float not null,

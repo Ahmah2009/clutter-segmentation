@@ -80,6 +80,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.mislabel_rate = 0.05;
         experiment.response.none_rate = 0.15;
         experiment.response.avg_keypoints = 913.0;
+        experiment.response.avg_detect_guesses = 55;
         experiment.response.avg_detect_matches = 652.3;
         experiment.response.avg_detect_inliers = 9.2;
         experiment.response.avg_detect_choice_matches = 211.9;
@@ -88,6 +89,7 @@ struct ParamSelTest : public ::testing::Test {
         experiment.response.detect_fp = 5;
         experiment.response.detect_fn = 10;
         experiment.response.detect_tn = 40;
+        experiment.response.avg_locate_guesses = 33;
         experiment.response.avg_locate_matches = 802.1;
         experiment.response.avg_locate_inliers = 29.8;
         experiment.response.avg_locate_choice_matches = 802.1;
@@ -127,10 +129,12 @@ TEST_F(ParamSelTest, Initialization) {
     EXPECT_FLOAT_EQ(0, exp.response.mislabel_rate);
     EXPECT_FLOAT_EQ(0, exp.response.none_rate);
     EXPECT_FLOAT_EQ(0, exp.response.avg_keypoints);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_detect_guesses);
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_matches);
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_inliers);
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_choice_matches);
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_choice_inliers);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_guesses);
     EXPECT_FLOAT_EQ(0, exp.response.avg_locate_matches);
     EXPECT_FLOAT_EQ(0, exp.response.avg_locate_inliers);
     EXPECT_FLOAT_EQ(0, exp.response.avg_locate_choice_matches);
@@ -155,10 +159,12 @@ TEST_F(ParamSelTest, Initialization) {
     EXPECT_FLOAT_EQ(0, r.mislabel_rate);
     EXPECT_FLOAT_EQ(0, r.none_rate);
     EXPECT_FLOAT_EQ(0, r.avg_keypoints);
+    EXPECT_FLOAT_EQ(0, r.avg_detect_guesses);
     EXPECT_FLOAT_EQ(0, r.avg_detect_matches);
     EXPECT_FLOAT_EQ(0, r.avg_detect_inliers);
     EXPECT_FLOAT_EQ(0, r.avg_detect_choice_matches);
     EXPECT_FLOAT_EQ(0, r.avg_detect_choice_inliers);
+    EXPECT_FLOAT_EQ(0, r.avg_locate_guesses);
     EXPECT_FLOAT_EQ(0, r.avg_locate_matches);
     EXPECT_FLOAT_EQ(0, r.avg_locate_inliers);
     EXPECT_FLOAT_EQ(0, r.avg_locate_choice_matches);
@@ -222,6 +228,7 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.mislabel_rate, rest.mislabel_rate);
     EXPECT_FLOAT_EQ(orig.none_rate, rest.none_rate);
     EXPECT_FLOAT_EQ(orig.avg_keypoints, rest.avg_keypoints);
+    EXPECT_FLOAT_EQ(orig.avg_detect_guesses, rest.avg_detect_guesses);
     EXPECT_FLOAT_EQ(orig.avg_detect_matches, rest.avg_detect_matches);
     EXPECT_FLOAT_EQ(orig.avg_detect_inliers, rest.avg_detect_inliers);
     EXPECT_FLOAT_EQ(orig.avg_detect_choice_matches, rest.avg_detect_choice_matches);
@@ -230,6 +237,7 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.detect_fp, rest.detect_fp);
     EXPECT_FLOAT_EQ(orig.detect_fn, rest.detect_fn);
     EXPECT_FLOAT_EQ(orig.detect_tn, rest.detect_tn);
+    EXPECT_FLOAT_EQ(orig.avg_locate_guesses, rest.avg_locate_guesses);
     EXPECT_FLOAT_EQ(orig.avg_locate_matches, rest.avg_locate_matches);
     EXPECT_FLOAT_EQ(orig.avg_locate_inliers, rest.avg_locate_inliers);
     EXPECT_FLOAT_EQ(orig.avg_locate_choice_matches, rest.avg_locate_choice_matches);
