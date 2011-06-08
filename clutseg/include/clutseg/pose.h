@@ -27,16 +27,13 @@
 
 namespace clutseg {
 
-    /** A label is just a name with a pose. A set of labels fully describes
-     * what objects can be seen where on the scene. The ground truth is a set of
-     * labels. The result of recognition is conceptually also a set of labels. For
-     * measuring performance, we can take the ground truth label set and the
-     * recognized label set and compare them. */
-    struct LabeledPose {
+    /** A label is a just a name and a pose, like a name plate that can be
+     * attached in a certain orientation to an object's origin. */
+    struct Label {
 
-        LabeledPose() : name("") {}
-        LabeledPose(const std::string & name) : name(name) {}
-        LabeledPose(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
+        Label() : name("") {}
+        Label(const std::string & name) : name(name) {}
+        Label(const std::string & name, const opencv_candidate::PoseRT & pose) : name(name), pose(pose) {}
 
         std::string name;
         /** The pose of the object. Check pose.estimated whether it is available. */
@@ -44,6 +41,24 @@ namespace clutseg {
 
         void write(cv::FileStorage& fs) const;
         void read(const cv::FileNode& fn);
+
+    };
+    
+    /** A set of labels fully describes what objects can be seen where on the
+     * scene. The ground truth is a set of labels. The result of recognition is
+     * conceptually just a set of labels. For measuring performance, we can take
+     * the ground truth label set and the recognized label set and compare them. */
+    struct LabelSet {
+
+        std::vector<Label> labels;
+
+        bool emptyScene() const { return labels.empty(); }
+        bool onScene(const std::string & name) const;
+        int distinctLabelCount() const;
+        std::vector<opencv_candidate::PoseRT> posesOf(const std::string & subject) const;
+
+        void read(const boost::filesystem::path & filename);
+        void write(const boost::filesystem::path & filename) const;
 
     };
 

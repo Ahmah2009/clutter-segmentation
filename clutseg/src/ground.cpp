@@ -24,72 +24,12 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    void LabeledPose::write(cv::FileStorage& fs) const {
-        fs << name;
-        pose.write(fs);
-    }
-
-    void LabeledPose::read(const cv::FileNode& fn) {
-        name = fn.name();
-        pose.read(fn);
-    }
-
-    bool GroundTruth::onScene(const string & name) const {
-        // slow 
-        BOOST_FOREACH(const LabeledPose & np, labels) {
-            if (np.name == name) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    int GroundTruth::distinctLabelCount() const {
-        set<string> d;
-        BOOST_FOREACH(const LabeledPose & np, labels) {
-            d.insert(np.name);
-        }
-        return d.size();
-    }
-
-    vector<PoseRT> GroundTruth::posesOf(const string & subject) const {
-        vector<PoseRT> ps;
-        BOOST_FOREACH(const LabeledPose & np, labels) {
-            if (np.name == subject) {
-                ps.push_back(np.pose);
-            }
-        }
-        return ps;
-    }
-
-    void GroundTruth::read(const bfs::path & filename) {
-        cout << "[GROUND] Reading in " << filename << endl;
+    SetGroundTruth  loadSetGroundTruth(const bfs::path & filename) {
         assert_path_exists(filename);
-        labels.clear();
-        FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
-        // iterate over objects
-        for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
-            LabeledPose np;
-            np.read(*n_it);
-            np.pose.estimated = true;
-            labels.push_back(np);  
-        }
-    }
-
-    void GroundTruth::write(const bfs::path & filename) const {
-        FileStorage fs(filename.string(), FileStorage::WRITE);
-        BOOST_FOREACH(const LabeledPose & np, labels) {
-            np.write(fs);
-        }
-        fs.release();
-    } 
-
-    SetGroundTruth loadSetGroundTruth(const bfs::path & filename) {
-        assert_path_exists(filename);
-        SetGroundTruth m = loadSetGroundTruthWithoutPoses(filename);
+        SetGroundTruth  m = loadSetGroundTruthWithoutPoses(filename);
         for (SetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
             string img_name = it->first;   
-            GroundTruth g = it->second;
+            LabelSet g = it->second;
             string ground_name = img_name + ".ground.yaml";
             g.read(filename.parent_path() / ground_name);
             m[img_name] = g;
@@ -98,9 +38,9 @@ namespace clutseg {
     }
 
     // TODO: does not really parse a python configuration file
-    SetGroundTruth loadSetGroundTruthWithoutPoses(const bfs::path & filename) {
+    SetGroundTruth  loadSetGroundTruthWithoutPoses(const bfs::path & filename) {
         assert_path_exists(filename);
-        SetGroundTruth m;
+        SetGroundTruth  m;
         ifstream f;
         f.open(filename.string().c_str()); 
         if (!f.is_open()) {
@@ -125,11 +65,11 @@ namespace clutseg {
                 boost::trim(key);
                 vector<string> v;
                 boost::split(v, val, boost::is_any_of(" "), boost::token_compress_on);
-                GroundTruth groundTruth;
+                LabelSet groundTruth;
                 for (size_t i = 0; i < v.size(); i++) {
                     boost::trim(v[i]);
                     if (v[i].length() > 0) {
-                        LabeledPose np(v[i]);
+                        Label np(v[i]);
                         groundTruth.labels.push_back(np);
                     }
                 } 

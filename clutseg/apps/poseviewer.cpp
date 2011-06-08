@@ -52,9 +52,9 @@ int main(int argc, char *argv[]) {
             cout << endl;
             visualizer.addPointCloud(cloud, str(boost::format("cloud-%d") % i));
         } else if (boost::algorithm::ends_with(arg, ".ground.yaml")) {
-            GroundTruth g;
+            LabelSet g;
             g.read(arg);
-            BOOST_FOREACH(LabeledPose np, g.labels) {
+            BOOST_FOREACH(Label np, g.labels) {
                 addPose(visualizer, np.pose, str(boost::format("pose-%d-%d") % i % rand()));
             }
         } else if (boost::algorithm::ends_with(arg, ".yaml")) {

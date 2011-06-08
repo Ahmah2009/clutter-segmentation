@@ -251,9 +251,9 @@ namespace clutseg {
       }
     }
 
-    void drawGroundTruth(Mat & canvas, const GroundTruth & groundTruth,
+    void drawGroundTruth(Mat & canvas, const LabelSet & groundTruth,
                             const Camera & camera) {
-        BOOST_FOREACH(const LabeledPose & np, groundTruth.labels) {
+        BOOST_FOREACH(const Label & np, groundTruth.labels) {
             drawPose(canvas, np.pose, camera,
                     Scalar(20, 20, 20), Scalar(125, 125, 125), Scalar(235, 235, 235),
                     np.name + ".x", np.name + ".y", np.name + ".z");

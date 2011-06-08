@@ -258,7 +258,7 @@ TEST_F(PoseTest, ConvertFilePoseToDoubleMany) {
     EXPECT_DOUBLE_EQ(0.45170259475708008, poses[1].rvec.at<double>(0, 0));
 }
 
-TEST_F(PoseTest, ReadLabeledPoses) {
+TEST_F(PoseTest, ReadLabels) {
     bfs::path p("data/detect_choices.yaml.gz");
     FileStorage in(p.string(), FileStorage::READ); 
     for (FileNodeIterator n_it = in.root().begin(); n_it != in.root().end(); n_it++) {

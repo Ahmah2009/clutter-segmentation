@@ -15,8 +15,8 @@ using namespace cv;
 using namespace std;
 using namespace clutseg;
 
-TEST(GroundTest, LabeledPoseRead) {
-    LabeledPose np;
+TEST(GroundTest, LabelRead) {
+    Label np;
     FileStorage fs("./data/image_00042.png.pose.yaml", FileStorage::READ);
     np.read(fs.getFirstTopLevelNode());
     fs.release();
@@ -24,11 +24,11 @@ TEST(GroundTest, LabeledPoseRead) {
     EXPECT_FLOAT_EQ(2.3623705429591477, np.pose.rvec.at<double>(0, 0));
 }
 
-TEST(GroundTest, LabeledPoseReadMany) {
+TEST(GroundTest, LabelReadMany) {
     FileStorage fs("./data/image_00022.detect_choices.yaml.gz", FileStorage::READ);
-    vector<LabeledPose> nps;
+    vector<Label> nps;
     for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
-        LabeledPose np((*n_it).name());
+        Label np((*n_it).name());
         np.pose.read(*n_it);
         np.pose.estimated = true;
         nps.push_back(np);
@@ -44,10 +44,10 @@ TEST(GroundTest, LabeledPoseReadMany) {
 }
 
 TEST(GroundTest, ReadSetGroundTruthWithoutPoses) {
-    SetGroundTruth m = loadSetGroundTruthWithoutPoses("./data/testdesc.txt");
-    GroundTruth s = m["t0000.png"];
+    SetGroundTruth  m = loadSetGroundTruthWithoutPoses("./data/testdesc.txt");
+    LabelSet s = m["t0000.png"];
 
-    BOOST_FOREACH(const LabeledPose & np, s.labels) {
+    BOOST_FOREACH(const Label & np, s.labels) {
         EXPECT_FALSE(np.pose.estimated);
     }
     EXPECT_TRUE(s.onScene("teas_tea"));

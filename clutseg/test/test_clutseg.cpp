@@ -86,7 +86,7 @@ class ClutsegTest : public ::testing::Test {
         PointCloudT haltbare_milch_train_cloud;
         Mat clutter_img;
         PointCloudT clutter_cloud;
-        GroundTruth clutter_truth;
+        LabelSet clutter_truth;
         Camera camera;
         Result res;
 

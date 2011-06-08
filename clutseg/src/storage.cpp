@@ -96,7 +96,7 @@ namespace clutseg {
         bfs::create_directories(lc_path.parent_path());
         FileStorage lc_fs(lc_path.string(), FileStorage::WRITE);
         if (report.result.guess_made) {
-            LabeledPose np(
+            Label np(
                 report.result.locate_choice.getObject()->name,
                 poseToPoseRT(report.result.locate_choice.aligned_pose()));
             np.write(lc_fs);
@@ -110,7 +110,7 @@ namespace clutseg {
         FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
 	// FIXME: YAML does not allow duplicate keys
         BOOST_FOREACH(const Guess & c, report.result.detect_choices) {
-            LabeledPose np(c.getObject()->name, poseToPoseRT(c.aligned_pose()));
+            Label np(c.getObject()->name, poseToPoseRT(c.aligned_pose()));
             np.write(dc_fs);
         }
         dc_fs.release();

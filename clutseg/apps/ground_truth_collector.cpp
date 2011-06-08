@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     bfs::directory_iterator end;
     while (it != end) {
         if (boost::ends_with(it->filename(), ".pose.yaml")) {
-            GroundTruth g;
+            LabelSet g;
             PoseRT pose_zero;
             cout << "[GENERAL] Reading zero pose file " << it->string() << endl;
             readPose(it->string(), pose_zero);
@@ -74,9 +74,9 @@ int main(int argc, char **argv) {
             PoseRT pose_max = translatePose(pose_zero, t_max);
             string img_name = it->filename().substr(0, it->filename().size() - 10);
 
-            g.labels.push_back(LabeledPose(obj_min, pose_min));
-            g.labels.push_back(LabeledPose(obj_zero, pose_zero));
-            g.labels.push_back(LabeledPose(obj_max, pose_max));
+            g.labels.push_back(Label(obj_min, pose_min));
+            g.labels.push_back(Label(obj_zero, pose_zero));
+            g.labels.push_back(Label(obj_max, pose_max));
 
             bfs::path ground_truth_file = test_dir / (img_name + ".ground.yaml");
             cout << "[GENERAL] Writing ground truth file " << ground_truth_file.string() << endl;

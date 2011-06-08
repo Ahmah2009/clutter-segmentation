@@ -90,7 +90,7 @@ namespace clutseg {
                             const std::string & baseDirectory);
 
     /** Draws ground truth poses and labels */
-    void drawGroundTruth(cv::Mat & canvas, const clutseg::GroundTruth & groundTruth,
+    void drawGroundTruth(cv::Mat & canvas, const clutseg::LabelSet & groundTruth,
                             const opencv_candidate::Camera & camera);
 }
 

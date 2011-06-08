@@ -22,7 +22,7 @@ namespace clutseg {
 
     /** Computes score for one single test scene */
     void update_detect_sipc(const Result & result,
-                            const GroundTruth & ground,
+                            const LabelSet & ground,
                             const set<string> & templateNames,
                             detect_sipc_t & detect_sipc) {
         int s_h = 0;
@@ -71,7 +71,7 @@ namespace clutseg {
         detect_sipc.acc_score += 0.5 * max(0.0, s_h - 0.5 * s_m - s_n + 0.5 *(s_r + s_t));
     }
 
-    void compute_errors(const Guess & guess, const GroundTruth & ground, double & angle_err, double & trans_err) {
+    void compute_errors(const Guess & guess, const LabelSet & ground, double & angle_err, double & trans_err) {
         vector<PoseRT> poses = ground.posesOf(guess.getObject()->name);
         if (poses.size() > 1) {
             throw runtime_error(
@@ -87,7 +87,7 @@ namespace clutseg {
 
     /** Computes score for one single test scene */
     void update_locate_sipc(const Result & result,
-                            const GroundTruth & ground,
+                            const LabelSet & ground,
                             const set<string> & /* templateNames */,
                             locate_sipc_t & locate_sipc) {
         if (ground.emptyScene()) {
@@ -122,7 +122,7 @@ namespace clutseg {
         locate_sipc.frames++;
     } 
 
-    void update_detect_roc(const Result & result, const GroundTruth & ground, const set<string> & templateNames, Response & response) {
+    void update_detect_roc(const Result & result, const LabelSet & ground, const set<string> & templateNames, Response & response) {
         set<string> choice_labels = result.distinctLabels();
         BOOST_FOREACH(const string & subj, templateNames) {
             if (ground.onScene(subj)) {
@@ -142,7 +142,7 @@ namespace clutseg {
     }
 
     void update_locate_errors(const SetResult & resultSet,
-                                const SetGroundTruth & groundSet,
+                                const SetGroundTruth  & groundSet,
                                 const set<string> & /* templateNames */,
                                 Response & rsp) {
         float acc_angle_err = 0;
@@ -161,7 +161,7 @@ namespace clutseg {
 
         for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
-            GroundTruth g = it->second;
+            LabelSet g = it->second;
             if (resultSet.find(img_name) == resultSet.end()) {
                 throw runtime_error(str(boost::format("ERROR: No result for image '%s'") % img_name));
             }
@@ -226,7 +226,7 @@ namespace clutseg {
     }
 
     void ResponseFunction::operator()(const SetResult & resultSet,
-                                        const SetGroundTruth & groundSet,
+                                        const SetGroundTruth  & groundSet,
                                         const set<string> & templateNames,
                                         Response & rsp) {
         rsp.value = 0.0;
@@ -236,7 +236,7 @@ namespace clutseg {
 
         for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
-            GroundTruth g = it->second;
+            LabelSet g = it->second;
             if (resultSet.find(img_name) == resultSet.end()) {
                 throw runtime_error(str(boost::format("ERROR: No result for image '%s'") % img_name));
             }
@@ -250,7 +250,7 @@ namespace clutseg {
     }
 
 
-    void CutSseResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth & groundSet, const set<string> & templateNames, Response & rsp) {
+    void CutSseResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth  & groundSet, const set<string> & templateNames, Response & rsp) {
         ResponseFunction::operator()(resultSet, groundSet, templateNames, rsp);
 
         // TODO: maybe we can compute this directly
@@ -258,7 +258,7 @@ namespace clutseg {
         for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             const string & img_name = it->first;
             cout << "[RESPONSE] Validating results against ground truth: " << img_name << endl;
-            const GroundTruth & g = it->second;
+            const LabelSet & g = it->second;
             const Result & result = resultSet.find(img_name)->second;
             if (!result.guess_made) {
                 if (!g.emptyScene()) {

@@ -30,7 +30,7 @@ namespace clutseg {
         TestReport(const Experiment & experiment,
                     const ClutsegQuery & query,
                     const Result & result,
-                    const GroundTruth & ground,
+                    const LabelSet & ground,
                     const std::string & img_name,
                     const boost::filesystem::path & test_dir,
                     const opencv_candidate::Camera camera) :
@@ -45,7 +45,7 @@ namespace clutseg {
         Experiment experiment;
         ClutsegQuery query;
         Result result;
-        GroundTruth ground;
+        LabelSet ground;
        
         std::string img_name;
         boost::filesystem::path test_dir; 

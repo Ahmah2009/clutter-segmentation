@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
         throw std::runtime_error("Empty training base.");
     }
     
-    SetGroundTruth testdesc = loadSetGroundTruthWithoutPoses(boost::filesystem::path(opts.testdescFilename));
+    SetGroundTruth  testdesc = loadSetGroundTruthWithoutPoses(boost::filesystem::path(opts.testdescFilename));
 
     bool write_store = (opts.storeDirectory != "");
 
@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
             return 1;
         } // end of block that could probably be moved out of the loop 
 
-        GroundTruth groundTruth = it->second; 
+        LabelSet groundTruth = it->second; 
         // true positives
         int tp = 0;
         // false positives
@@ -437,7 +437,7 @@ int main(int argc, char *argv[])
             stats << endl;
             stats << "# -- " << img_name << " -- " << endl;
             stats << "# actual objects: ";
-            foreach (LabeledPose np, it->second.labels) {
+            foreach (Label np, it->second.labels) {
                 stats << np.name << ", ";
             }
             stats << endl;

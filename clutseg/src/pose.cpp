@@ -7,13 +7,14 @@
 #include "clutseg/check.h"
 
 #include "clutseg/gcc_diagnostic_disable.h"
-    #include <fiducial/fiducial.h>
-    #include <opencv/cxeigen.hpp>
-    #include <opencv2/calib3d/calib3d.hpp>
     #include <boost/random/normal_distribution.hpp>
     #include <boost/random.hpp>
     #include <boost/foreach.hpp>
     #include <boost/format.hpp>
+    #include <fiducial/fiducial.h>
+    #include <opencv/cxeigen.hpp>
+    #include <opencv2/calib3d/calib3d.hpp>
+    #include <set>
     #include <utility>
 #include "clutseg/gcc_diagnostic_enable.h"
 
@@ -26,6 +27,68 @@ using namespace std;
 namespace bfs = boost::filesystem;
 
 namespace clutseg {
+
+    void Label::write(cv::FileStorage& fs) const {
+        fs << name;
+        pose.write(fs);
+    }
+
+    void Label::read(const cv::FileNode& fn) {
+        name = fn.name();
+        pose.read(fn);
+    }
+
+    bool LabelSet::onScene(const string & name) const {
+        // slow 
+        BOOST_FOREACH(const Label & np, labels) {
+            if (np.name == name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int LabelSet::distinctLabelCount() const {
+        set<string> d;
+        BOOST_FOREACH(const Label & np, labels) {
+            d.insert(np.name);
+        }
+        return d.size();
+    }
+
+    vector<PoseRT> LabelSet::posesOf(const string & subject) const {
+        vector<PoseRT> ps;
+        BOOST_FOREACH(const Label & np, labels) {
+            if (np.name == subject) {
+                ps.push_back(np.pose);
+            }
+        }
+        return ps;
+    }
+
+    void LabelSet::read(const bfs::path & filename) {
+        cout << "[GROUND] Reading in " << filename << endl;
+        assert_path_exists(filename);
+        labels.clear();
+        FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
+        // iterate over objects
+        for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
+            // FIXME:
+            Label np;
+            np.read(*n_it);
+            np.pose.estimated = true;
+            labels.push_back(np);  
+        }
+    }
+
+    void LabelSet::write(const bfs::path & filename) const {
+        FileStorage fs(filename.string(), FileStorage::WRITE);
+        BOOST_FOREACH(const Label & np, labels) {
+            // FIXME:
+            np.write(fs);
+        }
+        fs.release();
+    } 
 
     Point projectOrigin(const PoseRT & pose, const opencv_candidate::Camera & camera) {
         Point3d o(0, 0, 0);
