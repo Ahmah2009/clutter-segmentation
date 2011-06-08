@@ -177,8 +177,11 @@ EOF
     foot $out
 }
 
+plotid=0
+
 function plot() {
-    fn=corr.$2.$3.$(uuidgen).png
+    ((plotid++))
+    fn=corr.$2.$3.$plotid.png
     result-corr-succ-rate "$1" "$2" "$3" "$4" $report_dir/$fn "$5" "$6" > /dev/null
     echo "<img src='$fn' />"
 }
@@ -279,6 +282,10 @@ function report_plots() {
         avg_detect_inliers \
 	"view_experiment_response" >> $plots
 
+    plot "Success rate vs. avg. keypoints" \
+	succ_rate \
+	avg_keypoints \
+	"view_experiment_response" >> $plots
 
     foot $plots
 }
@@ -300,6 +307,10 @@ report_plots
 report_index
 
 if has_opt --upload && [ "$CLUTSEG_RESULT_URL" != "" ] ; then
-    rsync --recursive --archive --verbose --progress $CLUTSEG_ARTIFACT_DIR/report/ $CLUTSEG_RESULT_URL
+    opt="--recursive --archive --verbose --progress"
+    if has_opt --delete ; then
+	opt+=" --delete"
+    fi 
+    rsync $opt $CLUTSEG_ARTIFACT_DIR/report/ $CLUTSEG_RESULT_URL
 fi
 
