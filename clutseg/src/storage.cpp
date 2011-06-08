@@ -108,6 +108,7 @@ namespace clutseg {
         bfs::path dc_path = erd / (img_basename + ".detect_choices.yaml.gz");
         bfs::create_directories(dc_path.parent_path());
         FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
+	// FIXME: YAML does not allow duplicate keys
         BOOST_FOREACH(const Guess & c, report.result.detect_choices) {
             LabeledPose np(c.getObject()->name, poseToPoseRT(c.aligned_pose()));
             np.write(dc_fs);

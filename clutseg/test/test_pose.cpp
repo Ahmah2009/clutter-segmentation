@@ -233,6 +233,12 @@ TEST_F(PoseTest, RotatePose) {
     EXPECT_NEAR(M_PI / 9.0, angle_between(p, q), 1e-10);
 }
 
+/* FIXME:
+TEST_F(PoseTest, ConvertFilePoseToDoubleEmpty) {
+    bfs::path p("build/image_00054.detect_choices.yaml.gz");
+    convertPoseFileToDouble("./data/image_00054.detect_choices.yaml.gz", p);
+}*/
+
 TEST_F(PoseTest, ConvertFilePoseToDouble) {
     bfs::path p("build/image_00040.locate_choice.yaml.gz");
     convertPoseFileToDouble("./data/image_00040.locate_choice.yaml.gz", p);
@@ -252,3 +258,15 @@ TEST_F(PoseTest, ConvertFilePoseToDoubleMany) {
     EXPECT_DOUBLE_EQ(0.45170259475708008, poses[1].rvec.at<double>(0, 0));
 }
 
+TEST_F(PoseTest, ReadLabeledPoses) {
+    bfs::path p("data/detect_choices.yaml.gz");
+    FileStorage in(p.string(), FileStorage::READ); 
+    for (FileNodeIterator n_it = in.root().begin(); n_it != in.root().end(); n_it++) {
+        Pose p;
+        string n = (*n_it).name();
+        cout << n << endl;
+        cout << (*n_it)["name"].name() << endl;
+        cout << string((*n_it)["name"]) << endl;
+        p.read((*n_it)["pose"]);
+    }
+}
