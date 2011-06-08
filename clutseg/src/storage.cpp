@@ -8,11 +8,11 @@
 #include "clutseg/viz.h"
 
 #include "clutseg/gcc_diagnostic_disable.h"
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
-#include <iostream>
-#include <opencv2/highgui/highgui.hpp>
-#include <tod/core/Features2d.h>
+    #include <boost/foreach.hpp>
+    #include <boost/format.hpp>
+    #include <iostream>
+    #include <opencv2/highgui/highgui.hpp>
+    #include <tod/core/Features2d.h>
 #include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
@@ -96,8 +96,10 @@ namespace clutseg {
         bfs::create_directories(lc_path.parent_path());
         FileStorage lc_fs(lc_path.string(), FileStorage::WRITE);
         if (report.result.guess_made) {
-            lc_fs << report.result.locate_choice.getObject()->name;
-            report.result.locate_choice.aligned_pose().write(lc_fs);
+            LabeledPose np(
+                report.result.locate_choice.getObject()->name,
+                poseToPoseRT(report.result.locate_choice.aligned_pose()));
+            np.write(lc_fs);
         }
         lc_fs.release();
 
@@ -107,8 +109,8 @@ namespace clutseg {
         bfs::create_directories(dc_path.parent_path());
         FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
         BOOST_FOREACH(const Guess & c, report.result.detect_choices) {
-            dc_fs << c.getObject()->name;
-            c.aligned_pose().write(dc_fs);
+            LabeledPose np(c.getObject()->name, poseToPoseRT(c.aligned_pose()));
+            np.write(dc_fs);
         }
         dc_fs.release();
 
@@ -118,4 +120,5 @@ namespace clutseg {
         TODParameters lp = report.experiment.paramset.toLocateTodParameters();
         store_config(erd / "locate.config.yaml", lp);
     }
+
 }
