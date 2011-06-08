@@ -39,8 +39,8 @@ namespace clutseg {
         /** The pose of the object. Check pose.estimated whether it is available. */
         opencv_candidate::PoseRT pose; 
 
-        void write(cv::FileStorage& fs) const;
-        void read(const cv::FileNode& fn);
+        void write(cv::FileStorage & fs) const;
+        void read(const cv::FileNode & fn);
 
     };
     
@@ -57,8 +57,8 @@ namespace clutseg {
         int distinctLabelCount() const;
         std::vector<opencv_candidate::PoseRT> posesOf(const std::string & subject) const;
 
-        void read(const boost::filesystem::path & filename);
-        void write(const boost::filesystem::path & filename) const;
+        void write(cv::FileStorage & fs) const;
+        void read(const cv::FileNode & fn);
 
     };
 

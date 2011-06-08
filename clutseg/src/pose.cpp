@@ -40,6 +40,7 @@ namespace clutseg {
     void Label::read(const cv::FileNode& fn) {
         name = string(fn["name"]);
         pose.read(fn["pose"]);
+        pose.estimated = true;
     }
 
     bool LabelSet::onScene(const string & name) const {
@@ -70,28 +71,22 @@ namespace clutseg {
         return ps;
     }
 
-    void LabelSet::read(const bfs::path & filename) {
-        cout << "[GROUND] Reading in " << filename << endl;
-        assert_path_exists(filename);
+    void LabelSet::read(const FileNode & fn) {
         labels.clear();
-        FileStorage fs = FileStorage(filename.string(), FileStorage::READ);
         // iterate over objects
-        for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
-            // FIXME:
+        for (FileNodeIterator n_it = fn.begin(); n_it != fn.end(); n_it++) {
             Label np;
             np.read(*n_it);
-            np.pose.estimated = true;
             labels.push_back(np);  
         }
     }
 
-    void LabelSet::write(const bfs::path & filename) const {
-        FileStorage fs(filename.string(), FileStorage::WRITE);
+    void LabelSet::write(FileStorage & fs) const {
+        fs << "[";
         BOOST_FOREACH(const Label & np, labels) {
-            // FIXME:
             np.write(fs);
         }
-        fs.release();
+        fs << "]";
     } 
 
     Point projectOrigin(const PoseRT & pose, const opencv_candidate::Camera & camera) {

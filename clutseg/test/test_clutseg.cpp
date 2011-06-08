@@ -71,8 +71,9 @@ class ClutsegTest : public ::testing::Test {
             // FIXME: 
             clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png");
             pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/cloud_00022.pcd", clutter_cloud);
-
-            clutter_truth.read(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png.ground.yaml");
+            FileStorage fs(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png.ground.yaml", FileStorage::READ);
+            clutter_truth.read(fs["labels"]); // TODO: YAML_NODE_NAME
+            fs.release();
             assert(!clutter_truth.labels.empty());
 
             camera = Camera("./data/camera.yml", Camera::TOD_YAML);

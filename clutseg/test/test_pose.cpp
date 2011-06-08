@@ -255,39 +255,48 @@ TEST_F(PoseTest, ConvertLegacyFilePoseToDoubleMany) {
     poses[1].read(in["assam_tea"]);
     EXPECT_DOUBLE_EQ(0.44822442531585693, poses[0].rvec.at<double>(0, 0));
     EXPECT_DOUBLE_EQ(0.45170259475708008, poses[1].rvec.at<double>(0, 0));
+    in.release();
 }
 
 TEST_F(PoseTest, ReadLabels) {
     bfs::path p("data/detect_choices.yaml.gz");
     FileStorage in(p.string(), FileStorage::READ); 
-    for (FileNodeIterator n_it = in.root().begin(); n_it != in.root().end(); n_it++) {
-        Pose p;
-        string n = (*n_it).name();
-        cout << n << endl;
-        cout << (*n_it)["name"].name() << endl;
-        cout << string((*n_it)["name"]) << endl;
-        p.read((*n_it)["pose"]);
+    // TODO: LabelSet::YAML_NODE_NAME
+    for (FileNodeIterator n_it = in["labels"].begin(); n_it != in["labels"].end(); n_it++) {
+        Label np;
+        np.read(*n_it);
+        EXPECT_TRUE(np.name == "assam_tea" || np.name == "haltbare_milch");
     }
+    in.release();
 }
 
-TEST_F(PoseTest, ReadYamlCollection) {
-    ofstream fout;
-    fout.open("build/collection.yaml"); 
-    fout << "%YAML:1.0" << endl
-        << "-" << endl
-        << "    alpha: 3" << endl
-        << "    beta: 4" << endl
-        << "-" << endl
-        << "    alpha: 9" << endl
-        << "    beta: 8" << endl;
-    fout.close();
-    FileStorage fs("build/collection.yaml", FileStorage::READ);
-    for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
-        FileNode fn = *n_it;
-        cout << "-----------------------" << endl;
-        cout << "alpha = " << int(fn["alpha"]) << endl;
-        cout << "beta  = " << int(fn["beta"]) << endl;
-    }
-    fs.release();
+TEST_F(PoseTest, ReadWriteLabelSet) {
+    bfs::path p("data/detect_choices.yaml.gz");
+
+    LabelSet tmp;
+    FileStorage in1(p.string(), FileStorage::READ); 
+    tmp.read(in1["labels"]);
+    in1.release();
+    
+    bfs::path q("build/ReadLabelSet.yaml.gz");
+    FileStorage out(q.string(), FileStorage::WRITE);
+    out << "labels";
+    tmp.write(out);
+    out.release();
+
+    LabelSet ls;
+    FileStorage in2(q.string(), FileStorage::READ); 
+    ls.read(in2["labels"]);
+    in2.release();
+ 
+    EXPECT_EQ(2, ls.distinctLabelCount()); 
+    ASSERT_EQ(1, ls.posesOf("assam_tea").size()); 
+    ASSERT_EQ(1, ls.posesOf("haltbare_milch").size()); 
+    EXPECT_EQ(0, ls.posesOf("jacobs_coffee").size()); 
+    EXPECT_EQ(0, ls.posesOf("icedtea").size()); 
+    PoseRT atp = ls.posesOf("assam_tea")[0];
+    PoseRT hmp = ls.posesOf("haltbare_milch")[0];
+    EXPECT_DOUBLE_EQ(0.45170259475708008, atp.rvec.at<double>(0, 0));
+    EXPECT_DOUBLE_EQ(0.44822442531585693, hmp.rvec.at<double>(0, 0));
 }
 

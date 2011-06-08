@@ -74,7 +74,9 @@ struct ResponseFunctionTest : public ::testing::Test {
         p = bfs::path(getenv("CLUTSEG_PATH"));
         {
             empty_scene = LabelSet();
-            at_hm_jc.read(p / "ias_kinect_test_grounded_21/at_hm_jc/image_00008.png.ground.yaml");
+            FileStorage fs((p / "ias_kinect_test_grounded_21" / "at_hm_jc" / "image_00008.png.ground.yaml").string(), FileStorage::READ);
+            at_hm_jc.read(fs["labels"]);
+            fs.release();
             Pose atp = poseRtToPose(at_hm_jc.posesOf("assam_tea")[0]);
             Pose hmp = poseRtToPose(at_hm_jc.posesOf("haltbare_milch")[0]);
             Pose jcp = poseRtToPose(at_hm_jc.posesOf("jacobs_coffee")[0]);
