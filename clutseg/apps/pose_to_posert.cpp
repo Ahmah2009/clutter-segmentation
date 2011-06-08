@@ -17,13 +17,18 @@ using namespace std;
 namespace bfs = boost::filesystem;
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        cerr << "Usage: pose_to_posert <in-file> <out-file>" << endl;
+    if (argc != 2 && argc != 3) {
+        cerr << "Usage: pose_to_posert <in-file> [<out-file>]" << endl;
         cerr << endl;
         return 1;
     }
     bfs::path inp(argv[1]);
-    bfs::path outp(argv[2]);
+    bfs::path outp;
+    if (argc == 2) {
+        outp = inp;
+    } else {
+        outp = argv[2];
+    }
     convertPoseFileToDouble(inp, outp);
     return 0;
 }
