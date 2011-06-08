@@ -32,7 +32,7 @@ namespace clutseg {
             LabelSet g = it->second;
             string ground_name = img_name + ".ground.yaml";
             FileStorage fs((filename.parent_path() / ground_name).string(), FileStorage::READ);
-            g.read(fs["labels"]); // TODO: YAML_NODE_NAME
+            g.read(fs[LabelSet::YAML_NODE_NAME]);
             fs.release();
             m[img_name] = g;
         }

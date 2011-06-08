@@ -36,7 +36,7 @@ namespace clutseg {
             return 1 - (trans_err - min_t) / (max_t - min_t);
         }
     }
-    // TODO: make this a function score()() and remove member variable
+
     float locate_sipc_t::score() {
         return (0.5 * cscore + 0.25 * rscore + 0.25 * tscore) / frames;
     }

@@ -236,7 +236,7 @@ namespace clutseg {
         setMemberField(m, "test_runtime", test_runtime);
         insertOrUpdate(db, "response", m, id);
     }
-    // TODO: remove sipc.frames
+
     void Response::deserialize(sqlite3* db) {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format("select "

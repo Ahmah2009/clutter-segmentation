@@ -43,6 +43,8 @@ namespace clutseg {
         pose.estimated = true;
     }
 
+    const string YAML_NODE_NAME = "labels";
+
     bool LabelSet::onScene(const string & name) const {
         // slow 
         BOOST_FOREACH(const Label & np, labels) {

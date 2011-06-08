@@ -95,12 +95,13 @@ namespace clutseg {
         bfs::path lc_path = erd / (img_basename + ".locate_choice.yaml.gz");
         bfs::create_directories(lc_path.parent_path());
         FileStorage lc_fs(lc_path.string(), FileStorage::WRITE);
+        LabelSet lls;
         if (report.result.guess_made) {
-            Label np(
+            lls.labels.push_back(Label(
                 report.result.locate_choice.getObject()->name,
-                poseToPoseRT(report.result.locate_choice.aligned_pose()));
-            np.write(lc_fs);
+                poseToPoseRT(report.result.locate_choice.aligned_pose())));
         }
+        lls.write(lc_fs);
         lc_fs.release();
 
         // Save detect choices 
@@ -108,11 +109,12 @@ namespace clutseg {
         bfs::path dc_path = erd / (img_basename + ".detect_choices.yaml.gz");
         bfs::create_directories(dc_path.parent_path());
         FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
-	// FIXME: YAML does not allow duplicate keys
+        // TODO: Extract method
+        LabelSet dls;
         BOOST_FOREACH(const Guess & c, report.result.detect_choices) {
-            Label np(c.getObject()->name, poseToPoseRT(c.aligned_pose()));
-            np.write(dc_fs);
+            dls.labels.push_back(Label(c.getObject()->name, poseToPoseRT(c.aligned_pose())));
         }
+        dls.write(dc_fs);
         dc_fs.release();
 
         TODParameters dp = report.experiment.paramset.toDetectTodParameters();

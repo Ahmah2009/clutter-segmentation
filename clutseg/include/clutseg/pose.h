@@ -60,6 +60,8 @@ namespace clutseg {
         void write(cv::FileStorage & fs) const;
         void read(const cv::FileNode & fn);
 
+        const static string YAML_NODE_NAME;
+
     };
 
     cv::Point projectOrigin(const opencv_candidate::PoseRT & pose, const opencv_candidate::Camera & camera);

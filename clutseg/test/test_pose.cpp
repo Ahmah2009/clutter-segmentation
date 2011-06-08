@@ -261,8 +261,7 @@ TEST_F(PoseTest, ConvertLegacyFilePoseToDoubleMany) {
 TEST_F(PoseTest, ReadLabels) {
     bfs::path p("data/detect_choices.yaml.gz");
     FileStorage in(p.string(), FileStorage::READ); 
-    // TODO: LabelSet::YAML_NODE_NAME
-    for (FileNodeIterator n_it = in["labels"].begin(); n_it != in["labels"].end(); n_it++) {
+    for (FileNodeIterator n_it = in[LabelSet::YAML_NODE_NAME].begin(); n_it != in[LabelSet::YAML_NODE_NAME].end(); n_it++) {
         Label np;
         np.read(*n_it);
         EXPECT_TRUE(np.name == "assam_tea" || np.name == "haltbare_milch");
