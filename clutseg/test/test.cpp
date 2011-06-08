@@ -32,6 +32,13 @@ void fast_warning() {
     cerr << "[WARNING]: Test skipped." << endl;
 }
 
+void imshow_and_wait(const string & name, const Mat & canvas) {
+    if (!fast()) {
+        imshow(name, canvas);
+        waitKey(-1);
+    }
+}
+
 void sampleColorImage(Mat & img) {
     img = imread("./data/image_00000.png");
 }

@@ -55,10 +55,7 @@ TEST_F(PoseTest, PoseToPoseRT) {
     EXPECT_NEAR(posert.rvec.at<double>(2, 0), posertB.rvec.at<double>(2, 0), 1e-6);
 
     drawPose(canvas, posert, camera);
-    if (!fast()) {
-        imshow("PoseToPoseRT", canvas);
-        waitKey(0);
-    }
+    imshow_and_wait("PoseToPoseRT", canvas);
 }
 
 TEST_F(PoseTest, PoseToPoseRtTypes) {
@@ -82,10 +79,7 @@ TEST_F(PoseTest, TestTranslatePose) {
     drawPose(canvas3, pose_zero, camera);
     drawPose(canvas3, pose_p13, camera);
 
-    if (!fast()) {
-        imshow("TestTranslatePose", canvas3);
-        waitKey(0);
-    }
+    imshow_and_wait("TestTranslatePose", canvas3);
 }
 
 TEST_F(PoseTest, ValidatePose) {
@@ -153,10 +147,7 @@ TEST_F(PoseTest, DiffTwentyDegrees) {
     drawPose(canvas3, p, camera);
     drawPose(canvas3, q, camera);
 
-    if (!fast()) {
-        imshow("DiffTwentyDegrees", canvas3);
-        waitKey(0);
-    }
+    imshow_and_wait("DiffTwentyDegrees", canvas3);
 
     Mat R1;
     Mat R2;
@@ -185,10 +176,7 @@ TEST_F(PoseTest, DiffTwentyDegrees2) {
 
     drawPose(canvas3, p, camera);
     drawPose(canvas3, q, camera);
-    if (!fast()) {
-        imshow("DiffTwentyDegrees2", canvas3);
-        waitKey(0);
-    }
+    imshow_and_wait("DiffTwentyDegrees2", canvas3);
  
     Mat R1;
     Mat R2;

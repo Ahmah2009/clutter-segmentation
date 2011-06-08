@@ -84,13 +84,6 @@ class Viz : public ::testing::Test {
         vector<string> text;
 };
 
-void imshow_and_wait(const string & name, const Mat & canvas) {
-    if (!fast()) {
-        imshow(name, canvas);
-        waitKey(-1);
-    }
-}
-
 TEST_F(Viz, DrawKeypoints) {
     EXPECT_EQ(CV_8UC3, colorImage.type());
     EXPECT_EQ(CV_8UC1, f2d.image.type());

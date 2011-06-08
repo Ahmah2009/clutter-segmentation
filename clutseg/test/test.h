@@ -15,6 +15,7 @@
 
 bool fast();
 void fast_warning();
+void imshow_and_wait(const std::string & name, const cv::Mat & canvas);
 void sampleColorImage(cv::Mat & img);
 void samplePose(opencv_candidate::PoseRT & pose);
 void sampleCloud(clutseg::PointCloudT & cloud);
