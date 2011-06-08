@@ -85,6 +85,23 @@ void insert_if_not_exist(sqlite3* & db, Experiment & e) {
     sqlite3_finalize(read);
 }
 
+// TODO: move method to Experiment
+Experiment clone_setup(sqlite3* & db, int id) {
+    Experiment e;
+    e.id = id;
+    e.deserialize(db);
+    e.detach();
+    e.response = Response();
+    e.has_run = false;
+    e.flags = 0;
+    e.skip = false;
+    e.vcs_commit = "";
+    e.time = "";
+    e.human_note = "";
+    e.machine_note = "";
+    return e;
+}
+
 // IDEA: We could use a branch-and-bound technique (skip) for stopping an
 // experiment after we find (checking a couple of pictures) that it will
 // definitely have lower success rate than others. The experiment must be set
@@ -140,6 +157,60 @@ void insert_experiments(sqlite3* & db) {
         }
     }
 
+    sqlite3_stmt *select;
+    string sql = "select id from experiment join response where experiment.response_id = response.id order by succ_rate desc limit 20";
+    db_prepare(db, select, sql);
+    cout << "[SQL] " << sql << endl;
+    vector<int> ids;
+    while (sqlite3_step(select) == SQLITE_ROW) {
+        ids.push_back(sqlite3_column_int(select, 0));
+    }
+
+    // Test 20 best experiments according to success rate, use less RANSAC iterations to find out
+    // whether we can save time here.
+    assert(ids.size() == 20);
+    size_t j = 750;
+    for (size_t i = 0; i < ids.size(); i++, j++) {
+        Experiment e = clone_setup(db, ids[i]);
+        e.paramset.detect_pms_guess.ransacIterationsCount = 200;
+        e.paramset.locate_pms_guess.ransacIterationsCount = 200;
+        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+        e.batch = "run-2";
+        e.serialize(db);
+    }
+
+    // Test 20 best experiments according to success rate, and turn off ratio
+    // test to see what happens.
+    for (size_t i = 0; i < ids.size(); i++, j++) {
+        Experiment e = clone_setup(db, ids[i]);
+        e.paramset.detect_pms_match.doRatioTest = false;
+        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+        e.batch = "run-3";
+        e.serialize(db);
+    }
+
+    // Test 20 best experiments according to success rate, and use smaller
+    // threshold in recognition.
+    for (size_t i = 0; i < ids.size(); i++, j++) {
+        Experiment e = clone_setup(db, ids[i]);
+        e.paramset.recog_pms_fe.detector_params["threshold"] = 15;
+        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+        e.batch = "run-4";
+        e.serialize(db);
+    }
+ 
+    // Test 20 best experiments according to success rate, and use smaller
+    // threshold in recognition and also smaller threshold in training, i.e. 
+    // much more features.
+    for (size_t i = 0; i < ids.size(); i++, j++) {
+        Experiment e = clone_setup(db, ids[i]);
+        e.paramset.train_pms_fe.detector_params["threshold"] = 20;
+        e.paramset.recog_pms_fe.detector_params["threshold"] = 15;
+        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+        e.batch = "run-5";
+        e.serialize(db);
+    }
+ 
     // TODO: select best 10% and try knn = 3..4..5 and ratioThreshold=0.6,0.7,0.8,0.9 and
     //       play with threshold 20,30,40
     // 750 / 10 = 150, 150 * 3 * 4 * 3 = 3600 
@@ -269,6 +340,7 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }*/
 
+    /*
     // STAR + rBRIEF + LSH-BINARY
     {
         Experiment e = createExperiment();
@@ -328,7 +400,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.recog_pms_fe.descriptor_type = "ORB";
         e.paramset.recog_pms_fe.detector_params["threshold"] = 0.0000001;
         insert_if_not_exist(db, e);
-    }
+    } */
 }
 
 ExperimentRunner runner;
