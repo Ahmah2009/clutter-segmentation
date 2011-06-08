@@ -20,6 +20,8 @@ using namespace cv;
 using namespace opencv_candidate;
 using namespace clutseg;
 
+namespace bfs = boost::filesystem;
+
 // TODO: consistently name tests
 
 struct PoseTest : public ::testing::Test {
@@ -229,5 +231,24 @@ TEST_F(PoseTest, RotatePose) {
     Mat d = Mat::zeros(3, 1, CV_64FC1);
     Rodrigues(D, d);
     EXPECT_NEAR(M_PI / 9.0, angle_between(p, q), 1e-10);
+}
+
+TEST_F(PoseTest, ConvertFilePoseToDouble) {
+    bfs::path p("build/image_00040.locate_choice.yaml.gz");
+    convertPoseFileToDouble("./data/image_00040.locate_choice.yaml.gz", p);
+    PoseRT pose;
+    readPose(p, pose);
+    EXPECT_DOUBLE_EQ(2.2760460376739502, pose.rvec.at<double>(0, 0));
+}
+
+TEST_F(PoseTest, ConvertFilePoseToDoubleMany) {
+    bfs::path p("build/image_00022.detect_choices.yaml.gz");
+    convertPoseFileToDouble("./data/image_00022.detect_choices.yaml.gz", p);
+    FileStorage in(p.string(), FileStorage::READ);
+    PoseRT poses[2];
+    poses[0].read(in["haltbare_milch"]);
+    poses[1].read(in["assam_tea"]);
+    EXPECT_DOUBLE_EQ(0.44822442531585693, poses[0].rvec.at<double>(0, 0));
+    EXPECT_DOUBLE_EQ(0.45170259475708008, poses[1].rvec.at<double>(0, 0));
 }
 

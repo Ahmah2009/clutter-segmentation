@@ -7,27 +7,25 @@
 #include "clutseg/check.h"
 
 #include "clutseg/gcc_diagnostic_disable.h"
-#include <fiducial/fiducial.h>
-#include <opencv/cxeigen.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random.hpp>
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
+    #include <fiducial/fiducial.h>
+    #include <opencv/cxeigen.hpp>
+    #include <opencv2/calib3d/calib3d.hpp>
+    #include <boost/random/normal_distribution.hpp>
+    #include <boost/random.hpp>
+    #include <boost/foreach.hpp>
+    #include <boost/format.hpp>
+    #include <utility>
 #include "clutseg/gcc_diagnostic_enable.h"
 
-using namespace fiducial;
-using namespace cv;
-using namespace opencv_candidate;
 using namespace boost;
+using namespace cv;
+using namespace fiducial;
+using namespace opencv_candidate;
+using namespace std;
 
 namespace bfs = boost::filesystem;
 
 namespace clutseg {
-
-    void typify(cv::Mat & m) {
-        m.convertTo(m, CV_64F);
-    }
 
     Point projectOrigin(const PoseRT & pose, const opencv_candidate::Camera & camera) {
         Point3d o(0, 0, 0);
@@ -68,6 +66,7 @@ namespace clutseg {
         Rodrigues(R, dst.rvec);
         dst.tvec.convertTo(dst.tvec, CV_64F);
         dst.rvec.convertTo(dst.rvec, CV_64F);
+        dst.estimated = true;
         return dst;
     }
 
@@ -96,8 +95,31 @@ namespace clutseg {
         assert_path_exists(filename);
         FileStorage f;
         f.open(filename.string(), FileStorage::READ);
-        dst.read(f[PoseRT::YAML_NODE_NAME]);
+        dst.read(f.getFirstTopLevelNode());
         f.release();
+    }
+
+    void convertPoseFileToDouble(const boost::filesystem::path & src, const boost::filesystem::path & dst) {
+        assert_path_exists(src);
+        map<string, PoseRT> poses;
+        FileStorage in(src.string(), FileStorage::READ);
+        for (FileNodeIterator n_it = in.root().begin(); n_it != in.root().end(); n_it++) {
+            Pose p;
+            p.read(*n_it);
+            string n = (*n_it).name();
+            // why doesn't this work?
+            // n = n_it->name();
+            poses[n] = poseToPoseRT(p);
+        }
+        in.release();
+        FileStorage out(dst.string(), FileStorage::WRITE);
+        // preprocessor does not allow definition with < > in BOOST_FOREACH
+        typedef pair<string, PoseRT> pair_t;
+        BOOST_FOREACH(pair_t e, poses) {
+            out << e.first;
+            e.second.write(out);
+        }
+        out.release();
     }
 
     void modelToView(const Mat & mvtrans, const Mat & mvrot, const Mat & mpt, Mat & vpt) {

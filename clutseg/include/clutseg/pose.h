@@ -4,11 +4,14 @@
  * Provides helper methods for transforming model coordinates to camera
  * coordinates and vice versa, for reading and writing pose information, for
  * randomizing poses, translation and rotation. Basic data structures are
- * opencv_candidate::PoseRT, opencv_candidate::Pose, and cv::Mat. There seem to
- * be some issues with type confusion, depending on whether constructors are
- * used or poses are read from file. This module tries to always use CV_64FC1
- * matrices for computations, but this policy has not been implemented in each
- * method yet, so watch out! 
+ * opencv_candidate::PoseRT, opencv_candidate::Pose, and cv::Mat. Note that
+ * structs PoseRT and Pose are incompatible in many ways, especially in that
+ * PoseRT uses double matrices and Pose uses float matrices. Make sure to
+ * always access matrix elements of PoseRT.tvec and PoseRT.rvec via
+ * Mat::at<double>.  If accessing as float, will result in garbage but not in a
+ * runtime error. To make things worse, Pose matrices use float values. This
+ * module tries to always use CV_64FC1 matrices for computations and favor
+ * PoseRT objects over (conceptually equivalent) Pose objects.
  */
 
 #ifndef _POSE_UTIL_H_
@@ -19,8 +22,8 @@
     #include <cv.h>
     #include <opencv_candidate/Camera.h>
     #include <opencv_candidate/PoseRT.h>
+    #include <vector>
 #include "clutseg/gcc_diagnostic_enable.h"
-//#pragma GCC diagnostic pop
 
 namespace clutseg {
 
@@ -40,6 +43,17 @@ namespace clutseg {
     void writePose(const boost::filesystem::path & filename, const opencv_candidate::PoseRT & pose);
 
     void readPose(const boost::filesystem::path & filename, opencv_candidate::PoseRT & dst);
+
+
+     /* Unfortunately, Pose::write and PoseRT::write create files that pretty
+     * much look the same but are fully incompatible with each other in respect to
+     * Pose::read, PoseRT::write and the member access of tvec and rvec via
+     * Mat::at<double>. This method converts a YAML file that is known to have been
+     * written by Pose::write to a file that can be read by PoseRT::read. If the
+     * file contains multiple top level nodes, all of them are converted. Passing
+     * the same filename as source and destination means converting in-place and is
+     * supported. */
+    void convertPoseFileToDouble(const boost::filesystem::path & src, const boost::filesystem::path & dst);
 
     void modelToView(const cv::Mat & mvtrans, const cv::Mat & mvrot, const cv::Mat & mpt, cv::Mat & vpt);
 
