@@ -60,9 +60,13 @@ namespace clutseg {
         void write(cv::FileStorage & fs) const;
         void read(const cv::FileNode & fn);
 
-        const static string YAML_NODE_NAME;
+        const static std::string YAML_NODE_NAME;
 
     };
+
+    void writeLabelSet(const boost::filesystem::path & filename, const LabelSet & labelSet);
+
+    void readLabelSet(const boost::filesystem::path & filename, LabelSet & dst);
 
     cv::Point projectOrigin(const opencv_candidate::PoseRT & pose, const opencv_candidate::Camera & camera);
 

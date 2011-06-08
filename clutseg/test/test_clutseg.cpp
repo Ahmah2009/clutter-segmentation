@@ -34,11 +34,8 @@ class ClutsegTest : public ::testing::Test {
 
         virtual void SetUp() {
             if (!loaded) {
-                // TODO: use read method
                 FeatureExtractionParams fp;
-                FileStorage fp_in("data/test_clutseg.features.config.yaml", FileStorage::READ);
-                fp.read(fp_in[FeatureExtractionParams::YAML_NODE_NAME]);
-                fp_in.release();
+                readFeParams("data/test_clutseg.features.config.yaml", fp);
 
                 TODParameters dp;
                 FileStorage dp_in("data/test_clutseg.detect.config.yaml", FileStorage::READ);
@@ -68,11 +65,10 @@ class ClutsegTest : public ::testing::Test {
             haltbare_milch_train_img = imread("./data/image_00000.png");
             pcl::io::loadPCDFile("./data/cloud_00000.pcd", haltbare_milch_train_cloud);
 
+            // this unfortunately requires the test set being present
             clutter_img = imread(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png");
             pcl::io::loadPCDFile(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/cloud_00022.pcd", clutter_cloud);
-            FileStorage fs(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png.ground.yaml", FileStorage::READ);
-            clutter_truth.read(fs[LabelSet::YAML_NODE_NAME]);
-            fs.release();
+            readLabelSet(string(getenv("CLUTSEG_PATH")) + "/ias_kinect_test_grounded_21/at_hm_jc/image_00022.png.ground.yaml", clutter_truth);
             assert(!clutter_truth.labels.empty());
 
             camera = Camera("./data/camera.yml", Camera::TOD_YAML);

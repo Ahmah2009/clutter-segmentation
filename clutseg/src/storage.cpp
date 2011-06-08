@@ -101,21 +101,17 @@ namespace clutseg {
                 report.result.locate_choice.getObject()->name,
                 poseToPoseRT(report.result.locate_choice.aligned_pose())));
         }
-        lls.write(lc_fs);
-        lc_fs.release();
+        writeLabelSet(lc_path, lls);
 
         // Save detect choices 
-        // TODO: extract method
         bfs::path dc_path = erd / (img_basename + ".detect_choices.yaml.gz");
         bfs::create_directories(dc_path.parent_path());
-        FileStorage dc_fs(dc_path.string(), FileStorage::WRITE);
-        // TODO: Extract method
+        // TODO: extract convert method
         LabelSet dls;
         BOOST_FOREACH(const Guess & c, report.result.detect_choices) {
             dls.labels.push_back(Label(c.getObject()->name, poseToPoseRT(c.aligned_pose())));
         }
-        dls.write(dc_fs);
-        dc_fs.release();
+        writeLabelSet(dc_path, dls);
 
         TODParameters dp = report.experiment.paramset.toDetectTodParameters();
         store_config(erd / "detect.config.yaml", dp);

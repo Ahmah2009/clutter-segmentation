@@ -52,10 +52,9 @@ int main(int argc, char *argv[]) {
             cout << endl;
             visualizer.addPointCloud(cloud, str(boost::format("cloud-%d") % i));
         } else if (boost::algorithm::ends_with(arg, ".ground.yaml")) {
+            // TODO: switch is ambiguous, might fail depending on pose file format
             LabelSet g;
-            FileStorage fs(arg, FileStorage::READ);
-            g.read(fs["labels"]);
-            fs.release();
+            readLabelSet(arg, g);
             BOOST_FOREACH(Label np, g.labels) {
                 addPose(visualizer, np.pose, str(boost::format("pose-%d-%d") % i % rand()));
             }

@@ -43,7 +43,7 @@ namespace clutseg {
         pose.estimated = true;
     }
 
-    const string YAML_NODE_NAME = "labels";
+    const string LabelSet::YAML_NODE_NAME = "labels";
 
     bool LabelSet::onScene(const string & name) const {
         // slow 
@@ -90,6 +90,19 @@ namespace clutseg {
         }
         fs << "]";
     } 
+
+    void writeLabelSet(const boost::filesystem::path & filename, const LabelSet & labelSet) {
+        FileStorage fs(filename.string(), FileStorage::WRITE);
+        fs << LabelSet::YAML_NODE_NAME;
+        labelSet.write(fs);
+        fs.release();
+    }
+
+    void readLabelSet(const boost::filesystem::path & filename, LabelSet & dst) {
+        FileStorage fs(filename.string(), FileStorage::READ);
+        dst.read(fs[LabelSet::YAML_NODE_NAME]);
+        fs.release();
+    }
 
     Point projectOrigin(const PoseRT & pose, const opencv_candidate::Camera & camera) {
         Point3d o(0, 0, 0);

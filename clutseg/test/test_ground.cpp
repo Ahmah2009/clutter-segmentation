@@ -15,15 +15,6 @@ using namespace cv;
 using namespace std;
 using namespace clutseg;
 
-TEST(GroundTest, LabelRead) {
-    Label np;
-    FileStorage fs("./data/image_00042.png.pose.yaml", FileStorage::READ);
-    np.read(fs.getFirstTopLevelNode());
-    fs.release();
-    EXPECT_EQ("pose", np.name);
-    EXPECT_FLOAT_EQ(2.3623705429591477, np.pose.rvec.at<double>(0, 0));
-}
-
 TEST(GroundTest, LabelReadMany) {
     FileStorage fs("./data/image_00022.detect_choices.yaml.gz", FileStorage::READ);
     vector<Label> nps;
