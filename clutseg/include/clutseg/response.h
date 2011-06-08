@@ -33,7 +33,7 @@ namespace clutseg {
              * populates the other response statistics, such as response.success_rate etc.
              * This method must be called from derived classes. */
             virtual void operator()(const SetResult & result,
-                                    const SetGroundTruth  & ground,
+                                    const GroundTruth  & ground,
                                     const std::set<std::string> & templateNames,
                                     Response & response);
 
@@ -50,7 +50,7 @@ namespace clutseg {
             CutSseResponseFunction(float max_trans_error = 0.03, float max_angle_error = M_PI / 9) : ResponseFunction(max_trans_error, max_angle_error) {}
 
             virtual void operator()(const SetResult & result,
-                                    const SetGroundTruth  & ground,
+                                    const GroundTruth  & ground,
                                     const std::set<std::string> & templateNames,
                                     Response & response);
 

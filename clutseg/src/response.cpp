@@ -142,7 +142,7 @@ namespace clutseg {
     }
 
     void update_locate_errors(const SetResult & resultSet,
-                                const SetGroundTruth  & groundSet,
+                                const GroundTruth  & groundSet,
                                 const set<string> & /* templateNames */,
                                 Response & rsp) {
         float acc_angle_err = 0;
@@ -159,7 +159,7 @@ namespace clutseg {
         int nones = 0;
         int tp = 0;
 
-        for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
+        for (GroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
             LabelSet g = it->second;
             if (resultSet.find(img_name) == resultSet.end()) {
@@ -226,7 +226,7 @@ namespace clutseg {
     }
 
     void ResponseFunction::operator()(const SetResult & resultSet,
-                                        const SetGroundTruth  & groundSet,
+                                        const GroundTruth  & groundSet,
                                         const set<string> & templateNames,
                                         Response & rsp) {
         rsp.value = 0.0;
@@ -234,7 +234,7 @@ namespace clutseg {
         rsp.detect_sipc = detect_sipc_t();
         rsp.locate_sipc = locate_sipc_t();
 
-        for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
+        for (GroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
             LabelSet g = it->second;
             if (resultSet.find(img_name) == resultSet.end()) {
@@ -250,12 +250,12 @@ namespace clutseg {
     }
 
 
-    void CutSseResponseFunction::operator()(const SetResult & resultSet, const SetGroundTruth  & groundSet, const set<string> & templateNames, Response & rsp) {
+    void CutSseResponseFunction::operator()(const SetResult & resultSet, const GroundTruth  & groundSet, const set<string> & templateNames, Response & rsp) {
         ResponseFunction::operator()(resultSet, groundSet, templateNames, rsp);
 
         // TODO: maybe we can compute this directly
         double r_acc = 0;
-        for (SetGroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
+        for (GroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             const string & img_name = it->first;
             cout << "[RESPONSE] Validating results against ground truth: " << img_name << endl;
             const LabelSet & g = it->second;

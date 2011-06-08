@@ -22,7 +22,7 @@ namespace bfs = boost::filesystem;
 struct ResponseFunctionTest : public ::testing::Test {
 
     // We need to construct a result of an experiment i.e. an instance of
-    // SetResult and compare that to the ground truth (i.e. SetGroundTruth).
+    // SetResult and compare that to the ground truth (i.e. GroundTruth).
     // Then we can verify that the statistics work as expected. For covering
     // several cases, we might include
     // - an empty scene
@@ -115,7 +115,7 @@ struct ResponseFunctionTest : public ::testing::Test {
     PoseRT pose;
     Ptr<TexturedObject> object;
     string img_name_single;
-    SetGroundTruth  ground_single;
+    GroundTruth  ground_single;
     Response rsp;
     set<string> templateNames;
 
@@ -145,7 +145,7 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
     // Add second image to ground truth
     string img_name_2 = "image_00001.png";
     PoseRT pose_2 = rotatePose(pose, randomOrientation(M_PI / 4));
-    SetGroundTruth  ground_double = ground_single;
+    GroundTruth  ground_double = ground_single;
     ground_double[img_name_2].labels.push_back(Label("haltbare_milch", pose_2));
 
     SetResult result;
@@ -182,7 +182,7 @@ TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     r["at_hm_jc_2"].detect_choices.push_back(at_perfect);
     r["at_hm_jc_3"] = Result(at_perfect);
     r["at_hm_jc_3"].detect_choices.push_back(at_perfect);
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
@@ -211,7 +211,7 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_angle);
     r["at_hm_jc_2"] = Result(at_ge_max_trans);
     r["at_hm_jc_2"].detect_choices.push_back(at_ge_max_trans);
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     sse_response_function(r, g, templateNames, rsp);
@@ -241,7 +241,7 @@ TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_trans_angle);
     r["at_hm_jc_2"] = Result(at_ge_max_trans_angle);
     r["at_hm_jc_2"].detect_choices.push_back(at_ge_max_trans_angle);
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     sse_response_function(r, g, templateNames, rsp);
@@ -272,7 +272,7 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result();
     r["at_hm_jc_2"] = Result();
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     sse_response_function(r, g, templateNames, rsp);
@@ -306,7 +306,7 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
     r["at_hm_jc_1"].detect_choices.push_back(at_max_trans_angle);
     r["at_hm_jc_2"] = Result();
     r["at_hm_jc_3"] = Result();
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
@@ -339,7 +339,7 @@ TEST_F(ResponseFunctionTest, MislabelingsOnly) {
     r["at_hm_jc_2"].detect_choices.push_back(it_ge_max_angle);
     r["at_hm_jc_3"] = Result(it_ge_max_trans);
     r["at_hm_jc_3"].detect_choices.push_back(it_ge_max_trans);
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
@@ -372,7 +372,7 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     r["at_hm_jc_4"].detect_choices.push_back(at_close);
     r["at_hm_jc_5"] = Result(at_ge_max_trans_angle);
     r["at_hm_jc_5"].detect_choices.push_back(at_ge_max_trans_angle);
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
@@ -405,7 +405,7 @@ TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
     SetResult r;
     r["empty_scene_1"] = Result(at_close);
     r["empty_scene_2"] = Result();
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["empty_scene_1"] = empty_scene;
     g["empty_scene_2"] = empty_scene;
     sse_response_function(r, g, templateNames, rsp);
@@ -435,7 +435,7 @@ TEST_F(ResponseFunctionTest, DetectSipcClassification) {
     r["at_hm_jc_2"].detect_choices.push_back(jc_ge_max_trans_angle);
     r["at_hm_jc_3"] = Result(it_close_fp);
     r["at_hm_jc_3"].detect_choices.push_back(it_close_fp);
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;
@@ -456,7 +456,7 @@ TEST_F(ResponseFunctionTest, DetectSipcPose) {
     r["at_hm_jc_2"].detect_choices.push_back(jc_ge_max_trans_angle);
     r["at_hm_jc_3"] = Result(it_close_fp);
     r["at_hm_jc_3"].detect_choices.push_back(it_close_fp);
-    SetGroundTruth  g;
+    GroundTruth  g;
     g["at_hm_jc_1"] = at_hm_jc;
     g["at_hm_jc_2"] = at_hm_jc;
     g["at_hm_jc_3"] = at_hm_jc;

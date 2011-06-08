@@ -77,7 +77,7 @@ namespace clutseg {
     void ExperimentRunner::runExperiment(Clutsegmenter & sgm, Experiment & e) {
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / e.test_set;
-        SetGroundTruth  testdesc = loadSetGroundTruth(test_dir / "testdesc.txt");
+        GroundTruth  testdesc = loadGroundTruth(test_dir / "testdesc.txt");
         SetResult resultSet;
         bfs::path camera_path = test_dir / "camera.yml";
         assert_path_exists(camera_path);
@@ -85,7 +85,7 @@ namespace clutseg {
         // http://www.gnu.org/s/libc/manual/html_mono/libc.html#CPU-Time
         float rt = 0;
         // Loop over all images in the test set
-        for (SetGroundTruth::iterator test_it = testdesc.begin(); test_it != testdesc.end(); test_it++) {
+        for (GroundTruth::iterator test_it = testdesc.begin(); test_it != testdesc.end(); test_it++) {
             string img_name = test_it->first;
             bfs::path img_path = test_dir / img_name;
             Mat queryImage = imread(img_path.string());

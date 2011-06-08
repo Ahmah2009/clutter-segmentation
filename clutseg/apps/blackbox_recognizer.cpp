@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
         throw std::runtime_error("Empty training base.");
     }
     
-    SetGroundTruth  testdesc = loadSetGroundTruthWithoutPoses(boost::filesystem::path(opts.testdescFilename));
+    GroundTruth  testdesc = loadGroundTruthWithoutPoses(boost::filesystem::path(opts.testdescFilename));
 
     bool write_store = (opts.storeDirectory != "");
 
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
     assert(!objects.empty());
     const Camera & trainingCamera = objects[0]->observations[0].camera();
 
-    for (SetGroundTruth::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
+    for (GroundTruth::iterator it = testdesc.begin(); it != testdesc.end(); it++) {
         // Actually, the following lines of code could probably be moved out of
         // the loop again, and can be reused. I just want to make sure that
         // there is independence between test runs and that there is no way

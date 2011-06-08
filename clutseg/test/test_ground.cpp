@@ -34,8 +34,8 @@ TEST(GroundTest, LabelReadMany) {
     EXPECT_FLOAT_EQ(4.51702595e-01, nps[1].pose.rvec.at<float>(0, 0));
 }
 
-TEST(GroundTest, ReadSetGroundTruthWithoutPoses) {
-    SetGroundTruth  m = loadSetGroundTruthWithoutPoses("./data/testdesc.txt");
+TEST(GroundTest, ReadGroundTruthWithoutPoses) {
+    GroundTruth  m = loadGroundTruthWithoutPoses("./data/testdesc.txt");
     LabelSet s = m["t0000.png"];
 
     BOOST_FOREACH(const Label & np, s.labels) {

@@ -16,11 +16,11 @@
 
 namespace clutseg {
 
-    typedef std::map<std::string, LabelSet > SetGroundTruth;
+    typedef std::map<std::string, LabelSet > GroundTruth;
 
-    SetGroundTruth  loadSetGroundTruth(const boost::filesystem::path & filename);
+    GroundTruth  loadGroundTruth(const boost::filesystem::path & filename);
 
-    SetGroundTruth  loadSetGroundTruthWithoutPoses(const boost::filesystem::path & filename);
+    GroundTruth  loadGroundTruthWithoutPoses(const boost::filesystem::path & filename);
 
 }
 

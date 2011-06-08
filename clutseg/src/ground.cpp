@@ -24,10 +24,10 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    SetGroundTruth  loadSetGroundTruth(const bfs::path & filename) {
+    GroundTruth  loadGroundTruth(const bfs::path & filename) {
         assert_path_exists(filename);
-        SetGroundTruth  m = loadSetGroundTruthWithoutPoses(filename);
-        for (SetGroundTruth::iterator it = m.begin(); it != m.end(); it++) {
+        GroundTruth  m = loadGroundTruthWithoutPoses(filename);
+        for (GroundTruth::iterator it = m.begin(); it != m.end(); it++) {
             string img_name = it->first;   
             LabelSet g = it->second;
             string ground_name = img_name + ".ground.yaml";
@@ -40,9 +40,9 @@ namespace clutseg {
     }
 
     // TODO: does not really parse a python configuration file
-    SetGroundTruth  loadSetGroundTruthWithoutPoses(const bfs::path & filename) {
+    GroundTruth  loadGroundTruthWithoutPoses(const bfs::path & filename) {
         assert_path_exists(filename);
-        SetGroundTruth  m;
+        GroundTruth  m;
         ifstream f;
         f.open(filename.string().c_str()); 
         if (!f.is_open()) {
