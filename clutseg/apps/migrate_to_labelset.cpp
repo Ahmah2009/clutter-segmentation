@@ -65,20 +65,31 @@ int main(int argc, char *argv[]) {
     fin.close();
     fout.close();
     convertLegacyPoseFileToDouble(tmpf2, tmpf2);
-    FileStorage in(tmpf2, FileStorage::READ);
-    FileStorage out(f, FileStorage::WRITE);
-    out << "labels";
-    out << "[";
-    for (FileNodeIterator n_it = in.root().begin(); n_it != in.root().end(); n_it++) {
-        Pose p;
-        p.read(*n_it);
-        int r = atoi((*n_it).name().substr(7).c_str());
-        Label np(m[r], poseToPoseRT(p));
-        np.write(out);
+    FileStorage in;
+    try {
+        in.open(tmpf2, FileStorage::READ);
+
+        FileStorage out(f, FileStorage::WRITE);
+        // out << "labels";
+        // out << "[";
+        LabelSet ls;
+        for (FileNodeIterator n_it = in.root().begin(); n_it != in.root().end(); n_it++) {
+            Pose p;
+            p.read(*n_it);
+		    int r = atoi((*n_it).name().substr(7).c_str());
+		    ls.labels.push_back(Label(m[r], poseToPoseRT(p)));
+		    // np.write(out);
+	    }
+	    // out << "]";
+        out << "labels";
+        ls.write(out);
+	    in.release();
+	    out.release();
+    } catch (cv::Exception & e) {
+        FileStorage out(f, FileStorage::WRITE);
+        out.release();
     }
-    out << "]";
-    in.release();
-    out.release();
+
     remove(tmpf.c_str());
     remove(tmpf2.c_str());
     return 0;
