@@ -158,7 +158,7 @@ void insert_experiments(sqlite3* & db) {
     }
 
     sqlite3_stmt *select;
-    string sql = "select id from experiment join response where experiment.response_id = response.id order by succ_rate desc limit 20";
+    string sql = "select id from experiment join response where experiment.response_id = response.id and id < 750 order by succ_rate desc limit 20";
     db_prepare(db, select, sql);
     cout << "[SQL] " << sql << endl;
     vector<int> ids;
@@ -201,7 +201,7 @@ void insert_experiments(sqlite3* & db) {
  
     // Test 20 best experiments according to success rate, and use smaller
     // threshold in recognition and also smaller threshold in training, i.e. 
-    // much more features.
+    // many more features.
     for (size_t i = 0; i < ids.size(); i++, j++) {
         Experiment e = clone_setup(db, ids[i]);
         e.paramset.train_pms_fe.detector_params["threshold"] = 20;
@@ -210,7 +210,21 @@ void insert_experiments(sqlite3* & db) {
         e.batch = "run-5";
         e.serialize(db);
     }
- 
+  
+    // Test 20 best experiments according to success rate, and use smaller
+    // threshold in recognition and also smaller threshold in training, i.e. 
+    // many many more features, but also less RANSAC iterations
+    for (size_t i = 0; i < ids.size(); i++, j++) {
+        Experiment e = clone_setup(db, ids[i]);
+        e.paramset.train_pms_fe.detector_params["threshold"] = 15;
+        e.paramset.recog_pms_fe.detector_params["threshold"] = 10;
+        e.paramset.detect_pms_guess.ransacIterationsCount = 200;
+        e.paramset.locate_pms_guess.ransacIterationsCount = 200;
+        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+        e.batch = "run-6";
+        e.serialize(db);
+    }
+
     // TODO: select best 10% and try knn = 3..4..5 and ratioThreshold=0.6,0.7,0.8,0.9 and
     //       play with threshold 20,30,40
     // 750 / 10 = 150, 150 * 3 * 4 * 3 = 3600 
