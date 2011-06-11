@@ -1,0 +1,11 @@
+\section{Data Acquisition}
+\section{Performance}
+
+\subsection{Performance on Validation Set}
+\subsection{Performance on Test Set}
+\subsection{Performance in Live Test}
+
+\section{Chosen Parameters}
+
+\section{Issues}
+

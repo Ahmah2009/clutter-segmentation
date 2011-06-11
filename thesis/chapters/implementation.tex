@@ -1,95 +1,16 @@
-% \chapter{Implementation}
-% \label{chapter:implementation}
+\section{Textured Object Detection Library}
+%\subsection{Solutions in Perceptions Challenge 2011}
+\subsection{Learning}
+\subsection{Recognition}
 
-\section{Model Learning}
+\section{Clutter Segmentation Tool}
+\subsection{Guess Ranking}
+\subsection{Guess Rejection}
+\subsection{Guess Refinement}
 
-An {\it estimator} is learned on training data. It is based on a set of {\it
-models}. These models ${M_1, M_2, ..., M_k}$ represent the objects we want to
-be able to locate in cluttered scenes. Each model $M_i$ is a set of {\it
-features}, where a feature is a 3-tuple consisting of a view-specific {\it 2D
-keypoint}, a corresponding {\it 3D keypoint} and a {\it feature descriptor}.
-
-We construct a 3-dimensional point-cloud representation of the template object
-by merging segmented point clouds obtained from several different viewpoints.
-The 3D points from all views are brought into a common coordinate frame, we
-call this the {\it model frame}. This model is attached to the template object.
-% We decided to attach it the bottom-most corners of the mostly
-% rectangularly-shaped template objects.
-% We have drawn the model coordinate axes
-% onto the real-world template objects with a pencil, which was extremely useful
-% in later experimentation.
-
-We capture depth and grayscale image information from several different views.
-In each {\it model view}, we gain partial information about the template
-object. 3D points can be expressed in {\it view coordinates}, where the {\it
-view frame} is attached to the camera \footnote{tod\_* developers often refer
-to the view frame as camera frame}. To register the point clouds from different
-point clouds, we need to be able to transform {\it view coordinates} into
-{\it model coordinates} and vice-versa.
-
-% picture showing
-
-Given a scene that shows a template object. We define a model-view
-transformation $_{xyz}H^{uvw}$ that brings model coordinates denoted by $x,y,z$
-into view coordinates denoted by $u,v,w$. For example, we can express the model origin
-in view coordinates by computing $_{xyz}H^{uvw}[(0, 0, 0)^T]$
-
-There is also a coordinate frame attached to the fiducial markers, such that
-corners of the chessboard share coordinates for all training images. Therefore,
-we get a view-independent reference frame. To keep things simple, we make sure
-that the model frame and the frame attached to the fiducial markers are always
-the same.
-
-\section{Object Recognition}
-
-\section{Parameter Selection}
-
-% see: Alpaydin: Introduction to Machine Learning
-As we had the choice between several keypoint detection algorithms, matching
-algorithms and each algorithm coming with a set of controllable parameters, we
-were facing the difficulty of choosing a configuration that serves our purpose.
-The way we look at the problem and the terminology used was heavily influenced
-by "Decision and Estimation Theory" (Melsa and Cohn) and by "Introduction to
-Machine Learning" (Alpaydin).
-
-In order to do the parameter selection properly, we have to fit our problem
-into a mathematical model. This turned out to be more difficult than expected.
-Both recognizing an object and correctly locating it within a scene is no
-longer a pure classification task. It is not a regression task either. Yet, it
-turned out that it is possible to view this problem as an estimation problem,
-where we want to estimate the 6 degrees of freedom that uniquely define
-location and orientation of an object in space. We follow the model introduced
-in Melsa \& Cohn. Let us first consider one object in a scene only (e.g. we
-know it's haltbare\_milch). The object and its pose form a {\it message}. There
-are infinitely many poses and therefore the {\it message space} is infinite. If
-we had access to the full undistorted {\it signal}, there would be absolutely
-zero difficulty in estimating the pose.  When we try to find its pose, we have
-to derive an estimation based on our {\it observation}. This observation
-represents only distorted parts of the signal due to occlusion, perspective,
-noise introduced by sensors and unknown variables such as lighting conditions.
-\begin{itemize}
-\item multiple objects?
-\item background?
-\item what is the signal exactly?
-\item what is the observation exactly?
-\end{itemize}
-It was therefore natural to define a measure that allowed us to compare
-different configurations. This measure is called {\it response}. We defined the
-response to depend on the error between estimated pose and ground truth. We
-chose to incorporate the notion of approximately correct pose estimates into
-the response. That way we avoid having to make a binary choice between correct
-and wrong estimate, and leads to more fine-grained responses that retain more
-information about test results.
-
-Consider a set of scenes $S$ for which ground truth is available. Given k
-parameters $\theta_1, ..., \theta_k$ that represent our choice of algorithms
-and the parameters of these algorithms, we define the response for a given set
-as a function $r: S \mapsto r (S|\theta)$. In the next step, we can maximize
-the response for a given set by altering the parameters $\theta$.
-
-
-
-% Note that the problem of detecting an object in the scene by just tagging the
-% image is a pure classification task. 
-
+\section{Parameter Optimization}
+\subsection{Parameter Space}
+\subsection{Measured Statistics}
+\subsection{Experiment Strategy}
+\subsection{Experiment Runner}
 

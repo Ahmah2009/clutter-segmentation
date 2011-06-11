@@ -62,11 +62,15 @@
 	
 	\input{components/disclaimer}
 	
-	\input{components/acknowledgements}
-	
 	\input{components/abstract}
 
+	\input{components/acknowledgements}
+
 	\tableofcontents
+
+    \listoffigures
+
+    \listoftables
   
   \input{components/outline}
 
@@ -90,12 +94,18 @@
         \input{chapters/implementation}
 
 		% ---------------------------------------------------------------------------
-		\chapter[Results]{Results}
+		\chapter[Evaluation]{Evaluation}
 		\label{chapter:results}
         \input{chapters/results}
 
 		% ---------------------------------------------------------------------------
-		\chapter[Bonanza]{Bonanza}
+		\chapter[Conclusion]{Conclusion}
+		\label{chapter:conclusion}
+        \input{chapters/conclusion}
+
+
+		% ---------------------------------------------------------------------------
+		\chapter*[Bonanza]{Bonanza}
 		\label{chapter:bonanza}
         \input{chapters/bonanza}
 		

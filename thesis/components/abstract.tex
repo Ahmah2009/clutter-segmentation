@@ -21,19 +21,28 @@ A system is presented that learns 3d models and local 2d features from
 templates and is then able to recognize objects in cluttered scenes by matching
 observed local 2d features against the learned templates and then running a
 randomized algorithm to estimate the poses of objects in the scene. Confidence
-probabilities learned from ground truth data provide a measure of goodness for
-estimated object poses. For the object with the highest confidence probability,
-the pose is re-computed in order to reduce error, and that estimate shall
-provide a basis for the grasping pipeline of a robot. The system is based on
-the existing, yet unstable and immature textured object recognition stack in
-the Robot Operating System, which has been specifically enhanced to better
-solve the task at hand, and will be described in detail. Recent developments in
-object recognition, such as the direct and efficient computation of binary
-features, which can be combined with fast keypoint detectors are reviewed in
-context.
+values provide a measure of goodness for estimated object poses. For the object
+with the highest confidence value, the pose is re-computed in order to reduce
+error, and that estimate shall provide a basis for the grasping pipeline of a
+robot. The system is based on the existing, yet unstable and immature textured
+object recognition stack in the Robot Operating System, which has been
+specifically enhanced to better solve the task at hand, and will be described
+in detail. Recent developments in object recognition, such as the direct and
+efficient computation of binary features, which can be combined with fast
+keypoint detectors are reviewed in context.
 
-Experiments have shown that in XX percent of cluttered testing scenes, an
-object is correctly recognized in the scene with a confidence probability of
-higher than YY percent and a margin for rotational error of ZZ percent and
-translational error of UU percent.
+Experiments have shown that in XX percent of cluttered scenes of our test
+setup, an object is correctly recognized in the scene within a margin for
+rotational error of 20 degrees and translational error of three centimetres.
+
+\clearemptydoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Zusammenfassung}
+
+\vspace*{2cm}
+\begin{center}
+{\Large \bf Zusammenfassung}
+\end{center}
+\vspace{1cm}
+
 
