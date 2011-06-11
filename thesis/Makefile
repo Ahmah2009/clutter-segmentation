@@ -2,8 +2,11 @@ main: main.Rnw
 	cp ~/Mendeley/Bachelorarbeit.bib bibliography/literature.bib
 	R CMD Sweave main.Rnw
 	cd chapters && R CMD Sweave bonanza.Rnw
-	cd chapters && R CMD Sweave conclusion.Rnw
+	cd chapters && R CMD Sweave introduction.Rnw
+	cd chapters && R CMD Sweave theory.Rnw
+	cd chapters && R CMD Sweave implementation.Rnw
 	cd chapters && R CMD Sweave evaluation.Rnw
+	cd chapters && R CMD Sweave conclusion.Rnw
 	pdflatex main.tex
 	bibtex main
 	pdflatex main.tex
