@@ -10,12 +10,12 @@ A particular application addressed by this work is a robot in a household
 environment who is given the task to go shopping, and which empties the
 shopping bag onto a table, and then plans to move the bought items to
 appropriate storage facilities. The shopping items on the table form a
-cluttered scene. Most of the shopping items can be distinguished by
-characteristic texture, made of pictorial descriptions of the product, labels,
-and company logos. Recognition of these shopping items is rendered difficult by
-high levels of occlusion and the presence of many such textured objects in one
-single scene. The objects might be arbitrarily oriented and prior assumptions
-about their principal axes are likely to be invalid.
+cluttered scene. Most of the shopping items are rigid bodies and can be
+distinguished by characteristic texture, made of pictorial descriptions of the
+product, labels, and company logos. Recognition of these shopping items is
+rendered difficult by high levels of occlusion and the presence of many such
+textured objects in one single scene. The objects might be arbitrarily oriented
+and prior assumptions about their principal axes are likely to be invalid.
 
 The system presented in this work equips a PR2 robot with the ability to locate
 one object in the cluttered scene and provide sufficient information to a
@@ -28,7 +28,7 @@ general enough to be applied to other application scenarios.
 \section{Problem Statement}
 
 The challenge is therefore to correctly label and determine the pose of a
-textured object in a scene with clutter and high occlusion, and finally to
+rigid textured object in a scene with clutter and high occlusion, and finally to
 provide enough information to allow the robot grasp the object and remove it
 from the scene.
 
