@@ -105,9 +105,9 @@
 
 
 		% ---------------------------------------------------------------------------
-		\chapter*[Bonanza]{Bonanza}
-		\label{chapter:bonanza}
-        \input{chapters/bonanza}
+		% \chapter*[Bonanza]{Bonanza}
+		% \label{chapter:bonanza}
+        % \input{chapters/bonanza}
 		
 		% ---------------------------------------------------------------------------
 		%

@@ -47,8 +47,7 @@ feature detector to achieve repeatability.
 An informative feature belongs to an image neighborhood that shows high
 variation in intensity. If not, the features would be difficult to distinguish.
 For example, we would not like to have features detected on non-textured
-background or areas that carry little information such as white paper, the sky
-or walls.
+background or areas that carry little information.
 
 A local feature only carries information about a small neighborhood. That
 ensures that it is still repeatable despite of occlusion. A small neighborhood
@@ -62,7 +61,9 @@ A feature descriptor generally computes a vector that describes the local
 neighborhood of a keypoint. Ideally, two corresponding keypoints should have
 very similar descriptor vectors, such that correspondences be found by
 nearest neighbor search. A feature descriptor that allows for efficient
-matching is BRIEF.
+matching is BRIEF \cite{Calonder2010}.
+
+TODO: provide table with feature descriptors and detectors
 
 \subsection{Feature Matching}
 
@@ -71,14 +72,50 @@ known views of the object and the query image can be established by matching
 features from the query images to the features from the model. Computation time
 depends on the size of the descriptor vector, the nearest neighbor algorithm
 and the used distance metric. Great speed-ups can be achieved by weakening the
-post-conditions and allowing for approximate nearest neighbors. Computing the
+requirements and allowing for approximate nearest neighbors. Computing the
 distance between binary features is faster than with real-valued feature
 descriptors.
 
 \subsection{SIFT}
-\subsection{Oriented BRIEF}
-\subsection{Locality Sensitive Hashing}
 
+The scale-invariant feature transform became popular in object recognition.  It
+is desirable that images of objects at different scales produce more or less
+the same features. SIFT achieves this by selecting keypoints from a scale-space
+pyramid in order to generate scale-invariant features. SIFT is both a feature
+detector and descriptor. Lowe further described a system that lets
+correspondences vote in a Hough space, which is dimensioned by location,
+orientation and scale \cite{Lowe1999}. When bins contain more than a predefined
+number of votes, the object is said to be recognized at this pose.  SIFT was
+successfully applied to TODO.
+
+\subsection{Oriented BRIEF}
+
+{\it Oriented BRIEF} or in short {\it ORB} is a combination of the FAST feature
+detector and the BRIEF feature descriptor, plus modifications that render the
+extracted features orientation-invariant. It was designed to outperform SIFT
+and SURF at least in terms of computation time. An implementation is already
+available in the development branch (trunk) of OpenCV, a corresponding paper is
+expected to be published at ICCV 2011. ORB computes image moments to define 
+orientation for keypoints detected by FAST. Image moments of order $(p + q)$ are
+defined for a 2-d digital image $f$ of dimension $MxN$ as
+
+\begin{equation}
+    m_{pq} = \sum_{x=0}^{M-1} \sum_{y=0}^{N-1} x^p y^q f(x, y)
+\end{equation}
+
+ORB computes moments $m_{01}$, and $m_{10}$ for neighborhoods $f$ of the keypoints
+and designates orientations $\alpha$ as
+
+\begin{equation}
+    \alpha = \arctan \frac{m_{01}}{m_{10}}
+\end{equation}
+
+Consider the vector $\left( m_{01}, m_{10}\right)^T$. The angle of the vector
+becomes the orientation of the keypoint. If $f$ were a probability
+distribution, then this vector would contain the means of the marginal
+distributions of x and y, respectively.
+
+\subsection{Locality Sensitive Hashing}
 
 \section{Pose Estimation}
 

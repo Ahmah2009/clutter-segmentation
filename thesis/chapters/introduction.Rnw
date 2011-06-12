@@ -42,16 +42,16 @@ these features gives evidence for the object being present on the scene and a
 technique is required that, given the evidence, infers poses of objects within
 the scene.
 
-Tuytelaars and Mikolajczyk give a qualitative review of local feature detectors
+Tuytelaars and Mikolajczyk gave a qualitative review of local feature detectors
 and descriptors \cite{Tuytelaars2007}, and provide guidance in making an
 appropriate choice between a multitude of available detectors and descriptors.
 Rosten and Drummond introduced the FAST feature detector \cite{Rosten2006},
-while Agrawal et al. present the CenSurE feature detector \cite{Agrawal2008},
+while Agrawal et al. presented the CenSurE feature detector \cite{Agrawal2008},
 both designed to be efficient. Calonder et al. recently invented BRIEF, a
 feature descriptor which is simple to compute and efficient to match
 \cite{Calonder2010}. Matching observed features with model features is a common
-sub-task in object recognition. For this, Muja describes the FLANN library
-\cite{Muja2009}. Slaney and Casey give an introduction into Locality Sensitive
+sub-task in object recognition. For this, Muja described the FLANN library
+\cite{Muja2009}. Slaney and Casey gave an introduction into Locality Sensitive
 Hashing \cite{Slaney2008}, an algorithm for finding approximate nearest
 neighbors that has been originally introduced by TODO, and which can also be
 adapted to match binary features such as BRIEF. A combination of the FAST
