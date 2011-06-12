@@ -26,33 +26,60 @@ models are provided but, being out of scope, not covered in detail.
 % Earthquake detection
 % Industrial quality control
 
-\subsection{Multi-View 3-d Object Recognition}
+\subsection{Local Features}
+
+In object recognition, the question arises on how to generate description of
+objects and find candidates that match the description in the query scene.  We
+can distinguish between local and global approaches. An example for a global
+approach is template matching. Yet, in scenes with occlusion, local methods are
+clearly preferred. Object recognition using local features is based on the
+detection of keypoints in an image. There is a multitude of different methods
+available, but they all aim at choosing keypoints that are repeatable for the
+same object over different images. A feature consists of a keypoint and a
+feature descriptor that captures information about its local image
+neighborhood. Feature descriptors are often vectors and their distance provides
+a means of measuring similarity between two features. 
+% TODO: cite, maybe Lowe
+
+\subsubsection{Single-View 3-d Object Recognition using Local Features}
+
+In single-view 3-d object recognition, a description of a template object is
+extracted from a single view, and matched against a query image. An example for
+such an approach can be found in \cite{Lowe1999}.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{media/single-view-or}
+        \caption{Single-view 3-d object recognition scheme}
+    \end{center}
+\end{figure}
+
+% TODO: citation
+This approach works well, if the object in the query scene has approximately
+the same orientation as in the template view. Lowe reports that using SIFT
+features, which are discussed in section \ref{subsection:SIFT}, it is possible
+to recognize objects up to a 20 degree rotation \cite{Lowe1999}. Unfortunately,
+considering only a single view is insufficient if query scenes show objects in
+arbitrary orientation, which is especially apparent when considering a 180
+degree rotation. 
+
+\subsubsection{Multi-View 3-d Object Recognition using Local Features}
 
 In multi-view 3-d object recognition, we recognize an object in a query scene
 by matching it against multiple views of the template object, which have been
 recorded from different viewpoints.
 
-It is helpful to first consider the case of single-view 3-d object recognition,
-where a description of a template object is extracted from a single view. An example
-for such an approach can be found in \cite{Lowe1999}. This approach works well 
-
-\begin{figure}
-    \includegraphics[width=0.5\textwidth]{media/single-view-or}
-    \caption{Single-view 3-d object recognition scheme}
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{media/multi-view-or}
+        \caption{Multi-view 3-d object recognition scheme}
+    \end{center}
 \end{figure}
 
+Local features are extracted from a set of template views between which the
+proper rigid transformation must be known.
 
-\subsection{Local Features}
-
-Object recognition using local features is based on the detection of keypoints
-in an image. There is a multitude of different methods available, but they all
-aim at choosing keypoints that are repeatable for the same object over
-different images. A feature consists of a keypoint and a feature descriptor
-captures information about the keypoint and the local image neighborhood.  The
-distance between two feature descriptors provides a means of measuring
-similarity between two features. 
-
-\subsubsection{Feature Detectors}
+\subsection{Feature Detectors}
 
 A feature detector is an algorithm that designates keypoints on an image.  Some
 feature detectors assign orientations to keypoints. Detectors can be roughly
@@ -88,7 +115,7 @@ also leads to less informative features, enforcing a trade-off between locality
 and informativeness.
 
 
-\subsubsection{Feature Descriptors}
+\subsection{Feature Descriptors}
 
 A feature descriptor generally computes a vector that describes the local
 neighborhood of a keypoint. Ideally, two corresponding keypoints should have
@@ -110,18 +137,8 @@ matching is BRIEF \cite{Calonder2010}.
     \caption{Properties of selected feature detectors}
 \end{table}
 
-\subsection{Feature Matching}
-
-In multi-view object recognition using local features, correspondences between
-known views of the object and the query image can be established by matching
-features from the query images to the features from the model. Computation time
-depends on the size of the descriptor vector, the nearest neighbor algorithm
-and the used distance metric. Great speed-ups can be achieved by weakening the
-requirements and allowing for approximate nearest neighbors. Computing the
-distance between binary features is faster than with real-valued feature
-descriptors.
-
-\subsection{SIFT}
+\subsubsection{SIFT}
+\label{subsection:SIFT}
 
 The scale-invariant feature transform became popular in object recognition.  It
 is desirable that images of objects at different scales produce more or less
@@ -133,7 +150,7 @@ orientation and scale \cite{Lowe1999}. When bins contain more than a predefined
 number of votes, the object is said to be recognized at this pose.  SIFT was
 successfully applied to TODO.
 
-\subsection{Oriented BRIEF}
+\subsubsection{Oriented BRIEF}
 
 {\it Oriented BRIEF} or in short {\it ORB} is a combination of the FAST feature
 detector and the BRIEF feature descriptor, plus modifications that render the
@@ -182,7 +199,18 @@ BRIEF vectors obtained from rotated test patterns. Such correlation reduces
 entropy of the BRIEF descriptor. The solution is to compute test patterns that
 have only little correlation.
 
-\subsection{Locality Sensitive Hashing}
+\subsection{Feature Matching}
+
+In multi-view object recognition using local features, correspondences between
+known views of the object and the query image can be established by matching
+features from the query images to the features from the model. Computation time
+depends on the size of the descriptor vector, the nearest neighbor algorithm
+and the used distance metric. Great speed-ups can be achieved by weakening the
+requirements and allowing for approximate nearest neighbors. Computing the
+distance between binary features is faster than with real-valued feature
+descriptors.
+
+\subsubsection{Locality Sensitive Hashing}
 
 % TODO: consistent use of uppercase and lowercase in algorithm names
 
@@ -198,9 +226,9 @@ nearest neighbors for binary features. LSH has applications in object
 recognition, image retrieval, music rerieval, identification of duplicates
 \cite{Slaney2008}.
 
-\section{Pose Estimation}
+\subsection{Pose Estimation}
 
-\subsection{Rigid Transformations}
+\subsubsection{Rigid Transformations}
 
 A {\it rigid transformation} is defined as combination of an orthogonal
 transformation and translation in Euclidean space. A {\it proper rigid
@@ -219,9 +247,9 @@ in the scene remain unchanged with respect to a fixed world frame. The latter
 interpretation is prevalent in this work.
 
 
-\subsection{Hough Transform}
+\subsubsection{Hough Transform}
 
-\subsection{RANSAC}
+\subsubsection{RANSAC}
 
 RANSAC stands for {\it RANdom SAmple Consensus} and is a randomized algorithm
 that fits a parametrized model to given data. It is robust to outliers, and
