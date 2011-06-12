@@ -1,7 +1,24 @@
 % \chapter{Theory}
 % \label{chapter:theory}
 
+This chapter provides the theoretical foundations for building the 3-d object
+recognition system, as will be presented in chapter
+\ref{chapter:implementation}. It provides the basics of multi-view 3-d object
+recognition, and a short review of required mathematical tools. It covers the
+description of images using local features with state-of-the art techniques,
+how to quickly establish correspondences between known and unseen images, and
+finally how to estimate poses under uncertainty and noise using. Also, this
+chapter shows how the implemented system relates to the mathematical framework
+of classifiers and estimators, which is helpful for the evaluation given in
+chapter \ref{chapter:evaluation}.
+
 \section{Object Recognition}
+
+Object recognition is the problem of finding or labeling objects in a query
+scene. This section describes relevant mathematics and techniques used in
+multi-view 3-d object recognition using local 2-d features. References to other
+approaches, such as with true 3-d features or object recognition using parametric
+models are provided but, being out of scope, not covered in detail.
 
 % \subsubsection{Applications of Object Recognition}
 % Mars mission
@@ -9,8 +26,21 @@
 % Earthquake detection
 % Industrial quality control
 
-Object recognition is the problem of finding or labeling objects in a query
-scene.
+\subsection{Multi-View 3-d Object Recognition}
+
+In multi-view 3-d object recognition, we recognize an object in a query scene
+by matching it against multiple views of the template object, which have been
+recorded from different viewpoints.
+
+It is helpful to first consider the case of single-view 3-d object recognition,
+where a description of a template object is extracted from a single view. An example
+for such an approach can be found in \cite{Lowe1999}. This approach works well 
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{media/single-view-or}
+    \caption{Single-view 3-d object recognition scheme}
+\end{figure}
+
 
 \subsection{Local Features}
 
