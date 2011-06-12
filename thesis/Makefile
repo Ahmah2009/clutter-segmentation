@@ -11,7 +11,8 @@ main: main.Rnw
 	bibtex main
 	pdflatex main.tex
 	bibtex main
-	makeglos.pl main
+	#scripts/makeglos.pl main
+	makeglossaries main
 	makeindex main.tex
 	pdflatex main.tex
 
@@ -24,5 +25,5 @@ install-deps:
 
 .PHONY: clean 
 clean:	
-	rm -f *.glo *.glg *.log *.out *.toc *.ist *.ind *.ilg *.gls *.aux *.bbl *.blg *.lof *.lot
+	rm -f *.glo *.glg *.log *.out *.toc *.ist *.ind *.ilg *.gls *.aux *.bbl *.blg *.lof *.lot *.xdy
 
