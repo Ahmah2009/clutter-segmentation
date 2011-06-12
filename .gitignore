@@ -8,6 +8,10 @@ tags
 thesis/main.tex
 thesis/chapters/*.tex
 thesis/*.aux
+thesis/*.bbl
+thesis/*.blg
+thesis/*.lof
+thesis/*.lot
 thesis/*.pdf
 thesis/*.glo
 thesis/*.toc
