@@ -1,20 +1,30 @@
-main: main.Rnw
-	if test -f ~/Mendeley/Bachelorarbeit.bib ; then cp ~/Mendeley/Bachelorarbeit.bib bibliography/literature.bib ; fi
-	R CMD Sweave main.Rnw
-	#cd chapters && R CMD Sweave bonanza.Rnw
-	cd chapters && R CMD Sweave introduction.Rnw
-	cd chapters && R CMD Sweave theory.Rnw
-	cd chapters && R CMD Sweave implementation.Rnw
-	cd chapters && R CMD Sweave evaluation.Rnw
-	cd chapters && R CMD Sweave conclusion.Rnw
+all: main.pdf
+
+main.pdf: main.tex
 	pdflatex main.tex
-	bibtex main
-	pdflatex main.tex
-	bibtex main
-	#scripts/makeglos.pl main
+	bibtex main.aux
 	makeglossaries main
 	makeindex main.tex
 	pdflatex main.tex
+	pdflatex main.tex
+
+main.tex: main.Rnw chapters/introduction.tex chapters/theory.tex chapters/implementation.tex chapters/evaluation.tex chapters/conclusion.tex
+	R CMD Sweave main.Rnw
+
+chapters/introduction.tex: chapters/introduction.Rnw
+	cd chapters && R CMD Sweave introduction.Rnw
+
+chapters/theory.tex: chapters/theory.Rnw
+	cd chapters && R CMD Sweave theory.Rnw
+
+chapters/implementation.tex: chapters/implementation.Rnw
+	cd chapters && R CMD Sweave implementation.Rnw
+
+chapters/evaluation.tex: chapters/evaluation.Rnw
+	cd chapters && R CMD Sweave evaluation.Rnw
+
+chapters/conclusion.tex: chapters/conclusion.Rnw
+	cd chapters && R CMD Sweave conclusion.Rnw
 
 .PHONY: install-deps
 install-deps:
