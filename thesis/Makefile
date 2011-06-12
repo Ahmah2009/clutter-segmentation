@@ -1,5 +1,5 @@
 main: main.Rnw
-	cp ~/Mendeley/Bachelorarbeit.bib bibliography/literature.bib
+	if test -f ~/Mendeley/Bachelorarbeit.bib ; then cp ~/Mendeley/Bachelorarbeit.bib bibliography/literature.bib ; fi
 	R CMD Sweave main.Rnw
 	cd chapters && R CMD Sweave bonanza.Rnw
 	cd chapters && R CMD Sweave introduction.Rnw
@@ -15,6 +15,11 @@ main: main.Rnw
 	makeindex main.tex
 	pdflatex main.tex
 
+.PHONY: install-deps
+install-deps:
+	sudo aptitude install r-recommended
+
+.PHONY: clean 
 clean:	
 	rm -f *.glo *.glg *.log *.out *.toc *.ist *.ind *.ilg *.gls *.aux *.bbl *.blg *.lof *.lot
 

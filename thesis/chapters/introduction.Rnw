@@ -59,7 +59,7 @@ detector and an oriented version of the BRIEF descriptor has been recently
 included into OpenCV trunk. This feature detector and descriptor is called ORB
 and will be more closely evaluated in section TODO. Lowe showed how to
 recognize objects up to a 20 degree rotation using the scale-invariant feature
-transform (SIFT), making use of the Hough Transform where matching features
+transform (SIFT), making use of the Hough Transform where correspondences 
 vote for the pose of an object \cite{Lowe1999}. Hough voting has also been used
 in a system presented by Drost et al.\cite{Drost2010}. The RANSAC algorithm
 presented by Fischler and Bolles constitutes a widely used TODO method for 3D
@@ -82,10 +82,10 @@ Our system, as described in TODO, is built on top of the existing Textured
 Object Detection ({\it tod}) package for the Robot Operating System, targeting
 the PR2 robot. It solely makes use of 2-d local features to describe objects.
 It is possible to plug-in different feature detectors and descriptors, yet the
-focus was on Oriented BRIEF.  Matching these local features results in a
-certain agreement between features of the models and the query scene. RANSAC
+focus was on Oriented BRIEF. Matching these local features results in 
+correspondences between features of the models and the query scene. RANSAC
 generates pose estimates that correspond to consensus set. Each consensus set
-is a group of matching features that vote for the same pose. The pose estimate
+is a group of correspondences voting for the same pose. The pose estimate
 corresponding to the largest consensus set is then refined in a the second step
 to improve accuracy and an attempt to obtain an even larger consensus set,
 which will provide useful for grasping. If the second step fails to do so,

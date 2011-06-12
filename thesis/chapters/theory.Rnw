@@ -3,9 +3,78 @@
 
 \section{Object Recognition}
 
-\subsection{Feature Detectors}
-\subsection{Feature Descriptors}
+% \subsubsection{Applications of Object Recognition}
+% Mars mission
+% Flood detection
+% Earthquake detection
+% Industrial quality control
+
+\subsection{Local Features}
+
+Object recognition using local features is based on the detection of keypoints
+in an image. There is a multitude of different methods available, but they all
+aim at choosing keypoints that are repeatable for the same object over
+different images. A feature consists of a keypoint and a feature descriptor
+captures information about the keypoint and the local image neighborhood.  The
+distance between two feature descriptors provides a means of measuring
+similarity between two features. 
+
+\subsubsection{Feature Detectors}
+
+A feature detector is an algorithm that designates keypoints on an image.  Some
+feature detectors assign orientations to keypoints. Detectors can be roughly
+partitioned into three groups. First, there are {\it corner detectors}, such as
+Harris and SUSAN, that select points with high curvature. Second, {\it blob
+detectors} such as SURF or DoG look for points that are surrounded by all
+brighter or darker pixels.  Third, there are {\it region detectors}, such as
+MSER, which extract features by finding image regions.
+
+There is generally no such thing as the best feature detector. As often in
+engineering, all we can do is making the best choice for the task at hand.  An
+ideal feature detector though, should be {\it efficient} and it should find
+features that are {\it repeatable}, {\it informative}, {\it local}, and {\it
+accurate} \cite{Tuytelaars2007}.
+
+Repeatability describes the chances that the same point on an object shown from
+two different viewpoints and viewing conditions is detected on both images.
+Thus, repeatability is very important when trying to find correspondences
+between two images. A feature detector designates keypoints after examining the
+local image neighborhood. These neighborhoods can for example be deformed by
+noise, image discretization, a change of viewpoint or a change in lighting
+conditions \cite{Tuytelaars2007}. These deformations have to be addressed by a
+feature detector to achieve repeatability.
+
+An informative feature belongs to an image neighborhood that shows high
+variation in intensity. If not, the features would be difficult to distinguish.
+For example, we would not like to have features detected on non-textured
+background or areas that carry little information such as white paper, the sky
+or walls.
+
+A local feature only carries information about a small neighborhood. That
+ensures that it is still repeatable despite of occlusion. A small neighborhood
+also leads to less informative features, enforcing a trade-off between locality
+and informativeness.
+
+
+\subsubsection{Feature Descriptors}
+
+A feature descriptor generally computes a vector that describes the local
+neighborhood of a keypoint. Ideally, two corresponding keypoints should have
+very similar descriptor vectors, such that correspondences be found by
+nearest neighbor search. A feature descriptor that allows for efficient
+matching is BRIEF.
+
 \subsection{Feature Matching}
+
+In multi-view object recognition using local features, correspondences between
+known views of the object and the query image can be established by matching
+features from the query images to the features from the model. Computation time
+depends on the size of the descriptor vector, the nearest neighbor algorithm
+and the used distance metric. Great speed-ups can be achieved by weakening the
+post-conditions and allowing for approximate nearest neighbors. Computing the
+distance between binary features is faster than with real-valued feature
+descriptors.
+
 \subsection{SIFT}
 \subsection{Oriented BRIEF}
 \subsection{Locality Sensitive Hashing}
