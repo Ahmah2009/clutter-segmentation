@@ -6,9 +6,7 @@ tags
 *.swo
 *.pyc
 thesis/main.tex
-thesis/chapters/bonanza.tex
-thesis/chapters/conclusion.tex
-thesis/chapters/evaluation.tex
+thesis/chapters/*.tex
 thesis/*.aux
 thesis/*.pdf
 thesis/*.glo
