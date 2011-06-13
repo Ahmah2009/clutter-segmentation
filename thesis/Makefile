@@ -1,10 +1,12 @@
 all: main.pdf
 
 main.pdf: main.tex
+	if test -f ~/Mendeley/Bachelorarbeit.bib ; then cp ~/Mendeley/Bachelorarbeit.bib bibliography/literature.bib ; fi
 	pdflatex main.tex
 	bibtex main.aux
 	makeglossaries main
 	makeindex main.tex
+	pdflatex main.tex
 	pdflatex main.tex
 	pdflatex main.tex
 
