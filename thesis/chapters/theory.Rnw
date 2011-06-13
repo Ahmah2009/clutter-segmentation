@@ -371,6 +371,11 @@ consensus sets plays an important role in this work.
 
 \section{Machine Learning}
 
+This section shows how object recognition relates to machine learning,
+especially to classification and estimation theory. It also covers the basics
+of a machine learning experiment, which are required for optimizing parameters
+and understanding the strengths and weaknesses of an object recognition system.
+
 \subsection{Classification}
 
 \subsection{Estimation}
