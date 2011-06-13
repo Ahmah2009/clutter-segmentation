@@ -1,4 +1,6 @@
 \section{Data Acquisition}
+\label{section:data-acquisition}
+
 \section{Performance}
 
 \subsection{Performance on Validation Set}

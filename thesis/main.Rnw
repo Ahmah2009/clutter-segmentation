@@ -72,7 +72,7 @@
 
     \listoftables
   
-  \input{components/outline}
+  % \input{components/outline}
 
 	\mainmatter
 	
@@ -127,7 +127,7 @@
 
   \clearemptydoublepage
 
-    \nocite{*} 
+    % \nocite{*} 
 	\bibliography{bibliography/literature}
 	
  

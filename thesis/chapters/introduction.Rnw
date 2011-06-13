@@ -26,6 +26,7 @@ information is not used in this work, in order to develop a system that is
 general enough to be applied to other application scenarios.
 
 \section{Problem Statement}
+\label{section:problem-statement}
 
 The challenge is therefore to correctly label and determine the pose of a
 rigid textured object in a scene with clutter and high occlusion, and finally to
@@ -59,18 +60,20 @@ detector and an oriented version of the BRIEF descriptor has been recently
 included into OpenCV trunk. This feature detector and descriptor is called ORB
 and will be more closely evaluated in section TODO. Lowe showed how to
 recognize objects up to a 20 degree rotation using the scale-invariant feature
-transform (SIFT), making use of the Hough Transform where correspondences 
-vote for the pose of an object \cite{Lowe1999}. Hough voting has also been used
-in a system presented by Drost et al.\cite{Drost2010}. The RANSAC algorithm
+transform (SIFT), making use of the Hough Transform where correspondences vote
+for the pose of an object \cite{Lowe1999}. Hough voting has also been used in a
+system presented by Drost et al.\cite{Drost2010}. The RANSAC algorithm
 presented by Fischler and Bolles constitutes a widely used TODO method for 3D
 pose estimation. Dogar and Srinivasa recently spent research on robustly
-grasping objects in a cluttered scene \cite{Dogar2010}. Alpaydin's excellent
-introduction to machine learning \cite{Alpaydin2010} has influenced the
-decisions described in section TODO.  Fawcett \cite{Fawcett2006} published a
-detailed guide on how to evaluate the performance of classifiers through
-analysis of receiver operating characteristics, which are tightly bound to the
-field of decision theory, which again is covered by Melsa and Cohn
-\cite{Melsa1978}.
+grasping objects in a cluttered scene \cite{Dogar2010}. Forsyth and Ponce's work
+on computer vision served as a reference and influenced the terminology in this
+work \cite{Forsyth2003}. The same applies to Gonzalez and Woods in the field of
+image processing \cite{Gonzalez2010}. Alpaydin's excellent introduction to
+machine learning \cite{Alpaydin2010} has influenced the decisions described in
+section TODO.  Fawcett \cite{Fawcett2006} published a detailed guide on how to
+evaluate the performance of classifiers through analysis of receiver operating
+characteristics, which are tightly bound to the field of decision theory, which
+again is covered by Melsa and Cohn \cite{Melsa1978}.
 
 % Haltakov and Pangercic have developed the ODUFinder library for the Robot
 % Operating System to detect both non-textured objects and textured objects,

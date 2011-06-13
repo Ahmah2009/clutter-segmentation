@@ -3,14 +3,92 @@
 
 This chapter provides the theoretical foundations for building the 3-d object
 recognition system, as will be presented in chapter
-\ref{chapter:implementation}. It provides the basics of multi-view 3-d object
-recognition, and a short review of required mathematical tools. It covers the
-description of images using local features with state-of-the art techniques,
-how to quickly establish correspondences between known and unseen images, and
-finally how to estimate poses under uncertainty and noise using. Also, this
-chapter shows how the implemented system relates to the mathematical framework
-of classifiers and estimators, which is helpful for the evaluation given in
-chapter \ref{chapter:evaluation}.
+\ref{chapter:implementation}. It provides a short review of required
+mathematical tools and the basics of multi-view 3-d object recognition. It
+covers the description of images using local features with state-of-the-art
+techniques, how to quickly establish correspondences between known and unseen
+images, and finally how to estimate poses under uncertainty and noise using.
+Also, this chapter shows how the implemented system relates to the mathematical
+framework of classifiers and estimators, which is helpful for the evaluation
+given in chapter \ref{chapter:evaluation}.
+
+\section{Prerequisites in Geometry}
+
+This section establishs mathematical tools and notation that are used
+throughout this work, and especially become significant in sections
+\ref{subsection:pose-estimation}, \ref{subsection:learning},
+\ref{subsection:recognition}, and \ref{section:data-acquisition}.
+
+\subsection{Rigid Transformations}
+
+A {\it rigid transformation} is defined as combination of an orthogonal
+transformation and translation in Euclidean space. A {\it proper rigid
+transformation} requires the orthogonal transformation to be a rotation. In
+three dimensions, a proper rigid transformation can be represented by a
+rotation matrix $R \in \mathbb{R}^3$ and a translation vector $\mathbf{t} \in
+\mathbb{R}^3$.
+
+\begin{equation}
+    T: \mathbb{R}^3 \to \mathbb{R}^3, \mathbf{v} \mapsto R\mathbf{v} + \mathbf{t}
+\end{equation}
+
+A proper rigid transformation, we abbreviate it by PRT in the following, can be
+used to describe a rigid motion of an object. It can also be used to transform
+the coordinate systems, whilst objects in the scene remain unchanged with
+respect to a fixed world frame. The latter interpretation is prevalent in this
+work. The inverse transformation is given by
+ 
+\begin{equation}
+    T^{-1}: \mathbb{R}^3 \to \mathbb{R}^3, \mathbf{v} \mapsto R^{-1}(\mathbf{v} - \mathbf{t})
+\end{equation}
+
+\subsection{Object-View Transformations}
+
+Coordinates of points in 3-d space can be specified with respect to any
+coordinate frame. In this work, two different kinds of coordinate systems are
+used. The first kind is attached to the camera and is called {\it view
+coordinate frame}. The second kind is attached to an object or its model and is
+called {\it object coordinate frame}. The PRT between object coordinates and
+view coordinates will be called {\it object-view transformation}.  Object
+coordinates are commonly denoted by $(x, y, z)$, and view coordinates by $(u,
+v, w)$, the object-view transformation subsequently $_{xyz}T^{uvw}$. Finally, the inverse
+PRT is the {\it view-object transformation} $_{uvw}T^{xyz}$ where
+
+\begin{equation}
+_{uvw}T^{xyz} = \left( _{xyz}T^{uvw}\right)^{-1}
+\end{equation}
+
+See figure
+\ref{figure:coordinate-frames} that shows camera and object from a fixed world
+reference frame.
+
+Let's review a few examples to show the usefulness of these definitions. If we
+like to know the origin of the object in view coordinates, we can apply the
+object-view transformation to the zero vector, and can compute the
+distance $d$ between camera and object origin as
+
+$$ d = \left|\left|\ _{xyz}T^{uvw}\left[ \mathbf{0} \right]\ \right|\right|_2$$
+
+Another example, we can compute the distance $d_{12}$ between the two objects
+in a scene by
+
+$$ d_{12} = \left|\left|\ _{xyz}T_1^{uvw}\left[ \mathbf{0} \right] -
+                  _{xyz}T_2^{uvw}\left[ \mathbf{0} \right]\ \right|\right|_2$$
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{media/coordinate-frames}
+    \end{center}
+    \caption{Transformation between object and view coordinate frames}
+    \label{figure:coordinate-frames}
+\end{figure}
+
+Note that there exists a coordinate frame for every object and view.  When
+talking in general about object recognition, it is often more intuitive to talk
+about the object's {\em pose}. If precise wording is required, it is preferred
+to talk about the object-view transformation that brings object coordinates
+into view coordinates for a specific view-object pair. This will become
+apparent in section \ref{subsection:learning}.
 
 \section{Object Recognition}
 
@@ -67,7 +145,9 @@ degree rotation.
 
 In multi-view 3-d object recognition, we recognize an object in a query scene
 by matching it against multiple views of the template object, which have been
-recorded from different viewpoints.
+recorded from different viewpoints. As such, the multi-view scheme extends the
+single-view scheme and allows for recognition of objects with arbitrary
+orientation. 
 
 \begin{figure}[h]
     \begin{center}
@@ -76,17 +156,25 @@ recorded from different viewpoints.
     \end{center}
 \end{figure}
 
-Local features are extracted from a set of template views between which the
-proper rigid transformation must be known.
+Local features are extracted from a set of template views. The strategy on how
+to choose the template views in the first place has an impact on on both memory
+and computation time, and has been subject of research. % TODO: cite Section
+The multi-view 3-d object recognition scheme is the basis of this work.
+Sections \ref{subsection:feature-detectors} and
+\ref{subsection:feature-descriptors} show how to extract a description of the
+query image and the template views. Section \ref{subsection:feature-matching}
+presents methods for fast establishment of correspondences, and section
+\ref{subsection:pose-estimation} shows how to infer on object poses. 
 
 \subsection{Feature Detectors}
+\label{subsection:feature-detectors}
 
-A feature detector is an algorithm that designates keypoints on an image.  Some
-feature detectors assign orientations to keypoints. Detectors can be roughly
+A feature detector designates keypoints on an image.  Some feature detector
+algorithms assign orientations to keypoints. Detectors can be roughly
 partitioned into three groups. First, there are {\it corner detectors}, such as
 Harris and SUSAN, that select points with high curvature. Second, {\it blob
 detectors} such as SURF or DoG look for points that are surrounded by all
-brighter or darker pixels.  Third, there are {\it region detectors}, such as
+brighter or darker pixels. Third, there are {\it region detectors}, such as
 MSER, which extract features by finding image regions.
 
 There is generally no such thing as the best feature detector. As often in
@@ -116,6 +204,7 @@ and informativeness.
 
 
 \subsection{Feature Descriptors}
+\label{subsection:feature-descriptors}
 
 A feature descriptor generally computes a vector that describes the local
 neighborhood of a keypoint. Ideally, two corresponding keypoints should have
@@ -199,7 +288,14 @@ BRIEF vectors obtained from rotated test patterns. Such correlation reduces
 entropy of the BRIEF descriptor. The solution is to compute test patterns that
 have only little correlation.
 
+A more detailed theoretical treatment of ORB should be deferred until the
+publication of the corresponding authoritative paper. The description about ORB
+given here was based on knowledge extracted from a presentation at ICRA 2011 in
+Shanghai and the ORB implementation in OpenCV trunk, and is thus to be handled
+with care.
+
 \subsection{Feature Matching}
+\label{subsection:feature-matching}
 
 In multi-view object recognition using local features, correspondences between
 known views of the object and the query image can be established by matching
@@ -227,24 +323,17 @@ recognition, image retrieval, music rerieval, identification of duplicates
 \cite{Slaney2008}.
 
 \subsection{Pose Estimation}
+\label{subsection:pose-estimation}
 
-\subsubsection{Rigid Transformations}
+This section shows how to estimate the pose of objects, given the set of
+correspondences obtained from feature matching. It covers the mathematical
+formulae and notation about coordinate system transformations that are required
+when dealing with a scene that is recorded from different viewpoints.
 
-A {\it rigid transformation} is defined as combination of an orthogonal
-transformation and translation in Euclidean space. A {\it proper rigid
-transformation} requires the orthogonal transformation to be a rotation. In
-three dimensions, a proper rigid transformation can be represented by a
-rotation matrix $R \in \mathbb{R}^3$ and a translation vector $t \in
-\mathbb{R}^3$.
-
-\begin{equation}
-    T: \mathbb{R}^3 \to \mathbb{R}^3, v \mapsto Rv + t
-\end{equation}
-
-A proper rigid transformation can be used to describe a rigid motion of an
-object. It can also be used to transform the coordinate systems, whilst objects
-in the scene remain unchanged with respect to a fixed world frame. The latter
-interpretation is prevalent in this work.
+Estimating the pose of an object in a scene is nothing more than estimating 
+the object-view transformation, as the latter uniquely defines where each
+3-d point belonging to the object is located with respect to the view coordinate
+frame, i.e. the camera.
 
 
 \subsubsection{Hough Transform}
@@ -252,26 +341,33 @@ interpretation is prevalent in this work.
 \subsubsection{RANSAC}
 
 RANSAC stands for {\it RANdom SAmple Consensus} and is a randomized algorithm
-that fits a parametrized model to given data. It is robust to outliers, and
-therefore a replacement for least-squares fitting in applications that have to
-deal with lots of noise. RANSAC randomly chooses the minimal set of data points
-that fully determine the model parameters. Then it forms a consensus set out of
-all data points that are consistent with the model up to a certain margin of
-error. RANSAC constructs a fixed number of such consensus sets and then chooses 
-the model with the largest consensus as an estimate.
+that fits a parametrized model to given data, which is robust to outliers.  The
+pose estimation problem in this context can be reduced to the location
+determination problem addressed by the paper that introduced RANSAC
+\cite{Fischler1981}.  Generally, this algorithm randomly chooses a minimum set
+of data points that fully determine the model parameters. Then it forms a
+consensus set of {\it inliers}, that is, all data points that are consistent
+with the model up to a certain margin of error. RANSAC constructs a fixed
+number of such consensus sets and then chooses the model with the largest
+consensus as an estimate.
 
-One application of RANSAC is pose estimation. There are six degrees of freedom
-for an object to be located and oriented in space, three for translation and
-three for orientation. Three points in a 2-d perspective projection are
-necessary and sufficient to determine a pose. If there were no noise in the set
-of 2-d correspondences, we would be able to find poses of an object by simply
-taking any three correspondences belonging to this object. Unfortunately, image
-noise, discretization effects and approximate nearest neighbors asks for a more
-sophisticated approach that incorporates strategies to deal with noise and
-inconsistency. RANSAC iteratively selects three correspondences to compute pose
-estimates. The 3-d model of the template object at the estimated pose is then
-back-projected on the query image to compute the projection error and the
-consensus set.
+Pose estimation using RANSAC can be categorized as a method of {\it pose
+consistency} or {\it alignment}, where first a pose is hypothesized, and
+then the hypothesized pose is verified for support by the remaining data
+\cite{Forsyth2003}.
+
+There are six degrees of freedom for an object to be located and oriented in
+space, three for translation and three for orientation. Three points in a 2-d
+perspective projection are necessary and sufficient to determine a pose. If
+there were no noise in the set of 2-d correspondences, we would be able to find
+poses of an object by simply taking any three correspondences belonging to this
+object. Unfortunately, image noise, discretization effects and approximate
+nearest neighbors asks for a more sophisticated approach that incorporates
+strategies to deal with noise and inconsistency. RANSAC iteratively selects
+three correspondences to compute pose estimates. The 3-d model of the template
+object aligned to the estimated pose is then projected on the query image plane
+to compute the projection error and the consensus set. The size of the resulting
+consensus sets plays an important role in this work.
 
 \section{Machine Learning}
 
