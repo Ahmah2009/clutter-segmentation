@@ -378,9 +378,21 @@ and understanding the strengths and weaknesses of an object recognition system.
 
 \subsection{Classification}
 
+Classification is about making decisions, given some observations, usually in
+the presence of uncertainty. In classification, we choose from a finite number
+of possible decisions. 
+
 \subsection{Estimation}
 
+Estimation is about estimating parameters or other continuous numeric vectors,
+given some observations. It can be regarded as the continuous extension of
+classification. 
+
 \subsection{Recognition}
+
+The recognition problem, where objects have to be both correctly labeled and
+its location determined, neither fits to a pure classification nor to a pure
+estimation problem.
 
 \subsection{Parameter Optimization}
 
