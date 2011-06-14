@@ -5,8 +5,10 @@ create table pms_fe (
     extractor_type varchar(255), 
     descriptor_type varchar(255),
     threshold float,
+    scale_factor float,
     min_features integer,
     max_features integer,
+    n_features integer,
     octaves integer
 );
 

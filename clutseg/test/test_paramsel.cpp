@@ -37,16 +37,20 @@ struct test_paramsel : public ::testing::Test {
         experiment.paramset.train_pms_fe.detector_type = "FAST";
         experiment.paramset.train_pms_fe.extractor_type = "multi-scale";
         experiment.paramset.train_pms_fe.descriptor_type = "rBRIEF";
+        experiment.paramset.train_pms_fe.detector_params["n_features"] = 5000;
         experiment.paramset.train_pms_fe.detector_params["min_features"] = 0;
         experiment.paramset.train_pms_fe.detector_params["max_features"] = 0;
         experiment.paramset.train_pms_fe.detector_params["threshold"] = 0;
+        experiment.paramset.train_pms_fe.extractor_params["scale_factor"] = 1.2f;
         experiment.paramset.train_pms_fe.extractor_params["octaves"] = 3;
         experiment.paramset.recog_pms_fe.detector_type = "FAST";
         experiment.paramset.recog_pms_fe.extractor_type = "multi-scale";
         experiment.paramset.recog_pms_fe.descriptor_type = "rBRIEF";
+        experiment.paramset.recog_pms_fe.detector_params["n_features"] = 5000;
         experiment.paramset.recog_pms_fe.detector_params["min_features"] = 0;
         experiment.paramset.recog_pms_fe.detector_params["max_features"] = 0;
         experiment.paramset.recog_pms_fe.detector_params["threshold"] = 0;
+        experiment.paramset.recog_pms_fe.extractor_params["scale_factor"] = 1.2f;
         experiment.paramset.recog_pms_fe.extractor_params["octaves"] = 3;
         experiment.paramset.detect_pms_match.type = "LSH-BINARY";
         experiment.paramset.detect_pms_match.knn = 3; 
@@ -260,9 +264,11 @@ TEST_F(test_paramsel, pms_fe_read) {
     EXPECT_EQ("multi-scale", feParams.extractor_type);
     EXPECT_EQ("rBRIEF", feParams.descriptor_type);
     EXPECT_EQ(3, feParams.extractor_params["octaves"]);
+    EXPECT_FLOAT_EQ(1.2, feParams.extractor_params["scale_factor"]);
     EXPECT_FLOAT_EQ(40, feParams.detector_params["threshold"]);
     EXPECT_FLOAT_EQ(0, feParams.detector_params["min_features"]);
     EXPECT_FLOAT_EQ(0, feParams.detector_params["max_features"]);
+    EXPECT_FLOAT_EQ(5000, feParams.detector_params["n_features"]);
 }
 
 TEST_F(test_paramsel, pms_fe_update) {
@@ -270,11 +276,15 @@ TEST_F(test_paramsel, pms_fe_update) {
     int64_t id = 1;
     deserialize_pms_fe(db, feParams, id); 
     feParams.detector_type = "STAR";
+    feParams.detector_params["n_features"] = 4000;
+    feParams.detector_params["scale_factor"] = 1.2;
     serialize_pms_fe(db, feParams, id);
     FeatureExtractionParams feParams2;
     deserialize_pms_fe(db, feParams2, id);
     EXPECT_EQ(feParams.detector_type, feParams2.detector_type);
     EXPECT_EQ("STAR", feParams2.detector_type);
+    EXPECT_FLOAT_EQ(4000, feParams.detector_params["n_features"]);
+    EXPECT_FLOAT_EQ(1.2, feParams.detector_params["scale_factor"]);
 }
 
 TEST_F(test_paramsel, pms_fe_write_read) {

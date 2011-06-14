@@ -55,7 +55,7 @@ namespace clutseg {
         sqlite3_stmt *read;
         db_prepare(db, read, boost::format(
             "select detector_type, extractor_type, descriptor_type, "
-            "threshold, min_features, max_features, octaves "
+            "threshold, min_features, max_features, n_features, scale_factor, octaves "
             "from pms_fe where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         int c = 0;
@@ -65,6 +65,8 @@ namespace clutseg {
         pms_fe.detector_params["threshold"] = sqlite3_column_double(read, c++);
         pms_fe.detector_params["min_features"] = sqlite3_column_int(read, c++);
         pms_fe.detector_params["max_features"] = sqlite3_column_int(read, c++);
+        pms_fe.detector_params["n_features"] = sqlite3_column_int(read, c++);
+        pms_fe.extractor_params["scale_factor"] = sqlite3_column_double(read, c++);
         pms_fe.extractor_params["octaves"] = sqlite3_column_int(read, c++);
         sqlite3_finalize(read);
     }
@@ -77,6 +79,8 @@ namespace clutseg {
         setMemberField(m, "threshold", (double) pms_fe.detector_params.find("threshold")->second);
         setMemberField(m, "min_features", (int) pms_fe.detector_params.find("min_features")->second);
         setMemberField(m, "max_features", (int) pms_fe.detector_params.find("max_features")->second);
+        setMemberField(m, "n_features", (int) pms_fe.detector_params.find("n_features")->second);
+        setMemberField(m, "scale_factor", (double) pms_fe.extractor_params.find("scale_factor")->second);
         setMemberField(m, "octaves", (int) pms_fe.extractor_params.find("octaves")->second);
         insertOrUpdate(db, "pms_fe", m, id);
     }
