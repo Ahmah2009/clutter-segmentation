@@ -42,7 +42,9 @@
 }
 - other: {local-name: /opt/ros/diamondback/ros}
 - other: {local-name: /opt/ros/diamondback/stacks}
-- other: {
-    local-name: vision_opencv
+- svn: {
+    local-name: vision_opencv,
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vision_opencv/trunk@37180',
+    version: '-r 37180' 
 }
 

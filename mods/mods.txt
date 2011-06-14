@@ -18,7 +18,9 @@ object_recognition/tod_detecting/src/Matcher.cpp
 object_recognition/tod_detecting/include/tod/detecting/GuessGenerator.h
 object_recognition/tod_detecting/CMakeLists.txt
 object_recognition_experimental/rbrief/CMakeLists.txt
+object_recognition_experimental/rbrief/include/rbrief/detectors.h
 object_recognition_experimental/rbrief/src/RBrief.cpp
+object_recognition_experimental/rbrief/src/detectors.cpp
 opencv_candidate/src/Camera.cpp
 opencv_candidate/src/circlesgrid.cpp
 vision_opencv/opencv2/Makefile

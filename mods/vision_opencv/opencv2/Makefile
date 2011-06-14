@@ -3,9 +3,9 @@ INSTALL_DIR = opencv
 all: installed
 
 SVN_DIR = build/opencv-svn
-SVN_URL = https://code.ros.org/svn/opencv/branches/2.2/opencv
-SVN_REVISION = -r5206
-SVN_PATCH = pythontest.patch
+SVN_URL = https://code.ros.org/svn/opencv/trunk/opencv
+SVN_REVISION = -r5465
+# SVN_PATCH = pythontest.patch
 include $(shell rospack find mk)/svn_checkout.mk
 
 
@@ -31,7 +31,7 @@ installed: wiped $(SVN_DIR) patched
 	sed 's%Libs: -L$${libdir} -lcxcore%Libs: -Wl,-rpath,$${libdir} -L$${libdir} -lcxcore%g' `rospack find opencv2`/$(INSTALL_DIR)/lib/pkgconfig/opencv.bak > `rospack find opencv2`/$(INSTALL_DIR)/lib/pkgconfig/opencv.pc
 	@echo "copy Python module to ./lib"
 	mkdir -p $(CURDIR)/lib
-	mv $(CURDIR)/$(INSTALL_DIR)/lib/python*/site-packages/* $(CURDIR)/lib/
+	mv $(CURDIR)/$(INSTALL_DIR)/lib/python*/dist-packages/* $(CURDIR)/lib/
 	# chrpath -r `chrpath $(CURDIR)/lib/cv.so | sed 's!build/opencv-svn/build/lib!opencv/lib!;s/^.*=//'` $(CURDIR)/lib/cv.so
 	touch opencv/include/opencv/cxtypes.h
 	touch installed
