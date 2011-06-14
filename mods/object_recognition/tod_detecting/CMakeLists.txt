@@ -11,7 +11,7 @@ set(ROS_BUILD_TYPE Debug)
 
 rosbuild_init()
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DOPENCV_R5024=OPENCV_R5024")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

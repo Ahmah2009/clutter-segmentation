@@ -465,6 +465,7 @@ TEST_F(test_extractor, dynamicsurf_sequential_rbrief_windows) {
     }
 }
 
+/*
 // Testing ORB from OpenCV trunk
 // ---------------------------------------------------------------------------
 
@@ -479,4 +480,4 @@ TEST_F(test_extractor, opencv_orb_extract_features) {
         waitKey(-1);
     }
 }
-
+*/

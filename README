@@ -26,26 +26,20 @@ clutter-segmentation.
 If you don't have python-setuptools installed, you can also get the tool
 directly from http://pypi.python.org/pypi/rosinstall
 
-    4. tar xvzf clutter-segmentation/3rdparty/opencv_candidate.50974.tar.gz
-
-This is a workaround for issue described on answers.ros.org, for an
-explanation, see the detailed description on
-http://answers.ros.org/question/1125/no-longer-able-to-checkout-opencv_candidate-in
-
-    5. rosinstall . clutter-segmentation/clutter-segmentation.rosinstall
+    4. rosinstall . clutter-segmentation/clutter-segmentation.rosinstall
 
 This will setup dependencies and ROS overlays. Hit 's' for skip when being asked
 for what action to take on repository clutter-segmentation. Including it in the
 clutter-segmentation.rosinstall file will make sure that clutseg is included in
 the ROS environment configured via setup.bash.
 
-    6. source setup.bash
+    5. source setup.bash
 
 Depending on your needs, you might add this to your ~/.bashrc file.
 
-    7. rosdep install clutseg
+    6. rosdep install clutseg
 
-    8. export CLUTSEG_PATH=$(pwd)
+    7. export CLUTSEG_PATH=$(pwd)
 
 This environment variable is used by ROS package clutseg in various occasions
 It is recommended to add this to your ~./.bashrc file. Note that environment
@@ -53,27 +47,27 @@ variables defined in ~/.bashrc are usually not read in non-interactive session,
 such as cron. Most of the scripts in clutseg that require CLUTSEG_PATH will
 therefore read ~/.env (non-standard) before executing.
 
-    9. export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
+    8. export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
 
 Depending on your needs, you might add this to ~/.bashrc as well.
 
-   10. cp -r /opt/ros/diamondback/stacks/vision_opencv .
+    9. svn checkout -r 37180 https://code.ros.org/svn/ros-pkg/stacks/vision_opencv/trunk@37180 vision_opencv
 
-This prepares ground for OpenCV overlay that backports bugfixes.
+This retrieves vision_opencv overlay.
 
-   11. rm vision_opencv/opencv2/ROS_NOBUILD
+   10. rm vision_opencv/opencv2/ROS_NOBUILD
 
-   12. rm vision_opencv/cv_bridge/ROS_NOBUILD
+   11. rm vision_opencv/cv_bridge/ROS_NOBUILD
 
-   13. mods-link
+   12. mods-link
 
 Apply patches on tod_training, tod_detecting, rbrief, fiducial and some other
 places where serious bugs were blocking progress or blackbox behaviour was
 blocking the gain of valuable information.
 
-   14. rosmake --rosdep-install clutseg
+   13. rosmake --rosdep-install clutseg
 
-   15. Install RSQlite
+   14. Install RSQlite
 
 You can get it from http://cran.r-project.org/web/packages/RSQLite, as this R
 package is not prepackaged for Ubuntu Meerkat. Follow the installation

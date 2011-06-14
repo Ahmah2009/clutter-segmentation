@@ -154,7 +154,7 @@ TEST_F(test_pose, DiffTwentyDegrees) {
     Rodrigues(p.rvec, R1);
     Rodrigues(q.rvec, R2);
     Mat D = diffRotation(R1, R2);
-    Vec3d r;
+    Mat r;
     Rodrigues(D, r);
     EXPECT_NEAR(M_PI / 9.0, norm(r), 1e-10);
 }
