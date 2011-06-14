@@ -22,7 +22,7 @@ struct test_runner : public ::testing::Test {
 
 };
 
-TEST_F(test_runner, CloudName) {
+TEST_F(test_runner, cloud_name) {
     map<string, string> names;
     names["image_00023.png"] = "cloud_00023.pcd";
     names["image_00023.jpg"] = "cloud_00023.pcd";
@@ -39,7 +39,7 @@ TEST_F(test_runner, CloudName) {
     }
 }
 
-TEST_F(test_runner, PrintNumberOfProcessorsOnline) {
+TEST_F(test_runner, print_num_procs_online) {
     cout << sysconf(_SC_NPROCESSORS_ONLN) << endl;
 }
 

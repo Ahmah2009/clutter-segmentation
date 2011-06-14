@@ -443,7 +443,7 @@ TEST_F(test_extractor, times) {
 // ---------------------------------------------------------------------------
 
 #ifndef OPENCV_R5024 
-    TEST_F(test_extractor, SiftFeatureDetectorIgnoresMask) {
+    TEST_F(test_extractor, sift_feature_detector_ignoresMask) {
         // I expect having found an annoying bug in OpenCV
         // SiftFeatureDetector does not use the mask.
         // see http://opencv-users.1802565.n2.nabble.com/Problems-about-the-OpenCV-SIFT-feature-detector-td6084481.html

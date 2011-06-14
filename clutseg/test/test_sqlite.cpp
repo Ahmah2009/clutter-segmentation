@@ -10,7 +10,7 @@
  
 using namespace std;
 
-TEST(test_sqlite, CRUD) {
+TEST(test_sqlite, crud) {
     sqlite3* db;
     string fn = "build/test_sqlite.CRUD.sqlite3";
     boost::filesystem::remove(fn);

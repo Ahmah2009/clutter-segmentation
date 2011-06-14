@@ -41,19 +41,19 @@ struct test_ranking : public ::testing::Test {
 
 };
 
-TEST_F(test_ranking, UniformRanking) {
+TEST_F(test_ranking, uniform_ranking) {
     EXPECT_EQ(uniform_ranking(many_inliers_guess), uniform_ranking(few_inliers_guess));
 }
 
-TEST_F(test_ranking, InliersRanking) {
+TEST_F(test_ranking, inliers_ranking) {
     EXPECT_GT(inliers_ranking(many_inliers_guess), inliers_ranking(few_inliers_guess));
 }
 
-TEST_F(test_ranking, ProximityRanking) {
+TEST_F(test_ranking, proximity_ranking) {
     EXPECT_GT(proximity_ranking(close_guess), proximity_ranking(far_guess));
 }
 
-TEST_F(test_ranking, UniformSort) {
+TEST_F(test_ranking, uniform_sort) {
     // I expect this to be a no-op
     Ptr<GuessRanking> r = new UniformRanking();
     GuessComparator cmp(r);
@@ -62,7 +62,7 @@ TEST_F(test_ranking, UniformSort) {
     EXPECT_LT(guesses[0].inliers.size(), guesses[1].inliers.size());
 }
 
-TEST_F(test_ranking, InliersSort) {
+TEST_F(test_ranking, inliers_sort) {
     Ptr<GuessRanking> r = new InliersRanking();
     GuessComparator cmp(r);
     EXPECT_LT(guesses[0].inliers.size(), guesses[1].inliers.size());

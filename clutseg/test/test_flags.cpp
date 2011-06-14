@@ -26,13 +26,13 @@ struct test_flags : public ::testing::Test {
 
 };
 
-TEST_F(test_flags, SetFlag) {
+TEST_F(test_flags, set) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
 }
 
-TEST_F(test_flags, SetFlagTwice) {
+TEST_F(test_flags, set_twice) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -40,7 +40,7 @@ TEST_F(test_flags, SetFlagTwice) {
     EXPECT_TRUE(flag.exists());
 }
 
-TEST_F(test_flags, ClearFlag) {
+TEST_F(test_flags, clear) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -48,7 +48,7 @@ TEST_F(test_flags, ClearFlag) {
     EXPECT_FALSE(flag.exists());
 }
 
-TEST_F(test_flags, ClearFlagTwice) {
+TEST_F(test_flags, clear_twice) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -58,7 +58,7 @@ TEST_F(test_flags, ClearFlagTwice) {
     EXPECT_FALSE(flag.exists());
 }
 
-TEST_F(test_flags, SetClearSetFlag) {
+TEST_F(test_flags, set_clear_set) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -68,13 +68,13 @@ TEST_F(test_flags, SetClearSetFlag) {
     EXPECT_TRUE(flag.exists());
 }
 
-TEST_F(test_flags, DirectoryIsNotAFlag) {
+TEST_F(test_flags, dir_not_a_flag) {
     EXPECT_FALSE(flag.exists());
     bfs::create_directory(flagp);
     EXPECT_FALSE(flag.exists());
 }
 
-TEST_F(test_flags, SetFlagFailsIfDirectoryWithSameNameExists) {
+TEST_F(test_flags, set_flag_fails_if_dir_with_same_name_exists) {
     EXPECT_FALSE(flag.exists());
     bfs::create_directory(flagp);
     EXPECT_TRUE(bfs::is_directory(flagp));
@@ -88,7 +88,7 @@ TEST_F(test_flags, SetFlagFailsIfDirectoryWithSameNameExists) {
     bfs::remove(flagp);
 }
 
-TEST_F(test_flags, ClearFlagFailsIfDirectoryWithSameNameExists) {
+TEST_F(test_flags, clear_flag_fails_if_dir_with_same_name_exists) {
     EXPECT_FALSE(flag.exists());
     bfs::create_directory(flagp);
     EXPECT_TRUE(bfs::is_directory(flagp));

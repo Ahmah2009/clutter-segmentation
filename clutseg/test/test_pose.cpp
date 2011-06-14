@@ -43,7 +43,7 @@ struct test_pose : public ::testing::Test {
     Camera camera;
 };
 
-TEST_F(test_pose, PoseToPoseRT) {
+TEST_F(test_pose, pose_to_posert) {
     // identity operation
     PoseRT posertB = poseToPoseRT(poseRtToPose(posert));
 
@@ -58,16 +58,16 @@ TEST_F(test_pose, PoseToPoseRT) {
     imshow_and_wait("PoseToPoseRT", canvas);
 }
 
-TEST_F(test_pose, PoseToPoseRtTypes) {
+TEST_F(test_pose, pose_to_pose_rt_types) {
     PoseRT p = poseToPoseRT(Pose());
     Mat d = p.tvec - posert.tvec;
 }
 
-TEST_F(test_pose, WritePoseRT) {
+TEST_F(test_pose, write_posert) {
     writePose("./build/writeposert.yaml", posert);
 }
 
-TEST_F(test_pose, TestTranslatePose) {
+TEST_F(test_pose, test_translate_pose) {
     PoseRT pose_zero = posert3;
     PoseRT pose_m15;
     PoseRT pose_p13;
@@ -82,7 +82,7 @@ TEST_F(test_pose, TestTranslatePose) {
     imshow_and_wait("TestTranslatePose", canvas3);
 }
 
-TEST_F(test_pose, ValidatePose) {
+TEST_F(test_pose, validate_pose) {
     float x = posert3.rvec.at<float>(0, 0);
     float y = posert3.rvec.at<float>(1, 0);
     float z = posert3.rvec.at<float>(2, 0);
@@ -91,7 +91,7 @@ TEST_F(test_pose, ValidatePose) {
     EXPECT_LT(0.0f, z);
 }
 
-TEST_F(test_pose, Norm) {
+TEST_F(test_pose, norm) {
     double x = posert.rvec.at<double>(0, 0);
     double y = posert.rvec.at<double>(1, 0);
     double z = posert.rvec.at<double>(2, 0);
@@ -99,26 +99,26 @@ TEST_F(test_pose, Norm) {
     EXPECT_DOUBLE_EQ(l2, norm(posert.rvec));
 }
 
-TEST_F(test_pose, ArcusCosinus) {
+TEST_F(test_pose, arcus_cosinus) {
     EXPECT_DOUBLE_EQ(M_PI / 3.0, acos(0.5));
 }
 
-TEST_F(test_pose, ArcusCosinusZero) {
+TEST_F(test_pose, arcus_cosinus_zero) {
     EXPECT_DOUBLE_EQ(0, acos(1.0));
 }
 
-TEST_F(test_pose, ZeroAngleBetween) {
+TEST_F(test_pose, zero_angle_between) {
     EXPECT_DOUBLE_EQ(0.0f, angleBetweenVectors(posert.rvec, posert.rvec));  
 }
 
-TEST_F(test_pose, AngleBetween) {
+TEST_F(test_pose, angle_between) {
     PoseRT p = posert3;
     PoseRT q = posert3;
     q.rvec *= 2;
     EXPECT_DOUBLE_EQ(0.0f, angleBetweenVectors(p.rvec, q.rvec));  
 }
 
-TEST_F(test_pose, DiffRotationIdentity) {
+TEST_F(test_pose, diff_rotation_identity) {
     PoseRT p = posert3;
     Mat R;
     Rodrigues(p.rvec, R);
@@ -134,7 +134,7 @@ TEST_F(test_pose, DiffRotationIdentity) {
     EXPECT_NEAR(1.0, I.at<double>(2, 2), 1e-10);
 }
 
-TEST_F(test_pose, DiffTwentyDegrees) {
+TEST_F(test_pose, diff_twenty_degrees) {
     PoseRT p = posert3;
     PoseRT q;
     
@@ -159,7 +159,7 @@ TEST_F(test_pose, DiffTwentyDegrees) {
     EXPECT_NEAR(M_PI / 9.0, norm(r), 1e-10);
 }
 
-TEST_F(test_pose, DiffTwentyDegrees2) {
+TEST_F(test_pose, diff_twenty_degrees_2) {
     PoseRT p = posert3;
     PoseRT q;
     
@@ -188,7 +188,7 @@ TEST_F(test_pose, DiffTwentyDegrees2) {
     EXPECT_NEAR(M_PI / 9.0, norm(d), 1e-10);
 }
 
-TEST_F(test_pose, AngleBetweenOrientationsTwentyDegrees) {
+TEST_F(test_pose, angle_between_orientations_twenty_degrees) {
     PoseRT p = posert3;
     PoseRT q;
     
@@ -207,7 +207,7 @@ TEST_F(test_pose, AngleBetweenOrientationsTwentyDegrees) {
 } 
 
 /* Check whether invariant Q = P * diffRotation(P, Q) holds. */
-TEST_F(test_pose, RotatePose) {
+TEST_F(test_pose, rotate_pose) {
     PoseRT p = posert3;
 
     Mat r = randomOrientation(M_PI / 9.0);
@@ -231,12 +231,12 @@ TEST_F(test_pose, RotatePose) {
     EXPECT_NEAR(M_PI / 9.0, angle_between(p, q), 1e-10);
 }
 
-TEST_F(test_pose, ConvertLegacyFilePoseToDoubleEmpty) {
+TEST_F(test_pose, convert_legacy_file_pose_to_double_empty) {
     bfs::path p("build/image_00054.detect_choices.yaml.gz");
     convertLegacyPoseFileToDouble("./data/image_00054.detect_choices.yaml.gz", p);
 }
 
-TEST_F(test_pose, ConvertLegacyFilePoseToDouble) {
+TEST_F(test_pose, convert_legacy_file_pose_to_double) {
     bfs::path p("build/image_00040.locate_choice.yaml.gz");
     convertLegacyPoseFileToDouble("./data/image_00040.locate_choice.yaml.gz", p);
     PoseRT pose;
@@ -244,7 +244,7 @@ TEST_F(test_pose, ConvertLegacyFilePoseToDouble) {
     EXPECT_DOUBLE_EQ(2.2760460376739502, pose.rvec.at<double>(0, 0));
 }
 
-TEST_F(test_pose, ConvertLegacyFilePoseToDoubleMany) {
+TEST_F(test_pose, convert_legacy_file_pose_to_double_many) {
     bfs::path p("build/image_00022.detect_choices.yaml.gz");
     convertLegacyPoseFileToDouble("./data/image_00022.detect_choices.yaml.gz", p);
     FileStorage in(p.string(), FileStorage::READ);
@@ -256,7 +256,7 @@ TEST_F(test_pose, ConvertLegacyFilePoseToDoubleMany) {
     in.release();
 }
 
-TEST_F(test_pose, ReadLabels) {
+TEST_F(test_pose, read_labels) {
     bfs::path p("data/detect_choices.yaml.gz");
     FileStorage in(p.string(), FileStorage::READ); 
     for (FileNodeIterator n_it = in[LabelSet::YAML_NODE_NAME].begin(); n_it != in[LabelSet::YAML_NODE_NAME].end(); n_it++) {
@@ -267,7 +267,7 @@ TEST_F(test_pose, ReadLabels) {
     in.release();
 }
 
-TEST_F(test_pose, ReadWriteLabelSet) {
+TEST_F(test_pose, read_write_label_set) {
     bfs::path p("data/detect_choices.yaml.gz");
 
     LabelSet tmp;

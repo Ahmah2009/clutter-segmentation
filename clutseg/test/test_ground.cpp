@@ -15,7 +15,7 @@ using namespace cv;
 using namespace std;
 using namespace clutseg;
 
-TEST(test_ground, LabelReadMany) {
+TEST(test_ground, label_read_many) {
     FileStorage fs("./data/image_00022.detect_choices.yaml.gz", FileStorage::READ);
     vector<Label> nps;
     for (FileNodeIterator n_it = fs.root().begin(); n_it != fs.root().end(); n_it++) {
@@ -34,7 +34,7 @@ TEST(test_ground, LabelReadMany) {
     EXPECT_FLOAT_EQ(4.51702595e-01, nps[1].pose.rvec.at<float>(0, 0));
 }
 
-TEST(test_ground, ReadGroundTruthWithoutPoses) {
+TEST(test_ground, read_ground_truth_without_poses) {
     GroundTruth  m = loadGroundTruthWithoutPoses("./data/testdesc.txt");
     LabelSet s = m["t0000.png"];
 

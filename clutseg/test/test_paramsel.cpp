@@ -112,7 +112,7 @@ struct test_paramsel : public ::testing::Test {
 
 };
 
-TEST_F(test_paramsel, Initialization) {
+TEST_F(test_paramsel, init) {
     Experiment exp;
     EXPECT_EQ("", exp.name);
     EXPECT_EQ("", exp.human_note);
@@ -177,7 +177,7 @@ TEST_F(test_paramsel, Initialization) {
     EXPECT_FLOAT_EQ(0, r.test_runtime);
 }
 
-TEST_F(test_paramsel, GetVcsCommit) {
+TEST_F(test_paramsel, record_commit) {
     Experiment e;
     EXPECT_EQ(0, e.vcs_commit.size());
     e.record_commit();
@@ -427,7 +427,7 @@ TEST_F(test_paramsel, experiment_flags) {
     EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
 }
 
-TEST_F(test_paramsel, SelectExperimentsNotRun) {
+TEST_F(test_paramsel, select_experiments_not_run) {
     // We need to be able to find those experiments that have not been run
     // yet. These are candidates for being carried out next. 
     Experiment e1 = experiment;
@@ -461,7 +461,7 @@ TEST_F(test_paramsel, SelectExperimentsNotRun) {
     EXPECT_TRUE((exps[0].id == e3.id) || exps[0].paramset.pms_clutseg.ranking != "ProximityRanking");
 }
 
-TEST_F(test_paramsel, SortExperimentsByTrainFeatures) {
+TEST_F(test_paramsel, sort_experiments_by_train_features) {
     Experiment e1 = experiment;
     Experiment e2 = experiment;
     Experiment e3 = experiment;
@@ -479,7 +479,7 @@ TEST_F(test_paramsel, SortExperimentsByTrainFeatures) {
     EXPECT_TRUE(exps[0].id == e2.id || exps[2].id == e2.id);
 }
 
-TEST_F(test_paramsel, ToDetectTodParameters) {
+TEST_F(test_paramsel, to_detect_tod_parameters) {
     TODParameters dp = experiment.paramset.toDetectTodParameters();
     EXPECT_EQ(experiment.paramset.detect_pms_guess.minInliersCount, 5);
     EXPECT_EQ(dp.guessParams.minInliersCount, 5);

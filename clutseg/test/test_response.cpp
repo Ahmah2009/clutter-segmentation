@@ -129,19 +129,19 @@ struct test_response : public ::testing::Test {
 
 };
 
-TEST_F(test_response, CutSseResponseFunctionZero) {
+TEST_F(test_response, cut_sse_response_function_100) {
     expect_sse_response_single(1.0, pose);
 }
 
-TEST_F(test_response, CutSseResponseFunctionHalf) {
+TEST_F(test_response, cut_sse_response_function_050) {
     expect_sse_response_single(0.5, rotatePose(pose, randomOrientation(M_PI / 9 / sqrt(2))));
 }
 
-TEST_F(test_response, CutSseResponseFunctionQuarter) {
+TEST_F(test_response, cut_sse_response_function_075) {
     expect_sse_response_single(0.75, rotatePose(pose, randomOrientation(M_PI / 18)));
 }
 
-TEST_F(test_response, TestErrorStatistics) {
+TEST_F(test_response, test_error_statistics) {
     // Add second image to ground truth
     string img_name_2 = "image_00001.png";
     PoseRT pose_2 = rotatePose(pose, randomOrientation(M_PI / 4));
@@ -174,7 +174,7 @@ TEST_F(test_response, TestErrorStatistics) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(test_response, PerfectEstimatesOnly) {
+TEST_F(test_response, perfect_estimates_only) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
@@ -205,7 +205,7 @@ TEST_F(test_response, PerfectEstimatesOnly) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(test_response, BadEstimatesOnly) {
+TEST_F(test_response, bad_estimates_only) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_ge_max_angle);
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_angle);
@@ -235,7 +235,7 @@ TEST_F(test_response, BadEstimatesOnly) {
     EXPECT_NEAR(0.75, rsp.locate_sipc.score(), 1e-6);
 }
 
-TEST_F(test_response, ReallyBadEstimatesOnly) {
+TEST_F(test_response, really_bad_estimates_only) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_ge_max_trans_angle);
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_trans_angle);
@@ -268,7 +268,7 @@ TEST_F(test_response, ReallyBadEstimatesOnly) {
 }
 
 
-TEST_F(test_response, NonesOnly) {
+TEST_F(test_response, nones_only) {
     SetResult r;
     r["at_hm_jc_1"] = Result();
     r["at_hm_jc_2"] = Result();
@@ -300,7 +300,7 @@ TEST_F(test_response, NonesOnly) {
  * We may not include these scenes when averaging later, otherwise we could improve
  * on these error statistics by return more NONEs.
  */
-TEST_F(test_response, NonesDoNotPullDownAverage) {
+TEST_F(test_response, nones_do_not_pull_down_average) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_max_trans_angle);
     r["at_hm_jc_1"].detect_choices.push_back(at_max_trans_angle);
@@ -331,7 +331,7 @@ TEST_F(test_response, NonesDoNotPullDownAverage) {
 
 /** Handling of the case in which an object has been labeled that is not even
  * on the scene. */
-TEST_F(test_response, MislabelingsOnly) {
+TEST_F(test_response, mislabelings_only) {
     SetResult r;
     r["at_hm_jc_1"] = Result(it_close_fp);
     r["at_hm_jc_1"].detect_choices.push_back(it_close_fp);
@@ -361,7 +361,7 @@ TEST_F(test_response, MislabelingsOnly) {
 }
 
  /* Realistic example with all kinds of cases occuring. */
-TEST_F(test_response, PerfectNoneMislabelSuccessFail) {
+TEST_F(test_response, perfect_none_mislabel_success_fail) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
@@ -401,7 +401,7 @@ TEST_F(test_response, PerfectNoneMislabelSuccessFail) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(test_response, EmptyScenesOnly) {
+TEST_F(test_response, empty_scenes_only) {
     SetResult r;
     r["empty_scene_1"] = Result(at_close);
     r["empty_scene_2"] = Result();
@@ -424,7 +424,7 @@ TEST_F(test_response, EmptyScenesOnly) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(test_response, DetectSipcClassification) {
+TEST_F(test_response, detect_sipc_classification) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_trans_angle);
@@ -445,7 +445,7 @@ TEST_F(test_response, DetectSipcClassification) {
     EXPECT_NEAR(0.5 * 4.5 / 9, rsp.detect_sipc.score(), 1e-6);
 }
 
-TEST_F(test_response, DetectSipcPose) {
+TEST_F(test_response, detect_sipc_pose) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
@@ -466,5 +466,4 @@ TEST_F(test_response, DetectSipcPose) {
     // classification score 4.5/9 weighted by 0.5, 
     // pose score 2/9 weighted by 0.5, 
     EXPECT_NEAR(0.5 * (4.5 + 2) / 9, rsp.detect_sipc.score(), 1e-6);
-
 }

@@ -42,7 +42,7 @@ class test_map : public ::testing::Test {
 };
 
 // TODO: move to test_pcl_visualization_addons
-TEST_F(test_map, AddMarker3d) {
+TEST_F(test_map, add_marker_3d) {
     SKIP_IF_FAST
 
     PCLVisualizer vis;
@@ -52,7 +52,7 @@ TEST_F(test_map, AddMarker3d) {
     vis.spin();
 }
 
-TEST_F(test_map, MapImageCorners) {
+TEST_F(test_map, map_image_corners) {
     SKIP_IF_FAST
 
     vector<Point> corners;
@@ -79,7 +79,7 @@ TEST_F(test_map, MapImageCorners) {
     vis.spin();
 }
 
-TEST_F(test_map, MapMarkers) {
+TEST_F(test_map, map_markers) {
     SKIP_IF_FAST
 
     vector<Point> red2d;

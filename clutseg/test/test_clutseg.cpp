@@ -151,7 +151,7 @@ bool test_clutseg::loaded;
 
 /** Verify that changes to parameters do not affect existing Clutsegmenter
  * instances, i.e. that parameters are properly copied in constructor. */
-TEST_F(test_clutseg, ConstructorOpaque) {
+TEST_F(test_clutseg, constructor_opaque) {
     SKIP_IF_FAST 
 
     TODParameters detect_params;
@@ -172,7 +172,7 @@ TEST_F(test_clutseg, ConstructorOpaque) {
  * Clutsegmenter's parameters and that changes shine through. In this way,
  * parameter configuration can be changed easily without having to reload the
  * training base. */
-TEST_F(test_clutseg, ChangeParamsOnline) {
+TEST_F(test_clutseg, change_params_online) {
     SKIP_IF_FAST 
 
     EXPECT_FALSE(sgm.getLocateParams().matcherParams.doRatioTest);
@@ -183,7 +183,7 @@ TEST_F(test_clutseg, ChangeParamsOnline) {
 
 /** Check whether detection works for a training image. This is expected to
  * return with a whole bunch of inliers since it is only a training image. */
-TEST_F(test_clutseg, RecognizeHaltbareMilch) {
+TEST_F(test_clutseg, recog_haltbare_milch) {
     SKIP_IF_FAST 
 
     ClutsegQuery query(haltbare_milch_train_img, haltbare_milch_train_cloud);
@@ -196,7 +196,7 @@ TEST_F(test_clutseg, RecognizeHaltbareMilch) {
 }
 
 /** Check whether loading a single training base works without failing */
-TEST_F(test_clutseg, LoadSingleTrainingBase) {
+TEST_F(test_clutseg, load_single_training_base) {
     SKIP_IF_FAST 
 
     vector<Ptr<TexturedObject> > objects;
@@ -208,7 +208,7 @@ TEST_F(test_clutseg, LoadSingleTrainingBase) {
 }
 
 /** Check whether an object is at least detected in clutter */
-TEST_F(test_clutseg, RecognizeInClutter) {
+TEST_F(test_clutseg, recog_in_clutter) {
     SKIP_IF_FAST 
 
     TODParameters & detect_params = sgm.getDetectParams();
@@ -221,11 +221,11 @@ TEST_F(test_clutseg, RecognizeInClutter) {
     //sgm.setAcceptThreshold(20);
 
     ASSERT_TRUE(sgm.isDoLocate());
-    recognize("RecognizeInClutter");
+    recognize("recog_in_clutter");
 }
 
 /** Check whether an object is at least detected in clutter */
-TEST_F(test_clutseg, RecognizeInClutterDetectOnly) {
+TEST_F(test_clutseg, recog_in_clutter_detect_only) {
     SKIP_IF_FAST 
 
     TODParameters & detect_params = sgm.getDetectParams();
@@ -234,12 +234,12 @@ TEST_F(test_clutseg, RecognizeInClutterDetectOnly) {
 
     sgm.setDoLocate(false);
     ASSERT_FALSE(sgm.isDoLocate());
-    recognize("RecognizeInClutterDetectOnly");
+    recognize("recog_in_clutter_detect_only");
 }
 
 
 /** Check whether an object is at least detected in clutter */
-TEST_F(test_clutseg, RecognizeForemostInClutter) {
+TEST_F(test_clutseg, recog_foremost_in_clutter) {
     SKIP_IF_FAST 
 
     TODParameters & detect_params = sgm.getDetectParams();
@@ -259,7 +259,7 @@ TEST_F(test_clutseg, RecognizeForemostInClutter) {
     );
 
     ASSERT_TRUE(s.isDoLocate());
-    recognize("RecognizeForemostInClutter");
+    recognize("recog_foremost_in_clutter");
 }
 
 TEST_F(test_clutseg, Reconfigure) {
@@ -268,7 +268,7 @@ TEST_F(test_clutseg, Reconfigure) {
     Experiment exp;
     exp.id = 1;
     sqlite3* db;
-    string fn = "build/ClutsegSelTest.sqlite3";
+    string fn = "build/test_clutseg.reconfigure.sqlite3";
     boost::filesystem::remove(fn);
     boost::filesystem::copy_file("./data/test.sqlite3", fn);
     db_open(db, fn);
