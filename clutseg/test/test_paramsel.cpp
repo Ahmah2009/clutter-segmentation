@@ -16,10 +16,10 @@ using namespace clutseg;
 using namespace std;
 using namespace tod;
 
-struct ParamSelTest : public ::testing::Test {
+struct test_paramsel : public ::testing::Test {
 
     virtual void SetUp() {
-        string fn = "build/ParamSelTest.sqlite3";
+        string fn = "build/test_paramsel.sqlite3";
         boost::filesystem::remove(fn);
         boost::filesystem::copy_file("./data/test.sqlite3", fn);
         db_open(db, fn);
@@ -108,7 +108,7 @@ struct ParamSelTest : public ::testing::Test {
 
 };
 
-TEST_F(ParamSelTest, Initialization) {
+TEST_F(test_paramsel, Initialization) {
     Experiment exp;
     EXPECT_EQ("", exp.name);
     EXPECT_EQ("", exp.human_note);
@@ -173,14 +173,14 @@ TEST_F(ParamSelTest, Initialization) {
     EXPECT_FLOAT_EQ(0, r.test_runtime);
 }
 
-TEST_F(ParamSelTest, GetVcsCommit) {
+TEST_F(test_paramsel, GetVcsCommit) {
     Experiment e;
     EXPECT_EQ(0, e.vcs_commit.size());
     e.record_commit();
     EXPECT_EQ(40, e.vcs_commit.size());
 }
 
-TEST_F(ParamSelTest, response_read) {
+TEST_F(test_paramsel, response_read) {
     // Validate against data as given by data/test.sql
     Response r;
     r.id = 1;
@@ -188,7 +188,7 @@ TEST_F(ParamSelTest, response_read) {
     EXPECT_FLOAT_EQ(0.78, r.value);
 }
 
-TEST_F(ParamSelTest, response_update) {
+TEST_F(test_paramsel, response_update) {
     Response r;
     r.id = 1;
     r.deserialize(db); 
@@ -202,7 +202,7 @@ TEST_F(ParamSelTest, response_update) {
     EXPECT_EQ(1, r2.id);
 }
 
-TEST_F(ParamSelTest, response_write_read) {
+TEST_F(test_paramsel, response_write_read) {
     Response & orig = experiment.response;
     orig.serialize(db);
     Response rest;
@@ -246,12 +246,12 @@ TEST_F(ParamSelTest, response_write_read) {
     EXPECT_FLOAT_EQ(orig.test_runtime, rest.test_runtime);
 }
 
-TEST_F(ParamSelTest, response_detach) {
+TEST_F(test_paramsel, response_detach) {
     experiment.response.detach();
     EXPECT_EQ(-1, experiment.response.id);
 }
 
-TEST_F(ParamSelTest, pms_fe_read) {
+TEST_F(test_paramsel, pms_fe_read) {
     // Validate against data as given by data/test.sql
     FeatureExtractionParams feParams;
     int64_t id = 1;
@@ -265,7 +265,7 @@ TEST_F(ParamSelTest, pms_fe_read) {
     EXPECT_FLOAT_EQ(0, feParams.detector_params["max_features"]);
 }
 
-TEST_F(ParamSelTest, pms_fe_update) {
+TEST_F(test_paramsel, pms_fe_update) {
     FeatureExtractionParams feParams;
     int64_t id = 1;
     deserialize_pms_fe(db, feParams, id); 
@@ -277,7 +277,7 @@ TEST_F(ParamSelTest, pms_fe_update) {
     EXPECT_EQ("STAR", feParams2.detector_type);
 }
 
-TEST_F(ParamSelTest, pms_fe_write_read) {
+TEST_F(test_paramsel, pms_fe_write_read) {
     Response & orig = experiment.response;
     orig.serialize(db);
     Response rest;
@@ -286,7 +286,7 @@ TEST_F(ParamSelTest, pms_fe_write_read) {
     EXPECT_FLOAT_EQ(orig.value, rest.value);
 }
 
-TEST_F(ParamSelTest, pms_clutseg_read) {
+TEST_F(test_paramsel, pms_clutseg_read) {
     // Validate against data as given by data/test.sql
     ClutsegParams p;
     p.id = 1;
@@ -295,7 +295,7 @@ TEST_F(ParamSelTest, pms_clutseg_read) {
     EXPECT_EQ("InliersRanking", p.ranking);
 }
 
-TEST_F(ParamSelTest, pms_clutseg_update) {
+TEST_F(test_paramsel, pms_clutseg_update) {
     ClutsegParams p;
     p.id = 1;
     p.deserialize(db); 
@@ -311,7 +311,7 @@ TEST_F(ParamSelTest, pms_clutseg_update) {
     EXPECT_EQ(1, p2.id);
 }
 
-TEST_F(ParamSelTest, pms_clutseg_write_read) {
+TEST_F(test_paramsel, pms_clutseg_write_read) {
     ClutsegParams & orig = experiment.paramset.pms_clutseg;
     orig.serialize(db);
     ClutsegParams rest;
@@ -321,12 +321,12 @@ TEST_F(ParamSelTest, pms_clutseg_write_read) {
     EXPECT_EQ(orig.ranking, rest.ranking);
 }
 
-TEST_F(ParamSelTest, pms_clutseg_detach) {
+TEST_F(test_paramsel, pms_clutseg_detach) {
     experiment.paramset.pms_clutseg.detach();
     EXPECT_EQ(-1, experiment.paramset.pms_clutseg.id);
 }
 
-TEST_F(ParamSelTest, experiment_read) {
+TEST_F(test_paramsel, experiment_read) {
     // Validate against data as given by data/test.sql
     Experiment e;
     e.id = 1;
@@ -336,7 +336,7 @@ TEST_F(ParamSelTest, experiment_read) {
     EXPECT_EQ("test", e.test_set);
 }
 
-TEST_F(ParamSelTest, experiment_update) {
+TEST_F(test_paramsel, experiment_update) {
     Experiment e;
     e.id = 1;
     e.deserialize(db); 
@@ -357,7 +357,7 @@ TEST_F(ParamSelTest, experiment_update) {
     EXPECT_EQ(1, e2.id);
 }
 
-TEST_F(ParamSelTest, experiment_write_read) {
+TEST_F(test_paramsel, experiment_write_read) {
     Experiment & orig = experiment;
     EXPECT_EQ(false, orig.has_run);
     // must set orig.has_run to have the response to be
@@ -381,7 +381,7 @@ TEST_F(ParamSelTest, experiment_write_read) {
     EXPECT_EQ(true, rest.has_run);
 }
 
-TEST_F(ParamSelTest, experiment_detach) {
+TEST_F(test_paramsel, experiment_detach) {
     experiment.detach();
     EXPECT_EQ(-1, experiment.response.id);
     EXPECT_EQ(-1, experiment.paramset.pms_clutseg.id);
@@ -393,14 +393,14 @@ TEST_F(ParamSelTest, experiment_detach) {
     EXPECT_EQ(-1, experiment.paramset.locate_pms_guess_id);
 }
 
-TEST_F(ParamSelTest, experiment_vcs_commit) {
+TEST_F(test_paramsel, experiment_vcs_commit) {
     Experiment exp;
     exp.id = 1;
     exp.deserialize(db);
     EXPECT_EQ("ccb521d7307ef27a65ab82f297be80390b5599bb", exp.vcs_commit);
 }
 
-TEST_F(ParamSelTest, experiment_flags) {
+TEST_F(test_paramsel, experiment_flags) {
     EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_VALID);
     EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
     experiment.flags |= Experiment::FLAG_FEPARAMS_VALID; 
@@ -417,7 +417,7 @@ TEST_F(ParamSelTest, experiment_flags) {
     EXPECT_FALSE(experiment.flags & Experiment::FLAG_FEPARAMS_INVALID);
 }
 
-TEST_F(ParamSelTest, SelectExperimentsNotRun) {
+TEST_F(test_paramsel, SelectExperimentsNotRun) {
     // We need to be able to find those experiments that have not been run
     // yet. These are candidates for being carried out next. 
     Experiment e1 = experiment;
@@ -451,7 +451,7 @@ TEST_F(ParamSelTest, SelectExperimentsNotRun) {
     EXPECT_TRUE((exps[0].id == e3.id) || exps[0].paramset.pms_clutseg.ranking != "ProximityRanking");
 }
 
-TEST_F(ParamSelTest, SortExperimentsByTrainFeatures) {
+TEST_F(test_paramsel, SortExperimentsByTrainFeatures) {
     Experiment e1 = experiment;
     Experiment e2 = experiment;
     Experiment e3 = experiment;
@@ -469,7 +469,7 @@ TEST_F(ParamSelTest, SortExperimentsByTrainFeatures) {
     EXPECT_TRUE(exps[0].id == e2.id || exps[2].id == e2.id);
 }
 
-TEST_F(ParamSelTest, ToDetectTodParameters) {
+TEST_F(test_paramsel, ToDetectTodParameters) {
     TODParameters dp = experiment.paramset.toDetectTodParameters();
     EXPECT_EQ(experiment.paramset.detect_pms_guess.minInliersCount, 5);
     EXPECT_EQ(dp.guessParams.minInliersCount, 5);

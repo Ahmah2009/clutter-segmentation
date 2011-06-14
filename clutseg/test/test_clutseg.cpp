@@ -28,7 +28,7 @@ using namespace cv;
 using namespace std;
 using namespace tod;
 
-class ClutsegTest : public ::testing::Test {
+class test_clutseg : public ::testing::Test {
 
     public:
 
@@ -146,12 +146,12 @@ class ClutsegTest : public ::testing::Test {
 
 };
 
-Clutsegmenter ClutsegTest::sgm;
-bool ClutsegTest::loaded;
+Clutsegmenter test_clutseg::sgm;
+bool test_clutseg::loaded;
 
 /** Verify that changes to parameters do not affect existing Clutsegmenter
  * instances, i.e. that parameters are properly copied in constructor. */
-TEST_F(ClutsegTest, ConstructorOpaque) {
+TEST_F(test_clutseg, ConstructorOpaque) {
     SKIP_IF_FAST 
 
     TODParameters detect_params;
@@ -172,7 +172,7 @@ TEST_F(ClutsegTest, ConstructorOpaque) {
  * Clutsegmenter's parameters and that changes shine through. In this way,
  * parameter configuration can be changed easily without having to reload the
  * training base. */
-TEST_F(ClutsegTest, ChangeParamsOnline) {
+TEST_F(test_clutseg, ChangeParamsOnline) {
     SKIP_IF_FAST 
 
     EXPECT_FALSE(sgm.getLocateParams().matcherParams.doRatioTest);
@@ -183,7 +183,7 @@ TEST_F(ClutsegTest, ChangeParamsOnline) {
 
 /** Check whether detection works for a training image. This is expected to
  * return with a whole bunch of inliers since it is only a training image. */
-TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
+TEST_F(test_clutseg, RecognizeHaltbareMilch) {
     SKIP_IF_FAST 
 
     ClutsegQuery query(haltbare_milch_train_img, haltbare_milch_train_cloud);
@@ -196,7 +196,7 @@ TEST_F(ClutsegTest, RecognizeHaltbareMilch) {
 }
 
 /** Check whether loading a single training base works without failing */
-TEST_F(ClutsegTest, LoadSingleTrainingBase) {
+TEST_F(test_clutseg, LoadSingleTrainingBase) {
     SKIP_IF_FAST 
 
     vector<Ptr<TexturedObject> > objects;
@@ -208,7 +208,7 @@ TEST_F(ClutsegTest, LoadSingleTrainingBase) {
 }
 
 /** Check whether an object is at least detected in clutter */
-TEST_F(ClutsegTest, RecognizeInClutter) {
+TEST_F(test_clutseg, RecognizeInClutter) {
     SKIP_IF_FAST 
 
     TODParameters & detect_params = sgm.getDetectParams();
@@ -225,7 +225,7 @@ TEST_F(ClutsegTest, RecognizeInClutter) {
 }
 
 /** Check whether an object is at least detected in clutter */
-TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
+TEST_F(test_clutseg, RecognizeInClutterDetectOnly) {
     SKIP_IF_FAST 
 
     TODParameters & detect_params = sgm.getDetectParams();
@@ -239,7 +239,7 @@ TEST_F(ClutsegTest, RecognizeInClutterDetectOnly) {
 
 
 /** Check whether an object is at least detected in clutter */
-TEST_F(ClutsegTest, RecognizeForemostInClutter) {
+TEST_F(test_clutseg, RecognizeForemostInClutter) {
     SKIP_IF_FAST 
 
     TODParameters & detect_params = sgm.getDetectParams();
@@ -262,7 +262,7 @@ TEST_F(ClutsegTest, RecognizeForemostInClutter) {
     recognize("RecognizeForemostInClutter");
 }
 
-TEST_F(ClutsegTest, Reconfigure) {
+TEST_F(test_clutseg, Reconfigure) {
     SKIP_IF_FAST 
 
     Experiment exp;

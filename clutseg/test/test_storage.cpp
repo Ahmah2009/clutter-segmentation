@@ -14,7 +14,7 @@ using namespace clutseg;
 using namespace std;
 using namespace tod; 
 
-class StorageTest : public ::testing::Test {
+class test_storage : public ::testing::Test {
 
 };
 

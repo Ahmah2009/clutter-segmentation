@@ -10,10 +10,10 @@
 using namespace clutseg;
 namespace bfs = boost::filesystem;
 
-struct FlagsTest : public ::testing::Test {
+struct test_flags : public ::testing::Test {
 
     void SetUp() {
-        flagp = bfs::path("build/FlagsTest.flag");
+        flagp = bfs::path("build/test_flags.flag");
         flag = FileFlag(flagp);
     }
 
@@ -26,13 +26,13 @@ struct FlagsTest : public ::testing::Test {
 
 };
 
-TEST_F(FlagsTest, SetFlag) {
+TEST_F(test_flags, SetFlag) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
 }
 
-TEST_F(FlagsTest, SetFlagTwice) {
+TEST_F(test_flags, SetFlagTwice) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -40,7 +40,7 @@ TEST_F(FlagsTest, SetFlagTwice) {
     EXPECT_TRUE(flag.exists());
 }
 
-TEST_F(FlagsTest, ClearFlag) {
+TEST_F(test_flags, ClearFlag) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -48,7 +48,7 @@ TEST_F(FlagsTest, ClearFlag) {
     EXPECT_FALSE(flag.exists());
 }
 
-TEST_F(FlagsTest, ClearFlagTwice) {
+TEST_F(test_flags, ClearFlagTwice) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -58,7 +58,7 @@ TEST_F(FlagsTest, ClearFlagTwice) {
     EXPECT_FALSE(flag.exists());
 }
 
-TEST_F(FlagsTest, SetClearSetFlag) {
+TEST_F(test_flags, SetClearSetFlag) {
     EXPECT_FALSE(flag.exists());
     flag.set();
     EXPECT_TRUE(flag.exists());
@@ -68,13 +68,13 @@ TEST_F(FlagsTest, SetClearSetFlag) {
     EXPECT_TRUE(flag.exists());
 }
 
-TEST_F(FlagsTest, DirectoryIsNotAFlag) {
+TEST_F(test_flags, DirectoryIsNotAFlag) {
     EXPECT_FALSE(flag.exists());
     bfs::create_directory(flagp);
     EXPECT_FALSE(flag.exists());
 }
 
-TEST_F(FlagsTest, SetFlagFailsIfDirectoryWithSameNameExists) {
+TEST_F(test_flags, SetFlagFailsIfDirectoryWithSameNameExists) {
     EXPECT_FALSE(flag.exists());
     bfs::create_directory(flagp);
     EXPECT_TRUE(bfs::is_directory(flagp));
@@ -88,7 +88,7 @@ TEST_F(FlagsTest, SetFlagFailsIfDirectoryWithSameNameExists) {
     bfs::remove(flagp);
 }
 
-TEST_F(FlagsTest, ClearFlagFailsIfDirectoryWithSameNameExists) {
+TEST_F(test_flags, ClearFlagFailsIfDirectoryWithSameNameExists) {
     EXPECT_FALSE(flag.exists());
     bfs::create_directory(flagp);
     EXPECT_TRUE(bfs::is_directory(flagp));

@@ -22,7 +22,7 @@ using namespace tod;
 
 namespace bfs = boost::filesystem;
 
-struct ExperimentTest : public ::testing::Test {
+struct test_experiment : public ::testing::Test {
 
     void SetUp() {
         readFeParams("./data/features.config.yaml", feParams);
@@ -53,22 +53,22 @@ struct ExperimentTest : public ::testing::Test {
 
 };
 
-TEST_F(ExperimentTest, GenerateHashFromFile) {
+TEST_F(test_experiment, GenerateHashFromFile) {
     EXPECT_EQ("2605fd43e5192a2e49476e5099f8ea6e2973866b", sha1("./data/camera.yml"));
 }
 
-TEST_F(ExperimentTest, GenerateHashFromFeatureExtractionParams) {
+TEST_F(test_experiment, GenerateHashFromFeatureExtractionParams) {
     EXPECT_EQ(feParamsSha1, sha1(feParams));
     EXPECT_EQ(feParamsSha1, sha1(tr_feat.fe_params));
 }
 
 
-TEST_F(ExperimentTest, GenerateHashFromEmptyFeatureExtractionParams) {
+TEST_F(test_experiment, GenerateHashFromEmptyFeatureExtractionParams) {
     FeatureExtractionParams feParams;
     EXPECT_EQ("f8767180bfcd0654f4ffe9514e94e6d51324e3f6", sha1(feParams));
 }
 
-TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
+TEST_F(test_experiment, FileHasSameHashAsFeatureExtractionParams) {
     // Ensure that the hash generated from a file is the same as the hash of
     // the parameteres retrieved from the file. This does not hold if there
     // are any comments in the features.config.yaml. Also, if the parameters
@@ -79,7 +79,7 @@ TEST_F(ExperimentTest, FileHasSameHashAsFeatureExtractionParams) {
     EXPECT_EQ(sha1("./data/features.config.yaml"), sha1(feParams));
 }
 
-TEST_F(ExperimentTest, TrainFeaturesEqual) {
+TEST_F(test_experiment, TrainFeaturesEqual) {
     FeatureExtractionParams feParams1;
     FeatureExtractionParams feParams2;
     readFeParams("./data/features.config.yaml", feParams1);
@@ -89,7 +89,7 @@ TEST_F(ExperimentTest, TrainFeaturesEqual) {
     EXPECT_TRUE(tr_feat_1 == tr_feat_2);
 }
 
-TEST_F(ExperimentTest, TrainFeaturesNotEqual) {
+TEST_F(test_experiment, TrainFeaturesNotEqual) {
     FeatureExtractionParams feParams1;
     FeatureExtractionParams feParams2;
     readFeParams("./data/features.config.yaml", feParams1);
@@ -101,18 +101,18 @@ TEST_F(ExperimentTest, TrainFeaturesNotEqual) {
 }
 
 
-TEST_F(ExperimentTest, TestTrainFeaturesDir) {
+TEST_F(test_experiment, TestTrainFeaturesDir) {
     EXPECT_EQ(feat_dir.string(), cache.trainFeaturesDir(tr_feat)); 
 }
 
-TEST_F(ExperimentTest, TestTrainFeaturesExist) {
+TEST_F(test_experiment, TestTrainFeaturesExist) {
     TrainFeaturesCache cache(cache_dir);
     EXPECT_FALSE(cache.trainFeaturesExist(tr_feat)); 
     bfs::create_directories(feat_dir);
     EXPECT_TRUE(cache.trainFeaturesExist(tr_feat));
 }
 
-TEST_F(ExperimentTest, AddTrainFeaturesFailIfAlreadyExist) {
+TEST_F(test_experiment, AddTrainFeaturesFailIfAlreadyExist) {
     cache.addTrainFeatures(tr_feat, false);
     EXPECT_TRUE(cache.trainFeaturesExist(tr_feat));
     try {
@@ -123,7 +123,7 @@ TEST_F(ExperimentTest, AddTrainFeaturesFailIfAlreadyExist) {
     }
 }
 
-TEST_F(ExperimentTest, AddTrainFeatures) {
+TEST_F(test_experiment, AddTrainFeatures) {
     EXPECT_FALSE(cache.trainFeaturesExist(tr_feat));
     cache.addTrainFeatures(tr_feat, false);
     EXPECT_TRUE(cache.trainFeaturesExist(tr_feat));
@@ -134,7 +134,7 @@ TEST_F(ExperimentTest, AddTrainFeatures) {
     EXPECT_TRUE(bfs::exists(feat_dir / "features.config.yaml"));
 }
 
-TEST_F(ExperimentTest, GenerateAndUseTrainFeatures) {
+TEST_F(test_experiment, GenerateAndUseTrainFeatures) {
     SKIP_IF_FAST
 
     cache.addTrainFeatures(tr_feat, false);
@@ -167,7 +167,7 @@ TEST_F(ExperimentTest, GenerateAndUseTrainFeatures) {
     EXPECT_EQ(4, tNames.size());
 }
 
-TEST_F(ExperimentTest, ListTemplateNames) {
+TEST_F(test_experiment, ListTemplateNames) {
     bfs::path p = bfs::path(getenv("CLUTSEG_PATH"));
     set<string> tNames = listTemplateNames(p / "ias_kinect_train_v2");
     EXPECT_EQ(1, tNames.count("assam_tea"));
@@ -177,7 +177,7 @@ TEST_F(ExperimentTest, ListTemplateNames) {
     EXPECT_EQ(4, tNames.size());
 }
 
-TEST_F(ExperimentTest, Blacklist) {
+TEST_F(test_experiment, Blacklist) {
     ASSERT_FALSE(cache.trainFeaturesBlacklisted(tr_feat));
     cache.blacklistTrainFeatures(tr_feat);
     ASSERT_TRUE(cache.trainFeaturesBlacklisted(tr_feat));

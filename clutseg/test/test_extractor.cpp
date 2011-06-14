@@ -57,7 +57,7 @@ void keypointsOutsideMask(const vector<KeyPoint> keypoints, const Mat & mask, ve
     }
 }
 
-class ExtractorTest : public ::testing::Test {
+class test_extractor : public ::testing::Test {
     public:
         virtual void SetUp() {
             f2d.image = imread("./data/image_00000.png", 0);
@@ -235,10 +235,6 @@ class ExtractorTest : public ::testing::Test {
                 f.image = images[i];
                 e->detectAndExtract(f);
             }
-            // Mat outImg;
-            // drawKeypoints(f.image, f.keypoints, outImg);
-            // imshow("keypoints", outImg);
-            // waitKey(-1);
             clock_t after = clock();
             int avg = 1000 * (after - before) / CLOCKS_PER_SEC / images.size();
             EXPECT_LT(avg, ms);
@@ -281,13 +277,13 @@ class ExtractorTest : public ::testing::Test {
 
 // Validate test data
 // ---------------------------------------------------------------------------
-TEST_F(ExtractorTest, validate_train_images) {
+TEST_F(test_extractor, validate_train_images) {
     BOOST_FOREACH(const Mat & img, train_images) {
         EXPECT_FALSE(img.empty());
     }
 }
 
-TEST_F(ExtractorTest, validate_test_images) {
+TEST_F(test_extractor, validate_test_images) {
     BOOST_FOREACH(const Mat & img, test_images) {
         EXPECT_FALSE(img.empty());
     }
@@ -296,21 +292,21 @@ TEST_F(ExtractorTest, validate_test_images) {
 // Check which combinations are definitely influenced by min_features 
 // ---------------------------------------------------------------------------
 
-TEST_F(ExtractorTest, orb_harrisfast_uses_max_features) {
+TEST_F(test_extractor, orb_harrisfast_uses_max_features) {
     expectUsesMaxFeatures(orb_harrisfast, 300, 1000, 300);
 }
 
-TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_uses_max_features) {
+TEST_F(test_extractor, dynamicfast_multiscale_rbrief_uses_max_features) {
     expectUsesMaxFeatures(dynamicfast_multiscale_rbrief, 0, 1000, 100);
 }
 
-TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_max_features) {
+TEST_F(test_extractor, dynamicsurf_sequential_rbrief_uses_max_features) {
     SKIP_IF_FAST
 
     expectUsesMaxFeatures(dynamicsurf_sequential_rbrief, 0, 1000, 100);
 }
 
-TEST_F(ExtractorTest, dynamicstar_sequential_rbrief_uses_max_features) {
+TEST_F(test_extractor, dynamicstar_sequential_rbrief_uses_max_features) {
     expectUsesMaxFeatures(dynamicstar_sequential_rbrief, 0, 1000, 100);
 }
 
@@ -318,11 +314,11 @@ TEST_F(ExtractorTest, dynamicstar_sequential_rbrief_uses_max_features) {
 // a combination does not use the min_feature parameter cannot be decided.
 // ---------------------------------------------------------------------------
 
-TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_uses_min_features) {
+TEST_F(test_extractor, dynamicfast_multiscale_rbrief_uses_min_features) {
     expectUsesMinFeatures(dynamicfast_multiscale_rbrief, 1200, 1000, 500);
 }
 
-TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_min_features) {
+TEST_F(test_extractor, dynamicsurf_sequential_rbrief_uses_min_features) {
     SKIP_IF_FAST
 
     expectUsesMinFeatures(dynamicsurf_sequential_rbrief, 1200, 1000, 500);
@@ -332,7 +328,7 @@ TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_uses_min_features) {
 // Check whether the mask parameter is correctly used
 // ---------------------------------------------------------------------------
 
-TEST_F(ExtractorTest, masking_works) {
+TEST_F(test_extractor, masking_works) {
     SKIP_IF_FAST
 
     map<const string, FeatureExtractionParams*>::iterator it = feparams.begin();
@@ -347,14 +343,14 @@ TEST_F(ExtractorTest, masking_works) {
 // Check whether expectations on the resulting configuration are met
 // ---------------------------------------------------------------------------
 
-TEST_F(ExtractorTest, orb_harrisfast_config) {
+TEST_F(test_extractor, orb_harrisfast_config) {
     FeatureExtractor::create(orb_harrisfast, stats);
     EXPECT_EQ("<none>", stats.internal_detector);
     EXPECT_EQ("<none>", stats.internal_extractor);
     EXPECT_EQ("tod::OrbExtractor with HarrisFast", stats.extractor);
 }
 
-TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_config) {
+TEST_F(test_extractor, dynamicfast_multiscale_rbrief_config) {
     FeatureExtractor::create(dynamicfast_multiscale_rbrief, stats);
     cout << stats.internal_detector << endl;
     EXPECT_EQ("cv::DynamicAdaptedFeatureDetector with tod::RBriefFastAdjuster", stats.internal_detector);
@@ -362,21 +358,21 @@ TEST_F(ExtractorTest, dynamicfast_multiscale_rbrief_config) {
     EXPECT_EQ("tod::MultiscaleExtractor", stats.extractor);
 }
  
-TEST_F(ExtractorTest, sift_sequential_rbrief_config) {
+TEST_F(test_extractor, sift_sequential_rbrief_config) {
     FeatureExtractor::create(sift_sequential_rbrief, stats);
     EXPECT_TRUE(stats.internal_detector.find("SiftFeatureDetector") != string::npos);
     EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
     EXPECT_EQ("tod::SequentialExtractor", stats.extractor);
 }
 
-TEST_F(ExtractorTest, surf_sequential_rbrief_config) {
+TEST_F(test_extractor, surf_sequential_rbrief_config) {
     FeatureExtractor::create(surf_sequential_rbrief, stats);
     EXPECT_TRUE(stats.internal_detector.find("SurfFeatureDetector") != string::npos);
     EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
     EXPECT_EQ("tod::SequentialExtractor", stats.extractor);
 }
 
-TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_config) {
+TEST_F(test_extractor, dynamicsurf_sequential_rbrief_config) {
     FeatureExtractor::create(dynamicsurf_sequential_rbrief, stats);
     EXPECT_EQ("cv::DynamicAdaptedFeatureDetector with cv::SurfAdjuster", stats.internal_detector);
     EXPECT_EQ("rbrief::RBriefDescriptorExtractor", stats.internal_extractor);
@@ -387,12 +383,12 @@ TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_config) {
 // down statistics.
 // ---------------------------------------------------------------------------
 
-TEST_F(ExtractorTest, times) {
+TEST_F(test_extractor, times) {
     SKIP_IF_FAST
 
     map<const string, FeatureExtractionParams*>::iterator it = feparams.begin();
     map<const string, FeatureExtractionParams*>::iterator end = feparams.end();
-    ofstream out("build/ExtractorTest.times");
+    ofstream out("build/test_extractor.times");
     out << boost::format("%35s %5s %5s") % "feparams" % "ttrain" % "ttest" << endl;
     while (it != end) {
         int t1 = expectRunsWithin(*(it->second), train_images, 5000);
@@ -407,7 +403,7 @@ TEST_F(ExtractorTest, times) {
 // ---------------------------------------------------------------------------
 
 #ifndef OPENCV_R5024 
-    TEST_F(ExtractorTest, SiftFeatureDetectorIgnoresMask) {
+    TEST_F(test_extractor, SiftFeatureDetectorIgnoresMask) {
         // I expect having found an annoying bug in OpenCV
         // SiftFeatureDetector does not use the mask.
         // see http://opencv-users.1802565.n2.nabble.com/Problems-about-the-OpenCV-SIFT-feature-detector-td6084481.html
@@ -443,7 +439,7 @@ struct min_max_features_win {
 
 };
 
-TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_windows) {
+TEST_F(test_extractor, dynamicsurf_sequential_rbrief_windows) {
     SKIP_IF_FAST
 
     // Take a single image and a mask and detect features using different [min_features, max_features]
@@ -468,3 +464,19 @@ TEST_F(ExtractorTest, dynamicsurf_sequential_rbrief_windows) {
         it++;
     }
 }
+
+// Testing ORB from OpenCV trunk
+// ---------------------------------------------------------------------------
+
+TEST_F(test_extractor, opencv_orb_extract_features) {
+    cv::ORB orb = cv::ORB(5000);
+    orb(f2d.image, f2d.mask, f2d.keypoints);
+
+    if (!fast()) {
+        Mat c;
+        drawKeypoints(f2d.image, f2d.keypoints, c);
+        imshow("opencv_orb_extract_features", c);
+        waitKey(-1);
+    }
+}
+

@@ -25,7 +25,7 @@ using namespace pcl;
 using namespace pcl_visualization;
 using namespace clutseg;
 
-class Map : public ::testing::Test {
+class test_map : public ::testing::Test {
     public:
         virtual void SetUp() {
             sampleColorImage(img);
@@ -42,7 +42,7 @@ class Map : public ::testing::Test {
 };
 
 // TODO: move to test_pcl_visualization_addons
-TEST_F(Map, AddMarker3d) {
+TEST_F(test_map, AddMarker3d) {
     SKIP_IF_FAST
 
     PCLVisualizer vis;
@@ -52,7 +52,7 @@ TEST_F(Map, AddMarker3d) {
     vis.spin();
 }
 
-TEST_F(Map, MapImageCorners) {
+TEST_F(test_map, MapImageCorners) {
     SKIP_IF_FAST
 
     vector<Point> corners;
@@ -79,7 +79,7 @@ TEST_F(Map, MapImageCorners) {
     vis.spin();
 }
 
-TEST_F(Map, MapMarkers) {
+TEST_F(test_map, MapMarkers) {
     SKIP_IF_FAST
 
     vector<Point> red2d;

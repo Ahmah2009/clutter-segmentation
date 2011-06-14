@@ -9,7 +9,7 @@
 using namespace clutseg;
 using namespace std;
 
-struct RunnerTest : public ::testing::Test {
+struct test_runner : public ::testing::Test {
 
     void SetUp() {
         TrainFeaturesCache cache("build/train_cache");
@@ -22,7 +22,7 @@ struct RunnerTest : public ::testing::Test {
 
 };
 
-TEST_F(RunnerTest, CloudName) {
+TEST_F(test_runner, CloudName) {
     map<string, string> names;
     names["image_00023.png"] = "cloud_00023.pcd";
     names["image_00023.jpg"] = "cloud_00023.pcd";
@@ -39,7 +39,7 @@ TEST_F(RunnerTest, CloudName) {
     }
 }
 
-TEST_F(RunnerTest, PrintNumberOfProcessorsOnline) {
+TEST_F(test_runner, PrintNumberOfProcessorsOnline) {
     cout << sysconf(_SC_NPROCESSORS_ONLN) << endl;
 }
 

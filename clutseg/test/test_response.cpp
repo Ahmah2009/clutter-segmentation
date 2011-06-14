@@ -19,7 +19,7 @@ using namespace tod;
 
 namespace bfs = boost::filesystem;
 
-struct ResponseFunctionTest : public ::testing::Test {
+struct test_response : public ::testing::Test {
 
     // We need to construct a result of an experiment i.e. an instance of
     // SetResult and compare that to the ground truth (i.e. GroundTruth).
@@ -129,19 +129,19 @@ struct ResponseFunctionTest : public ::testing::Test {
 
 };
 
-TEST_F(ResponseFunctionTest, CutSseResponseFunctionZero) {
+TEST_F(test_response, CutSseResponseFunctionZero) {
     expect_sse_response_single(1.0, pose);
 }
 
-TEST_F(ResponseFunctionTest, CutSseResponseFunctionHalf) {
+TEST_F(test_response, CutSseResponseFunctionHalf) {
     expect_sse_response_single(0.5, rotatePose(pose, randomOrientation(M_PI / 9 / sqrt(2))));
 }
 
-TEST_F(ResponseFunctionTest, CutSseResponseFunctionQuarter) {
+TEST_F(test_response, CutSseResponseFunctionQuarter) {
     expect_sse_response_single(0.75, rotatePose(pose, randomOrientation(M_PI / 18)));
 }
 
-TEST_F(ResponseFunctionTest, TestErrorStatistics) {
+TEST_F(test_response, TestErrorStatistics) {
     // Add second image to ground truth
     string img_name_2 = "image_00001.png";
     PoseRT pose_2 = rotatePose(pose, randomOrientation(M_PI / 4));
@@ -174,7 +174,7 @@ TEST_F(ResponseFunctionTest, TestErrorStatistics) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
+TEST_F(test_response, PerfectEstimatesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
@@ -205,7 +205,7 @@ TEST_F(ResponseFunctionTest, PerfectEstimatesOnly) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
+TEST_F(test_response, BadEstimatesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_ge_max_angle);
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_angle);
@@ -235,7 +235,7 @@ TEST_F(ResponseFunctionTest, BadEstimatesOnly) {
     EXPECT_NEAR(0.75, rsp.locate_sipc.score(), 1e-6);
 }
 
-TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
+TEST_F(test_response, ReallyBadEstimatesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_ge_max_trans_angle);
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_trans_angle);
@@ -268,7 +268,7 @@ TEST_F(ResponseFunctionTest, ReallyBadEstimatesOnly) {
 }
 
 
-TEST_F(ResponseFunctionTest, NonesOnly) {
+TEST_F(test_response, NonesOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result();
     r["at_hm_jc_2"] = Result();
@@ -300,7 +300,7 @@ TEST_F(ResponseFunctionTest, NonesOnly) {
  * We may not include these scenes when averaging later, otherwise we could improve
  * on these error statistics by return more NONEs.
  */
-TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
+TEST_F(test_response, NonesDoNotPullDownAverage) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_max_trans_angle);
     r["at_hm_jc_1"].detect_choices.push_back(at_max_trans_angle);
@@ -331,7 +331,7 @@ TEST_F(ResponseFunctionTest, NonesDoNotPullDownAverage) {
 
 /** Handling of the case in which an object has been labeled that is not even
  * on the scene. */
-TEST_F(ResponseFunctionTest, MislabelingsOnly) {
+TEST_F(test_response, MislabelingsOnly) {
     SetResult r;
     r["at_hm_jc_1"] = Result(it_close_fp);
     r["at_hm_jc_1"].detect_choices.push_back(it_close_fp);
@@ -361,7 +361,7 @@ TEST_F(ResponseFunctionTest, MislabelingsOnly) {
 }
 
  /* Realistic example with all kinds of cases occuring. */
-TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
+TEST_F(test_response, PerfectNoneMislabelSuccessFail) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_perfect);
@@ -401,7 +401,7 @@ TEST_F(ResponseFunctionTest, PerfectNoneMislabelSuccessFail) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
+TEST_F(test_response, EmptyScenesOnly) {
     SetResult r;
     r["empty_scene_1"] = Result(at_close);
     r["empty_scene_2"] = Result();
@@ -424,7 +424,7 @@ TEST_F(ResponseFunctionTest, EmptyScenesOnly) {
     rsp.locate_sipc.print();
 }
 
-TEST_F(ResponseFunctionTest, DetectSipcClassification) {
+TEST_F(test_response, DetectSipcClassification) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_ge_max_trans_angle);
@@ -445,7 +445,7 @@ TEST_F(ResponseFunctionTest, DetectSipcClassification) {
     EXPECT_NEAR(0.5 * 4.5 / 9, rsp.detect_sipc.score(), 1e-6);
 }
 
-TEST_F(ResponseFunctionTest, DetectSipcPose) {
+TEST_F(test_response, DetectSipcPose) {
     SetResult r;
     r["at_hm_jc_1"] = Result(at_perfect);
     r["at_hm_jc_1"].detect_choices.push_back(at_perfect);

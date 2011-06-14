@@ -53,7 +53,7 @@ void sampleText(vector<string> & text) {
 }
 
 
-class Viz : public ::testing::Test {
+class test_viz : public ::testing::Test {
     public:
         virtual void SetUp() {
             sampleCamera(camera);
@@ -84,7 +84,7 @@ class Viz : public ::testing::Test {
         vector<string> text;
 };
 
-TEST_F(Viz, DrawKeypoints) {
+TEST_F(test_viz, DrawKeypoints) {
     EXPECT_EQ(CV_8UC3, colorImage.type());
     EXPECT_EQ(CV_8UC1, f2d.image.type());
     clutseg::drawKeypoints(colorImage, f2d.keypoints);
@@ -92,47 +92,47 @@ TEST_F(Viz, DrawKeypoints) {
     imshow_and_wait("DrawKeypoints", colorImage);
 }
 
-TEST_F(Viz, DrawInliers) {
+TEST_F(test_viz, DrawInliers) {
     drawInliers(colorImage, guess1); 
     imshow_and_wait("DrawInliers", colorImage);
 }
 
-TEST_F(Viz, DrawInliersBlue) {
+TEST_F(test_viz, DrawInliersBlue) {
     drawInliers(colorImage, guess1, Scalar(255, 0, 0)); 
     imshow_and_wait("DrawInliersBlue", colorImage);
 }
 
-TEST_F(Viz, DrawInliersRandomColor) {
+TEST_F(test_viz, DrawInliersRandomColor) {
     Scalar color = Scalar(rand() % 256, rand() % 256, rand() % 256);
     drawInliers(colorImage, guess1, color); 
     imshow_and_wait("DrawInliersRandomColor", colorImage);
 }
 
-TEST_F(Viz, DrawMoreInliers) {
+TEST_F(test_viz, DrawMoreInliers) {
     drawInliers(colorImage, guess1); 
     drawInliers(colorImage, guess2, Scalar(255, 30, 0)); 
     imshow_and_wait("DrawMoreInliers", colorImage);
 }
 
-TEST_F(Viz, DrawInliersAndKeypoints) {
+TEST_F(test_viz, DrawInliersAndKeypoints) {
     drawKeypoints(colorImage, f2d.keypoints); 
     drawInliers(colorImage, guess1); 
     imshow_and_wait("DrawInliersAndKeypoints", colorImage);
 }
 
-TEST_F(Viz, DrawPose) {
+TEST_F(test_viz, DrawPose) {
     drawPose(colorImage, pose1, camera);
     imshow_and_wait("DrawPose", colorImage);
 }
 
-TEST_F(Viz, DrawPoseOnWhiteCanvas) {
+TEST_F(test_viz, DrawPoseOnWhiteCanvas) {
     Mat canvas = Mat::zeros(1024, 1280, CV_8UC3);
     canvas = Scalar(255, 255, 255);
     drawPose(canvas, pose1, camera);
     imshow_and_wait("DrawPoseOnWhiteCanvas", canvas);
 }
 
-TEST_F(Viz, DrawPoseInliersKeypoints) {
+TEST_F(test_viz, DrawPoseInliersKeypoints) {
     Mat canvas = Mat::zeros(1024, 1280, CV_8UC3);
     canvas = Scalar(255, 255, 255);
     drawKeypoints(canvas, f2d.keypoints);
@@ -141,14 +141,14 @@ TEST_F(Viz, DrawPoseInliersKeypoints) {
     imshow_and_wait("DrawPoseInliersKeypoints", canvas);
 }
 
-TEST_F(Viz, DrawText) {
+TEST_F(test_viz, DrawText) {
     Mat canvas = Mat::zeros(300, 300, CV_8UC3);
     Rect rect = drawText(canvas, text, Point(0, 0), FONT_HERSHEY_PLAIN, 1.0, 2, Scalar::all(255));
     rectangle(canvas, rect.tl(), rect.br(), Scalar::all(204));
     imshow_and_wait("DrawText", canvas);
 }
 
-TEST_F(Viz, DrawGuesses) {
+TEST_F(test_viz, DrawGuesses) {
     vector<Guess> guesses;
     vector<PoseRT> poses;
     guesses.push_back(guess1);
@@ -158,7 +158,7 @@ TEST_F(Viz, DrawGuesses) {
     imshow_and_wait("DrawGuesses", colorImage);
 }
 
-TEST_F(Viz, DrawManyGuesses) {
+TEST_F(test_viz, DrawManyGuesses) {
     // check whether we're running out of colors
     vector<Guess> guesses;
     vector<PoseRT> poses;

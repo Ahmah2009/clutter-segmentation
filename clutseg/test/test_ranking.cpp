@@ -16,7 +16,7 @@ using namespace cv;
 using namespace std;
 using namespace tod;
 
-struct RankingTest : public ::testing::Test {
+struct test_ranking : public ::testing::Test {
 
     void SetUp() {
         few_inliers_guess.inliers = vector<int>(9);
@@ -41,19 +41,19 @@ struct RankingTest : public ::testing::Test {
 
 };
 
-TEST_F(RankingTest, UniformRanking) {
+TEST_F(test_ranking, UniformRanking) {
     EXPECT_EQ(uniform_ranking(many_inliers_guess), uniform_ranking(few_inliers_guess));
 }
 
-TEST_F(RankingTest, InliersRanking) {
+TEST_F(test_ranking, InliersRanking) {
     EXPECT_GT(inliers_ranking(many_inliers_guess), inliers_ranking(few_inliers_guess));
 }
 
-TEST_F(RankingTest, ProximityRanking) {
+TEST_F(test_ranking, ProximityRanking) {
     EXPECT_GT(proximity_ranking(close_guess), proximity_ranking(far_guess));
 }
 
-TEST_F(RankingTest, UniformSort) {
+TEST_F(test_ranking, UniformSort) {
     // I expect this to be a no-op
     Ptr<GuessRanking> r = new UniformRanking();
     GuessComparator cmp(r);
@@ -62,7 +62,7 @@ TEST_F(RankingTest, UniformSort) {
     EXPECT_LT(guesses[0].inliers.size(), guesses[1].inliers.size());
 }
 
-TEST_F(RankingTest, InliersSort) {
+TEST_F(test_ranking, InliersSort) {
     Ptr<GuessRanking> r = new InliersRanking();
     GuessComparator cmp(r);
     EXPECT_LT(guesses[0].inliers.size(), guesses[1].inliers.size());

@@ -10,9 +10,9 @@
  
 using namespace std;
 
-TEST(SqliteTest, CRUD) {
+TEST(test_sqlite, CRUD) {
     sqlite3* db;
-    string fn = "build/SqliteTest.CRUD.sqlite3";
+    string fn = "build/test_sqlite.CRUD.sqlite3";
     boost::filesystem::remove(fn);
     EXPECT_EQ(SQLITE_OK, sqlite3_open(fn.c_str(), &db));
 
