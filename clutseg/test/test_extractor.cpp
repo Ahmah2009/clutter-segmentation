@@ -90,6 +90,28 @@ class test_extractor : public ::testing::Test {
             }
 
             {
+                feparams["orb_opencv"] = &orb_opencv;
+                orb_opencv.detector_type = "ORB-OpenCV";
+                orb_opencv.extractor_type = "ORB-OpenCV";
+                orb_opencv.descriptor_type = "ORB-OpenCV";
+
+                orb_opencv.extractor_params["octaves"] = 3;
+                orb_opencv.extractor_params["scale_factor"] = 1.2f;
+                orb_opencv.detector_params["n_features"] = 500;
+            }
+
+            {
+                feparams["orb_opencv_custom"] = &orb_opencv_custom;
+                orb_opencv_custom.detector_type = "ORB-OpenCV";
+                orb_opencv_custom.extractor_type = "ORB-OpenCV";
+                orb_opencv_custom.descriptor_type = "ORB-OpenCV";
+
+                orb_opencv_custom.extractor_params["octaves"] = 2;
+                orb_opencv_custom.extractor_params["scale_factor"] = 1.5f;
+                orb_opencv_custom.detector_params["n_features"] = 5000;
+            }
+
+            {
                 feparams["fast_multiscale_rbrief"] = &fast_multiscale_rbrief;
                 fast_multiscale_rbrief.detector_type = "FAST";
                 fast_multiscale_rbrief.extractor_type = "multi-scale";
@@ -249,6 +271,10 @@ class test_extractor : public ::testing::Test {
         // that max_features is taken into account but it is not an invariant,
         // just a guideline.
         FeatureExtractionParams orb_harrisfast;
+        // ORB configuration for OpenCV ORB, uses mainly default parameters
+        FeatureExtractionParams orb_opencv;
+        // ORB configuration for OpenCV ORB, uses customized parameters
+        FeatureExtractionParams orb_opencv_custom;
         FeatureExtractionParams fast_multiscale_rbrief;
         // This is the configuration  I have used in the first experiments with
         // tod_kinect and ias_kinect training data.
@@ -348,6 +374,20 @@ TEST_F(test_extractor, orb_harrisfast_config) {
     EXPECT_EQ("<none>", stats.internal_detector);
     EXPECT_EQ("<none>", stats.internal_extractor);
     EXPECT_EQ("tod::OrbExtractor with HarrisFast", stats.extractor);
+}
+
+TEST_F(test_extractor, orb_opencv_config) {
+    FeatureExtractor::create(orb_opencv, stats);
+    EXPECT_EQ("<none>", stats.internal_detector);
+    EXPECT_EQ("<none>", stats.internal_extractor);
+    EXPECT_EQ("cv::ORB", stats.extractor);
+}
+
+TEST_F(test_extractor, orb_opencv_custom_config) {
+    FeatureExtractor::create(orb_opencv_custom, stats);
+    EXPECT_EQ("<none>", stats.internal_detector);
+    EXPECT_EQ("<none>", stats.internal_extractor);
+    EXPECT_EQ("cv::ORB", stats.extractor);
 }
 
 TEST_F(test_extractor, dynamicfast_multiscale_rbrief_config) {
@@ -468,14 +508,38 @@ TEST_F(test_extractor, dynamicsurf_sequential_rbrief_windows) {
 // Testing ORB from OpenCV trunk
 // ---------------------------------------------------------------------------
 
-TEST_F(test_extractor, opencv_orb_extract_features) {
+TEST_F(test_extractor, orb_extract_features) {
     cv::ORB orb = cv::ORB(5000);
     orb(f2d.image, f2d.mask, f2d.keypoints);
 
     if (!fast()) {
         Mat c;
         drawKeypoints(f2d.image, f2d.keypoints, c);
-        imshow("opencv_orb_extract_features", c);
+        imshow("orb_extract_features", c);
+        waitKey(-1);
+    }
+}
+
+TEST_F(test_extractor, orb_opencv_extract_features) {
+    Ptr<FeatureExtractor> orb = FeatureExtractor::create(orb_opencv, stats);
+    orb->detectAndExtract(f2d);
+
+    if (!fast()) {
+        Mat c;
+        drawKeypoints(f2d.image, f2d.keypoints, c);
+        imshow("orb_opencv_extract_features", c);
+        waitKey(-1);
+    }
+}
+
+TEST_F(test_extractor, orb_opencv_custom_extract_features) {
+    Ptr<FeatureExtractor> orb = FeatureExtractor::create(orb_opencv_custom, stats);
+    orb->detectAndExtract(f2d);
+
+    if (!fast()) {
+        Mat c;
+        drawKeypoints(f2d.image, f2d.keypoints, c);
+        imshow("orb_opencv_custom_extract_features", c);
         waitKey(-1);
     }
 }

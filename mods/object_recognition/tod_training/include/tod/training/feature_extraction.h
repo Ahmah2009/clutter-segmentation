@@ -77,6 +77,20 @@ private:
   int n_octaves_;
 };
 
+class OpenCVOrbExtractor : public FeatureExtractor
+{
+public:
+  OpenCVOrbExtractor(int n_features, cv::ORB::CommonParams params);
+  void detectAndExtract(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors,
+                        const cv::Mat& mask = cv::Mat()) const;
+  virtual void detectAndExtract(Features2d& features) const;
+private:
+  mutable rbrief::StopWatch watch_;
+  int n_features_;
+  cv::ORB::CommonParams params_;
+  mutable cv::ORB orb_;
+};
+
 class OrbExtractor : public FeatureExtractor
 {
 public:

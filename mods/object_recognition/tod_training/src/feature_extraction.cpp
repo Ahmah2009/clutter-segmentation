@@ -263,7 +263,7 @@ namespace tod
             stats.internal_extractor = typeid(extractor).name();
         }
 
-        if ((params.extractor_type != "ORB") && extractor.empty()) {
+        if ((params.extractor_type != "ORB") && extractor.empty() && params.extractor_type != "ORB-OpenCV") {
             stats.extractor = "<bad>";
             throw std::runtime_error("bad extractor");
         }
@@ -296,10 +296,36 @@ namespace tod
             stats.pm_min_features_used = false;
             stats.pm_max_features_used = true;
             stats.pm_octaves_used = true;
+        } else if (params.extractor_type == "ORB-OpenCV") {
+            stats.internal_extractor = "<none>";
+            stats.extractor = "cv::ORB";
+            stats.pm_octaves_used = true;
+            ORB::CommonParams orb_params;
+            orb_params.n_levels_ = params.extractor_params.at("octaves");
+            orb_params.scale_factor_ = params.extractor_params.at("scale_factor");
+            fe = new OpenCVOrbExtractor(params.detector_params.at("n_features"), orb_params);
         }
         return fe;
 
     }
+
+OpenCVOrbExtractor::OpenCVOrbExtractor(int n_features, cv::ORB::CommonParams params) :
+  n_features_(n_features), params_(params)
+{
+  orb_ = cv::ORB(n_features_, params);
+}
+
+void OpenCVOrbExtractor::detectAndExtract(Features2d& features) const
+{
+  detectAndExtract(features.image, features.keypoints, features.descriptors, features.mask);
+}
+
+void OpenCVOrbExtractor::detectAndExtract(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors,
+                                    const cv::Mat& mask) const
+{
+  orb_(image, mask, keypoints, descriptors);
+}
+
 
   MultiscaleExtractor::MultiscaleExtractor(const cv::Ptr < cv::FeatureDetector > &d, const cv::Ptr < cv::DescriptorExtractor > &e, int n_octaves):
     detector_(d), extractor_(e), n_octaves_(n_octaves)
