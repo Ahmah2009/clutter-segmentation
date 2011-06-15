@@ -21,6 +21,8 @@ throughout this work, and especially become significant in sections
 
 \subsection{Rigid Transformations}
 
+% TODO: reference to definition of rigid transformations
+
 A {\it rigid transformation} is defined as combination of an orthogonal
 transformation and translation in Euclidean space. A {\it proper rigid
 transformation} requires the orthogonal transformation to be a rotation. In
@@ -32,7 +34,7 @@ rotation matrix $R \in \mathbb{R}^3$ and a translation vector $\mathbf{t} \in
     T: \mathbb{R}^3 \to \mathbb{R}^3, \mathbf{v} \mapsto R\mathbf{v} + \mathbf{t}
 \end{equation}
 
-A proper rigid transformation, we abbreviate it by PRT in the following, can be
+A proper rigid transformation, abbreviated by PRT in the following, can be
 used to describe a rigid motion of an object. It can also be used to transform
 the coordinate systems, whilst objects in the scene remain unchanged with
 respect to a fixed world frame. The latter interpretation is prevalent in this
@@ -62,14 +64,14 @@ See figure
 \ref{figure:coordinate-frames} that shows camera and object from a fixed world
 reference frame.
 
-Let's review a few examples to show the usefulness of these definitions. If we
-like to know the origin of the object in view coordinates, we can apply the
-object-view transformation to the zero vector, and can compute the
-distance $d$ between camera and object origin as
+Here are two examples to show the usefulness of these definitions. If you like
+to know the origin of the object in view coordinates, you can apply the
+object-view transformation to the zero vector, and compute the distance $d$
+between camera and object origin as
 
 $$ d = \left|\left|\ _{xyz}T^{uvw}\left[ \mathbf{0} \right]\ \right|\right|_2$$
 
-Another example, we can compute the distance $d_{12}$ between the two objects
+Another example, you can compute the distance $d_{12}$ between the two objects
 in a scene by
 
 $$ d_{12} = \left|\left|\ _{xyz}T_1^{uvw}\left[ \mathbf{0} \right] -
@@ -142,8 +144,9 @@ arbitrary orientation, which is especially apparent when considering a 180
 degree rotation. 
 
 \subsubsection{Multi-View 3-d Object Recognition using Local Features}
+\label{subsubsection:multi-view-or}
 
-In multi-view 3-d object recognition, we recognize an object in a query scene
+In multi-view 3-d object recognition, one recognizes an object in a query scene
 by matching it against multiple views of the template object, which have been
 recorded from different viewpoints. As such, the multi-view scheme extends the
 single-view scheme and allows for recognition of objects with arbitrary
@@ -168,6 +171,8 @@ presents methods for fast establishment of correspondences, and section
 
 \subsection{Feature Detectors}
 \label{subsection:feature-detectors}
+
+% TODO: strip section about feature detectors down to the bare essence
 
 A feature detector designates keypoints on an image.  Some feature detector
 algorithms assign orientations to keypoints. Detectors can be roughly
@@ -282,6 +287,8 @@ becomes the orientation of the keypoint. If $f$ were a probability
 distribution, then this vector would contain the means of the marginal
 distributions of x and y, respectively.
 
+% TODO: verify correlation problem and relation to descriptor entropy
+
 A problem arises, when rotating the BRIEF test pattern according to the FAST
 keypoint orientation. There is correlation between the image moments and the
 BRIEF vectors obtained from rotated test patterns. Such correlation reduces
@@ -296,6 +303,8 @@ with care.
 
 \subsection{Feature Matching}
 \label{subsection:feature-matching}
+
+% TODO: speed-up must be backed up by a benchmark in the evaluation section
 
 In multi-view object recognition using local features, correspondences between
 known views of the object and the query image can be established by matching
@@ -325,6 +334,9 @@ recognition, image retrieval, music rerieval, identification of duplicates
 \subsection{Pose Estimation}
 \label{subsection:pose-estimation}
 
+% TODO: relation to PnP problem
+% TODO: I will not show how to solve this problem
+
 This section shows how to estimate the pose of objects, given the set of
 correspondences obtained from feature matching. It covers the mathematical
 formulae and notation about coordinate system transformations that are required
@@ -335,8 +347,10 @@ the object-view transformation, as the latter uniquely defines where each
 3-d point belonging to the object is located with respect to the view coordinate
 frame, i.e. the camera.
 
-
 \subsubsection{Hough Transform}
+
+% TODO: decide whether Hough Transform is really necessary, probably luxury section
+% that can be skipped
 
 \subsubsection{RANSAC}
 
@@ -357,17 +371,18 @@ then the hypothesized pose is verified for support by the remaining data
 \cite{Forsyth2003}.
 
 There are six degrees of freedom for an object to be located and oriented in
-space, three for translation and three for orientation. Three points in a 2-d
-perspective projection are necessary and sufficient to determine a pose. If
-there were no noise in the set of 2-d correspondences, we would be able to find
-poses of an object by simply taking any three correspondences belonging to this
-object. Unfortunately, image noise, discretization effects and approximate
+space, three for translation and three for orientation. 
+% TODO: how many projected points do we need
+% Three 2-d points in perspective projection are INsufficient to fully determine a pose.
+If there were no noise in the set of 2-d correspondences, we would be able to
+find poses of an object by simply taking any three correspondences belonging to
+this object. Unfortunately, image noise, discretization effects and approximate
 nearest neighbors asks for a more sophisticated approach that incorporates
 strategies to deal with noise and inconsistency. RANSAC iteratively selects
 three correspondences to compute pose estimates. The 3-d model of the template
 object aligned to the estimated pose is then projected on the query image plane
-to compute the projection error and the consensus set. The size of the resulting
-consensus sets plays an important role in this work.
+to compute the projection error and the consensus set. The size of the
+resulting consensus sets plays an important role in this work.
 
 \section{Machine Learning}
 
@@ -378,15 +393,13 @@ and understanding the strengths and weaknesses of an object recognition system.
 
 \subsection{Classification}
 
-Classification is about making decisions, given some observations, usually in
-the presence of uncertainty. In classification, we choose from a finite number
-of possible decisions. 
+Classification is about making decisions. 
 
 \subsection{Estimation}
 
 Estimation is about estimating parameters or other continuous numeric vectors,
 given some observations. It can be regarded as the continuous extension of
-classification. 
+classification \cite{Melsa1978}. 
 
 \subsection{Recognition}
 
@@ -396,4 +409,18 @@ estimation problem.
 
 \subsection{Parameter Optimization}
 
+In the presented system, the algorithms for detecting, describing and matching
+features are parametrized, as well as the pose estimation and the final
+decision process. This leads to the question on how to find a parameter set
+such that the system will perform well in the application scenario.
+
+Choosing parameters for parametrized algorithms is a very general problem in
+computer science. Solutions for these problems include adaptive methods that
+estimate the parameters directly from the data. For example, in adaptive
+numerical quadrature, grid points are selected according to an error estimate
+gained directly from function samples. Optimization techniques find a parameter
+set that optimizes performance on a validation set, where ground truth is
+avaible. This optimization technique is well-known in machine learning.
+% , and is related to the problem of assuming appropriate priors
+% in Bayesian inference.
 

@@ -43,6 +43,9 @@
 
 \makeglossaries
 
+\newcommand{\clutseg}{{\tt CLUTSEG}\xspace} 	
+\newcommand{\tod}{{\tt TOD}\xspace} 	
+	
 \begin{document}
 
 	\frontmatter
@@ -75,8 +78,7 @@
   % \input{components/outline}
 
 	\mainmatter
-	
-	
+
 		% ---------------------------------------------------------------------------
 		% \part[Introduction]{Introduction}
 		\chapter[Introduction]{Introduction}

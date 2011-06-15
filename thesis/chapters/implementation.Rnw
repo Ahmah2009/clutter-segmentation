@@ -1,10 +1,68 @@
+This chapter first covers the implementation of existing libraries from the
+{\it Robot Operating System}. On top of these libraries, we implemented a
+object recognition system, called the \clutseg system. This
+chapter covers its design and the improvements we added to the existing
+libraries. It finally explains how system parameters were found with the help
+of a semi-automatic experiment runner, and how \clutseg can be
+evaluated with regard to chapter \ref{chapter:evaluation}.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{media/clutseg-dependency-stack}
+        \caption{\clutseg depends on \tod, ROS, PCL and OpenCV}
+    \end{center}
+\end{figure}
+
 \section{Textured Object Detection Library}
-%\subsection{Solutions in Perceptions Challenge 2011}
+
+This section analyzes the third-party software underlying the \clutseg
+system, how they were modified and improved to better fulfill the requirements.
+It explains how to extract models from template objects using multiple views,
+and covers the elementary pipeline that later recognizes instances in query
+scenes.
+
+The {\it Robot Operating System} (ROS) is a framework for the development of
+robot applications, having its roots in the STAIR project at Stanford
+University. It contains the third-party packages {\it tod}, {\it tod\_training}
+and {\it tod\_detecting}. In the following, the system formed by these three
+ROS packages is called \tod for easier reference. Throughout this work, \tod
+has been used in SVN revision 50479, and modifications are explicitly mentioned
+in the following. At this revision, \tod was experimental, unstable, and not
+covered by automatic tests. The system participated in the {\it Solutions in
+Perception Challenge} at ICRA 2011 in Shanghai for comparison.
+
 \subsection{Learning}
-\label{subsection:learning},
+\label{subsection:learning}
+
+An object recognition system has descriptions of {\it template objects}. Based
+on these descriptions, it later recognizes instances of the template objects in
+query scenes. \tod learns these descriptions by extracting local features from
+multiple views of the template objects. \tod extracts {\it model features} from
+the template object, and {\it query features} from the query scene. These
+features are asymmetric in nature.
+
+\subsubsection{Model Features}
+
+Let $p$ be a 3-d point of a template object in object coordinates, and $d$ a
+descriptor vector. Then we call $m = (p, d)$ a {\it model feature}. Hence,
+such a model feature is more than a mere local 2-d feature, but less than a
+true local 3-d feature that would include true 3-d information such as normal
+orientation. The model of a template object in \tod is a set of model features.
+\footnote{A model is represented by a set of instances of struct {\tt Features3d}.}
+
+\subsubsection{Model Extraction}
 
 \subsection{Recognition}
 \label{subsection:recognition}
+
+\subsubsection{Query Features}
+
+Let $p$ be a 2-d point on a query image, and $d$ its descriptor vector. Then we
+call $q = (p, d)$ a {\it query feature}. Hence, such a query feature is nothing
+different than a keypoint-descriptor pair produced by SIFT, SURF or ORB, or any
+other feature extractor, and we introduced this term solely to clearly tell
+features from the query and the model apart. \footnote{The query features for a specific
+scene are represented by an instance of struct {\tt Features2d}.}
 
 \section{Clutter Segmentation Tool}
 \subsection{Guess Ranking}
