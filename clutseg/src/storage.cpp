@@ -94,7 +94,6 @@ namespace clutseg {
         // TODO: extract method
         bfs::path lc_path = erd / (img_basename + ".locate_choice.yaml.gz");
         bfs::create_directories(lc_path.parent_path());
-        FileStorage lc_fs(lc_path.string(), FileStorage::WRITE);
         LabelSet lls;
         if (report.result.guess_made) {
             lls.labels.push_back(Label(

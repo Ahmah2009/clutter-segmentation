@@ -84,11 +84,13 @@ namespace clutseg {
     }
 
     void LabelSet::write(FileStorage & fs) const {
-        fs << "[";
-        BOOST_FOREACH(const Label & np, labels) {
-            np.write(fs);
+        if (!labels.empty()) {
+            fs << "[";
+            BOOST_FOREACH(const Label & np, labels) {
+                np.write(fs);
+            }
+            fs << "]";
         }
-        fs << "]";
     } 
 
     void writeLabelSet(const boost::filesystem::path & filename, const LabelSet & labelSet) {
