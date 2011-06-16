@@ -44,7 +44,7 @@ features are asymmetric in nature.
 \subsubsection{Model Features}
 
 Let $p$ be a 3-d point of a template object in object coordinates, and $d$ a
-descriptor vector. Then we call $m = (p, d)$ a {\it model feature}. Hence,
+descriptor vector. Then we call $(p, d)$ a {\it model feature}. Hence,
 such a model feature is more than a mere local 2-d feature, but less than a
 true local 3-d feature that would include true 3-d information such as normal
 orientation. The model of a template object in \tod is a set of model features.
@@ -52,26 +52,297 @@ orientation. The model of a template object in \tod is a set of model features.
 
 \subsubsection{Model Extraction}
 
+\tod offers a toolchain that extracts model features from a template object on
+a rotating table. The template object is either manually or automatically
+rotated, and a RGB-D camera takes depth images from multiple views. Such a
+% TODO: RGB is not required!
+depth image is the basic unit processed in a pipeline that comprises three
+steps for each view.  First, the computation of the model-view transformation.
+Second, the segmentation of the region of interest that shows the object on the
+image. Third, the extraction of local 2-d features and the construction of
+model features, confined to the region of interest.
+
+\subsubsection{Computation of model-view transformation}
+
+First, the model-view transformation needs to be computed. The object
+coordinate system is attached to fiducial markers on both ends of the rotating
+table. The fiducial markers, two checkerboard patterns, allow to compute the
+model-view transformation using camera calibration methods built into OpenCV.
+As long as one of these checkerboards is detected, the transformation can be
+recovered, which proves useful when the template object occludes the
+checkerboard with respect to the camera. As the checkerboard was not always
+detected on the image, we improved reliability to the estimation. We observed
+that checkerboard detection worked on dithered binary images in almost all cases
+where it failed on the original grayscale images, and hence used them as a
+fallback. Several other image processing techniques have been tested on 23
+images where the checkerboard was not detected.
+
+\begin{table}[h!]
+    \begin{tabular}{llrr}
+        Pre-processing method & Imagemagick command & Success rate \\
+        \hline
+        Dithering to binary & {\tt convert -monochrome \$1 \$2} & 23/23 \\
+        Color reduction & {\tt convert -colors 2 \$1 \$2} & 23/23 \\
+        Local adaptive thresh. & {\tt convert \$1 -lat 25x25 -threshold 50\% \$2} & 23/23 \\
+        Thresholding & {\tt convert \$1 -threshold 50\% \$2} & 19/23 \\
+        Sharpening & {\tt convert -sharpen 0x12 \$1 \$2} & 2/23 \\
+        Closing & {\tt convert -morphology Close Disk \$1 \$2} & 1/23 \\
+        Opening & {\tt convert -morphology Open Disk \$1 \$2} & 0/23 \\
+        Median filtering & {\tt convert -median 2 \$1 \$2} & 0/23 \\
+    \end{tabular}
+    \caption{Success rates of checkerboard detection after image processing
+        operations on 23 images where the detection originally failed.}
+\end{table}
+
+\subsubsection{Segmentation of the Region of Interest}
+
+Only features that belong to the template object are to be included in the
+model. \tod segments the 3-d point cloud of the template object using a
+box-shaped pass-through filter of a predefined size at the object origin,
+followed by a radius outlier search. When projecting the segmented point cloud
+onto the image plane, the set of projected points is designated region of
+interest. \tod uses the model-view transformation to find the object origin in
+camera coordinates, precisely $\mvt{\vec{0}}$.
+
+Due to some bug in underlying software, the region of interest was not always
+correctly computed, often including parts of the checkerboards next to the
+template object. These undesired parts of the computed region of interest were
+observed to be separate connected components. Hence, we fixed the region of
+interest by opening the image with a disk of radius $10.3$, removing all but
+the largest connected component and dilating the image with a disk of $2.3$ to
+compensate for the opening step.
+
+\subsubsection{Extraction of Model Features}
+
+The final step in learning requires to construct the set of model features from
+the depth image. Local 2-d features are extracted using any one of the feature
+extractors provided in OpenCV. Each of these features is described by a
+keypoint $\vec{p'}$ on the image plane and a descriptor vector $\vec{d}$.
+Assuming a calibrated camera, each keypoint $\vec{p'}$ uniquely corresponds to
+a 3-d point $\vec{p}$ in the scene. Applying the inverse model-view
+transformation, a model feature $(\vmt{\vec{p}}, \vec{d})$ is obtained.
+
+Actually, \tod applies the inverse model-view transformation right before
+calling RANSAC for pose estimation, but it is equivalent, conceptually simpler
+and computationally faster to do this only once while extracting features.
+
+\subsubsection{Model Base}
+
+\tod stores all knowledge about the template objects in a {\it model base}.
+Each model is a set of model features, unified from several views. \tod uses a
+simple heuristic to select which model features are incorporated in a model, it
+selects the model features from views in roughly equal angle steps with respect
+to the rotating table. \tod stores the model base in a hierarchical manner on
+the filesystem, retaining data from views that are not actually included in the
+models.
+% TODO: refer to paper that select view based on informativeness, information content, entropy
+\footnote{The model base is represented by struct {\tt TrainingBase} in \tod.}
+
 \subsection{Recognition}
 \label{subsection:recognition}
 
+This section shows how \tod can be used to recognize instances of template
+objects in query scenes, making use of the models learned in the previous
+section. The recognition process in \tod can be split into three parts. First,
+the extraction of query features. Second, the matching of query features and
+model features to obtain a set of correspondences between query image and
+models. Third, the estimation of object poses based on this set of
+correspondences.
+
 \subsubsection{Query Features}
 
-Let $p$ be a 2-d point on a query image, and $d$ its descriptor vector. Then we
-call $q = (p, d)$ a {\it query feature}. Hence, such a query feature is nothing
-different than a keypoint-descriptor pair produced by SIFT, SURF or ORB, or any
-other feature extractor, and we introduced this term solely to clearly tell
-features from the query and the model apart. \footnote{The query features for a specific
-scene are represented by an instance of struct {\tt Features2d}.}
+% TODO: dot after or before footnote? concerns the whole document
+% TODO: footnotes allowed? concerns the whole document
+Let $\vec{p}$ be a 2-d point on a query image, and $\vec{d}$ its descriptor
+vector. Then we call $(\vec{p}, \vec{d})$ a {\it query feature} \footnote{The
+query features for a specific scene are represented by an instance of struct
+{\tt Features2d}.}. Hence, such a query feature is nothing else than a
+keypoint-descriptor pair produced by SIFT, SURF or ORB, or any other feature
+extractor, and this term was introduced to clearly tell features from the query
+and the model apart. Note that query features do not include 3-d information.
+This is subject of discussion, and is addressed in chapter
+\ref{chapter:evaluation}.
+
+\subsubsection{Extraction of Query Features}
+
+Similarly to the extraction of model features, \tod uses one of the OpenCV
+feature extractors to find a set of query features on the image. It is
+reasonable to select the same feature extractor as in the model extraction.
+Both query feature and model feature extraction can be configured, so \tod
+allows to try different feature detectors with configurable parameters. 
+
+\subsubsection{Feature Matching}
+\label{subsubsection:tod-feature-matching}
+
+Since the image is not segmented, these query features emanate from different
+textured objects or textured background. Matching these features shall find
+correspondences between these query features and model features. Let $C_i$ be
+the set of correspondences where a query feature has been matched with a model
+feature from the $i$-th template object. Finally, let $C = (C_1, \dots, C_n)$
+denote the partition of all correspondences for the query scene, where $n$ is
+the number of template objects described in the model base.  \tod integrates
+different nearest-neighbor algorithms. FLANN, which has not been tested in the
+course of this work. \tod offers brute-force matching algorithms, and
+implements Locally Sensitive Hashing for both binary and real feature
+descriptors.
+
+% TODO: introduce parameter knn
+% TODO: discuss ratio test from lowe
+% TODO: introduce parameter do_ratio_test
+% TODO: introduce parameter ratio_threshold
+
+\subsubsection{Guess}
+
+The hypotheses \tod generates for a given query scene are called {\it guesses}.
+A guess is a triple $(i, \hat{T},\ S)$, where $i$ denotes the template object
+which \tod believes to see on the scene, $\hat{T}$ the estimated pose of the
+object in terms of a model-view transformation and $S \subseteq C_i$ the
+consensus set of inliers. 
+
+\subsubsection{Pose Estimation}
+\label{subsubsection:tod-pose-estimation}
+
+Given the correspondences $C$, \tod generates a set of guesses. The
+correspondences are treated separately for each template object, that is \tod
+looks at each correspondence set $C_i$. For the $i$-th template object, RANSAC
+is called iteratively. If RANSAC returns with a pose estimate $\hat{T}_{ij}$ in
+the $j$-th iteration, and the size of the consensus set $S_{ij}$ is greater or
+equal to a parameter {\tt min\_inliers\_count}, then \tod infers that there is
+an instance of the template object at the estimated pose and generates a guess
+$(i, \hat{T}_{ij}, S_{ij})$. Note that the inlier sets $S_{ij}$ are disjoint
+because the RANSAC call in the $j$-th iteration is told to operate only on the
+set $C_i - \bigcup_{k=1}^{j-1} S_{ik}$, and $C$ forms a partition. If not, then
+iteration is stopped, and \tod continues with the correspondence set for the
+next template object, if any. This means that the inlier sets of two different
+guesses will never share a correspondence.
+
+% TODO: introduce parameter max_projection_error
+
+Altogether, for a given query scene, \tod takes the query image and generates a
+set of guesses, which is the output of the \tod recognition process.
+% The task is rendered difficult by possible confusion in the partition $C$ with respect
+% to the true partition, that is some correspondences might have been matched to
+% the wrong object. \tod iterates over each correspondence set $C_i$, and
+% generates pose estimates for instances of the $i$-th template object.
 
 \section{Clutter Segmentation Tool}
+
+This section discusses the implementation of the \clutseg object recognition
+system on top of \tod. More implementation details are presented than for \tod,
+the dependencies reviewed and design choices motivated. The section introduces
+three core concepts that shape \clutseg for the specific application
+requirements of locating the next object to resolve from the clutter, that
+means only making one single guess. First, a guess ranking helps to discard
+guesses with low confidence. Second, guess refinement aims at spending more
+computation resources on specifically improving pose estimates for guesses with
+high confidence. Third, a guess rejection mechanism attenuates the probability
+of settling on the wrong guess. Finally, this section covers the tools that
+help to find parameters for the clutseg system and help collect statistics to
+evaluate its performance.
+
+The reasons why \clutseg was developed were three-fold. First, given the
+robotic task of resolving the clutter in the scene requires the robot to locate
+one object in the scene. \tod produces several guesses, and to select a
+suitable one is within the scope of this work. Second, the performance of \tod
+was expected to be improved by building a system that more specifically
+targeted at the task at hand. Third, when working with experimental, unstable
+third-party software, it often proves useful to wrap certain parts of it with a
+more convenient interface.
+
 \subsection{Guess Ranking}
-\subsection{Guess Rejection}
+
+At the core of \clutseg is the idea that we can have more confidence in a
+guess, when it is supported by a large consensus set of inliers. The discussion
+whether this holds true is deferred to chapter \ref{chapter:evaluation}. It
+remains an assumption in this chapter that more inliers lead to higher
+probability of the guess being correct. Measures for correctness will be
+defined in section \ref{subsection:measured-statistics}.
+
+A {\it guess ranking} is a function $r$ that assigns a real-valued score to a
+guess $(i, \hat{T}, S)$. Different rankings can be defined and plugged into
+\clutseg, such as a ranking based on proximity to the camera or a combination
+of multiple guess rankings. Yet, the ranking of interest is a guess ranking
+$r_{S}$ that assigns scores to guesses according to the number of inliers:
+
+\begin{equation}
+    r_S: (i, \hat{T}, S) \mapsto \left|S \right|
+\end{equation}
+
+The number of inliers is not only interesting because of the assumed correlation
+with probability of being correct. It also simplifies the robotic task of grabbing
+an object by supplying more 3-d points.
+
 \subsection{Guess Refinement}
 
+Given a guess, the idea of {\it guess refinement} is to spend additional
+computation resources to lessen the expected error in pose estimates. Guess
+refinement as in \clutseg takes a guess $(i, \hat{T}, S)$, matches the query
+features and against the model features of the $i$-th template object alone,
+and estimates poses for this objects as described in section
+\ref{subsubsection:tod-feature-matching}, using a model base consisting only
+of this single object model. The best guess according to the chosen guess ranking
+is designated the {\it refined guess}. % and \ref{subsubsection:tod-pose-estimation}, respectively.
+
+The reasoning behind guess refinement is find more matches between query
+features and the single object whose pose is to be refined. By ignoring other
+models, and doing away with the ratio test, only correspondences between the
+query scene and one model are found. Such an approach is optimistic, and
+possibly dangerous, especially in cases where the guess to refine is a false
+positive.  The validity of such an approach has at least to empirically
+verified by experimentation.
+
+\subsection{Guess Rejection}
+
+A technique denoted as {\it guess rejection} attenuates the chance of returning
+an incorrect guess, especially trying to avoid false positives. \clutseg
+rejects guesses whose guess ranking is smaller than a configurable parameter
+{\tt accept\_threshold}. How guess rejection exactly works and in what scenarios
+it is useful will be explained in the following section.
+
+\subsection{Recognition}
+
+This section describes the full recognition process, putting the ideas of
+guess ranking, guess refinement and guess rejection into context.
+
+Given a query scene, the \clutseg recognition process first calls \tod once to
+produce a set of guesses $G_D$ for all objects in the model base. A ranking
+defines a total order on $G_D$. The inlier ranking $r_S$ is used for this by
+default. \clutseg chooses the first ranked guess in $G_D$ and computes the
+refined guess. If the ranking of the refined guess is greater or equal than
+{\tt accept\_threshold}, it is accepted and returned as the result of the
+recognition process. In case the refined guess is rejected or no refined guess
+was made at all, the algorithm proceeds to the next guess in $G_D$ and repeats the
+refinement step. This iteration is performed until either a refined guess is
+accepted, or \clutseg declares the scene to be empty.
+
+This scheme was built with the intention to avoid the problem of finding a good
+operating point for \tod in ROC space. It is sufficient that \tod returns a set
+$G_D$ where the high-ranked guesses are true positives. For one of the
+high-ranked guesses, there are two cases to consider. If the high-ranked guess
+is a true positive, then the refinement step should either confirm this guess,
+or improve on it, respectively. If the high-ranked guess is a false positive
+against expectations, then the refinement step might still lead to a guess.
+Expectations are that this refined guess has low ranking and will be rejected,
+and other high-ranked guesses will be examined.
+
 \section{Parameter Optimization}
+
+TODO
+
 \subsection{Parameter Space}
+
+TODO
+
 \subsection{Measured Statistics}
+\label{subsection:measured-statistics}
+
+TODO
+
 \subsection{Experiment Strategy}
+
+TODO
+
 \subsection{Experiment Runner}
+
+TODO
 

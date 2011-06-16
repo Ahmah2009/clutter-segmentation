@@ -27,11 +27,11 @@ A {\it rigid transformation} is defined as combination of an orthogonal
 transformation and translation in Euclidean space. A {\it proper rigid
 transformation} requires the orthogonal transformation to be a rotation. In
 three dimensions, a proper rigid transformation can be represented by a
-rotation matrix $R \in \mathbb{R}^3$ and a translation vector $\mathbf{t} \in
+rotation matrix $R \in \mathbb{R}^3$ and a translation vector $\vec{t} \in
 \mathbb{R}^3$.
 
 \begin{equation}
-    T: \mathbb{R}^3 \to \mathbb{R}^3, \mathbf{v} \mapsto R\mathbf{v} + \mathbf{t}
+    T: \mathbb{R}^3 \to \mathbb{R}^3, \vec{v} \mapsto R\vec{v} + \vec{t}
 \end{equation}
 
 A proper rigid transformation, abbreviated by PRT in the following, can be
@@ -41,7 +41,7 @@ respect to a fixed world frame. The latter interpretation is prevalent in this
 work. The inverse transformation is given by
  
 \begin{equation}
-    T^{-1}: \mathbb{R}^3 \to \mathbb{R}^3, \mathbf{v} \mapsto R^{-1}(\mathbf{v} - \mathbf{t})
+    T^{-1}: \mathbb{R}^3 \to \mathbb{R}^3, \vec{v} \mapsto R^{-1}(\vec{v} - \vec{t})
 \end{equation}
 
 \subsection{Object-View Transformations}
@@ -69,13 +69,13 @@ to know the origin of the object in view coordinates, you can apply the
 object-view transformation to the zero vector, and compute the distance $d$
 between camera and object origin as
 
-$$ d = \left|\left|\ _{xyz}T^{uvw}\left[ \mathbf{0} \right]\ \right|\right|_2$$
+$$ d = \left|\left|\ _{xyz}T^{uvw}\left[ \vec{0} \right]\ \right|\right|_2$$
 
 Another example, you can compute the distance $d_{12}$ between the two objects
 in a scene by
 
-$$ d_{12} = \left|\left|\ _{xyz}T_1^{uvw}\left[ \mathbf{0} \right] -
-                  _{xyz}T_2^{uvw}\left[ \mathbf{0} \right]\ \right|\right|_2$$
+$$ d_{12} = \left|\left|\ _{xyz}T_1^{uvw}\left[ \vec{0} \right] -
+                  _{xyz}T_2^{uvw}\left[ \vec{0} \right]\ \right|\right|_2$$
 
 \begin{figure}
     \begin{center}

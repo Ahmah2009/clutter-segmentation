@@ -11,6 +11,13 @@
 
 \section{Issues}
 
+\subsection{Incomplete model}
+
+The bottom of the template object is facing the rotating table and is invisible
+to the camera from all viewpoints. This does not matter as long as instances of
+these template objects are standing upright. This does matter when instances occur
+in arbitrary orientation.
+
 \subsection{Maximum projection error in RANSAC}
 
 Generally, the system relies on the size of the consensus set to be a strong

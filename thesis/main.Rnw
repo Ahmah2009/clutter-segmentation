@@ -45,6 +45,9 @@
 
 \newcommand{\clutseg}{{\tt CLUTSEG}\xspace} 	
 \newcommand{\tod}{{\tt TOD}\xspace} 	
+\newcommand{\mvt}[1]{_{xyz}T^{uvw}\left( #1 \right)} 	
+\newcommand{\vmt}[1]{_{uvw}T^{xyz}\left( #1 \right)} 	
+\renewcommand{\vec}[1]{\mathbf{#1}}
 	
 \begin{document}
 
