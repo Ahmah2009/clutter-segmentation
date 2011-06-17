@@ -48,6 +48,7 @@
 \newcommand{\mvt}[1]{_{xyz}T^{uvw}\left( #1 \right)} 	
 \newcommand{\vmt}[1]{_{uvw}T^{xyz}\left( #1 \right)} 	
 \renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\normtwo}[1]{{\left|\left| #1 \right|\right|}_{\mbox{\tiny 2}}} 	
 	
 \begin{document}
 
