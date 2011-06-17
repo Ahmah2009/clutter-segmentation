@@ -305,19 +305,19 @@ This section describes the full recognition process, putting the ideas of
 guess ranking, guess refinement and guess rejection into context.
 
 Given a query scene, the \clutseg recognition process first calls \tod once to
-produce a set of guesses $G_D$ for all objects in the model base. A ranking
-defines a total order on $G_D$. The inlier ranking $r_S$ is used for this by
+produce a set of guesses $D$ for all objects in the model base. A ranking
+defines a total order on $D$. The inlier ranking $r_S$ is used for this by
 default. \clutseg chooses the first ranked guess in $G_D$ and computes the
 refined guess. If the ranking of the refined guess is greater or equal than
 {\tt accept\_threshold}, it is accepted and returned as the result of the
 recognition process. In case the refined guess is rejected or no refined guess
-was made at all, the algorithm proceeds to the next guess in $G_D$ and repeats the
+was made at all, the algorithm proceeds to the next guess in $D$ and repeats the
 refinement step. This iteration is performed until either a refined guess is
 accepted, or \clutseg declares the scene to be empty.
 
 This scheme was built with the intention to avoid the problem of finding a good
 operating point for \tod in ROC space. It is sufficient that \tod returns a set
-$G_D$ where the high-ranked guesses are true positives. For one of the
+$D$ where the high-ranked guesses are true positives. For one of the
 high-ranked guesses, there are two cases to consider. If the high-ranked guess
 is a true positive, then the refinement step should either confirm this guess,
 or improve on it, respectively. If the high-ranked guess is a false positive
@@ -325,24 +325,284 @@ against expectations, then the refinement step might still lead to a guess.
 Expectations are that this refined guess has low ranking and will be rejected,
 and other high-ranked guesses will be examined.
 
+This two-staged recognition process requires the query features to be extracted
+once.  Matching must be done at least twice. In the refinement step, there are
+less features to match than in the initial step, the {\it detection step}.
+
 \section{Parameter Optimization}
 
-TODO
+In this section, the parameters of the \clutseg system are reviewed, their 
+nature discussed and the approach explained that has been used to find a
+reasonable parameter set. Statistics are introduced that measure performance
+of the \clutseg system on sets of query scenes where ground truth is available.
 
 \subsection{Parameter Space}
+\label{subsection:parameter-space}
 
-TODO
+The \clutseg system has a fair amount of parameters. Many of the parameters
+have already been introduced in the previous chapters, others yet need to be
+described. Table \ref{table:parameters} shows an overview of all configurable
+system parameters, except the parameters for feature extraction, which depend
+on the choice of feature extractor, and are treated separately.
+% TODO: create table with feature extraction parameters
+
+\begin{table}[h!]
+    \begin{tabular}{llll}
+        Parameter & Range \\
+        \hline
+        {\tt detect\_matcher\_type} & categoric \\
+        {\tt detect\_knn} & integer \\
+        {\tt detect\_do\_ratio\_test} & boolean \\
+        {\tt detect\_ratio\_threshold} & real \\
+        {\tt detect\_ransac\_iterations\_count} & integer \\
+        {\tt detect\_max\_projection\_error} & real \\
+        {\tt detect\_min\_inliers\_count} & integer \\
+        {\tt refine\_matcher\_type} & categoric \\
+        {\tt refine\_knn} & integer \\
+        {\tt refine\_ransac\_iterations\_count} & integer \\
+        {\tt refine\_max\_projection\_error} & real \\
+        {\tt refine\_min\_inliers\_count} & integer \\
+        {\tt accept\_threshold} &  real \\
+    \end{tabular}
+    \caption{\clutseg parameters in matching and recognition}
+    \label{table:parameters}
+\end{table}
+
+Even if we consider only ten of these parameters as factors to five levels
+each, we obtain $5^{10} \approx 10^6$ different parameter sets. Consider also,
+we would like to test two different matchers and three different feature
+detectors. This would result in around $6 \cdot 10^6$ parameter sets. A full
+factorial design for finding optimal parameters, as recommended in
+\cite{Alpaydin2010} becomes difficult. The pragmatic approach chosen in this
+work is based on three ideas. First, we aim at reducing the dimensions of
+parameter space by priorly selecting parameter values by reasoning and the
+experience of other researchers. Second, tools were developed together with
+\clutseg that support visual inspection of experiment results to support an
+intuitive analysis. Third, the exploration of parameter space is done
+selectively, and parameter sets in promising regions are more thoroughly
+investigated into. The danger of such an approach is obviously the chance to
+reach a local optimum instead of the targeted global optimum, and the drawback
+is that results have to be formulated with even more care since they are not
+supported by a full grid of samples in parameter space.
+
+\subsubsection{Feature Extraction Parameters}
+
+Feature extraction parameters control the extraction of local 2-d features.  A
+choice needs to be made for the feature detector and the feature descriptor.
+Feature detectors again need to be configured. The requirements described in
+chapter \ref{chapter:introduction} call for a feature detector that produces
+features in good quantities, and it shall be reasonably fast. Hence, the main
+focus was set on Oriented BRIEF, which takes three main parameters. The number
+of levels in the scale-space pyramid is denoted by {\tt octaves}, the
+magnification factor between two levels is called {\tt scale\_factor}.
+Parameter {\tt n\_features} is a hint for Oriented BRIEF on how many features
+are desired.
+
+\subsubsection{Feature Matching Parameters}
+
+The matching process in the detection step and the refinement step have some
+parameters in common. The choice of matcher is denoted by {\tt
+detect\_matcher\_type} ({\tt refine\_matcher\_type}), but partly dictated by
+the prior choice of feature descriptor. A binary feature descriptor calls for a
+matcher that is well-designed to work with binary vectors. Also, brute-force is
+hardly a choice except for use as comparison to approximate nearest neighbor
+search algorithms. The focus is on the Locally Sensitive Hashing algorithm
+implemented in \tod. Parameter {\tt detect\_knn} ({\tt refine\_knn}) is a hint
+to the matching algorithm about how many neighbors per query feature shall be
+retrieved. The ratio test can be enabled or disabled by {\tt
+detect\_do\_ratio\_test} and configured by {\tt detect\_ratio\_threshold}
+for the detection step. In the refinement step it does not make sense and is
+disabled by default. The default value for {\tt detect\_ratio\_threshold} is selected
+to be $0.8$, as recommended in \cite{Lowe1999}.
+
+% TODO: check whether correspondences or what kind of points are removed in tod
+% guess generator after each call to ransac
+% TODO: describe k-NN matching and what this means in this context
+% TODO: describe pruning of correspondences that find neighbors in many images
+
+\subsubsection{Pose Estimation Parameters}
+
+The pose estimation step in detection and refinement depends on three
+parameters each. RANSAC is controlled by {\tt
+detect\_ransac\_iterations\_count} ({\tt refine\_ransac\_iterations\_count})
+and {\tt detect\_max\_projection\_error} ({\tt
+refine\_max\_projection\_error}). No further pose estimates will be generated
+as soon as RANSAC returns an estimate with a consensus set of size less than
+{\tt detect\_min\_inliers\_count} ({\tt refine\_min\_inliers\_count}).
 
 \subsection{Measured Statistics}
 \label{subsection:measured-statistics}
 
-TODO
+\clutseg supports measuring its performance. This section explains how errors
+and scores are computed for given query scenes or whole sets of query scenes
+where ground truth is available. It covers statistics that are recorded in the
+learning and the recognition process, which are aimed to simplify reasoning
+about the system's performance and the influence of parameters. 
+
+\subsubsection{Learning Statistics}
+
+When constructing the models from multiple views, some simple statistics are
+recorded. The model construction is part of \tod's codebase and it had to be
+modified to keep trace of the minimum, maximum and average number of features
+extracted on the views. Also, the number of times where the computation of the
+model-view transformation failed due to undetected checkerboards is tracked.
+The time required for building the model base is recorded as well. Results are
+presented in chapter \ref{chapter:evaluation}.
+
+\subsubsection{Ground Truth}
+
+The error \clutseg makes on a query scene can only be computed if ground truth
+is available. Ground truth data for a scene consists of set of labels that tell
+which objects can be seen at what location and orientation in the scene. Thus,
+ground truth $G$ can be described as a set of labels
+
+\begin{equation}
+    G = \left\{ (i, T) : \text{object $i$ is on scene at pose defined by MVT T} \right\}
+\end{equation}
+
+% TODO: introduce abbreviation for model-view transformation
+% TODO: object-view transformation or model-view transformation, consistent with object coordinates or model coordinates
+
+\subsubsection{Classification Error}
+
+\clutseg only attempts to partially estimate ground truth. It does not try to
+label all objects in the scene, but only one. Mapping to ROC terminology is
+not straight-forward. Ignoring the estimated pose, it is possible to put a guess
+made by \clutseg into one of four categories. True positive if the guessed
+object is actually on the scene. False positive if the guessed object is not on
+the scene. True negative if there is no guess and the scene is empty.  False
+negative if the scene shows objects but \clutseg did not make a guess.
+Unfortunately, this scheme does not cover the case in which two objects have
+been confused. In the application scenario, several objects are expected to be
+on the scene. Statistics record when \clutseg returns without making a guess,
+and {\tt none\_rate} captures these cases, averaged over multiple query scenes.
+
+\subsubsection{Pose Estimation Error}
+
+Error in estimated pose can only be computed in case the guessed object is
+actually visible in the scene. In case it is, the translational error $e_t$ given
+ground truth pose $T$ and pose estimate $\hat{T}$ is
+
+\begin{equation}
+    e_t = \left|\ \hat{T}\left(\vec{0}\right) - T\left(\vec{0}\right)\ \right|
+\end{equation}
+
+The orientation error $e_\alpha$ is computed from the ground truth orientation $r$
+and estimated orientation $\hat{r}$, specified in axis-angle representation, and 
+using the dot-product
+
+\begin{equation}
+    e_\alpha = \left| \arccos \left( \frac{\vec{r}^t\ \hat{\vec{r}}}{\normtwo{\vec{r}}\ \normtwo{\hat{\vec{r}}}} \right) \right|
+\end{equation}
+
+Rodrigues' rotation formula can be used to efficiently convert back and forth
+between rotation matrix and axis-angle representation, and is readily available
+in OpenCV.
+% TODO: need citation
+
+\subsubsection{Scene Scores}
+
+Here, a scene score is presented that measures \clutseg's performance on a
+single query scene. The goal is to find a score function that closely models
+the utility of a guess made for a query scene.
+
+If the guessed object is not on the scene, clearly the utility of such a guess
+is zero. Also, utility does not decrease much more, if the orientation and
+translation error is beyond a certain margin of error. The idea is therefore
+to introduce a combined classification and estimation score. 
+
+Let $\alpha_{max} = \frac{\pi}{9}$ and $t_{max} = 3\mbox{cm}$ be the maximum
+tolerable errors in orientation and translation, respectively. The choices are
+consistent with the {\it Solutions in Perceptions Challenge 2011}.  Then, for a
+query scene with ground truth $G$ and a guess $g$, the scene score function $u$
+is defined as
+
+\begin{equation}
+u: G, g \mapsto
+    \begin{dcases}
+         1 & \text{if scene is empty and no guess made} \\
+         0 & \text{if guessed object is not on scene} \\
+         1 - \min\{1, \frac{e_t^2}{t_{max}^2} + \frac{e_\alpha^2}{\alpha_{max}^2}\} & \text{if guessed object is on scene}
+    \end{dcases}
+\end{equation}
+
+One strength of the presented scene score function is that it is continuous
+that retains more information than a simple statistic that records the binary
+observation whether the guess is within or beyond an error margin. The
+influence of error in pose is bounded, and outliers do not influence average
+the score function too much. The latter characteristic might also be formulated
+as a weakness in case of using this score as a function to maximize in
+optimization. It does not provide useful gradient information in regions of bad
+parameter sets, given the function's flat surface beyond a certain region
+defined by $t_{max}$ and $\alpha_{max}$.
+
+% TODO: maybe future work, need more complete ground truth for more complex evaluation
+% For example, let two objects A and B be on the scene. \clutseg makes a guess,
+% but confusing objects A and B, it states that A was found at a pose close to
+% object B, and also with inliers emanating from object B. In this case, the
+% presented score function will still assign a classification score of 0.5. To
+% detect this, the definition for ground truth would have to be extended to
+% include the regions on the query image that belong to each object. Then it is
+% possible to distinguish between true and false inliers.
+
+\subsubsection{Recognition Statistics}
+
+\clutseg collects statistics about the recognition process that do not involve
+ground truth. These statistics cover the number of guesses, matches, inliers in
+the detection and in the refinement stage. The runtime is recorded as well.
 
 \subsection{Experiment Strategy}
 
-TODO
+Given that it might take several minutes to evaluate \clutseg's performance on
+a validation set, it was vital to make a decision which regions of parameter
+space to explore first and which regions to explore next. In this work, the
+strategy was to select a few regions, and then search in the neighborhood of
+those parameter sets that performed well in the experiments conducted so far.
+The strategy resembled genetic programming.
 
 \subsection{Experiment Runner}
 
-TODO
+This section describes how \clutseg provides an experiment runner that tries to
+efficiently test different parameter sets against a validation or test set. It
+describes how a database was employed to keep track of parameter sets and
+experiment results, the visualization tools that make the results accessible
+for analysis, and the major implementation decisions that saved computing
+resources.
+
+\subsubsection{Experiment Database}
+
+\clutseg employs a SQLITE3 database to keep track of parameter sets and the
+recorded statistics, as introduced in sections \ref{subsection:parameter-space}
+and \ref{subsection:measured-statistics}  The experiment runner can be executed
+in the spirit of a daemon process, and polls the database for new parameter
+sets when idle. New parameter sets are tested with computationally cheap tests
+for validity and those leading to errors are marked and skipped, such that one
+failing experiment does not kill the process. The primary purpose of the
+database was to collect experiment inputs and outputs in a central, accessible
+and convenient location.  No efforts have been spent on normalization,
+performance tuning or any other aspects that were not related to its primary
+purpose. For convenience, data can be selected from various database views.
+
+\subsubsection{Modelbase Cache}
+
+Extracting models is computationally expensive and may take several minutes.
+As long as the feature parameters do not change in several experiments, there
+is no need to regenerate the models and the modelbase is retrieved by the SHA1
+hashcode of the feature parameters. A modelbase for four template objects takes
+up around 5 Megabytes on the filesystem. \tod stores the modelbase as
+compressed YAML text files. If disk space and reading the modelbase quickly
+into memory were an issue, then binary files would be a good choice.
+
+\subsubsection{Visualization Tools}
+
+\clutseg connects with OpenCV and R project to visualize the recognition
+results in query scene and the statistical data acquired in experiments.  It
+provides functions for visualizing guesses and ground truth in parallel,
+showing inliers, translational and rotational errors in the manner of a
+heads-up display. It provides command-line tools to inspect views of the
+modelbase, that is the region of interest, the extracted keypoints, and the
+estimated pose. Imagemagick is used to generate montage images that show the
+results of one experiment at once. Finally, \tod allows to visualize matches
+between the query scene and the modelbase. R is used to pull data from the
+database and plot them.
 
