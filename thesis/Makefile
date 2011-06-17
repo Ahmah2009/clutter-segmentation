@@ -34,6 +34,7 @@ install-deps:
 	wget http://cran.r-project.org/src/contrib/RSQLite_0.9-4.tar.gz
 	sudo R CMD INSTALL RSQLite_0.9-4.tar.gz
 	rm RSQLite_0.9-4.tar.gz
+	sudo aptitude install texlive-latex3 
 
 .PHONY: clean 
 clean:	
