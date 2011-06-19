@@ -306,6 +306,10 @@ report_tables
 report_plots 
 report_index
 
+# TODO: remove hack
+cp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png $report_dir/
+cp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.locate_choice.collage.jpg $report_dir/
+
 if has_opt --upload && [ "$CLUTSEG_RESULT_URL" != "" ] ; then
     opt="--recursive --archive --verbose --progress"
     if has_opt --delete ; then
