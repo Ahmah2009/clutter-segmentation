@@ -44,8 +44,6 @@ namespace clutseg {
             choices(0) {}
 
         long queries;
-        // TODO: include runtime in response
-        // clock_t runtime;
         long acc_keypoints;
         long acc_detect_matches;
         long acc_detect_guesses;

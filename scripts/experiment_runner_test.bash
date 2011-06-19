@@ -16,8 +16,6 @@ if has_opt --debug ; then
 fi
 
 pushd $CLUTSEG_PATH/clutter-segmentation/clutseg > /dev/null
-    mods-link
-    rosmake clutseg
     if [ "$?" = 0 ] ; then
         cp data/paramsel.sqlite3 build
         mkdir -p build/train_cache -p build/results

@@ -445,6 +445,7 @@ namespace clutseg {
     void setMemberField(MemberMap & m, const std::string & field, float val) {
         m[field] = str(boost::format("%f") % val);
     }
+
     void setMemberField(MemberMap & m, const std::string & field, double val) {
         m[field] = str(boost::format("%f") % val);
     }
@@ -468,7 +469,6 @@ namespace clutseg {
     void setMemberField(MemberMap & m, const std::string & field, const std::string & val) {
         m[field] = val;
     }
-
     void insertOrUpdate(sqlite3*  & db, const std::string & table, const MemberMap & m, int64_t & id) {
         if (id > 0) {
             stringstream upd;
