@@ -158,13 +158,14 @@ void insert_experiments(sqlite3* & db) {
     }
 
     sqlite3_stmt *select;
-    string sql = "select id from experiment join response where experiment.response_id = response.id and id < 750 order by succ_rate desc limit 20";
+    string sql = "select experiment.id from experiment join response where experiment.response_id = response.id and experiment.id < 750 order by succ_rate desc limit 20";
     db_prepare(db, select, sql);
     cout << "[SQL] " << sql << endl;
     vector<int> ids;
     while (sqlite3_step(select) == SQLITE_ROW) {
         ids.push_back(sqlite3_column_int(select, 0));
     }
+    sqlite3_finalize(select);
 
     // Test 20 best experiments according to success rate, use less RANSAC iterations to find out
     // whether we can save time here.
@@ -176,7 +177,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.locate_pms_guess.ransacIterationsCount = 200;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-2";
-        e.serialize(db);
+	insert_if_not_exist(db, e);
     }
 
     // Test 20 best experiments according to success rate, and turn off ratio
@@ -186,7 +187,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.detect_pms_match.doRatioTest = false;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-3";
-        e.serialize(db);
+	insert_if_not_exist(db, e);
     }
 
     // Test 20 best experiments according to success rate, and use smaller
@@ -196,7 +197,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.recog_pms_fe.detector_params["threshold"] = 15;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-4";
-        e.serialize(db);
+	insert_if_not_exist(db, e);
     }
  
     // Test 20 best experiments according to success rate, and use smaller
@@ -208,7 +209,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.recog_pms_fe.detector_params["threshold"] = 15;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-5";
-        e.serialize(db);
+	insert_if_not_exist(db, e);
     }
   
     // Test 20 best experiments according to success rate, and use smaller
@@ -222,12 +223,72 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.locate_pms_guess.ransacIterationsCount = 200;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-6";
-        e.serialize(db);
+	insert_if_not_exist(db, e);
     }
 
-    // TODO: select best 10% and try knn = 3..4..5 and ratioThreshold=0.6,0.7,0.8,0.9 and
-    //       play with threshold 20,30,40
-    // 750 / 10 = 150, 150 * 3 * 4 * 3 = 3600 
+    sqlite3_stmt *select100;
+    sql = "select experiment.id from experiment join response where experiment.response_id = response.id and experiment.id < 750 order by succ_rate desc limit 100";
+    db_prepare(db, select100, sql);
+    cout << "[SQL] " << sql << endl;
+    vector<int> ids100;
+    while (sqlite3_step(select100) == SQLITE_ROW) {
+        ids100.push_back(sqlite3_column_int(select100, 0));
+    }
+    sqlite3_finalize(select100);
+    // Test 100 best experiments according to success rate, and use smaller
+    // threshold in recognition and also smaller threshold in training, i.e. 
+    // many many more features, but also more RANSAC iterations than in run-6
+    for (size_t i = 0; i < ids100.size(); i++, j++) {
+        Experiment e = clone_setup(db, ids100[i]);
+        e.paramset.train_pms_fe.detector_params["threshold"] = 15;
+        e.paramset.recog_pms_fe.detector_params["threshold"] = 10;
+        e.paramset.detect_pms_guess.ransacIterationsCount = 750;
+        e.paramset.locate_pms_guess.ransacIterationsCount = 750;
+        e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+        e.batch = "run-7";
+        insert_if_not_exist(db, e);
+    }
+
+    // Test 100 best experiments according to success rate, and use smaller
+    // threshold in recognition and also smaller threshold in training, i.e. 
+    // as many features as in run-7, but even more RANSAC iterations than in run-7
+    // and smaller max_projection_error in locating step than in run-7
+    for (size_t i = 0; i < ids100.size(); i++) {
+	    for (size_t locateMaxProjectionError = 6; locateMaxProjectionError <= 15 ; locateMaxProjectionError += 3, j++) {
+         	Experiment e = clone_setup(db, ids100[i]);
+            e.paramset.train_pms_fe.detector_params["threshold"] = 15;
+            e.paramset.recog_pms_fe.detector_params["threshold"] = 10;
+            e.paramset.locate_pms_guess.maxProjectionError = locateMaxProjectionError;
+            e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+            e.batch = "run-8";
+            insert_if_not_exist(db, e);
+        }
+    }
+
+    sqlite3_stmt *select100all;
+    sql = "select experiment.id from experiment join response where experiment.response_id = response.id and experiment.id order by succ_rate desc limit 100";
+    db_prepare(db, select100all, sql);
+    cout << "[SQL] " << sql << endl;
+    vector<int> ids100all;
+    while (sqlite3_step(select100all) == SQLITE_ROW) {
+        ids100all.push_back(sqlite3_column_int(select100all, 0));
+    }
+    sqlite3_finalize(select100all);
+
+    j = 1350;
+	
+    for (size_t i = 0; i < ids100all.size(); i++) {
+        for (int detectKnn = 3; detectKnn <= 5; detectKnn++) {
+            for (int locateKnn = 3; locateKnn <= 5; locateKnn++, j++) {
+                Experiment e = clone_setup(db, ids100all[i]);
+                e.paramset.detect_pms_match.knn = detectKnn;
+                e.paramset.locate_pms_match.knn = locateKnn;
+                e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
+                e.batch = "run-9";
+                insert_if_not_exist(db, e);
+            }
+        }
+    }
 
     /* that one is nonsense
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
