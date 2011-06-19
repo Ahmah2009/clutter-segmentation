@@ -73,14 +73,14 @@ namespace clutseg {
 
             Clutsegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
-                            const std::string & locate_config,
+                            const std::string & refine_config,
                             const cv::Ptr<GuessRanking> ranking_ = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
                             bool do_refine = true);
 
             Clutsegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
-                            const tod::TODParameters & locate_params,
+                            const tod::TODParameters & refine_params,
                             const cv::Ptr<GuessRanking> ranking = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
                             bool do_refine = true);
@@ -91,7 +91,7 @@ namespace clutseg {
 
             /** Retrieves parameters used for locating stage. Writes to the
              * parameters are transparent to the segmenter. */
-            tod::TODParameters & getLocateParams();
+            tod::TODParameters & getRefineParams();
 
             int getAcceptThreshold() const;
 
@@ -131,7 +131,7 @@ namespace clutseg {
 
             bool refine(const tod::Features2d & queryF2d,
                         const PointCloudT & queryCloud,
-                        tod::Guess & locateChoice,
+                        tod::Guess & refineChoice,
                         std::vector<std::pair<int, int> > & matches);
 
             void loadParams(const std::string & config,
@@ -142,7 +142,7 @@ namespace clutseg {
             ClutsegmenterStats stats_;
             std::string baseDirectory_;
             tod::TODParameters detect_params_; 
-            tod::TODParameters locate_params_; 
+            tod::TODParameters refine_params_; 
             tod::TrainingBase base_;
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
             cv::Ptr<GuessRanking> ranking_;

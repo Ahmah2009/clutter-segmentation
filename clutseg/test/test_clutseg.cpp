@@ -60,7 +60,7 @@ class test_clutseg : public ::testing::Test {
             if (!fast()) {
                 sgm.setDoRefine(true);
                 sgm.resetStats();               
-                sgm.getLocateParams().matcherParams.doRatioTest = false;
+                sgm.getRefineParams().matcherParams.doRatioTest = false;
             }
 
             haltbare_milch_train_img = imread("./data/image_00000.png");
@@ -155,12 +155,12 @@ TEST_F(test_clutseg, constructor_opaque) {
     SKIP_IF_FAST 
 
     TODParameters detect_params;
-    TODParameters locate_params;
+    TODParameters refine_params;
 
     Clutsegmenter s(
         cache.trainFeaturesDir(tr_feat).string(),
         detect_params,
-        locate_params
+        refine_params
     );
     
     EXPECT_NE("SIFT", detect_params.feParams.detector_type);
@@ -175,10 +175,10 @@ TEST_F(test_clutseg, constructor_opaque) {
 TEST_F(test_clutseg, change_params_online) {
     SKIP_IF_FAST 
 
-    EXPECT_FALSE(sgm.getLocateParams().matcherParams.doRatioTest);
-    TODParameters & params = sgm.getLocateParams();
+    EXPECT_FALSE(sgm.getRefineParams().matcherParams.doRatioTest);
+    TODParameters & params = sgm.getRefineParams();
     params.matcherParams.doRatioTest = true;
-    EXPECT_TRUE(sgm.getLocateParams().matcherParams.doRatioTest);
+    EXPECT_TRUE(sgm.getRefineParams().matcherParams.doRatioTest);
 }
 
 /** Check whether detection works for a training image. This is expected to
@@ -214,10 +214,10 @@ TEST_F(test_clutseg, recog_in_clutter) {
     TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
-    TODParameters & locate_params = sgm.getLocateParams();
-    locate_params.guessParams.maxProjectionError = 8;
-    locate_params.guessParams.ransacIterationsCount = 500;
-    locate_params.guessParams.minInliersCount = 50;
+    TODParameters & refine_params = sgm.getRefineParams();
+    refine_params.guessParams.maxProjectionError = 8;
+    refine_params.guessParams.ransacIterationsCount = 500;
+    refine_params.guessParams.minInliersCount = 50;
     //sgm.setAcceptThreshold(20);
 
     ASSERT_TRUE(sgm.isDoRefine());
@@ -245,16 +245,16 @@ TEST_F(test_clutseg, recog_foremost_in_clutter) {
     TODParameters & detect_params = sgm.getDetectParams();
     detect_params.guessParams.maxProjectionError = 15.0;
     detect_params.guessParams.ransacIterationsCount = 100;
-    TODParameters & locate_params = sgm.getLocateParams();
-    locate_params.guessParams.maxProjectionError = 7;
-    locate_params.guessParams.ransacIterationsCount = 1000;
-    locate_params.guessParams.minInliersCount = 30;
+    TODParameters & refine_params = sgm.getRefineParams();
+    refine_params.guessParams.maxProjectionError = 7;
+    refine_params.guessParams.ransacIterationsCount = 1000;
+    refine_params.guessParams.minInliersCount = 30;
 
     Ptr<GuessRanking> prox_ranking = new ProximityRanking();
     Clutsegmenter s(
         cache.trainFeaturesDir(tr_feat).string(),
         detect_params,
-        locate_params,
+        refine_params,
         prox_ranking
     );
 
@@ -275,7 +275,7 @@ TEST_F(test_clutseg, Reconfigure) {
     exp.deserialize(db);
     EXPECT_GT(-10, sgm.getAcceptThreshold());
     sgm.reconfigure(exp.paramset);
-    EXPECT_EQ("FAST", sgm.getLocateParams().feParams.detector_type);
+    EXPECT_EQ("FAST", sgm.getRefineParams().feParams.detector_type);
     EXPECT_FLOAT_EQ(15.0, sgm.getAcceptThreshold());
 }
 
