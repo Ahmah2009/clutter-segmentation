@@ -43,6 +43,7 @@
 
 \makeglossaries
 
+% TODO: move this
 \newcommand{\clutseg}{{\tt CLUTSEG}\xspace} 	
 \newcommand{\tod}{{\tt TOD}\xspace} 	
 \newcommand{\mvt}[1]{_{xyz}T^{uvw}\left( #1 \right)} 	

@@ -175,15 +175,56 @@ The test set data has been collected similarly to the validation set, but
 ground truth was not computed. The evaluation on the test set was therefore
 restricted to visual analysis.
 
+\section{Experiments}
+
+This section describes the regions in parameter space that have been covered by
+experiments. This knowledge is required to interpret data from multiple
+experiments. It also presents a selected parameter set that has been found to
+work well on the validation set.
+
+\subsection{Searched Parameter Space}
+
+In total, more than 2200 experiments with different parameter configurations
+have been conducted. 
+% TODO: number of experiments
+
+<<echo=FALSE>>=
+    library(RSQLite)
+    con = dbConnect(dbDriver("SQLite"), dbname = paste(Sys.getenv("CLUTSEG_PATH"), "/clutter-segmentation/clutseg/data/test.sqlite3", sep=""))
+    dbGetQuery(con, paste("select count(experiment.id) from response join experiment on experiment.response_id=response.id"))
+@
+
+\subsection{Selected Parameter Set}
+
+The following parameter set, dubbed SPS, has been found to work well on the
+validation set.
+
 \section{Performance}
 
+Performance of the \clutseg system has been tested on the validation set, on a
+separate test set and in a live test on the PR2 robot. This section reviews
+performance for a parameter set that worked well on the validation set. It also
+covers observations made on a broad range of experiments.
+
 \subsection{Performance on Validation Set}
+
+The \clutseg system correctly located and labeled an object within error bounds
+of 3 cm and 20 degrees in rotation in 90\% of the validation scenes. This
+success rate is not predictive, though, as the validation set was used for
+optimizing the system. Because ground truth was available, more precise data
+can be presented on the validation set than for the test set. 
+
 \subsection{Performance on Test Set}
 \subsection{Performance in Live Test}
 
-\section{Chosen Parameters}
-
 \section{Issues}
+
+\subsection{Repetitions in texture}
+
+The system had difficulties to recognize {\it icedtea} when shown from a
+certain angle.  It turned out that {\it icedtea} has smallprint almost all over
+its backside. The same set of letters repeatably appear over a large area,
+which probably makes it hard to obtain informative features.
 
 \subsection{Incomplete model}
 
