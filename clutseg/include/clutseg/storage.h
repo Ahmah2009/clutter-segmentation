@@ -25,7 +25,7 @@ namespace clutseg {
             ResultStorage(const boost::filesystem::path & result_dir) : result_dir_(result_dir) {}
 
             /** Stores results for one test scene. */
-            void store(const TestReport & report); // TODO: rename store -> record
+            void record(const TestReport & report);
 
         private:
 

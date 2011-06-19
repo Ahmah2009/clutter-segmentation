@@ -110,7 +110,8 @@ TEST_F(test_map, map_markers) {
     mapToCloud(green3d, green2d, markerImg, cloud); 
     mapToCloud(yellow3d, yellow2d, markerImg, cloud); 
     mapToCloud(blue3d, blue2d, markerImg, cloud); 
-    
+   
+    /* 
     PointCloudT red3d_hscaled;
     PointCloudT green3d_hscaled;
     PointCloudT yellow3d_hscaled;
@@ -125,6 +126,7 @@ TEST_F(test_map, map_markers) {
     EXPECT_EQ(green2d.size(), green3d_hscaled.size());
     EXPECT_EQ(yellow2d.size(), yellow3d_hscaled.size());
     EXPECT_EQ(blue2d.size(), blue3d_hscaled.size());
+    */
 
     EXPECT_EQ(640, cloud.width);
     EXPECT_EQ(480, cloud.height);
@@ -142,11 +144,11 @@ TEST_F(test_map, map_markers) {
         addMarkerPolygon3d(vis, green3d, 0, 216, 0, "green");
         addMarkerPolygon3d(vis, yellow3d, 255, 216, 0, "yellow");
         addMarkerPolygon3d(vis, blue3d, 0, 66, 255, "blue");
-
+        /*
         addMarkerPolygon3d(vis, red3d_hscaled, 204, 153, 153, "red_hscaled");
         addMarkerPolygon3d(vis, green3d_hscaled, 153, 204, 153, "green_hscaled");
         addMarkerPolygon3d(vis, yellow3d_hscaled, 204, 204, 153, "yellow_hscaled");
-        addMarkerPolygon3d(vis, blue3d_hscaled, 153, 153, 204, "blue_hscaled");
+        addMarkerPolygon3d(vis, blue3d_hscaled, 153, 153, 204, "blue_hscaled");*/
 
         vis.addPointCloud(cloud);
         vis.spin();

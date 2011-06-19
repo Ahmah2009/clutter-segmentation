@@ -11,7 +11,7 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
 rosbuild_init()
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DOPENCV_R5024=OPENCV_R5024")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DOPENCV_R5024=OPENCV_R5024 -DENABLE_PCLVIS=ENABLE_PCLVIS")
 set(ROS_COMPILE_FLAGS "-W -Wall -Wextra -Wno-deprecated -Werror -fdiagnostics-show-option")
 
 #set the default path for built executables to the "bin" directory

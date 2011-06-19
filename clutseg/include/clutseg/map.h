@@ -18,17 +18,13 @@
 
 namespace clutseg {
 
-    // TODO: get rid of parameter sameScaleH. Empirical tests (see test_map.cpp) have shown
-    // that scaling the indices only using width ratio (even for the y indices) produce better
-    // results.
-
     void mapToCloud(PointCloudT & keypoints3d,
                     const std::vector<cv::Point> keypoints2d,
                     const cv::Mat & scene2d,
-                    const PointCloudT & scene3d, bool sameScaleH = true);
+                    const PointCloudT & scene3d);
 
     void mapInliersToCloud(PointCloudT & keypoints3d, const tod::Guess & guess,
-                    const cv::Mat & scene2d, const PointCloudT & scene3d, bool sameScaleH = true);
+                    const cv::Mat & scene2d, const PointCloudT & scene3d);
 }
 
 #endif

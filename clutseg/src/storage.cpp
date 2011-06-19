@@ -41,7 +41,7 @@ namespace clutseg {
         }
     }
 
-    void ResultStorage::store(const TestReport & report) {
+    void ResultStorage::record(const TestReport & report) {
         bfs::path erd = result_dir_ / (str(boost::format("%05d") % report.experiment.id));
         if (!bfs::exists(erd)) {
             bfs::create_directory(erd);

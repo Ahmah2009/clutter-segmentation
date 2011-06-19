@@ -111,15 +111,15 @@ namespace clutseg {
             resultSet[img_name] = res;
  
             TestReport report(e, query, res, test_it->second, img_name, test_dir, camera);
-            storage_.store(report);
+            storage_.record(report);
 
             if (terminate) {
                 cout << "[RUN] Registered termination request. Program will be terminated as soon as the experiment has been carried out completely." << endl;
             }
 
             // The heavy load on both CPU and IO often makes the operating
-            // system very unresponsive, so take a little break.
-            // TODO: test whether this can be achieved by using 'nice' value
+            // system very unresponsive, so take a little break. This can
+            // probably also achieved by adjusting 'nice' value.
             timespec t;
             t.tv_sec = 0;
             t.tv_nsec = int(1e8);
@@ -138,11 +138,11 @@ namespace clutseg {
     }
 
     void ExperimentRunner::skipExperimentsWhereFeatureExtractorCreateFailed(vector<Experiment> & exps) {
-        // This is a workaround. Some feature configurations might be
+        // This is a preliminary check. Some feature configurations might be
         // invalid, or even some assertion failure might happen in
-        // tod_training/src/feature_extraction.cpp Whatever the reason is
-        // and whoever to blame, it's important to fail early such that not
-        // so much time is wasted.
+        // tod_training/src/feature_extraction.cpp Whatever the reason is and
+        // whoever to blame, it's important to fail early such that not so much
+        // time is wasted.
         BOOST_FOREACH(Experiment & e, exps) {
             if (terminate) {
                 return;

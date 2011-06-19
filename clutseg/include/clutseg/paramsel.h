@@ -292,20 +292,24 @@ namespace clutseg {
     
     typedef std::map<std::string, std::string> MemberMap;
    
-    // TODO: use template?
     void setMemberField(MemberMap & m, const std::string & field, float val);
+
     void setMemberField(MemberMap & m, const std::string & field, double val);
+
     void setMemberField(MemberMap & m, const std::string & field, int val);
-    void setMemberField(MemberMap & m, const std::string & field, int64_t val);
+
     void setMemberField(MemberMap & m, const std::string & field, uint32_t val);
+
+    void setMemberField(MemberMap & m, const std::string & field, int64_t val);
+
     void setMemberField(MemberMap & m, const std::string & field, bool val);
+
     void setMemberField(MemberMap & m, const std::string & field, const std::string & val);
 
-    /** No-frills, low-level insert-or-update function that generates a SQL statement. Be careful,
-     * not much efforts have been spent into making it safe in any way (you can easily delete the whole
-     * table by a crafted SQL-query. Also, be careful with any string data because it is not correctly
-     * quoted. */
-    // TODO: fix insertOrUpdate and use sqlite3_prepare_v2
+    /** No-frills, low-level insert-or-update function that generates a SQL
+     * statement. Be careful, not much efforts have been spent into making it safe
+     * in any way (you can easily delete the whole table by a crafted SQL-query.
+     * Also, be careful with any string data because it is not correctly quoted. */
     void insertOrUpdate(sqlite3* & db, const std::string & table, const MemberMap & m, int64_t & id);
 
 }
