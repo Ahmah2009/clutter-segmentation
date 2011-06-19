@@ -390,32 +390,41 @@ and understanding the strengths and weaknesses of an object recognition system.
 
 \subsection{Classification}
 
-Assume, there were no interest in the pose of an object. Assume that objects
-are unique on an image. Then object recognition can be seen as a {\it
-multi-label classification} problem, as described in \cite{Tsoumakas2007}.  An
-image is described by a set of labels, and symmetrically, the classification
-result is a set of labels that predict which objects are on the image.
-Receiver operating characteristics (ROC) can be used to evaluate standard
-two-class classifiers \cite{Fawcett2006}. In case of multi-label
-classification, it is possible to define similar metrics \cite{Tsoumakas2007}.
-Unfortunately, even if object pose were not an issue, assuming objects to
-appear uniquely on an image might be unrealistic. For example, a shopping bag
-as in the application scenario of this work is best represented by a multiset,
-and not by a multi-label set.
+The purpose of this section is to show the difficulties in formulating the
+problem statement in terms of classification.  Assume, there were no interest
+in the pose of an object. Assume that objects are unique on an image. Then
+object recognition can be seen as a {\it multi-label classification} problem,
+as described in \cite{Tsoumakas2007}.  An image is described by a set of
+labels, and symmetrically, the classification result is a set of labels that
+predict which objects are on the image.  Receiver operating characteristics
+(ROC) can be used to evaluate standard two-class classifiers
+\cite{Fawcett2006}. In case of multi-label classification, it is possible to
+define similar metrics \cite{Tsoumakas2007}.  Unfortunately, even if object
+pose were not an issue, assuming objects to appear uniquely on an image might
+be unrealistic. For example, a shopping bag as in the application scenario of
+this work is best represented by a multiset, and not by a multi-label set.
+Given a finite set of labels, the number of multi-label sets is finite, the
+number of multisets is not. A problem with infinite number of decisions is more
+a problem of estimation than classification \cite{Melsa1978}. For example,
+trying to define a specificity metric on it is difficult, since the number of
+negatives in a multi-set is generally infinite.
 
 \subsection{Estimation}
 
 Estimation can be regarded as the continuous extension of classification
 \cite{Melsa1978}. Clearly, if it is known which objects are on a scene, object
-recognition can be seen as an estimation problem.
+recognition can be seen as an estimation problem. For each object on the scene,
+it is the task of the object recognition system to estimate the six degrees of
+freedom.
 
 \subsection{Recognition}
 
 The recognition problem, where objects have to be both correctly labeled and
 its location determined therefore neither fits a pure classification nor a pure
 estimation problem. In this work, measures of ``goodness'' see the object
-recognition system as a combination of classifier. Estimation ``goodness'' is
-conditioned to the classifier making the right choice.
+recognition system as a combination of classifier and estimator. Estimation
+``goodness'' is conditioned to the classifier making the right choice, and
+scenes that contain multiple instances of the same object are not considered.
 
 \subsection{Parameter Optimization}
 
