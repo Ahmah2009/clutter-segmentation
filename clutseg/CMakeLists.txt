@@ -60,8 +60,11 @@ target_link_libraries(keypoints_image ${PROJECT_NAME})
 rosbuild_add_executable(migrate_to_labelset apps/migrate_to_labelset.cpp)
 target_link_libraries(migrate_to_labelset ${PROJECT_NAME})
 
-rosbuild_add_executable(param_selection apps/param_selection.cpp)
-target_link_libraries(param_selection ${PROJECT_NAME})
+rosbuild_add_executable(experiment_runner apps/experiment_runner.cpp)
+target_link_libraries(experiment_runner ${PROJECT_NAME})
+
+rosbuild_add_executable(experiment_enqueue apps/experiment_enqueue.cpp)
+target_link_libraries(experiment_enqueue ${PROJECT_NAME})
 
 rosbuild_add_executable(posetester apps/posetester.cpp)
 target_link_libraries(posetester ${PROJECT_NAME})
