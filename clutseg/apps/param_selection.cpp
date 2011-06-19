@@ -516,6 +516,7 @@ int main(int argc, char **argv) {
     cout << "Opening database ..." << endl;
     db_open(db, db_path);
 
+    // FIXME: move all setups to extra .cpp file 
     cout << "Inserting experiment setups ..." << endl;
     insert_experiments(db);
 

@@ -1,6 +1,3 @@
-% \chapter{Theory}
-% \label{chapter:theory}
-
 This chapter provides the theoretical foundations for building the 3-d object
 recognition system, as will be presented in chapter
 \ref{chapter:implementation}. It provides a short review of required
@@ -27,11 +24,11 @@ A {\it rigid transformation} is defined as combination of an orthogonal
 transformation and translation in Euclidean space. A {\it proper rigid
 transformation} requires the orthogonal transformation to be a rotation. In
 three dimensions, a proper rigid transformation can be represented by a
-rotation matrix $R \in \mathbb{R}^3$ and a translation vector $\mathbf{t} \in
+rotation matrix $R \in \mathbb{R}^3$ and a translation vector $\vec{t} \in
 \mathbb{R}^3$.
 
 \begin{equation}
-    T: \mathbb{R}^3 \to \mathbb{R}^3, \mathbf{v} \mapsto R\mathbf{v} + \mathbf{t}
+    T: \mathbb{R}^3 \to \mathbb{R}^3, \vec{v} \mapsto R\vec{v} + \vec{t}
 \end{equation}
 
 A proper rigid transformation, abbreviated by PRT in the following, can be
@@ -41,7 +38,7 @@ respect to a fixed world frame. The latter interpretation is prevalent in this
 work. The inverse transformation is given by
  
 \begin{equation}
-    T^{-1}: \mathbb{R}^3 \to \mathbb{R}^3, \mathbf{v} \mapsto R^{-1}(\mathbf{v} - \mathbf{t})
+    T^{-1}: \mathbb{R}^3 \to \mathbb{R}^3, \vec{v} \mapsto R^{-1}(\vec{v} - \vec{t})
 \end{equation}
 
 \subsection{Object-View Transformations}
@@ -69,13 +66,13 @@ to know the origin of the object in view coordinates, you can apply the
 object-view transformation to the zero vector, and compute the distance $d$
 between camera and object origin as
 
-$$ d = \left|\left|\ _{xyz}T^{uvw}\left[ \mathbf{0} \right]\ \right|\right|_2$$
+$$ d = \left|\left|\ _{xyz}T^{uvw}\left[ \vec{0} \right]\ \right|\right|_2$$
 
 Another example, you can compute the distance $d_{12}$ between the two objects
 in a scene by
 
-$$ d_{12} = \left|\left|\ _{xyz}T_1^{uvw}\left[ \mathbf{0} \right] -
-                  _{xyz}T_2^{uvw}\left[ \mathbf{0} \right]\ \right|\right|_2$$
+$$ d_{12} = \left|\left|\ _{xyz}T_1^{uvw}\left[ \vec{0} \right] -
+                  _{xyz}T_2^{uvw}\left[ \vec{0} \right]\ \right|\right|_2$$
 
 \begin{figure}
     \begin{center}
@@ -393,19 +390,32 @@ and understanding the strengths and weaknesses of an object recognition system.
 
 \subsection{Classification}
 
-Classification is about making decisions. 
+Assume, there were no interest in the pose of an object. Assume that objects
+are unique on an image. Then object recognition can be seen as a {\it
+multi-label classification} problem, as described in \cite{Tsoumakas2007}.  An
+image is described by a set of labels, and symmetrically, the classification
+result is a set of labels that predict which objects are on the image.
+Receiver operating characteristics (ROC) can be used to evaluate standard
+two-class classifiers \cite{Fawcett2006}. In case of multi-label
+classification, it is possible to define similar metrics \cite{Tsoumakas2007}.
+Unfortunately, even if object pose were not an issue, assuming objects to
+appear uniquely on an image might be unrealistic. For example, a shopping bag
+as in the application scenario of this work is best represented by a multiset,
+and not by a multi-label set.
 
 \subsection{Estimation}
 
-Estimation is about estimating parameters or other continuous numeric vectors,
-given some observations. It can be regarded as the continuous extension of
-classification \cite{Melsa1978}. 
+Estimation can be regarded as the continuous extension of classification
+\cite{Melsa1978}. Clearly, if it is known which objects are on a scene, object
+recognition can be seen as an estimation problem.
 
 \subsection{Recognition}
 
 The recognition problem, where objects have to be both correctly labeled and
-its location determined, neither fits to a pure classification nor to a pure
-estimation problem.
+its location determined therefore neither fits a pure classification nor a pure
+estimation problem. In this work, measures of ``goodness'' see the object
+recognition system as a combination of classifier. Estimation ``goodness'' is
+conditioned to the classifier making the right choice.
 
 \subsection{Parameter Optimization}
 
@@ -414,6 +424,8 @@ features are parametrized, as well as the pose estimation and the final
 decision process. This leads to the question on how to find a parameter set
 such that the system will perform well in the application scenario.
 
+\subsubsection{Validation Set}
+
 Choosing parameters for parametrized algorithms is a very general problem in
 computer science. Solutions for these problems include adaptive methods that
 estimate the parameters directly from the data. For example, in adaptive
@@ -421,6 +433,13 @@ numerical quadrature, grid points are selected according to an error estimate
 gained directly from function samples. Optimization techniques find a parameter
 set that optimizes performance on a validation set, where ground truth is
 avaible. This optimization technique is well-known in machine learning.
+
+\subsubsection{Test Set}
+
+It is interesting to estimate the error which a classifier or estimator is
+expected to make when working on unseen instances. This error cannot be
+estimated on the validation set, Instead a separate test set is required
+\cite{Alpaydin2010}.
 % , and is related to the problem of assuming appropriate priors
 % in Bayesian inference.
 
