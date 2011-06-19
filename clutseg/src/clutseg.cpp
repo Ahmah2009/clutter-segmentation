@@ -103,7 +103,7 @@ namespace clutseg {
 
     void Clutsegmenter::reconfigure(const Paramset & paramset) {
         detect_params_ = paramset.toDetectTodParameters();
-        refine_params_ = paramset.toLocateTodParameters();
+        refine_params_ = paramset.toRefineTodParameters();
         string r = paramset.pms_clutseg.ranking;
         if (r == "InliersRanking") {
             ranking_ = new InliersRanking(); 

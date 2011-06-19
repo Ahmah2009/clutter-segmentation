@@ -137,7 +137,7 @@ namespace clutseg {
         return p;
     }
 
-    tod::TODParameters Paramset::toLocateTodParameters() const {
+    tod::TODParameters Paramset::toRefineTodParameters() const {
         TODParameters p;
         p.feParams = recog_pms_fe;
         p.matcherParams = refine_pms_match;

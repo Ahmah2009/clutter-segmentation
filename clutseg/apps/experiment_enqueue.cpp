@@ -116,16 +116,16 @@ void insert_experiments(sqlite3* & db) {
     int i = 0;
     for (int detectMinInliersCount = 5; detectMinInliersCount <= 25; detectMinInliersCount += 5) { // 5
         for (int detectMaxProjectionError = 6; detectMaxProjectionError <= 18; detectMaxProjectionError += 3) { // 5
-            for (int locateMinInliersCount = 5; locateMinInliersCount <= 30; locateMinInliersCount += 5) { // 6
-                for (int locateMaxProjectionError = 6; locateMaxProjectionError <= 18; locateMaxProjectionError += 3) { // 5
+            for (int refineMinInliersCount = 5; refineMinInliersCount <= 30; refineMinInliersCount += 5) { // 6
+                for (int refineMaxProjectionError = 6; refineMaxProjectionError <= 18; refineMaxProjectionError += 3) { // 5
                     // 5 * 6 * 5 * 5 = 30 * 25 = 750 
                     // needs approximately 12 hours to compute 
                     Experiment e = createExperiment();
                     e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % i);
                     e.paramset.detect_pms_guess.minInliersCount = detectMinInliersCount;
                     e.paramset.detect_pms_guess.maxProjectionError = detectMaxProjectionError;
-                    e.paramset.refine_pms_guess.minInliersCount = locateMinInliersCount;
-                    e.paramset.refine_pms_guess.maxProjectionError = locateMaxProjectionError;
+                    e.paramset.refine_pms_guess.minInliersCount = refineMinInliersCount;
+                    e.paramset.refine_pms_guess.maxProjectionError = refineMaxProjectionError;
                     insert_if_not_exist(db, e);
                     i++;
                 }
@@ -230,11 +230,11 @@ void insert_experiments(sqlite3* & db) {
     // as many features as in run-7, but even more RANSAC iterations than in run-7
     // and smaller max_projection_error in locating step than in run-7
     for (size_t i = 0; i < ids100.size(); i++) {
-	    for (size_t locateMaxProjectionError = 6; locateMaxProjectionError <= 15 ; locateMaxProjectionError += 3, j++) {
+	    for (size_t refineMaxProjectionError = 6; refineMaxProjectionError <= 15 ; refineMaxProjectionError += 3, j++) {
          	Experiment e = clone_setup(db, ids100[i]);
             e.paramset.train_pms_fe.detector_params["threshold"] = 15;
             e.paramset.recog_pms_fe.detector_params["threshold"] = 10;
-            e.paramset.refine_pms_guess.maxProjectionError = locateMaxProjectionError;
+            e.paramset.refine_pms_guess.maxProjectionError = refineMaxProjectionError;
             e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
             e.batch = "run-8";
             insert_if_not_exist(db, e);
@@ -255,10 +255,10 @@ void insert_experiments(sqlite3* & db) {
 	
     for (size_t i = 0; i < ids100all.size(); i++) {
         for (int detectKnn = 3; detectKnn <= 5; detectKnn++) {
-            for (int locateKnn = 3; locateKnn <= 5; locateKnn++, j++) {
+            for (int refineKnn = 3; refineKnn <= 5; refineKnn++, j++) {
                 Experiment e = clone_setup(db, ids100all[i]);
                 e.paramset.detect_pms_match.knn = detectKnn;
-                e.paramset.refine_pms_match.knn = locateKnn;
+                e.paramset.refine_pms_match.knn = refineKnn;
                 e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
                 e.batch = "run-9";
                 insert_if_not_exist(db, e);

@@ -115,8 +115,8 @@ namespace clutseg {
         TODParameters dp = report.experiment.paramset.toDetectTodParameters();
         store_config(erd / "detect.config.yaml", dp);
 
-        TODParameters lp = report.experiment.paramset.toLocateTodParameters();
-        store_config(erd / "locate.config.yaml", lp);
+        TODParameters lp = report.experiment.paramset.toRefineTodParameters();
+        store_config(erd / "refine.config.yaml", lp);
     }
 
 }

@@ -141,7 +141,7 @@ namespace clutseg {
         }
     }
 
-    void update_locate_errors(const SetResult & resultSet,
+    void update_refine_errors(const SetResult & resultSet,
                                 const GroundTruth  & groundSet,
                                 const set<string> & /* templateNames */,
                                 Response & rsp) {
@@ -246,7 +246,7 @@ namespace clutseg {
             update_refine_sipc(r, g, templateNames, rsp.refine_sipc);
         }
         
-        update_locate_errors(resultSet, groundSet, templateNames, rsp);
+        update_refine_errors(resultSet, groundSet, templateNames, rsp);
     }
 
 
