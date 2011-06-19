@@ -59,17 +59,17 @@ struct test_paramsel : public ::testing::Test {
         experiment.paramset.detect_pms_guess.ransacIterationsCount = 100; 
         experiment.paramset.detect_pms_guess.minInliersCount = 5; 
         experiment.paramset.detect_pms_guess.maxProjectionError = 12; 
-        experiment.paramset.locate_pms_match.type = "LSH-BINARY";
-        experiment.paramset.locate_pms_match.knn = 3; 
-        experiment.paramset.locate_pms_match.doRatioTest = false; 
-        experiment.paramset.locate_pms_match.ratioThreshold= 0;
-        experiment.paramset.locate_pms_guess.ransacIterationsCount = 100; 
-        experiment.paramset.locate_pms_guess.minInliersCount = 5; 
-        experiment.paramset.locate_pms_guess.maxProjectionError = 12; 
+        experiment.paramset.refine_pms_match.type = "LSH-BINARY";
+        experiment.paramset.refine_pms_match.knn = 3; 
+        experiment.paramset.refine_pms_match.doRatioTest = false; 
+        experiment.paramset.refine_pms_match.ratioThreshold= 0;
+        experiment.paramset.refine_pms_guess.ransacIterationsCount = 100; 
+        experiment.paramset.refine_pms_guess.minInliersCount = 5; 
+        experiment.paramset.refine_pms_guess.maxProjectionError = 12; 
         experiment.response.value = 0.87;
-        experiment.response.locate_sipc.rscore = 0.25;
-        experiment.response.locate_sipc.tscore = 0.75;
-        experiment.response.locate_sipc.cscore = 1.0;
+        experiment.response.refine_sipc.rscore = 0.25;
+        experiment.response.refine_sipc.tscore = 0.75;
+        experiment.response.refine_sipc.cscore = 1.0;
         experiment.response.detect_sipc.acc_score = 40;
         experiment.response.detect_sipc.objects = 63;
         experiment.response.avg_angle_err = 0.34;
@@ -93,11 +93,11 @@ struct test_paramsel : public ::testing::Test {
         experiment.response.detect_fp = 5;
         experiment.response.detect_fn = 10;
         experiment.response.detect_tn = 40;
-        experiment.response.avg_locate_guesses = 33;
-        experiment.response.avg_locate_matches = 802.1;
-        experiment.response.avg_locate_inliers = 29.8;
-        experiment.response.avg_locate_choice_matches = 802.1;
-        experiment.response.avg_locate_choice_inliers = 39.8;
+        experiment.response.avg_refine_guesses = 33;
+        experiment.response.avg_refine_matches = 802.1;
+        experiment.response.avg_refine_inliers = 29.8;
+        experiment.response.avg_refine_choice_matches = 802.1;
+        experiment.response.avg_refine_choice_inliers = 39.8;
         experiment.response.train_runtime = 320.5;
         experiment.response.test_runtime = 214.8;
         experiment.record_commit();
@@ -118,9 +118,9 @@ TEST_F(test_paramsel, init) {
     EXPECT_EQ("", exp.human_note);
     EXPECT_EQ("", exp.machine_note);
     EXPECT_FLOAT_EQ(0, exp.response.value);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.rscore);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.tscore);
-    EXPECT_FLOAT_EQ(0, exp.response.locate_sipc.cscore);
+    EXPECT_FLOAT_EQ(0, exp.response.refine_sipc.rscore);
+    EXPECT_FLOAT_EQ(0, exp.response.refine_sipc.tscore);
+    EXPECT_FLOAT_EQ(0, exp.response.refine_sipc.cscore);
     EXPECT_FLOAT_EQ(0, exp.response.avg_angle_err);
     EXPECT_FLOAT_EQ(0, exp.response.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(0, exp.response.avg_trans_err);
@@ -138,19 +138,19 @@ TEST_F(test_paramsel, init) {
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_inliers);
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_choice_matches);
     EXPECT_FLOAT_EQ(0, exp.response.avg_detect_choice_inliers);
-    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_guesses);
-    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_matches);
-    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_inliers);
-    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_choice_matches);
-    EXPECT_FLOAT_EQ(0, exp.response.avg_locate_choice_inliers);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_refine_guesses);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_refine_matches);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_refine_inliers);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_refine_choice_matches);
+    EXPECT_FLOAT_EQ(0, exp.response.avg_refine_choice_inliers);
     EXPECT_FLOAT_EQ(0, exp.response.train_runtime);
     EXPECT_FLOAT_EQ(0, exp.response.test_runtime);
 
     Response r;
     EXPECT_FLOAT_EQ(0, r.value);
-    EXPECT_FLOAT_EQ(0, r.locate_sipc.rscore);
-    EXPECT_FLOAT_EQ(0, r.locate_sipc.tscore);
-    EXPECT_FLOAT_EQ(0, r.locate_sipc.cscore);
+    EXPECT_FLOAT_EQ(0, r.refine_sipc.rscore);
+    EXPECT_FLOAT_EQ(0, r.refine_sipc.tscore);
+    EXPECT_FLOAT_EQ(0, r.refine_sipc.cscore);
     EXPECT_FLOAT_EQ(0, r.avg_angle_err);
     EXPECT_FLOAT_EQ(0, r.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(0, r.avg_trans_err);
@@ -168,11 +168,11 @@ TEST_F(test_paramsel, init) {
     EXPECT_FLOAT_EQ(0, r.avg_detect_inliers);
     EXPECT_FLOAT_EQ(0, r.avg_detect_choice_matches);
     EXPECT_FLOAT_EQ(0, r.avg_detect_choice_inliers);
-    EXPECT_FLOAT_EQ(0, r.avg_locate_guesses);
-    EXPECT_FLOAT_EQ(0, r.avg_locate_matches);
-    EXPECT_FLOAT_EQ(0, r.avg_locate_inliers);
-    EXPECT_FLOAT_EQ(0, r.avg_locate_choice_matches);
-    EXPECT_FLOAT_EQ(0, r.avg_locate_choice_inliers);
+    EXPECT_FLOAT_EQ(0, r.avg_refine_guesses);
+    EXPECT_FLOAT_EQ(0, r.avg_refine_matches);
+    EXPECT_FLOAT_EQ(0, r.avg_refine_inliers);
+    EXPECT_FLOAT_EQ(0, r.avg_refine_choice_matches);
+    EXPECT_FLOAT_EQ(0, r.avg_refine_choice_inliers);
     EXPECT_FLOAT_EQ(0, r.train_runtime);
     EXPECT_FLOAT_EQ(0, r.test_runtime);
 }
@@ -216,10 +216,10 @@ TEST_F(test_paramsel, response_write_read) {
     EXPECT_FLOAT_EQ(orig.detect_sipc.acc_score, rest.detect_sipc.acc_score);
     EXPECT_EQ(orig.detect_sipc.objects, rest.detect_sipc.objects);
     EXPECT_FLOAT_EQ(orig.detect_sipc.score(), rest.detect_sipc.score());
-    EXPECT_FLOAT_EQ(orig.locate_sipc.rscore, rest.locate_sipc.rscore);
-    EXPECT_FLOAT_EQ(orig.locate_sipc.tscore, rest.locate_sipc.tscore);
-    EXPECT_FLOAT_EQ(orig.locate_sipc.cscore, rest.locate_sipc.cscore);
-    EXPECT_FLOAT_EQ(orig.locate_sipc.score(), rest.locate_sipc.score());
+    EXPECT_FLOAT_EQ(orig.refine_sipc.rscore, rest.refine_sipc.rscore);
+    EXPECT_FLOAT_EQ(orig.refine_sipc.tscore, rest.refine_sipc.tscore);
+    EXPECT_FLOAT_EQ(orig.refine_sipc.cscore, rest.refine_sipc.cscore);
+    EXPECT_FLOAT_EQ(orig.refine_sipc.score(), rest.refine_sipc.score());
     EXPECT_FLOAT_EQ(orig.avg_angle_err, rest.avg_angle_err);
     EXPECT_FLOAT_EQ(orig.avg_succ_angle_err, rest.avg_succ_angle_err);
     EXPECT_FLOAT_EQ(orig.avg_trans_err, rest.avg_trans_err);
@@ -241,11 +241,11 @@ TEST_F(test_paramsel, response_write_read) {
     EXPECT_FLOAT_EQ(orig.detect_fp, rest.detect_fp);
     EXPECT_FLOAT_EQ(orig.detect_fn, rest.detect_fn);
     EXPECT_FLOAT_EQ(orig.detect_tn, rest.detect_tn);
-    EXPECT_FLOAT_EQ(orig.avg_locate_guesses, rest.avg_locate_guesses);
-    EXPECT_FLOAT_EQ(orig.avg_locate_matches, rest.avg_locate_matches);
-    EXPECT_FLOAT_EQ(orig.avg_locate_inliers, rest.avg_locate_inliers);
-    EXPECT_FLOAT_EQ(orig.avg_locate_choice_matches, rest.avg_locate_choice_matches);
-    EXPECT_FLOAT_EQ(orig.avg_locate_choice_inliers, rest.avg_locate_choice_inliers);
+    EXPECT_FLOAT_EQ(orig.avg_refine_guesses, rest.avg_refine_guesses);
+    EXPECT_FLOAT_EQ(orig.avg_refine_matches, rest.avg_refine_matches);
+    EXPECT_FLOAT_EQ(orig.avg_refine_inliers, rest.avg_refine_inliers);
+    EXPECT_FLOAT_EQ(orig.avg_refine_choice_matches, rest.avg_refine_choice_matches);
+    EXPECT_FLOAT_EQ(orig.avg_refine_choice_inliers, rest.avg_refine_choice_inliers);
     EXPECT_FLOAT_EQ(orig.train_runtime, rest.train_runtime);
     EXPECT_FLOAT_EQ(orig.test_runtime, rest.test_runtime);
 }
@@ -399,8 +399,8 @@ TEST_F(test_paramsel, experiment_detach) {
     EXPECT_EQ(-1, experiment.paramset.recog_pms_fe_id);
     EXPECT_EQ(-1, experiment.paramset.detect_pms_match_id);
     EXPECT_EQ(-1, experiment.paramset.detect_pms_guess_id);
-    EXPECT_EQ(-1, experiment.paramset.locate_pms_match_id);
-    EXPECT_EQ(-1, experiment.paramset.locate_pms_guess_id);
+    EXPECT_EQ(-1, experiment.paramset.refine_pms_match_id);
+    EXPECT_EQ(-1, experiment.paramset.refine_pms_guess_id);
 }
 
 TEST_F(test_paramsel, experiment_vcs_commit) {

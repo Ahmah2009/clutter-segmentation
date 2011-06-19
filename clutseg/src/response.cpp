@@ -89,14 +89,14 @@ namespace clutseg {
     void update_locate_sipc(const Result & result,
                             const LabelSet & ground,
                             const set<string> & /* templateNames */,
-                            locate_sipc_t & locate_sipc) {
+                            locate_sipc_t & refine_sipc) {
         if (ground.emptyScene()) {
             if (result.guess_made) {
                 // False positive
                 // Do nothing 
             } else {
                 // True negative
-                locate_sipc.cscore += 2;
+                refine_sipc.cscore += 2;
             }
         } else {
             if (result.guess_made) {
@@ -106,9 +106,9 @@ namespace clutseg {
                     double a;
                     double t;
                     compute_errors(lc, ground, a, t);
-                    locate_sipc.rscore += compute_rscore(a);  
-                    locate_sipc.tscore += compute_tscore(t);
-                    locate_sipc.cscore++;
+                    refine_sipc.rscore += compute_rscore(a);  
+                    refine_sipc.tscore += compute_tscore(t);
+                    refine_sipc.cscore++;
                 } else {
                     // False positive
                     // Do nothing
@@ -119,7 +119,7 @@ namespace clutseg {
             }
         }
 
-        locate_sipc.frames++;
+        refine_sipc.frames++;
     } 
 
     void update_detect_roc(const Result & result, const LabelSet & ground, const set<string> & templateNames, Response & response) {
@@ -232,7 +232,7 @@ namespace clutseg {
         rsp.value = 0.0;
 
         rsp.detect_sipc = detect_sipc_t();
-        rsp.locate_sipc = locate_sipc_t();
+        rsp.refine_sipc = locate_sipc_t();
 
         for (GroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
@@ -243,7 +243,7 @@ namespace clutseg {
             Result r = resultSet.find(img_name)->second;
             update_detect_roc(r, g, templateNames, rsp);
             update_detect_sipc(r, g, templateNames, rsp.detect_sipc);
-            update_locate_sipc(r, g, templateNames, rsp.locate_sipc);
+            update_locate_sipc(r, g, templateNames, rsp.refine_sipc);
         }
         
         update_locate_errors(resultSet, groundSet, templateNames, rsp);

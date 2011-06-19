@@ -3,10 +3,10 @@ insert into response (
     value,
     detect_sipc_acc_score,
     detect_sipc_objects,
-    locate_sipc_rscore,
-    locate_sipc_tscore,
-    locate_sipc_cscore,
-    locate_sipc_frames,
+    refine_sipc_rscore,
+    refine_sipc_tscore,
+    refine_sipc_cscore,
+    refine_sipc_frames,
     avg_angle_err,
     avg_succ_angle_err,
     avg_trans_err,
@@ -28,11 +28,11 @@ insert into response (
     detect_fp,
     detect_fn,
     detect_tn,
-    avg_locate_guesses,
-    avg_locate_matches,
-    avg_locate_inliers,
-    avg_locate_choice_matches,
-    avg_locate_choice_inliers,
+    avg_refine_guesses,
+    avg_refine_matches,
+    avg_refine_inliers,
+    avg_refine_choice_matches,
+    avg_refine_choice_inliers,
     train_runtime,
     test_runtime
     ) values
@@ -44,6 +44,6 @@ insert into pms_guess (ransac_iterations_count, min_inliers_count, max_projectio
 insert into pms_guess (ransac_iterations_count, min_inliers_count, max_projection_error) values (300, 15, 10);
 insert into pms_fe (detector_type, extractor_type, descriptor_type, threshold, scale_factor, min_features, max_features, n_features, octaves) values ("FAST", "multi-scale", "rBRIEF", 40, 1.2, null, null, 5000, 3);
 insert into pms_fe (detector_type, extractor_type, descriptor_type, threshold, scale_factor, min_features, max_features, n_features, octaves) values ("FAST", "multi-scale", "rBRIEF", 40, 1.2, null, null, 5000, 3);
-insert into paramset (train_pms_fe_id, recog_pms_fe_id, detect_pms_match_id, detect_pms_guess_id, locate_pms_match_id, locate_pms_guess_id, recog_pms_clutseg_id) values (1, 2, 1, 1, 2, 2, 1);
+insert into paramset (train_pms_fe_id, recog_pms_fe_id, detect_pms_match_id, detect_pms_guess_id, refine_pms_match_id, refine_pms_guess_id, recog_pms_clutseg_id) values (1, 2, 1, 1, 2, 2, 1);
 insert into experiment (paramset_id, response_id, name, train_set, test_set, time, vcs_commit) values (1, 1, "some-experiment", "train", "test", "2010-01-02 23:22:19", "ccb521d7307ef27a65ab82f297be80390b5599bb");
 

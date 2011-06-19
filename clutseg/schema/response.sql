@@ -6,10 +6,10 @@ create table response (
     detect_sipc_acc_score float not null,
     detect_sipc_objects integer not null,
     -- modified SIPC score for single object
-    locate_sipc_rscore float not null,
-    locate_sipc_tscore float not null,
-    locate_sipc_cscore float not null,
-    locate_sipc_frames integer not null,
+    refine_sipc_rscore float not null,
+    refine_sipc_tscore float not null,
+    refine_sipc_cscore float not null,
+    refine_sipc_frames integer not null,
     -- the following statistics depend only on the one single choice made
     avg_angle_err float not null,
     avg_succ_angle_err float not null,
@@ -33,11 +33,11 @@ create table response (
     detect_fn integer not null,
     detect_tn integer not null,
     -- the following statistics are only valid if locating step is performed
-    avg_locate_guesses float not null,
-    avg_locate_matches float not null,
-    avg_locate_inliers float not null,
-    avg_locate_choice_matches float not null,
-    avg_locate_choice_inliers float not null,
+    avg_refine_guesses float not null,
+    avg_refine_matches float not null,
+    avg_refine_inliers float not null,
+    avg_refine_choice_matches float not null,
+    avg_refine_choice_inliers float not null,
     -- timing stats --
     train_runtime float not null,
     test_runtime float not null

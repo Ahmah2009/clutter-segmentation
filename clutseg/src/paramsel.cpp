@@ -140,8 +140,8 @@ namespace clutseg {
     tod::TODParameters Paramset::toLocateTodParameters() const {
         TODParameters p;
         p.feParams = recog_pms_fe;
-        p.matcherParams = locate_pms_match;
-        p.guessParams = locate_pms_guess;
+        p.matcherParams = refine_pms_match;
+        p.guessParams = refine_pms_guess;
         return p;
     } 
 
@@ -150,8 +150,8 @@ namespace clutseg {
         serialize_pms_fe(db, recog_pms_fe, recog_pms_fe_id);
         serialize_pms_match(db, detect_pms_match, detect_pms_match_id);
         serialize_pms_guess(db, detect_pms_guess, detect_pms_guess_id);
-        serialize_pms_match(db, locate_pms_match, locate_pms_match_id);
-        serialize_pms_guess(db, locate_pms_guess, locate_pms_guess_id);
+        serialize_pms_match(db, refine_pms_match, refine_pms_match_id);
+        serialize_pms_guess(db, refine_pms_guess, refine_pms_guess_id);
         pms_clutseg.serialize(db);
 
         MemberMap m;
@@ -159,8 +159,8 @@ namespace clutseg {
         setMemberField(m, "recog_pms_fe_id", recog_pms_fe_id);
         setMemberField(m, "detect_pms_match_id", detect_pms_match_id);
         setMemberField(m, "detect_pms_guess_id", detect_pms_guess_id);
-        setMemberField(m, "locate_pms_match_id", locate_pms_match_id);
-        setMemberField(m, "locate_pms_guess_id", locate_pms_guess_id);
+        setMemberField(m, "refine_pms_match_id", refine_pms_match_id);
+        setMemberField(m, "refine_pms_guess_id", refine_pms_guess_id);
         setMemberField(m, "recog_pms_clutseg_id", pms_clutseg.id);
         insertOrUpdate(db, "paramset", m, id);
     }
@@ -170,7 +170,7 @@ namespace clutseg {
         db_prepare(db, read, boost::format(
             "select train_pms_fe_id, recog_pms_fe_id,  "
             "detect_pms_match_id, detect_pms_guess_id, "
-            "locate_pms_match_id, locate_pms_guess_id, "
+            "refine_pms_match_id, refine_pms_guess_id, "
             "recog_pms_clutseg_id from paramset where id=%d;") % id);
         db_step(read, SQLITE_ROW);
         int c = 0;
@@ -178,8 +178,8 @@ namespace clutseg {
         recog_pms_fe_id = sqlite3_column_int64(read, c++);
         detect_pms_match_id = sqlite3_column_int64(read, c++);
         detect_pms_guess_id = sqlite3_column_int64(read, c++);
-        locate_pms_match_id = sqlite3_column_int64(read, c++);
-        locate_pms_guess_id = sqlite3_column_int64(read, c++);
+        refine_pms_match_id = sqlite3_column_int64(read, c++);
+        refine_pms_guess_id = sqlite3_column_int64(read, c++);
         pms_clutseg.id = sqlite3_column_int64(read, c++);
         sqlite3_finalize(read);
         
@@ -187,8 +187,8 @@ namespace clutseg {
         deserialize_pms_fe(db, recog_pms_fe, recog_pms_fe_id);
         deserialize_pms_match(db, detect_pms_match, detect_pms_match_id);
         deserialize_pms_guess(db, detect_pms_guess, detect_pms_guess_id);
-        deserialize_pms_match(db, locate_pms_match, locate_pms_match_id);
-        deserialize_pms_guess(db, locate_pms_guess, locate_pms_guess_id);
+        deserialize_pms_match(db, refine_pms_match, refine_pms_match_id);
+        deserialize_pms_guess(db, refine_pms_guess, refine_pms_guess_id);
         pms_clutseg.deserialize(db);
     }
 
@@ -198,8 +198,8 @@ namespace clutseg {
         recog_pms_fe_id = -1; 
         detect_pms_match_id = -1; 
         detect_pms_guess_id = -1; 
-        locate_pms_match_id = -1; 
-        locate_pms_guess_id = -1; 
+        refine_pms_match_id = -1; 
+        refine_pms_guess_id = -1; 
         pms_clutseg.detach();
     }
 
@@ -208,10 +208,10 @@ namespace clutseg {
         setMemberField(m, "value", value);
         setMemberField(m, "detect_sipc_acc_score", detect_sipc.acc_score);
         setMemberField(m, "detect_sipc_objects", detect_sipc.objects);
-        setMemberField(m, "locate_sipc_rscore", locate_sipc.rscore);
-        setMemberField(m, "locate_sipc_tscore", locate_sipc.tscore);
-        setMemberField(m, "locate_sipc_cscore", locate_sipc.cscore);
-        setMemberField(m, "locate_sipc_frames", locate_sipc.frames);
+        setMemberField(m, "refine_sipc_rscore", refine_sipc.rscore);
+        setMemberField(m, "refine_sipc_tscore", refine_sipc.tscore);
+        setMemberField(m, "refine_sipc_cscore", refine_sipc.cscore);
+        setMemberField(m, "refine_sipc_frames", refine_sipc.frames);
         setMemberField(m, "avg_angle_err", avg_angle_err);
         setMemberField(m, "avg_succ_angle_err", avg_succ_angle_err);
         setMemberField(m, "avg_trans_err", avg_trans_err);
@@ -233,11 +233,11 @@ namespace clutseg {
         setMemberField(m, "detect_fp", detect_fp);
         setMemberField(m, "detect_fn", detect_fn);
         setMemberField(m, "detect_tn", detect_tn);
-        setMemberField(m, "avg_locate_guesses", avg_locate_guesses);
-        setMemberField(m, "avg_locate_matches", avg_locate_matches);
-        setMemberField(m, "avg_locate_inliers", avg_locate_inliers);
-        setMemberField(m, "avg_locate_choice_matches", avg_locate_choice_matches);
-        setMemberField(m, "avg_locate_choice_inliers", avg_locate_choice_inliers);
+        setMemberField(m, "avg_refine_guesses", avg_refine_guesses);
+        setMemberField(m, "avg_refine_matches", avg_refine_matches);
+        setMemberField(m, "avg_refine_inliers", avg_refine_inliers);
+        setMemberField(m, "avg_refine_choice_matches", avg_refine_choice_matches);
+        setMemberField(m, "avg_refine_choice_inliers", avg_refine_choice_inliers);
         setMemberField(m, "train_runtime", train_runtime);
         setMemberField(m, "test_runtime", test_runtime);
         insertOrUpdate(db, "response", m, id);
@@ -249,10 +249,10 @@ namespace clutseg {
             "value, "
             "detect_sipc_acc_score, "
             "detect_sipc_objects, "
-            "locate_sipc_rscore, "
-            "locate_sipc_tscore, "
-            "locate_sipc_cscore, "
-            "locate_sipc_frames, "
+            "refine_sipc_rscore, "
+            "refine_sipc_tscore, "
+            "refine_sipc_cscore, "
+            "refine_sipc_frames, "
             "avg_angle_err, "
             "avg_succ_angle_err, "
             "avg_trans_err, "
@@ -274,11 +274,11 @@ namespace clutseg {
             "detect_fp, "
             "detect_fn, "
             "detect_tn, "
-            "avg_locate_guesses, "
-            "avg_locate_matches, "
-            "avg_locate_inliers, "
-            "avg_locate_choice_matches, "
-            "avg_locate_choice_inliers, "
+            "avg_refine_guesses, "
+            "avg_refine_matches, "
+            "avg_refine_inliers, "
+            "avg_refine_choice_matches, "
+            "avg_refine_choice_inliers, "
             "train_runtime, "
             "test_runtime "
             "from response where id=%d;") % id);
@@ -287,10 +287,10 @@ namespace clutseg {
         value = sqlite3_column_double(read, c++);
         detect_sipc.acc_score = sqlite3_column_double(read, c++);
         detect_sipc.objects = sqlite3_column_int(read, c++);
-        locate_sipc.rscore = sqlite3_column_double(read, c++);
-        locate_sipc.tscore = sqlite3_column_double(read, c++);
-        locate_sipc.cscore = sqlite3_column_double(read, c++);
-        locate_sipc.frames = sqlite3_column_int(read, c++);
+        refine_sipc.rscore = sqlite3_column_double(read, c++);
+        refine_sipc.tscore = sqlite3_column_double(read, c++);
+        refine_sipc.cscore = sqlite3_column_double(read, c++);
+        refine_sipc.frames = sqlite3_column_int(read, c++);
         avg_angle_err = sqlite3_column_double(read, c++);
         avg_succ_angle_err = sqlite3_column_double(read, c++);
         avg_trans_err = sqlite3_column_double(read, c++);
@@ -312,11 +312,11 @@ namespace clutseg {
         detect_fp = sqlite3_column_int(read, c++);
         detect_fn = sqlite3_column_int(read, c++);
         detect_tn = sqlite3_column_int(read, c++);
-        avg_locate_guesses = sqlite3_column_double(read, c++);
-        avg_locate_matches = sqlite3_column_double(read, c++);
-        avg_locate_inliers = sqlite3_column_double(read, c++);
-        avg_locate_choice_matches = sqlite3_column_double(read, c++);
-        avg_locate_choice_inliers = sqlite3_column_double(read, c++);
+        avg_refine_guesses = sqlite3_column_double(read, c++);
+        avg_refine_matches = sqlite3_column_double(read, c++);
+        avg_refine_inliers = sqlite3_column_double(read, c++);
+        avg_refine_choice_matches = sqlite3_column_double(read, c++);
+        avg_refine_choice_inliers = sqlite3_column_double(read, c++);
         train_runtime = sqlite3_column_double(read, c++);
         test_runtime = sqlite3_column_double(read, c++);
         sqlite3_finalize(read);

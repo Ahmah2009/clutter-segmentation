@@ -5,7 +5,7 @@ drop view if exists view_experiment_error;
 drop view if exists view_experiment_detect_roc;
 drop view if exists view_experiment_scores;
 drop view if exists view_experiment_detect_sipc;
-drop view if exists view_experiment_locate_sipc;
+drop view if exists view_experiment_refine_sipc;
 drop view if exists view_experiment_all;
 
 create view view_experiment_response as
@@ -55,7 +55,7 @@ create view view_experiment_scores as
         succ_rate,
         value,
         (1.0 * detect_sipc_acc_score / detect_sipc_objects) as detect_sipc,
-        (0.5 * locate_sipc_cscore + 0.25 * locate_sipc_rscore + 0.25 * locate_sipc_tscore) / locate_sipc_frames as locate_sipc
+        (0.5 * refine_sipc_cscore + 0.25 * refine_sipc_rscore + 0.25 * refine_sipc_tscore) / refine_sipc_frames as refine_sipc
     from view_experiment_response;
   
 create view view_experiment_detect_sipc as
@@ -67,14 +67,14 @@ create view view_experiment_detect_sipc as
         detect_sipc_objects
     from view_experiment_response;
   
-create view view_experiment_locate_sipc as
+create view view_experiment_refine_sipc as
     select experiment_id,
         experiment_name,
         succ_rate,
-        (0.5 * locate_sipc_cscore + 0.25 * locate_sipc_rscore + 0.25 * locate_sipc_tscore) / locate_sipc_frames as locate_sipc,
-        locate_sipc_cscore,
-        locate_sipc_rscore,
-        locate_sipc_tscore
+        (0.5 * refine_sipc_cscore + 0.25 * refine_sipc_rscore + 0.25 * refine_sipc_tscore) / refine_sipc_frames as refine_sipc,
+        refine_sipc_cscore,
+        refine_sipc_rscore,
+        refine_sipc_tscore
     from view_experiment_response;
  
 create view view_experiment_all as
@@ -101,13 +101,13 @@ create view view_experiment_all as
         dg.ransac_iterations_count as detect_ransac_iterations_count,
         dg.min_inliers_count as detect_min_inliers_count,
         dg.max_projection_error as detect_max_projection_error,
-        lm.matcher_type as locate_matcher_type, 
-        lm.knn as locate_knn, 
-        lm.do_ratio_test as locate_do_ratio_test,
-        lm.ratio_threshold as locate_do_ratio_threshold,
-        lg.ransac_iterations_count as locate_ransac_iterations_count,
-        lg.min_inliers_count as locate_min_inliers_count,
-        lg.max_projection_error as locate_max_projection_error,
+        lm.matcher_type as refine_matcher_type, 
+        lm.knn as refine_knn, 
+        lm.do_ratio_test as refine_do_ratio_test,
+        lm.ratio_threshold as refine_do_ratio_threshold,
+        lg.ransac_iterations_count as refine_ransac_iterations_count,
+        lg.min_inliers_count as refine_min_inliers_count,
+        lg.max_projection_error as refine_max_projection_error,
         c.*,
         r.*
     from experiment e
@@ -116,8 +116,8 @@ create view view_experiment_all as
     join pms_fe rf on p.recog_pms_fe_id = rf.id
     join pms_match dm on p.detect_pms_match_id = dm.id
     join pms_guess dg on p.detect_pms_guess_id = dg.id
-    join pms_match lm on p.locate_pms_match_id = lm.id
-    join pms_guess lg on p.locate_pms_guess_id = lg.id
+    join pms_match lm on p.refine_pms_match_id = lm.id
+    join pms_guess lg on p.refine_pms_guess_id = lg.id
     join pms_clutseg c on p.recog_pms_clutseg_id = c.id
     join response r on e.response_id = r.id;
         

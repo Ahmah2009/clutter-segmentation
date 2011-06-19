@@ -60,15 +60,15 @@ namespace clutseg {
 
         Paramset() : train_pms_fe_id(-1), recog_pms_fe_id(-1),
                     detect_pms_match_id(-1), detect_pms_guess_id(-1),
-                    locate_pms_match_id(-1), locate_pms_guess_id(-1),
+                    refine_pms_match_id(-1), refine_pms_guess_id(-1),
                     max_trans_error(0.03), max_angle_error(M_PI / 9) {}
     
         tod::FeatureExtractionParams train_pms_fe;
         tod::FeatureExtractionParams recog_pms_fe;
         tod::MatcherParameters detect_pms_match;
         tod::GuessGeneratorParameters detect_pms_guess;
-        tod::MatcherParameters locate_pms_match;
-        tod::GuessGeneratorParameters locate_pms_guess;
+        tod::MatcherParameters refine_pms_match;
+        tod::GuessGeneratorParameters refine_pms_guess;
 
         // The row identifiers are always stored explicitly in each
         // serializable structure. Since the tod::* structures are not
@@ -77,8 +77,8 @@ namespace clutseg {
         int64_t recog_pms_fe_id;
         int64_t detect_pms_match_id;
         int64_t detect_pms_guess_id;
-        int64_t locate_pms_match_id;
-        int64_t locate_pms_guess_id;
+        int64_t refine_pms_match_id;
+        int64_t refine_pms_guess_id;
  
         ClutsegParams pms_clutseg;
 
@@ -111,18 +111,18 @@ namespace clutseg {
             avg_succ_trans_sq_err(0), mislabel_rate(0), none_rate(0), avg_keypoints(0),
             avg_detect_guesses(0), avg_detect_matches(0), avg_detect_inliers(0),
             avg_detect_choice_matches(0), avg_detect_choice_inliers(0), detect_tp(0),
-            detect_fp(0), detect_fn(0), detect_tn(0), avg_locate_guesses(0),
-            avg_locate_matches(0), avg_locate_inliers(0), avg_locate_choice_matches(0),
-            avg_locate_choice_inliers(0), train_runtime(0), test_runtime(0)
-            { locate_sipc = locate_sipc_t(); detect_sipc = detect_sipc_t(); }
+            detect_fp(0), detect_fn(0), detect_tn(0), avg_refine_guesses(0),
+            avg_refine_matches(0), avg_refine_inliers(0), avg_refine_choice_matches(0),
+            avg_refine_choice_inliers(0), train_runtime(0), test_runtime(0)
+            { refine_sipc = locate_sipc_t(); detect_sipc = detect_sipc_t(); }
 
         /** Average of the values returned by the response function */
         float value;
         /** Locate SIPC score, see sipc.h */
-        locate_sipc_t locate_sipc;
+        locate_sipc_t refine_sipc;
         /** Detect SIPC score, see sipc.h */
         detect_sipc_t detect_sipc;
-        /** Average of query images where locating (up to error margins)
+        /** Average of query images where refinement (up to error margins)
          * succeeded. Depends on max_angle_error and max_trans_error. */
         float succ_rate;
         /** Average orientational error (all queries). */
@@ -173,16 +173,16 @@ namespace clutseg {
         /** ROC true negatives for detection stage */
         int detect_tn;
 
-        /** Average number of guesses in locating stage */
-        float avg_locate_guesses;
-        /** Average number of matches in locating stage */
-        float avg_locate_matches;
-        /** Average number of inliers of all guesses in locating stage */
-        float avg_locate_inliers;
-        /** Average number of matches for the best guess object in locating stage */
-        float avg_locate_choice_matches;
-        /** Average number of inliers for the best guess object in locating stage */
-        float avg_locate_choice_inliers;
+        /** Average number of guesses in refinement stage */
+        float avg_refine_guesses;
+        /** Average number of matches in refinement stage */
+        float avg_refine_matches;
+        /** Average number of inliers of all guesses in refinement stage */
+        float avg_refine_inliers;
+        /** Average number of matches for the best guess object in refinement stage */
+        float avg_refine_choice_matches;
+        /** Average number of inliers for the best guess object in refinement stage */
+        float avg_refine_choice_inliers;
 
         /** Time in seconds that was necessary to construct train features.
          * This number might either be measured directly, or read from the cache
