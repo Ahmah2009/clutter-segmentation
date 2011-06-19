@@ -58,7 +58,7 @@ class test_clutseg : public ::testing::Test {
             loaded = true;
 
             if (!fast()) {
-                sgm.setDoLocate(true);
+                sgm.setDoRefine(true);
                 sgm.resetStats();               
                 sgm.getLocateParams().matcherParams.doRatioTest = false;
             }
@@ -111,7 +111,7 @@ class test_clutseg : public ::testing::Test {
             EXPECT_LT(0, sgm.getStats().acc_detect_inliers);
             EXPECT_LT(0, sgm.getStats().acc_detect_choice_matches);
             EXPECT_LT(0, sgm.getStats().acc_detect_choice_inliers);
-            if (sgm.isDoLocate()) {
+            if (sgm.isDoRefine()) {
                 EXPECT_LT(0, sgm.getStats().acc_locate_matches);
                 EXPECT_LT(0, sgm.getStats().acc_locate_guesses);
                 EXPECT_LT(0, sgm.getStats().acc_locate_inliers);
@@ -220,7 +220,7 @@ TEST_F(test_clutseg, recog_in_clutter) {
     locate_params.guessParams.minInliersCount = 50;
     //sgm.setAcceptThreshold(20);
 
-    ASSERT_TRUE(sgm.isDoLocate());
+    ASSERT_TRUE(sgm.isDoRefine());
     recognize("recog_in_clutter");
 }
 
@@ -232,8 +232,8 @@ TEST_F(test_clutseg, recog_in_clutter_detect_only) {
     detect_params.guessParams.maxProjectionError = 10.0;
     detect_params.guessParams.ransacIterationsCount = 1000;
 
-    sgm.setDoLocate(false);
-    ASSERT_FALSE(sgm.isDoLocate());
+    sgm.setDoRefine(false);
+    ASSERT_FALSE(sgm.isDoRefine());
     recognize("recog_in_clutter_detect_only");
 }
 
@@ -258,7 +258,7 @@ TEST_F(test_clutseg, recog_foremost_in_clutter) {
         prox_ranking
     );
 
-    ASSERT_TRUE(s.isDoLocate());
+    ASSERT_TRUE(s.isDoRefine());
     recognize("recog_foremost_in_clutter");
 }
 

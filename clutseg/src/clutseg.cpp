@@ -27,11 +27,11 @@ namespace clutseg {
                                     const string & locate_config,
                                     Ptr<GuessRanking> ranking,
                                     float accept_threshold,
-                                    bool do_locate) :
+                                    bool do_refine) :
                                 baseDirectory_(baseDirectory),
                                 ranking_(ranking),
                                 accept_threshold_(accept_threshold),
-                                do_locate_(do_locate),
+                                do_refine_(do_refine),
                                 initialized_(true) {
         loadParams(detect_config, detect_params_);
         loadParams(locate_config, locate_params_);
@@ -43,13 +43,13 @@ namespace clutseg {
                                     const TODParameters & locate_params,
                                     Ptr<GuessRanking> ranking,
                                     float accept_threshold,
-                                    bool do_locate) :
+                                    bool do_refine) :
                                 baseDirectory_(baseDirectory),
                                 detect_params_(detect_params),
                                 locate_params_(locate_params),
                                 ranking_(ranking),
                                 accept_threshold_(accept_threshold),
-                                do_locate_(do_locate),
+                                do_refine_(do_refine),
                                 initialized_(true) {
         loadBase();
     }
@@ -125,12 +125,12 @@ namespace clutseg {
         return stats_;
     }
 
-    void Clutsegmenter::setDoLocate(bool do_locate) {
-        do_locate_ = do_locate;
+    void Clutsegmenter::setDoRefine(bool do_refine) {
+        do_refine_ = do_refine;
     }
 
-    bool Clutsegmenter::isDoLocate() const {
-        return do_locate_;
+    bool Clutsegmenter::isDoRefine() const {
+        return do_refine_;
     }
 
     void Clutsegmenter::recognize(const ClutsegQuery & query, Result & result) {
@@ -162,8 +162,8 @@ namespace clutseg {
                 result.locate_choice = result.detect_choices[i]; 
 
                 vector<pair<int, int> > ls; 
-                if (do_locate_) {
-                    locate(f2d, query.cloud, result.locate_choice, ls);
+                if (do_refine_) {
+                    refine(f2d, query.cloud, result.locate_choice, ls);
                 }
 
                 cout << "[CLUTSEG] ranking: " << (*ranking_)(result.locate_choice) << endl;
@@ -175,7 +175,7 @@ namespace clutseg {
                     { /* begin statistics */ 
                         stats_.acc_detect_choice_matches += ds[result.detect_choices[i].getObject()->id].second;
                         stats_.acc_detect_choice_inliers += result.detect_choices[i].inliers.size();
-                        if (do_locate_) {
+                        if (do_refine_) {
                             stats_.acc_locate_choice_matches += ls[result.locate_choice.getObject()->id].second;
                             stats_.acc_locate_choice_inliers += result.locate_choice.inliers.size();
                         } 
@@ -225,7 +225,7 @@ namespace clutseg {
         return detect_choices.empty();
     }
 
-    bool Clutsegmenter::locate(const Features2d & queryF2d, const PointCloudT & queryCloud, Guess & locate_choice, vector<pair<int, int> > & matches) {
+    bool Clutsegmenter::refine(const Features2d & queryF2d, const PointCloudT & queryCloud, Guess & locate_choice, vector<pair<int, int> > & matches) {
         if (locate_params_.matcherParams.doRatioTest) {
             cerr << "[WARNING] RatioTest enabled for locating object" << endl;
         }

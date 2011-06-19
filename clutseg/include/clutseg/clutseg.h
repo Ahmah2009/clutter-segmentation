@@ -78,14 +78,14 @@ namespace clutseg {
                             const std::string & locate_config,
                             const cv::Ptr<GuessRanking> ranking_ = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
-                            bool do_locate = true);
+                            bool do_refine = true);
 
             Clutsegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
                             const tod::TODParameters & locate_params,
                             const cv::Ptr<GuessRanking> ranking = new InliersRanking(),
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
-                            bool do_locate = true);
+                            bool do_refine = true);
 
             /** Retrieves parameters used for detection stage. Writes to the
              * parameters are transparent to the segmenter. */
@@ -103,9 +103,9 @@ namespace clutseg {
 
             void setRanking(const cv::Ptr<GuessRanking> & ranking);
 
-            void setDoLocate(bool do_locate);
+            void setDoRefine(bool do_refine);
 
-            bool isDoLocate() const;
+            bool isDoRefine() const;
 
             /** Gets a set of template objects this segmenter knows, such as
               * assam_tea, haltbare_milch, and so on. */
@@ -131,7 +131,7 @@ namespace clutseg {
                         std::vector<tod::Guess> & detectChoices,
                         std::vector<std::pair<int, int> > & matches);
 
-            bool locate(const tod::Features2d & queryF2d,
+            bool refine(const tod::Features2d & queryF2d,
                         const PointCloudT & queryCloud,
                         tod::Guess & locateChoice,
                         std::vector<std::pair<int, int> > & matches);
@@ -149,7 +149,7 @@ namespace clutseg {
             std::vector<cv::Ptr<tod::TexturedObject> > objects_;
             cv::Ptr<GuessRanking> ranking_;
             float accept_threshold_;
-            bool do_locate_;
+            bool do_refine_;
             bool initialized_;
 
     };
