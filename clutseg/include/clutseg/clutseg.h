@@ -36,11 +36,11 @@ namespace clutseg {
             acc_detect_inliers(0),
             acc_detect_choice_matches(0),
             acc_detect_choice_inliers(0),
-            acc_locate_matches(0),
-            acc_locate_inliers(0),
-            acc_locate_guesses(0),
-            acc_locate_choice_matches(0),
-            acc_locate_choice_inliers(0),
+            acc_refine_matches(0),
+            acc_refine_inliers(0),
+            acc_refine_guesses(0),
+            acc_refine_choice_matches(0),
+            acc_refine_choice_inliers(0),
             choices(0) {}
 
         long queries;
@@ -50,11 +50,11 @@ namespace clutseg {
         long acc_detect_inliers;
         long acc_detect_choice_matches;
         long acc_detect_choice_inliers;
-        long acc_locate_matches;
-        long acc_locate_inliers;
-        long acc_locate_guesses;
-        long acc_locate_choice_matches;
-        long acc_locate_choice_inliers;
+        long acc_refine_matches;
+        long acc_refine_inliers;
+        long acc_refine_guesses;
+        long acc_refine_choice_matches;
+        long acc_refine_choice_inliers;
         long choices;
 
         /** Computes average statistics, and stores them into a response

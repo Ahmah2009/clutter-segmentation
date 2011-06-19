@@ -40,12 +40,12 @@ void readInput(int argc, char **argv, Mat & queryImage, PointCloudT & queryCloud
 void processOutput(int argc, char **argv, Result & result) {
     // Process result
     if (result.guess_made) {
-        cout << "Recognized " << result.locate_choice.getObject()->name << endl;
+        cout << "Recognized " << result.refine_choice.getObject()->name << endl;
         if (argc >= 4) {
-            io::savePCDFileASCII(argv[3], result.locate_choice.inlierCloud);
+            io::savePCDFileASCII(argv[3], result.refine_choice.inlierCloud);
         }
         if (argc >= 5) {
-           writePose(argv[4], result.locate_choice.aligned_pose()); 
+           writePose(argv[4], result.refine_choice.aligned_pose()); 
         }
     } else {
         cerr << "Could not recognize object." << endl;

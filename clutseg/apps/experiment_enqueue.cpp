@@ -43,13 +43,13 @@ Experiment createExperiment() {
     e.paramset.detect_pms_guess.ransacIterationsCount = 1000; 
     e.paramset.detect_pms_guess.minInliersCount = 10; 
     e.paramset.detect_pms_guess.maxProjectionError = 15; 
-    e.paramset.locate_pms_match.type = "LSH-BINARY";
-    e.paramset.locate_pms_match.knn = 3; 
-    e.paramset.locate_pms_match.doRatioTest = false; 
-    e.paramset.locate_pms_match.ratioThreshold= 0;
-    e.paramset.locate_pms_guess.ransacIterationsCount = 1000; 
-    e.paramset.locate_pms_guess.minInliersCount = 15; 
-    e.paramset.locate_pms_guess.maxProjectionError = 12; 
+    e.paramset.refine_pms_match.type = "LSH-BINARY";
+    e.paramset.refine_pms_match.knn = 3; 
+    e.paramset.refine_pms_match.doRatioTest = false; 
+    e.paramset.refine_pms_match.ratioThreshold= 0;
+    e.paramset.refine_pms_guess.ransacIterationsCount = 1000; 
+    e.paramset.refine_pms_guess.minInliersCount = 15; 
+    e.paramset.refine_pms_guess.maxProjectionError = 12; 
     return e;
 }
 
@@ -124,8 +124,8 @@ void insert_experiments(sqlite3* & db) {
                     e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % i);
                     e.paramset.detect_pms_guess.minInliersCount = detectMinInliersCount;
                     e.paramset.detect_pms_guess.maxProjectionError = detectMaxProjectionError;
-                    e.paramset.locate_pms_guess.minInliersCount = locateMinInliersCount;
-                    e.paramset.locate_pms_guess.maxProjectionError = locateMaxProjectionError;
+                    e.paramset.refine_pms_guess.minInliersCount = locateMinInliersCount;
+                    e.paramset.refine_pms_guess.maxProjectionError = locateMaxProjectionError;
                     insert_if_not_exist(db, e);
                     i++;
                 }
@@ -150,7 +150,7 @@ void insert_experiments(sqlite3* & db) {
     for (size_t i = 0; i < ids.size(); i++, j++) {
         Experiment e = clone_setup(db, ids[i]);
         e.paramset.detect_pms_guess.ransacIterationsCount = 200;
-        e.paramset.locate_pms_guess.ransacIterationsCount = 200;
+        e.paramset.refine_pms_guess.ransacIterationsCount = 200;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-2";
 	insert_if_not_exist(db, e);
@@ -196,7 +196,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.detector_params["threshold"] = 15;
         e.paramset.recog_pms_fe.detector_params["threshold"] = 10;
         e.paramset.detect_pms_guess.ransacIterationsCount = 200;
-        e.paramset.locate_pms_guess.ransacIterationsCount = 200;
+        e.paramset.refine_pms_guess.ransacIterationsCount = 200;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-6";
 	insert_if_not_exist(db, e);
@@ -219,7 +219,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.detector_params["threshold"] = 15;
         e.paramset.recog_pms_fe.detector_params["threshold"] = 10;
         e.paramset.detect_pms_guess.ransacIterationsCount = 750;
-        e.paramset.locate_pms_guess.ransacIterationsCount = 750;
+        e.paramset.refine_pms_guess.ransacIterationsCount = 750;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-7";
         insert_if_not_exist(db, e);
@@ -234,7 +234,7 @@ void insert_experiments(sqlite3* & db) {
          	Experiment e = clone_setup(db, ids100[i]);
             e.paramset.train_pms_fe.detector_params["threshold"] = 15;
             e.paramset.recog_pms_fe.detector_params["threshold"] = 10;
-            e.paramset.locate_pms_guess.maxProjectionError = locateMaxProjectionError;
+            e.paramset.refine_pms_guess.maxProjectionError = locateMaxProjectionError;
             e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
             e.batch = "run-8";
             insert_if_not_exist(db, e);
@@ -258,7 +258,7 @@ void insert_experiments(sqlite3* & db) {
             for (int locateKnn = 3; locateKnn <= 5; locateKnn++, j++) {
                 Experiment e = clone_setup(db, ids100all[i]);
                 e.paramset.detect_pms_match.knn = detectKnn;
-                e.paramset.locate_pms_match.knn = locateKnn;
+                e.paramset.refine_pms_match.knn = locateKnn;
                 e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
                 e.batch = "run-9";
                 insert_if_not_exist(db, e);
@@ -320,7 +320,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.extractor_type = "sequential";
         e.paramset.recog_pms_fe.extractor_type = "sequential";
         e.paramset.detect_pms_match.type = "FLANN";
-        e.paramset.locate_pms_match.type = "FLANN";
+        e.paramset.refine_pms_match.type = "FLANN";
         e.skip = true;
         e.human_note = "fails in FLANN";
         insert_if_not_exist(db, e);
@@ -337,7 +337,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.extractor_type = "sequential";
         e.paramset.recog_pms_fe.extractor_type = "sequential";
         e.paramset.detect_pms_match.type = "FLANN";
-        e.paramset.locate_pms_match.type = "FLANN";
+        e.paramset.refine_pms_match.type = "FLANN";
         insert_if_not_exist(db, e);
     }
 
@@ -361,7 +361,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.extractor_type = "sequential";
         e.paramset.recog_pms_fe.extractor_type = "sequential";
         e.paramset.detect_pms_match.type = "FLANN";
-        e.paramset.locate_pms_match.type = "FLANN";
+        e.paramset.refine_pms_match.type = "FLANN";
         insert_if_not_exist(db, e);
     }
 
@@ -376,7 +376,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.train_pms_fe.extractor_type = "sequential";
         e.paramset.recog_pms_fe.extractor_type = "sequential";
         e.paramset.detect_pms_match.type = "FLANN";
-        e.paramset.locate_pms_match.type = "FLANN";
+        e.paramset.refine_pms_match.type = "FLANN";
         insert_if_not_exist(db, e);
     }
 

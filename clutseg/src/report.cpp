@@ -16,25 +16,25 @@ namespace clutseg {
 
     float TestReport::angle_error() const {
         assert(result.guess_made);
-        vector<PoseRT> poses = ground.posesOf(result.locate_choice.getObject()->name);
+        vector<PoseRT> poses = ground.posesOf(result.refine_choice.getObject()->name);
         assert(poses.size() == 1);
         PoseRT truep = poses[0];
-        Pose estp = result.locate_choice.aligned_pose();
+        Pose estp = result.refine_choice.aligned_pose();
         return angle_between(estp, truep); 
  
     }
 
     float TestReport::trans_error() const {
         assert(result.guess_made);
-        vector<PoseRT> poses = ground.posesOf(result.locate_choice.getObject()->name);
+        vector<PoseRT> poses = ground.posesOf(result.refine_choice.getObject()->name);
         assert(poses.size() == 1);
         PoseRT truep = poses[0];
-        Pose estp = result.locate_choice.aligned_pose();
+        Pose estp = result.refine_choice.aligned_pose();
         return dist_between(estp, truep); 
     }
 
     bool TestReport::success() const {
-        return result.guess_made && ground.onScene(result.locate_choice.getObject()->name) && (angle_error() <= CLUTSEG_SIPC_MAX_ANGLE && trans_error() <= CLUTSEG_SIPC_MAX_TRANS);
+        return result.guess_made && ground.onScene(result.refine_choice.getObject()->name) && (angle_error() <= CLUTSEG_SIPC_MAX_ANGLE && trans_error() <= CLUTSEG_SIPC_MAX_TRANS);
     }
 
 }

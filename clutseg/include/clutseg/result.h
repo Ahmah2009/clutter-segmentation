@@ -20,29 +20,29 @@ namespace clutseg {
     struct Result {
 
         Result() :  guess_made(false),
-                    locate_choice(),
+                    refine_choice(),
                     detect_choices(0),
                     features() {}
         /** This constructor is designed for testing purposes */
-        Result(const tod::Guess & locate_choice) :
+        Result(const tod::Guess & refine_choice) :
                     guess_made(true),
-                    locate_choice(locate_choice),
+                    refine_choice(refine_choice),
                     detect_choices(0),
                     features() {}
         Result(bool guess_made,
-                const tod::Guess & locate_choice,
+                const tod::Guess & refine_choice,
                 const std::vector<tod::Guess> & detect_choices,
                 const tod::Features2d & features) :
                     guess_made(guess_made),
-                    locate_choice(locate_choice),
+                    refine_choice(refine_choice),
                     detect_choices(detect_choices),
                     features(features) {}
     
-        /** Determines whether locate_choice is valid, or if no choice was made
-         * at all. Accessing locate_choice where guess_made=false results in
+        /** Determines whether refine_choice is valid, or if no choice was made
+         * at all. Accessing refine_choice where guess_made=false results in
          * unspecified behaviour. */
         bool guess_made;
-        tod::Guess locate_choice;
+        tod::Guess refine_choice;
         std::vector<tod::Guess> detect_choices;
         /** The extracted features from the query image are secondary results
          * and can be used for analysis. They are kind of "leaked" by the recognizer

@@ -96,11 +96,11 @@ class test_clutseg : public ::testing::Test {
             EXPECT_EQ(0, sgm.getStats().acc_detect_inliers);
             EXPECT_EQ(0, sgm.getStats().acc_detect_choice_matches);
             EXPECT_EQ(0, sgm.getStats().acc_detect_choice_inliers);
-            EXPECT_EQ(0, sgm.getStats().acc_locate_matches);
-            EXPECT_EQ(0, sgm.getStats().acc_locate_guesses);
-            EXPECT_EQ(0, sgm.getStats().acc_locate_inliers);
-            EXPECT_EQ(0, sgm.getStats().acc_locate_choice_matches);
-            EXPECT_EQ(0, sgm.getStats().acc_locate_choice_inliers);
+            EXPECT_EQ(0, sgm.getStats().acc_refine_matches);
+            EXPECT_EQ(0, sgm.getStats().acc_refine_guesses);
+            EXPECT_EQ(0, sgm.getStats().acc_refine_inliers);
+            EXPECT_EQ(0, sgm.getStats().acc_refine_choice_matches);
+            EXPECT_EQ(0, sgm.getStats().acc_refine_choice_inliers);
         }
 
         void check_postconditions() {
@@ -112,19 +112,19 @@ class test_clutseg : public ::testing::Test {
             EXPECT_LT(0, sgm.getStats().acc_detect_choice_matches);
             EXPECT_LT(0, sgm.getStats().acc_detect_choice_inliers);
             if (sgm.isDoRefine()) {
-                EXPECT_LT(0, sgm.getStats().acc_locate_matches);
-                EXPECT_LT(0, sgm.getStats().acc_locate_guesses);
-                EXPECT_LT(0, sgm.getStats().acc_locate_inliers);
-                EXPECT_LT(0, sgm.getStats().acc_locate_choice_matches);
-                EXPECT_EQ(res.locate_choice.inliers.size(), sgm.getStats().acc_locate_choice_inliers);
+                EXPECT_LT(0, sgm.getStats().acc_refine_matches);
+                EXPECT_LT(0, sgm.getStats().acc_refine_guesses);
+                EXPECT_LT(0, sgm.getStats().acc_refine_inliers);
+                EXPECT_LT(0, sgm.getStats().acc_refine_choice_matches);
+                EXPECT_EQ(res.refine_choice.inliers.size(), sgm.getStats().acc_refine_choice_inliers);
             } else {
-                EXPECT_EQ(0, sgm.getStats().acc_locate_matches);
-                EXPECT_EQ(0, sgm.getStats().acc_locate_guesses);
-                EXPECT_EQ(0, sgm.getStats().acc_locate_inliers);
-                EXPECT_EQ(0, sgm.getStats().acc_locate_choice_matches);
-                EXPECT_EQ(0, sgm.getStats().acc_locate_choice_inliers);
+                EXPECT_EQ(0, sgm.getStats().acc_refine_matches);
+                EXPECT_EQ(0, sgm.getStats().acc_refine_guesses);
+                EXPECT_EQ(0, sgm.getStats().acc_refine_inliers);
+                EXPECT_EQ(0, sgm.getStats().acc_refine_choice_matches);
+                EXPECT_EQ(0, sgm.getStats().acc_refine_choice_inliers);
             }
-            EXPECT_TRUE(clutter_truth.onScene(res.locate_choice.getObject()->name));
+            EXPECT_TRUE(clutter_truth.onScene(res.refine_choice.getObject()->name));
         }
 
         void showGuessAndGroundTruth(const string & test_name, const Guess & choice) {
@@ -141,7 +141,7 @@ class test_clutseg : public ::testing::Test {
             sgm.recognize(query, res);
             ASSERT_TRUE(res.guess_made);
             check_postconditions();
-            showGuessAndGroundTruth(test_name, res.locate_choice);
+            showGuessAndGroundTruth(test_name, res.refine_choice);
         }
 
 };
@@ -189,10 +189,10 @@ TEST_F(test_clutseg, recog_haltbare_milch) {
     ClutsegQuery query(haltbare_milch_train_img, haltbare_milch_train_cloud);
     sgm.recognize(query, res);
     EXPECT_TRUE(res.guess_made);
-    EXPECT_EQ("haltbare_milch", res.locate_choice.getObject()->name);
-    cout << "detected: " << res.locate_choice.getObject()->name << endl;
-    cout << "inliers:  " << res.locate_choice.inliers.size() << endl;
-    EXPECT_GT(res.locate_choice.inliers.size(), 10);
+    EXPECT_EQ("haltbare_milch", res.refine_choice.getObject()->name);
+    cout << "detected: " << res.refine_choice.getObject()->name << endl;
+    cout << "inliers:  " << res.refine_choice.inliers.size() << endl;
+    EXPECT_GT(res.refine_choice.inliers.size(), 10);
 }
 
 /** Check whether loading a single training base works without failing */

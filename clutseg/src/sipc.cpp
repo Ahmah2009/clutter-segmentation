@@ -37,7 +37,7 @@ namespace clutseg {
         }
     }
 
-    float locate_sipc_t::score() {
+    float refine_sipc_t::score() {
         return (0.5 * cscore + 0.25 * rscore + 0.25 * tscore) / frames;
     }
 
@@ -45,7 +45,7 @@ namespace clutseg {
         return acc_score / objects;
     }
 
-    void locate_sipc_t::print() {
+    void refine_sipc_t::print() {
         cout << "SIPC Results" << endl
             << "---------------------------------------------------------------" << endl
             << "    Number of frames = " << frames << endl

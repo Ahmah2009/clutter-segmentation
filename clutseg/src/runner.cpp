@@ -107,7 +107,7 @@ namespace clutseg {
             clock_t b = clock();
             sgm.recognize(query, res);
             rt += float(clock() - b) / CLOCKS_PER_SEC;
-            cout << "[RUN] Recognized " << (res.guess_made ? res.locate_choice.getObject()->name : "NONE") << endl;
+            cout << "[RUN] Recognized " << (res.guess_made ? res.refine_choice.getObject()->name : "NONE") << endl;
             resultSet[img_name] = res;
  
             TestReport report(e, query, res, test_it->second, img_name, test_dir, camera);

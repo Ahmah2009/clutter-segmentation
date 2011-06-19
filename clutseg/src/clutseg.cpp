@@ -159,25 +159,25 @@ namespace clutseg {
             // guess. If the guess resulting of locating the object got a score
             // larger than the acceptance threshold, this is our best guess.
             for (size_t i = 0; i < result.detect_choices.size(); i++) {
-                result.locate_choice = result.detect_choices[i]; 
+                result.refine_choice = result.detect_choices[i]; 
 
                 vector<pair<int, int> > ls; 
                 if (do_refine_) {
-                    refine(f2d, query.cloud, result.locate_choice, ls);
+                    refine(f2d, query.cloud, result.refine_choice, ls);
                 }
 
-                cout << "[CLUTSEG] ranking: " << (*ranking_)(result.locate_choice) << endl;
+                cout << "[CLUTSEG] ranking: " << (*ranking_)(result.refine_choice) << endl;
                 cout << "[CLUTSEG] accept_threshold: " << accept_threshold_ << endl;
 
-                if ((*ranking_)(result.locate_choice) >= accept_threshold_) {
-                    cout << "[CLUTSEG] Inliers before:  " << result.detect_choices[i].inliers.size() << ", and after: " << result.locate_choice.inliers.size() << endl;
+                if ((*ranking_)(result.refine_choice) >= accept_threshold_) {
+                    cout << "[CLUTSEG] Inliers before:  " << result.detect_choices[i].inliers.size() << ", and after: " << result.refine_choice.inliers.size() << endl;
 
                     { /* begin statistics */ 
                         stats_.acc_detect_choice_matches += ds[result.detect_choices[i].getObject()->id].second;
                         stats_.acc_detect_choice_inliers += result.detect_choices[i].inliers.size();
                         if (do_refine_) {
-                            stats_.acc_locate_choice_matches += ls[result.locate_choice.getObject()->id].second;
-                            stats_.acc_locate_choice_inliers += result.locate_choice.inliers.size();
+                            stats_.acc_refine_choice_matches += ls[result.refine_choice.getObject()->id].second;
+                            stats_.acc_refine_choice_inliers += result.refine_choice.inliers.size();
                         } 
                         stats_.choices++;
                     } /* end statistics */
@@ -260,10 +260,10 @@ namespace clutseg {
         refineMatcher->getLabelSizes(matches);
 
         cout << "[CLUTSEG] refine_matches: " << sum_matches(refineMatcher) << endl;
-        stats_.acc_locate_matches += sum_matches(refineMatcher);
-        stats_.acc_locate_guesses += guesses.size();
+        stats_.acc_refine_matches += sum_matches(refineMatcher);
+        stats_.acc_refine_guesses += guesses.size();
         BOOST_FOREACH(const Guess & g, guesses) {
-            stats_.acc_locate_inliers += g.inliers.size();
+            stats_.acc_refine_inliers += g.inliers.size();
         }
 
         if (guesses.empty()) {
@@ -286,11 +286,11 @@ namespace clutseg {
         r.avg_detect_inliers = float(acc_detect_inliers) / acc_detect_guesses;
         r.avg_detect_choice_matches = float(acc_detect_choice_matches) / choices;
         r.avg_detect_choice_inliers = float(acc_detect_choice_inliers) / choices;
-        r.avg_refine_guesses = float(acc_locate_guesses) / queries;
-        r.avg_refine_matches = float(acc_locate_matches) / queries;
-        r.avg_refine_inliers = float(acc_locate_inliers) / acc_locate_guesses;
-        r.avg_refine_choice_matches = float(acc_locate_choice_matches) / choices;
-        r.avg_refine_choice_inliers = float(acc_locate_choice_inliers) / choices;
+        r.avg_refine_guesses = float(acc_refine_guesses) / queries;
+        r.avg_refine_matches = float(acc_refine_matches) / queries;
+        r.avg_refine_inliers = float(acc_refine_inliers) / acc_refine_guesses;
+        r.avg_refine_choice_matches = float(acc_refine_choice_matches) / choices;
+        r.avg_refine_choice_inliers = float(acc_refine_choice_inliers) / choices;
     }
 
 }

@@ -54,8 +54,8 @@ namespace clutseg {
         // Draw locate choice image
         Mat lci = report.query.img.clone();
         drawGroundTruth(lci, report.ground, report.camera);
-        if (report.result.guess_made && report.ground.onScene(report.result.locate_choice.getObject()->name)) { 
-            drawGuess(lci, report.result.locate_choice, report.camera, PoseRT());
+        if (report.result.guess_made && report.ground.onScene(report.result.refine_choice.getObject()->name)) { 
+            drawGuess(lci, report.result.refine_choice, report.camera, PoseRT());
             vector<string> err_text;
             err_text.push_back(str(boost::format("angle_error: %4.2f deg") % (report.angle_error() * 360 / (2 * M_PI))));
             err_text.push_back(str(boost::format("trans_error: %4.2f cm") % (report.trans_error() * 100)));
@@ -69,7 +69,7 @@ namespace clutseg {
             drawText(lci, fail_text, Point(10, 10), CV_FONT_HERSHEY_SIMPLEX, 1.6, 3, Scalar(0, 0, 255));
         }
 
-        bfs::path lci_path = erd / (img_basename + ".locate_choice.png");
+        bfs::path lci_path = erd / (img_basename + ".refine_choice.png");
         bfs::create_directories(lci_path.parent_path());
         imwrite(lci_path.string(), lci);
 
@@ -92,13 +92,13 @@ namespace clutseg {
 
         // Save locate choice
         // TODO: extract method
-        bfs::path lc_path = erd / (img_basename + ".locate_choice.yaml.gz");
+        bfs::path lc_path = erd / (img_basename + ".refine_choice.yaml.gz");
         bfs::create_directories(lc_path.parent_path());
         LabelSet lls;
         if (report.result.guess_made) {
             lls.labels.push_back(Label(
-                report.result.locate_choice.getObject()->name,
-                poseToPoseRT(report.result.locate_choice.aligned_pose())));
+                report.result.refine_choice.getObject()->name,
+                poseToPoseRT(report.result.refine_choice.aligned_pose())));
         }
         writeLabelSet(lc_path, lls);
 

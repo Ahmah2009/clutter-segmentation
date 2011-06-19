@@ -86,10 +86,10 @@ namespace clutseg {
     }
 
     /** Computes score for one single test scene */
-    void update_locate_sipc(const Result & result,
+    void update_refine_sipc(const Result & result,
                             const LabelSet & ground,
                             const set<string> & /* templateNames */,
-                            locate_sipc_t & refine_sipc) {
+                            refine_sipc_t & refine_sipc) {
         if (ground.emptyScene()) {
             if (result.guess_made) {
                 // False positive
@@ -100,7 +100,7 @@ namespace clutseg {
             }
         } else {
             if (result.guess_made) {
-                Guess lc = result.locate_choice;
+                Guess lc = result.refine_choice;
                 if (ground.onScene(lc.getObject()->name)) {
                     // True positive
                     double a;
@@ -177,11 +177,11 @@ namespace clutseg {
                 }
             } else {
                 if (r.guess_made) {
-                    if (g.onScene(r.locate_choice.getObject()->name)) {
+                    if (g.onScene(r.refine_choice.getObject()->name)) {
                         // True positive
                         double a;
                         double t;
-                        compute_errors(r.locate_choice, g, a, t);
+                        compute_errors(r.refine_choice, g, a, t);
                         acc_angle_err += abs(a);
                         acc_angle_sq_err += a * a;
                         acc_trans_err += abs(t);
@@ -232,7 +232,7 @@ namespace clutseg {
         rsp.value = 0.0;
 
         rsp.detect_sipc = detect_sipc_t();
-        rsp.refine_sipc = locate_sipc_t();
+        rsp.refine_sipc = refine_sipc_t();
 
         for (GroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
@@ -243,7 +243,7 @@ namespace clutseg {
             Result r = resultSet.find(img_name)->second;
             update_detect_roc(r, g, templateNames, rsp);
             update_detect_sipc(r, g, templateNames, rsp.detect_sipc);
-            update_locate_sipc(r, g, templateNames, rsp.refine_sipc);
+            update_refine_sipc(r, g, templateNames, rsp.refine_sipc);
         }
         
         update_locate_errors(resultSet, groundSet, templateNames, rsp);
@@ -265,9 +265,9 @@ namespace clutseg {
                     r_acc += 1.0;
                 }
             } else {
-                Pose estp = result.locate_choice.aligned_pose();
+                Pose estp = result.refine_choice.aligned_pose();
                 double r = 1.0;
-                vector<PoseRT> poses = g.posesOf(result.locate_choice.getObject()->name);
+                vector<PoseRT> poses = g.posesOf(result.refine_choice.getObject()->name);
                 // This is support for multiple objects corresponding to the
                 // very same template object.  This is not supported throughout
                 // the code.
