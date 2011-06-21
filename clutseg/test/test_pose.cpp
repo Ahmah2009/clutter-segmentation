@@ -237,8 +237,8 @@ TEST_F(test_pose, convert_legacy_file_pose_to_double_empty) {
 }
 
 TEST_F(test_pose, convert_legacy_file_pose_to_double) {
-    bfs::path p("build/image_00040.locate_choice.yaml.gz");
-    convertLegacyPoseFileToDouble("./data/image_00040.locate_choice.yaml.gz", p);
+    bfs::path p("build/image_00040.refine_choice.yaml.gz");
+    convertLegacyPoseFileToDouble("./data/image_00040.refine_choice.yaml.gz", p);
     PoseRT pose;
     readPose(p, pose);
     EXPECT_DOUBLE_EQ(2.2760460376739502, pose.rvec.at<double>(0, 0));

@@ -63,7 +63,7 @@ void cmd_insert(sqlite3* & db) {
     defaults.test_set = "ias_kinect_test_train_20";
     defaults.train_pms_fe_file = bfs::path("train.features.config.yaml");
     defaults.detect_pms_file = bfs::path("detect.config.yaml");
-    defaults.refine_pms_file = bfs::path("locate.config.yaml");
+    defaults.refine_pms_file = bfs::path("refine.config.yaml");
     defaults.ranking = "InliersRanking";
     defaults.accept_threshold = 5;
     

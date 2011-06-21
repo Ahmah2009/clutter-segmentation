@@ -51,7 +51,7 @@ namespace clutseg {
 
         string img_basename = cut_file_extension(report.img_name);
 
-        // Draw locate choice image
+        // Draw refine choice image
         Mat lci = report.query.img.clone();
         drawGroundTruth(lci, report.ground, report.camera);
         if (report.result.guess_made && report.ground.onScene(report.result.refine_choice.getObject()->name)) { 
@@ -90,7 +90,7 @@ namespace clutseg {
         report.result.features.write(feat_fs);
         feat_fs.release();
 
-        // Save locate choice
+        // Save refine choice
         // TODO: extract method
         bfs::path lc_path = erd / (img_basename + ".refine_choice.yaml.gz");
         bfs::create_directories(lc_path.parent_path());

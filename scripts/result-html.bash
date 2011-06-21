@@ -32,7 +32,7 @@ artifacts
     where the later is encoded by coloring the points in the scatter plot.
     Examples for correlation graphs that might be useful are scatter plots of
     - succ_rate and value: how much do these measures for success differ?
-    - detect_sipc and locate_sipc: are they positively correlated?
+    - detect_sipc and refine_sipc: are they positively correlated?
     - min_inliers_count, max_projection_error and succ_rate
 
 USAGE
@@ -129,7 +129,7 @@ function report_tables() {
     echo "<h2>Target</h2>" >> $out
     result-best-succ-rate
     echo "<img src='best_succ_rate.png' />" >> $out
-    echo "<img src='best_succ_rate.locate_choice.collage.jpg' />" >> $out
+    echo "<img src='best_succ_rate.refine_choice.collage.jpg' />" >> $out
     cat >> $out <<EOF
     <p>The ultimate target in this experiment to achieve a very high success rate.
     The bar indicates the best success rate achieved so far in any experiment that
@@ -141,12 +141,12 @@ EOF
     table "Scores" "select * from view_experiment_scores order by succ_rate desc"
     cat >> $out <<EOF
     <p>If many objects have been successfully located, yet with comparatively large
-    errors, then <tt>locate_sipc</tt> is smaller than <tt>succ_rate</tt>. In case,
+    errors, then <tt>refine_sipc</tt> is smaller than <tt>succ_rate</tt>. In case,
     many objects have been correctly classified but not correctly located, then
-    <tt>succ_rate</tt> will be smaller than <tt>locate_sipc</tt>.</p>
+    <tt>succ_rate</tt> will be smaller than <tt>refine_sipc</tt>.</p>
 EOF
 
-    table "Locate SIPC Scores" "select * from view_experiment_locate_sipc order by locate_sipc desc"
+    table "Locate SIPC Scores" "select * from view_experiment_refine_sipc order by refine_sipc desc"
     cat >> $out <<EOF
     <p>See <a href='http://code.in.tum.de/indefero/index.php//p/clutter-segmentation/source/tree/master/clutseg/include/clutseg/sipc.h'>
     sipc.h</a> for a description.</p>
@@ -203,7 +203,7 @@ function report_plots() {
 
     plot "SIPC Scores" \
         detect_sipc \
-        locate_sipc \
+        refine_sipc \
         "view_experiment_scores" \
         0,1 0,1 >> $plots
 
@@ -230,36 +230,36 @@ function report_plots() {
     plot "Locator min_inliers_count vs. max_projection_error" \
         min_inliers_count \
         max_projection_error \
-        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess g on p.locate_pms_guess_id = g.id" >> $plots
+        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess g on p.refine_pms_guess_id = g.id" >> $plots
 
     plot "Detector min_inliers_count vs. Locator min_inliers_count" \
         detect.min_inliers_count \
-        locate.min_inliers_count \
-        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess detect on p.detect_pms_guess_id = detect.id join pms_guess locate on p.locate_pms_guess_id = locate.id" >> $plots
+        refine.min_inliers_count \
+        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess detect on p.detect_pms_guess_id = detect.id join pms_guess refine on p.refine_pms_guess_id = refine.id" >> $plots
 
     plot "Detector max_projection_error vs. Locator max_projection_error" \
         detect.max_projection_error \
-        locate.max_projection_error \
-        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess detect on p.detect_pms_guess_id = detect.id join pms_guess locate on p.locate_pms_guess_id = locate.id" >> $plots
+        refine.max_projection_error \
+        "experiment as e join response r on e.response_id = r.id join paramset p on e.paramset_id = p.id join pms_guess detect on p.detect_pms_guess_id = detect.id join pms_guess refine on p.refine_pms_guess_id = refine.id" >> $plots
 
     plot "Success rate vs. Locator avg. matches" \
         succ_rate \
-        avg_locate_matches \
+        avg_refine_matches \
 	"view_experiment_response" >> $plots
 
     plot "Success rate vs. Locator choice avg. inliers" \
         succ_rate \
-        avg_locate_choice_inliers \
+        avg_refine_choice_inliers \
 	"view_experiment_response" >> $plots
 
     plot "Locator avg. matches vs. Locator choice avg. inliers" \
-        avg_locate_matches \
-        avg_locate_choice_inliers \
+        avg_refine_matches \
+        avg_refine_choice_inliers \
 	"view_experiment_response" >> $plots
 
     plot "Locator avg. matches vs. Locator avg. inliers" \
-        avg_locate_matches \
-        avg_locate_inliers \
+        avg_refine_matches \
+        avg_refine_inliers \
 	"view_experiment_response" >> $plots
 
     plot "Success rate vs. Detector avg. matches" \
@@ -308,7 +308,7 @@ report_index
 
 # TODO: remove hack
 cp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png $report_dir/
-cp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.locate_choice.collage.jpg $report_dir/
+cp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.refine_choice.collage.jpg $report_dir/
 
 if has_opt --upload && [ "$CLUTSEG_RESULT_URL" != "" ] ; then
     opt="--recursive --archive --verbose --progress"

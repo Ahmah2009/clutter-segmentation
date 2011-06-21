@@ -43,7 +43,7 @@ class test_clutseg : public ::testing::Test {
                 dp_in.release();
 
                 TODParameters lp;
-                FileStorage lp_in("data/test_clutseg.locate.config.yaml", FileStorage::READ);
+                FileStorage lp_in("data/test_clutseg.refine.config.yaml", FileStorage::READ);
                 lp.read(lp_in[TODParameters::YAML_NODE_NAME]);
                 lp_in.release();
 

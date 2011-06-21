@@ -41,8 +41,8 @@ artifact=$(get_arg 0)
 exp=$(printf "%05d" $(get_arg 1))
 geometry="-geometry 625x500+7+7"
 out=$CLUTSEG_ARTIFACT_DIR/$artifact.$exp.jpg
-if [ "$artifact" = "locate_choice.collage" ] ; then
-    lcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.locate_choice.png" | sort)
+if [ "$artifact" = "refine_choice.collage" ] ; then
+    lcis=$(find $CLUTSEG_RESULT_DIR/$exp -iname "*.refine_choice.png" | sort)
     montage $(tile $lcis) $geometry $lcis $out
     if has_opt --show ; then
         eog $out
@@ -54,6 +54,6 @@ elif [ "$artifact" = "detect_choices.collage" ] ; then
         eog $out
     fi
 else
-    echo "Valid artifacts are 'locate_choice.collage' and 'detect_choices.collage'"
+    echo "Valid artifacts are 'refine_choice.collage' and 'detect_choices.collage'"
     exit 1
 fi
