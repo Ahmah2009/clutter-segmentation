@@ -69,7 +69,7 @@ than the original raw data.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{media/modelbase}
-        \caption{The modelbase with four different template objects used in evaluation}
+        \caption[Modelbase used in evaluation]{The modelbase with four different template objects used in evaluation}
     \end{center}
 \end{figure}
 
@@ -240,10 +240,10 @@ indicator for the goodness of an estimate. It was observed, though, that in one
 experiment, the model was badly aligned, yet had strong support by many
 inliers. The reason for the large consensus set is that the projection error is
 a measure on the image plane, and matching keypoints are designated inliers as
-long as they do not exceed the maximum projection error which is a circle on
-the image plane. The problem can be traced back to the fact objects that are
-far away from the camera merely degenerate to a point on the image plane. All
-correspondences within the circle are designated inliers.
+long as they do not exceed the maximum projection error which is a circle
+induced by L2-norm on the image plane. The problem can be traced back to the
+fact objects that are far away from the camera merely degenerate to a point on
+the image plane. All correspondences within the circle are designated inliers.
 
 % TODO: reformulate
 

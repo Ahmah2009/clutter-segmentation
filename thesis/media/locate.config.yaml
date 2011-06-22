@@ -1,0 +1,37 @@
+%YAML:1.0
+# This is the locate configuration file where possibly a ransac deficiency
+# lead to a completely wrong estimate. Appeared on
+# all03/image_00007.jpg 
+#
+# TODParameters
+TODParameters:
+   # GuessParameters
+   GuessParameters:
+      min_cluster_size: -2102560200
+      min_inliers_count: 10
+      ransac_iterations_count: 1000
+      max_projection_error: 12.
+      descriptor_distance_threshold: 0.
+      min_stddev_factor: 0.
+   # FeatureExtractionParams
+   feature_extraction_params:
+      detector_type: ORB-OpenCV
+      extractor_type: ORB-OpenCV
+      descriptor_type: ORB-OpenCV
+      detector_params:
+         max_features: 0.
+         min_features: 0.
+         n_features: 5000.
+         threshold: 0.
+      extractor_params:
+         octaves: 3.
+         scale_factor: 1.2000000000000000e+00
+   # MatcherParameters
+   MatcherParameters:
+      matcher_type: BF-BINARY
+      ratio_threshold: 0.
+      knn: 3
+      do_ratio_test: 0
+   # ClusterParameters
+   ClusterParameters:
+      max_distance: -56253216
