@@ -436,7 +436,7 @@ void PoseDrawer(cv::Mat& drawImage, const cv::Mat& K, const PoseRT& pose)
   vector<Point3f> op(4);
   op[1] = x, op[2] = y, op[3] = z, op[0] = o;
   vector<Point2f> ip;
-  projectPoints(Mat(op), pose.rvec, pose.tvec, K, Mat(), ip);
+  projectPoints(Mat(op), pose.rvec, pose.tvec, K, Mat::zeros(1, 5, CV_32FC1), ip);
 
   vector<Scalar> c(4); //colors
   c[0] = Scalar(255, 255, 255);

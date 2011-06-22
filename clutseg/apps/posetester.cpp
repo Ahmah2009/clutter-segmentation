@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
             cout << "[SUCCESS] " << argv[i] << endl;
             success_cnt += 1;
             Mat imgout = imread(string(argv[i]) + ".pose.png");
-            drawPose(imgout, pose, camera);
+            clutseg::drawPose(imgout, pose, camera);
             imwrite(string(argv[i]) + ".pose.png", imgout); // TODO: extract variable
         } else {
            cout << "[FAILURE] " << argv[i] << endl;
