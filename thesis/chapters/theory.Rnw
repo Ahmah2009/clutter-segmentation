@@ -1,7 +1,7 @@
-This chapter provides the theoretical foundations for building the 3-d object
+This chapter provides the theoretical foundations for building the 3D object
 recognition system as presented in Chapter~\ref{chapter:implementation}. It
 provides a review of required mathematical tools and the basics of multi-view
-3-d object recognition. It covers the description of images using local
+3D object recognition. It covers the description of images using local
 features with state-of-the-art techniques, how to quickly establish
 correspondences between known and unseen images, and finally how to estimate
 poses in presence of noise and mismatches in the correspondences.  Also, this
@@ -50,7 +50,7 @@ The passive interpretation is used throughout this work.
 
 \subsection{Object-View Transformations}
 
-Coordinates of points in 3-d space can be specified with respect to any
+Coordinates of points in 3D space can be specified with respect to any
 coordinate system. In this work, two different kinds of coordinate systems are
 used. The first kind is attached to the camera and is called {\it view
 coordinate system}. The second kind is attached to an object or its model and
@@ -95,11 +95,14 @@ coordinates into view coordinates for a specific view-object pair.
 
 \section{Object Recognition}
 
-Object recognition is the problem of finding or labeling objects in a query
-scene. This section describes relevant mathematics and techniques used in
-multi-view 3-d object recognition using local 2-d features. References to other
-approaches, such as with true 3-d features or object recognition using parametric
-models are provided but, being out of scope, not covered in detail.
+Object recognition is the problem of labeling or locating objects in a query
+scene. This section describes relevant mathematics and techniques used in 3D
+object recognition using local 2D features.
+% TODO: provide references to other approaches, or different subxxx of Object Recognition (CAD based, etc.)
+% instead of just talking about doing it
+References to other approaches,
+such as with true 3D features or object recognition using parametric models are
+provided but, being out of scope, not covered in detail.
 
 % \subsubsection{Applications of Object Recognition}
 % Mars mission
@@ -257,16 +260,16 @@ invariant.
 
 BRIEF is a binary feature descriptor, which is sensitive to rotation. It
 computes a bit string for the image neighborhood of a given keypoint. Each bit
-stores the result of the comparison of pixel intensities between two 2-d points
+stores the result of the comparison of pixel intensities between two 2D points
 in the neighborhood, which are called {\it test locations}. The test locations
-were randomly sampled from a 2-d Gaussian distribution and together form a {\it
+were randomly sampled from a 2D Gaussian distribution and together form a {\it
 test pattern}. Finding nearest neighbors of binary descriptors according to
 Hamming distance is faster than for real-valued features using the L2 norm.
 
 % TODO: include image for test locations from orb\_patterns in opencv trunk
 
 ORB computes image moments to define orientation for keypoints detected by
-FAST. Image moments of order $(p + q)$ are defined for a 2-d digital image $f$
+FAST. Image moments of order $(p + q)$ are defined for a 2D digital image $f$
 of dimension $MxN$ as
 
 \begin{equation}
@@ -345,7 +348,7 @@ presence of outliers. There exist many different terms for the pose estimation
 problem in literature. 
 
 % Estimating the pose of an object in a scene is nothing more than estimating the
-% object-view transformation, as the latter uniquely defines where each 3-d point
+% object-view transformation, as the latter uniquely defines where each 3D point
 % belonging to the object is located with respect to the view coordinate frame,
 % i.e. the camera.
 
@@ -375,13 +378,13 @@ then the hypothesized pose is verified for support by the remaining data
 % There are six degrees of freedom for an object to be located and oriented in
 % space, three for translation and three for orientation. 
 % TODO: how many projected points do we need
-% Three 2-d points in perspective projection are INsufficient to fully determine a pose.
-% If there were no noise in the set of 2-d correspondences, we would be able to
+% Three 2D points in perspective projection are INsufficient to fully determine a pose.
+% If there were no noise in the set of 2D correspondences, we would be able to
 % find poses of an object by simply taking any three correspondences belonging to
 % this object. Unfortunately, image noise, discretization effects and approximate
 % nearest neighbors asks for a more sophisticated approach that incorporates
 % strategies to deal with noise and inconsistency. RANSAC iteratively selects
-% three correspondences to compute pose estimates. The 3-d model of the template
+% three correspondences to compute pose estimates. The 3D model of the template
 % object aligned to the estimated pose is then projected on the query image plane
 % to compute the projection error and the consensus set. The size of the
 % resulting consensus sets plays an important role in this work.
@@ -455,9 +458,9 @@ avaible. This optimization technique is well-known in machine learning.
 \subsubsection{Test Set}
 
 It is interesting to estimate the error which a classifier or estimator is
-expected to make when working on unseen instances. This error cannot be
-estimated on the validation set, Instead a separate test set is required
-\cite{Alpaydin2010}.
+expected to make when working on unseen instances. This is the generalization
+error which cannot be estimated on the validation set. Instead a separate test
+set is required to estimate the generalization error \cite{Alpaydin2010}.
 % , and is related to the problem of assuming appropriate priors
 % in Bayesian inference.
 
