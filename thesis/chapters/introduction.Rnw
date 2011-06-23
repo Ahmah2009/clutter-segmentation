@@ -35,49 +35,46 @@ from the cluttered scene.
 
 \section{Related Work}
 
-In literature, many approaches to object recognition have been described. They
-differ in scope, targeted application and techniques. The approaches that use
-local features have been especially relevant to this work. They have in common
-that objects are described by a set of local features, that similarity between
-these features gives evidence for the object being present on the scene and a
-technique is required that, given the evidence, infers poses of objects within
-the scene.
+Literature describes many approaches to object recognition. They differ in
+scope, targeted application and techniques. Those using local features have
+been especially relevant to this work. 
 
-Tuytelaars and Mikolajczyk gave a qualitative review of local feature detectors
-and descriptors \cite{Tuytelaars2007}, and provided guidance in making an
+Tuytelaars and Mikolajczyk give a qualitative review of local feature detectors
+and descriptors \cite{Tuytelaars2007}, and provide guidance in making an
 appropriate choice between a multitude of available detectors and descriptors.
-Rosten and Drummond introduced the FAST feature detector \cite{Rosten2006}.
+Lowe's work on the scale-invariant feature transform explained the principles
+of the scale-space pyramid and rotation invariance of features \cite{Lowe1999}.
+Rosten and Drummond introduce the FAST feature detector \cite{Rosten2006}.
 % while Agrawal et al. presented the CenSurE feature detector \cite{Agrawal2008},
 % both designed to be efficient.
-Calonder et al. recently invented BRIEF, a feature descriptor which is simple
-to compute and efficient to match \cite{Calonder2010}. Matching observed
-features with model features is a common sub-task in object recognition. 
+Calonder et al. describe BRIEF, a feature descriptor which is simple to compute
+and efficient to match \cite{Calonder2010}. Oriented BRIEF, derived from FAST
+and BRIEF, is the feature detector and descriptor of choice in this work,
+although literature had not been present at the time of writing.  Matching
+observed features with model features is a common sub-task in object
+recognition. 
 % For this, Muja described the FLANN library \cite{Muja2009}.
-Slaney and Casey gave an introduction into Locality Sensitive Hashing
-\cite{Slaney2008}, an algorithm for finding approximate nearest neighbors that
-has been originally introduced by Gionis et al. \cite{Gionis1999}. Derived from
-FAST and BRIEF, the Oriented BRIEF feature detector and descriptor became a
-focus of interest in this work. Literature had not been present at the time
-of writing. Lowe's work on the scale-invariant feature transform explained the
-principles of the scale-space pyramid and rotation invariance of features.
+Gionis et al. introduce, and Slaney and Casey summarize Locality Sensitive
+Hashing \cite{Gionis1999, Slaney2008}, which finds approximate
+nearest neighbors.
 % Lowe showed how to recognize
 % objects up to a 20 degree rotation using the scale-invariant feature transform
 % (SIFT), making use of the Hough Transform where correspondences vote for the
 % pose of an object \cite{Lowe1999}.
 % Hough voting has also been used in a system presented by Drost et
 % al. \cite{Drost2010}.
-Fischler and Bolles introduced RANSAC and dealt with the perspective-n-point
+Fischler and Bolles explain RANSAC and deal with the perspective-n-point
 problem in an excellently written paper \cite{Fischler1981}.  Dogar and
 Srinivasa recently spent research on robustly grasping objects in a cluttered
-scene \cite{Dogar2010}.  Forsyth and Ponce's work on computer vision served as
-a reference and influenced the terminology in this work \cite{Forsyth2003}. The
+scene \cite{Dogar2010}. Forsyth and Ponce's work on computer vision served as a
+reference and influenced the terminology in this work \cite{Forsyth2003}. The
 same applies to Gonzalez and Woods in the field of image processing
 \cite{Gonzalez2010}.  Alpaydin's excellent introduction to machine learning
 \cite{Alpaydin2010} has influenced experiment design and parameter
-optimization.  Fawcett \cite{Fawcett2006} published a detailed guide on how to
+optimization. Fawcett \cite{Fawcett2006} published a detailed guide on how to
 evaluate the performance of classifiers through analysis of receiver operating
-characteristics, which are tightly bound to the field of decision and
-estimation theory, the latter being covered by Melsa and Cohn \cite{Melsa1978}.
+characteristics. Melsa and Cohn \cite{Melsa1978} cover decision and estimation
+theory.
 
 % Haltakov and Pangercic have developed the ODUFinder library for the Robot
 % Operating System to detect both non-textured objects and textured objects,

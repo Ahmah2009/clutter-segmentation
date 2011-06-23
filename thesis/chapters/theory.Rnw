@@ -1,20 +1,20 @@
 This chapter provides the theoretical foundations for building the 3-d object
-recognition system, as will be presented in chapter
-\ref{chapter:implementation}. It provides a short review of required
-mathematical tools and the basics of multi-view 3-d object recognition. It
-covers the description of images using local features with state-of-the-art
-techniques, how to quickly establish correspondences between known and unseen
-images, and finally how to estimate poses in presence of noise and mismatches
-in the correspondences.  Also, this chapter shows how the implemented system
-relates to the mathematical framework of classifiers and estimators, which is
-helpful for the evaluation given in chapter \ref{chapter:evaluation}.
+recognition system as presented in Chapter~\ref{chapter:implementation}. It
+provides a review of required mathematical tools and the basics of multi-view
+3-d object recognition. It covers the description of images using local
+features with state-of-the-art techniques, how to quickly establish
+correspondences between known and unseen images, and finally how to estimate
+poses in presence of noise and mismatches in the correspondences.  Also, this
+chapter shows how the implemented system relates to the mathematical framework
+of classifiers and estimators, which is helpful for the evaluation given in
+Chapter~\ref{chapter:evaluation}.
 
 \section{Prerequisites in Geometry}
 
 This section establishs mathematical tools and notation that are used
-throughout this work, and especially become significant in sections
-\ref{subsection:pose-estimation}, \ref{subsection:learning},
-\ref{subsection:recognition}, and \ref{section:data-acquisition}.
+throughout this work.
+
+% TODO: talk about pin-hole camera model assumption
 
 \subsection{Rigid Transformations}
 
@@ -89,10 +89,9 @@ Note that there exists a coordinate system for every object and view.  When
 talking in general about object recognition, it is often more intuitive to talk
 about the {\em pose} of an object. If precise wording is required, it is
 preferred to talk about the object-view transformation that brings object
-coordinates into view coordinates for a specific view-object pair. This will
-become apparent in section \ref{subsection:learning}.
+coordinates into view coordinates for a specific view-object pair.
 
-\subsection{Perspective-N-Point Problem}
+% \subsection{Perspective-N-Point Problem}
 
 \section{Object Recognition}
 
@@ -130,7 +129,7 @@ models are learnt from a single view of the template object \cite{Lowe1999}.
 Given a query image, local features are extracted and matched against the model.
 This approach works well, if the object in the query scene has approximately
 the same orientation as in the template view. Lowe reports that using SIFT
-features, which are discussed in section \ref{subsection:SIFT}, it is possible
+features, discussed in Section~\ref{subsection:SIFT}, it is possible
 to recognize objects up to a 20 degree rotation \cite{Lowe1999}. Unfortunately,
 considering only a single view is insufficient if query scenes show objects in
 arbitrary orientation.
@@ -162,12 +161,12 @@ Notably, the strategy on how to choose the template views in the first place
 has an impact on on both memory and computation time, and has been subject of
 research. % TODO: cite Section
 
-The multi-view 3-d object recognition scheme is the basis of this work.
-Sections \ref{subsection:feature-detectors} and
-\ref{subsection:feature-descriptors} show how to extract a description of the
-query image and the template views. Section \ref{subsection:feature-matching}
-presents methods for fast establishment of correspondences, and section
-\ref{subsection:pose-estimation} shows how to infer on object poses. 
+Learning models from multiple views is basis of this work. 
+% ections \ref{subsection:feature-detectors} and
+% \ref{subsection:feature-descriptors} show how to extract a description of the
+%query image and the template views. Section \ref{subsection:feature-matching}
+% presents methods for fast establishment of correspondences, and section
+% \ref{subsection:pose-estimation} shows how to infer on object poses. 
 
 \subsection{Feature Detectors}
 \label{subsection:feature-detectors}
@@ -305,14 +304,15 @@ BRIEF. It is thus to be handled with care.
 
 % TODO: speed-up must be backed up by a benchmark in the evaluation section
 
-In multi-view object recognition using local features, correspondences between
-known views of the object and the query image can be established by matching
-features from the query images to the features from the model. Computation time
-depends on the size of the descriptor vector, the nearest neighbor algorithm
-and the used distance metric. Great speed-ups can be achieved by weakening the
-requirements and allowing for approximate nearest neighbors. Computing the
-Hamming distance between binary features is faster than the L2-norm for
-real-valued feature descriptors \cite{Calonder2010}.
+In object recognition using local features, correspondences between known views
+of the object and the query image can be established by matching features from
+the query images to the features from the model. Computation time depends on
+the size of the descriptor vector, the nearest neighbor algorithm and the used
+distance metric. Great speed-ups can be achieved by weakening the requirements
+and allowing for approximate nearest neighbors. Computing the Hamming distance
+between binary features is faster than the L2-norm for real-valued feature
+descriptors \cite{Calonder2010}. This holds especially true with AMD's and
+Intel's {\tt POPCNT} instruction. % TODO: cite
 
 % TODO: can also be adapted to match binary features such as BRIEF. 
 
@@ -440,7 +440,7 @@ scenes that contain multiple instances of the same object are not considered.
 In the presented system, the algorithms for detecting, describing and matching
 features are parametrized, as well as the pose estimation and the final
 decision process. This leads to the question on how to find a parameter set
-such that the system will perform well in the application scenario.
+such that the system performs well in the application scenario.
 
 \subsubsection{Validation Set}
 

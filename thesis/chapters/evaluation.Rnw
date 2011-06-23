@@ -59,7 +59,7 @@ saved about 60-70 views per object to a bag file, which has been observed to
 work better than with only 40 views. For each object, around 1 Gigabyte of data
 was recorded. The next preparatory step was to uncompress the bag files with a
 script included in both \clutseg and \tod, then perform pose estimation and
-masking as described in section \ref{subsection:learning}. This being done, the
+masking as described in Section \ref{subsection:learning}. This being done, the
 final step of model extraction was left up to the experiment runner, since it
 depends on the feature parameters. The experiment runner needs access to the
 raw data. The resulting models of each template object were much smaller in
@@ -139,7 +139,7 @@ the setup.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{media/fiducial-object-3}
-        \caption{Relation between fiducial markers and three object coordinate systems.}
+        \caption{Relation between fiducial markers and three object coordinate systems}
     \end{center}
 \end{figure}
 
@@ -250,14 +250,14 @@ the image plane. All correspondences within the circle are designated inliers.
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.6\textwidth]{media/ransac-max-projection-error-deficiency}
-        \caption{Far-away pose estimate can result in many inliers}
+        \caption[Schematic explanation of distant pose estimate with many inliers]{Far-away pose estimate can result in many inliers}
     \end{center}
 \end{figure}
 
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.6\textwidth]{media/ransac-max-projection-error-deficiency-sample}
-        \caption{On a test scene, the badly aligned pose still results in many inliers}
+        \caption[Sample of distant pose estimate with many inliers]{On a test scene, the badly aligned pose still results in many inliers}
     \end{center}
 \end{figure}
 
