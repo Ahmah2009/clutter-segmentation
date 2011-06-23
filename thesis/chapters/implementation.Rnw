@@ -228,6 +228,9 @@ feature extractors to find a set of query features on the image. It is
 reasonable to select the same feature extractor as in the model extraction.
 Both query feature and model feature extraction can be configured, so \tod
 allows to try different feature detectors with configurable parameters. 
+In fact, \tod also provides rBRIEF, an experimental modified version of BRIEF,
+which we used in some experiments but then replaced it in favor of Oriented BRIEF
+from OpenCV.
 
 \subsubsection{Feature Matching}
 \label{subsubsection:tod-feature-matching}

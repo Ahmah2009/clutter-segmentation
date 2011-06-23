@@ -190,20 +190,18 @@ work well on the validation set.
           "join pms_fe t on p.train_pms_fe_id = t.id",
           "join pms_fe r on p.recog_pms_fe_id = r.id",
           "where e.response_id not null",
-          "and t.detector_type = 'ORB-OpenCV'",
-          "and t.descriptor_type = 'ORB-OpenCV'",
-          "and t.extractor_type = 'ORB-OpenCV'",
-          "and r.detector_type = 'ORB-OpenCV'",
-          "and r.descriptor_type = 'ORB-OpenCV'",
-          "and r.extractor_type = 'ORB-OpenCV'"))
+          "and t.detector_type = 'ORB'",
+          "and t.descriptor_type = 'ORB'",
+          "and t.extractor_type = 'ORB'",
+          "and r.detector_type = 'ORB'",
+          "and r.descriptor_type = 'ORB'",
+          "and r.extractor_type = 'ORB'"))
 
     # TODO: solve problem with ORB and ORB-OpenCV
 @
 
 % TODO: introduce rBRIEF
 % TODO: introduce ORB-OpenCV and tell the difference from ORB
-
-
 
 
 In total, \Sexpr{e_all$cnt} experiments with different parameter sets have been
@@ -277,9 +275,9 @@ configuration. Note that the hardware is more than six years old.
           "join pms_guess dg on p.detect_pms_guess_id = dg.id",
           "join pms_guess rg on p.refine_pms_guess_id = rg.id",
           "join pms_clutseg g on p.recog_pms_clutseg_id = g.id",
-          "where tf.detector_type = 'ORB-OpenCV'",
-          "and tf.descriptor_type = 'ORB-OpenCV'",
-          "and tf.extractor_type = 'ORB-OpenCV'",
+          "where tf.detector_type = 'ORB'",
+          "and tf.descriptor_type = 'ORB'",
+          "and tf.extractor_type = 'ORB'",
           "and rf.detector_type = tf.detector_type",
           "and rf.descriptor_type = tf.descriptor_type",
           "and rf.extractor_type = tf.extractor_type",

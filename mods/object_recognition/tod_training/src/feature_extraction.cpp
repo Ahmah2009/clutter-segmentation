@@ -155,13 +155,13 @@ namespace tod
         int max_features = params.detector_params["max_features"];
         cv::Ptr < FeatureDetector > detector;
 
-        // ORB is treated differently
-        if ((params.extractor_type == "ORB")
-            || (params.detector_type == "ORB")
-            || (params.descriptor_type == "ORB")) {
-            params.extractor_type = "ORB";
-            //  params.detector_type = "ORB";
-            params.descriptor_type = "ORB";
+        // ORB-TOD is treated differently
+        if ((params.extractor_type == "ORB-TOD")
+            || (params.detector_type == "ORB-TOD")
+            || (params.descriptor_type == "ORB-TOD")) {
+            params.extractor_type = "ORB-TOD";
+            //  params.detector_type = "ORB-TOD";
+            params.descriptor_type = "ORB-TOD";
         }
 
         if (params.detector_type == "DynamicFAST") {
@@ -263,7 +263,7 @@ namespace tod
             stats.internal_extractor = typeid(extractor).name();
         }
 
-        if ((params.extractor_type != "ORB") && extractor.empty() && params.extractor_type != "ORB-OpenCV") {
+        if ((params.extractor_type != "ORB-TOD") && extractor.empty() && params.extractor_type != "ORB") {
             stats.extractor = "<bad>";
             throw std::runtime_error("bad extractor");
         }
@@ -275,7 +275,7 @@ namespace tod
         } else if (params.extractor_type == "sequential") {
             fe = new SequentialExtractor(detector, extractor);
             stats.extractor = "tod::SequentialExtractor";
-        } else if (params.extractor_type == "ORB") {
+        } else if (params.extractor_type == "ORB-TOD") {
             if (std::string::npos != params.detector_type.find("gridded")) {
                 fe = new OrbExtractor(1.2, params.extractor_params["octaves"],
                                       max_features,
@@ -296,7 +296,7 @@ namespace tod
             stats.pm_min_features_used = false;
             stats.pm_max_features_used = true;
             stats.pm_octaves_used = true;
-        } else if (params.extractor_type == "ORB-OpenCV") {
+        } else if (params.extractor_type == "ORB") {
             stats.internal_extractor = "<none>";
             stats.extractor = "cv::ORB";
             stats.pm_octaves_used = true;

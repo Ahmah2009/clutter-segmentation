@@ -1,9 +1,9 @@
 %YAML:1.0
 # FeatureExtractionParams
 feature_extraction_params:
-   detector_type: ORB
-   extractor_type: ORB
-   descriptor_type: ORB
+   detector_type: ORB-TOD
+   extractor_type: ORB-TOD
+   descriptor_type: ORB-TOD
    detector_params:
       max_features: 400.
       min_features: 300.

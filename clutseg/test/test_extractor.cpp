@@ -80,9 +80,9 @@ class test_extractor : public ::testing::Test {
 
             {
                 feparams["orb_harrisfast"] = &orb_harrisfast;
-                orb_harrisfast.detector_type = "ORB";
-                orb_harrisfast.extractor_type = "ORB";
-                orb_harrisfast.descriptor_type = "ORB";
+                orb_harrisfast.detector_type = "ORB-TOD";
+                orb_harrisfast.extractor_type = "ORB-TOD";
+                orb_harrisfast.descriptor_type = "ORB-TOD";
 
                 orb_harrisfast.extractor_params["octaves"] = 3;
                 orb_harrisfast.detector_params["min_features"] = 300;
@@ -91,9 +91,9 @@ class test_extractor : public ::testing::Test {
 
             {
                 feparams["orb_opencv"] = &orb_opencv;
-                orb_opencv.detector_type = "ORB-OpenCV";
-                orb_opencv.extractor_type = "ORB-OpenCV";
-                orb_opencv.descriptor_type = "ORB-OpenCV";
+                orb_opencv.detector_type = "ORB";
+                orb_opencv.extractor_type = "ORB";
+                orb_opencv.descriptor_type = "ORB";
 
                 orb_opencv.extractor_params["octaves"] = 3;
                 orb_opencv.extractor_params["scale_factor"] = 1.2f;
@@ -102,9 +102,9 @@ class test_extractor : public ::testing::Test {
 
             {
                 feparams["orb_opencv_custom"] = &orb_opencv_custom;
-                orb_opencv_custom.detector_type = "ORB-OpenCV";
-                orb_opencv_custom.extractor_type = "ORB-OpenCV";
-                orb_opencv_custom.descriptor_type = "ORB-OpenCV";
+                orb_opencv_custom.detector_type = "ORB";
+                orb_opencv_custom.extractor_type = "ORB";
+                orb_opencv_custom.descriptor_type = "ORB";
 
                 orb_opencv_custom.extractor_params["octaves"] = 2;
                 orb_opencv_custom.extractor_params["scale_factor"] = 1.5f;
