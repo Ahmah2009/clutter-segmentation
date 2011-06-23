@@ -38,5 +38,5 @@ install-deps:
 
 .PHONY: clean 
 clean:	
-	rm -f *.glo *.glg *.log *.out *.toc *.ist *.ind *.ilg *.gls *.aux *.bbl *.blg *.lof *.lot *.xdy
+	rm -f *.glo *.glg *.log *.out *.toc *.ist *.ind *.ilg *.gls *.aux *.bbl *.blg *.lof *.lot *.xdy *.bib
 
