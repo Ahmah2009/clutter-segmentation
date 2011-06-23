@@ -36,6 +36,7 @@
 % include commands
 \input{components/commands}
 
+\graphicspath{{./chapters/}}
 
 %\makeindex
 	%% inter line spacing

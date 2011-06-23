@@ -11,22 +11,22 @@ main.pdf: main.tex
 	pdflatex main.tex
 
 main.tex: main.Rnw chapters/introduction.tex chapters/theory.tex chapters/implementation.tex chapters/evaluation.tex chapters/conclusion.tex components/settings.tex
-	R CMD Sweave main.Rnw
+	Rscript scripts/PngSweave.R main.Rnw
 
 chapters/introduction.tex: chapters/introduction.Rnw
-	cd chapters && R CMD Sweave introduction.Rnw
+	cd chapters && Rscript ../scripts/PngSweave.R introduction.Rnw
 
 chapters/theory.tex: chapters/theory.Rnw
-	cd chapters && R CMD Sweave theory.Rnw
+	cd chapters && Rscript ../scripts/PngSweave.R theory.Rnw
 
 chapters/implementation.tex: chapters/implementation.Rnw
-	cd chapters && R CMD Sweave implementation.Rnw
+	cd chapters && Rscript ../scripts/PngSweave.R implementation.Rnw
 
 chapters/evaluation.tex: chapters/evaluation.Rnw
-	cd chapters && R CMD Sweave evaluation.Rnw
+	cd chapters && Rscript ../scripts/PngSweave.R evaluation.Rnw
 
 chapters/conclusion.tex: chapters/conclusion.Rnw
-	cd chapters && R CMD Sweave conclusion.Rnw
+	cd chapters && Rscript ../scripts/PngSweave.R conclusion.Rnw
 
 .PHONY: install-deps
 install-deps:

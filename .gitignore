@@ -7,6 +7,10 @@ tags
 *.pyc
 thesis/main.tex
 thesis/chapters/*.tex
+thesis/chapters/*.log
+thesis/chapters/*.pdf
+thesis/chapters/*.png
+thesis/chapters/*.eps
 thesis/*.aux
 thesis/*.bib
 thesis/*.bbl

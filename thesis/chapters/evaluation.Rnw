@@ -196,22 +196,16 @@ work well on the validation set.
           "and r.detector_type = 'ORB'",
           "and r.descriptor_type = 'ORB'",
           "and r.extractor_type = 'ORB'"))
-
-    # TODO: solve problem with ORB and ORB-OpenCV
 @
-
-% TODO: introduce rBRIEF
-% TODO: introduce ORB-OpenCV and tell the difference from ORB
-
 
 In total, \Sexpr{e_all$cnt} experiments with different parameter sets have been
 conducted. In \Sexpr{e_fast_rbrief$cnt} experiments, we used FAST as a feature
 detector and rBRIEF as a feature descriptor. In \Sexpr{e_orb$cnt} experiments,
-we chose ORB instead.
+we chose ORB instead. 
 
-The experiments took more than \Sexpr{floor(e_all$total_test_runtime / 3600)}~hours
-of wall-time to compute on This is an average of
-\Sexpr{floor(10 * e_all$avg_test_runtime / 60) / 10}~minutes per experiment.
+Altogether, the experiments took more than \Sexpr{floor(e_all$total_test_runtime / 3600)}~hours
+of wall-time to compute, an average of
+\Sexpr{round(e_all$avg_test_runtime / 60, 1)}~minutes per experiment.
 Table~\ref{table:hardsoftware-parameter-optimization} lists the hardware and software
 configuration. Note that the hardware is more than six years old.
 
@@ -230,7 +224,17 @@ configuration. Note that the hardware is more than six years old.
   \end{center}
 \end{table}
 
-
+\begin{figure}
+    \begin{center}
+<<fig=true,png=true,echo=false,size=0.5>>=
+    r_all = dbGetQuery(con, paste(
+        "select succ_rate",
+        "from response"));
+    hist(r_all$succ_rate, xlab = "Success Rate", main = "Histogram of Success Rates")
+@
+    \caption{Histogram of success rates in experiments}
+    \end{center}
+\end{figure}
 
 <<echo=false>>=
     rm(e_all)
@@ -238,12 +242,14 @@ configuration. Note that the hardware is more than six years old.
     rm(e_orb)
 @
 
+\subsection{Observations}
 
 \subsection{Selected Parameter Set}
 
 <<echo=false>>=
     sps = dbGetQuery(con, paste(
           "select e.id as id,",
+          # parameters
           "tf.detector_type as detector_type,",
           "tf.descriptor_type as descriptor_type,",
           "tf.extractor_type as extractor_type,",
@@ -264,7 +270,11 @@ configuration. Note that the hardware is more than six years old.
           "rg.ransac_iterations_count as refine_ransac_iterations_count,",
           "rg.max_projection_error as refine_max_projection_error,",
           "rg.min_inliers_count as refine_min_inliers_count,",
-          "g.accept_threshold as accept_threshold",
+          "g.accept_threshold as accept_threshold,",
+          # statistics
+          "r.succ_rate as succ_rate,",
+          "r.value as value",
+          # joins 
           "from experiment e",
           "join response r on e.response_id = r.id",
           "join paramset p on e.paramset_id = p.id",
@@ -350,8 +360,9 @@ covers observations made on a broad range of experiments.
 \subsection{Performance on Validation Set}
 
 The \clutseg system correctly located and labeled an object within error bounds
-of 3 cm and 20 degrees in rotation in 90\% of the validation scenes. This
-success rate is not predictive, though, as the validation set was used for
+of 3 cm and 20 degrees in rotation in \Sexpr{floor(sps$succ_rate * 100)}\% of
+the validation scenes. It got an average scene score of \Sexpr{round(sps$value, 2)}.
+The success rate is not predictive, though, as the validation set was used for
 optimizing the system. Because ground truth was available, more precise data
 can be presented on the validation set than for the test set. 
 
