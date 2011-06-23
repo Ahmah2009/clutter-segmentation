@@ -96,6 +96,7 @@ fiducial markers, that is
 
 \begin{equation}
     _oT^v: \mathbb{R}^3 \to \mathbb{R}^3, \vec{p} \mapsto\ _fT^v(\vec{p})
+    \label{equation:fiducial-object}
 \end{equation}
 
 % TODO: use 2D instead of 2D, and 3D instead of 3D
@@ -292,13 +293,13 @@ set of guesses, which is the output of the \tod recognition process.
 This section discusses the implementation of the \clutseg object recognition
 system on top of \tod. We introduce three core concepts that shape \clutseg for
 the specific application requirements of locating the next object to resolve
-from the clutter, that means only making one single guess. First, a guess
-ranking helps to discard guesses with low confidence. Second, guess refinement
-aims at spending more computation resources on specifically improving pose
-estimates for guesses with high confidence. Third, a guess rejection mechanism
-attenuates the probability of settling on the wrong guess.  Finally, this
-section covers the tools that help to find parameters for the clutseg system
-and help collect statistics to evaluate its performance.
+from the clutter. This means that only object in the scene needs to be located.
+First, a guess ranking helps to discard guesses with low confidence. Second,
+guess refinement aims at spending more computation resources on specifically
+improving pose estimates for guesses with high confidence. Third, guess
+rejection attenuates the probability of settling on the wrong guess.  Finally,
+this section covers the tools that help to find parameters for the clutseg
+system and help collect statistics to evaluate its performance.
 
 The reasons why \clutseg was developed were three-fold. First, given the
 robotic task of resolving the clutter in the scene requires the robot to locate
@@ -344,13 +345,12 @@ only of this single object model. The best guess according to the chosen guess
 ranking is designated the {\it refined guess}. % and
 \ref{subsubsection:tod-pose-estimation}, respectively.
 
-The reasoning behind guess refinement is find more matches between query
-features and the single object whose pose is to be refined. By ignoring other
-models, and doing away with the ratio test, only correspondences between the
-query scene and one model are found. Such an approach is optimistic, and
-possibly dangerous, especially in cases where the guess to refine is a false
-positive.  The validity of such an approach has at least to empirically
-verified by experimentation.
+Guess refinement aims at finding more matches between query features and the
+single object whose pose is to be refined. By ignoring other models only
+correspondences between the query scene and one model are found. Such an
+approach is optimistic, and possibly dangerous, especially in cases where the
+guess to refine is a false positive.  The validity of such an approach has at
+least to empirically verified by experimentation.
 
 \subsection{Guess Rejection}
 
@@ -366,15 +366,15 @@ This section describes the full recognition process. It puts the ideas of
 guess ranking, guess refinement and guess rejection into context.
 
 Given a query scene, the \clutseg recognition process first calls \tod once to
-produce a set of guesses $D$ for all objects in the model base. A ranking
-defines a total order on $D$. The inlier ranking $r_S$ is used for this by
-default. \clutseg chooses the first ranked guess in $G_D$ and computes the
+produce a set of initial guesses $D$ for all objects in the model base. A
+ranking defines a total order on $D$. The inlier ranking $r_S$ is used for this
+by default. \clutseg chooses the first ranked guess in $G_D$ and computes the
 refined guess. If the ranking of the refined guess is greater or equal than
 {\tt accept\_threshold}, it is accepted and returned as the result of the
 recognition process. In case the refined guess is rejected or no refined guess
-was made at all, the algorithm proceeds to the next guess in $D$ and repeats the
-refinement step. This iteration is performed until either a refined guess is
-accepted, or \clutseg declares the scene to be empty.
+was made at all, the algorithm proceeds to the next guess in $D$ and repeats
+the refinement step. This iteration is performed until either a refined guess
+is accepted, or \clutseg declares the scene to be empty.
 
 This scheme was built with the intention to avoid the problem of finding a good
 operating point for \tod in ROC space. It is sufficient that \tod returns a set
@@ -409,6 +409,7 @@ on the choice of feature extractor, and are treated separately.
 % TODO: create table with feature extraction parameters
 
 \begin{table}[h!]
+  \begin{center}
     \begin{tabular}{llll}
         Parameter & Range \\
         \hline
@@ -426,8 +427,9 @@ on the choice of feature extractor, and are treated separately.
         {\tt refine\_min\_inliers\_count} & integer \\
         {\tt accept\_threshold} &  real \\
     \end{tabular}
-    \caption{\clutseg parameters in matching and recognition}
+    \caption{\clutseg parameters for matching and pose estimation}
     \label{table:parameters}
+  \end{center}
 \end{table}
 
 Even if we consider only ten of these parameters as factors to five levels
@@ -488,9 +490,9 @@ The pose estimation step in detection and refinement depends on three
 parameters each. RANSAC is controlled by {\tt
 detect\_ransac\_iterations\_count} ({\tt refine\_ransac\_iterations\_count})
 and {\tt detect\_max\_projection\_error} ({\tt
-refine\_max\_projection\_error}). No further pose estimates are generated once
-RANSAC returns an estimate with a consensus set of size less than {\tt
-detect\_min\_inliers\_count} ({\tt refine\_min\_inliers\_count}).
+refine\_max\_projection\_error}). No further pose estimates for an object are
+generated once RANSAC returns an estimate with a consensus set of size less
+than {\tt detect\_min\_inliers\_count} ({\tt refine\_min\_inliers\_count}).
 
 \subsection{Measured Statistics}
 \label{subsection:measured-statistics}
@@ -519,7 +521,7 @@ which objects can be seen at what location and orientation in the scene. Thus,
 ground truth $G$ can be described as a set of labels
 
 \begin{equation}
-    G = \left\{ (i, T) : \text{object $i$ is on scene at pose defined by MVT T} \right\}
+    G = \left\{ (i,\ _oT^v_i) : \text{object $i$ is on scene at pose $_oT^v_i$} \right\}
 \end{equation}
 
 % TODO: introduce abbreviation for object-view transformation
@@ -536,8 +538,8 @@ the scene. True negative if there is no guess and the scene is empty.  False
 negative if the scene shows objects but \clutseg did not make a guess.
 Unfortunately, this scheme does not cover the case in which two objects have
 been confused. In the application scenario, several objects are expected to be
-on the scene. Statistics record when \clutseg returns without making a guess,
-and {\tt none\_rate} captures these cases, averaged over multiple query scenes.
+on the scene. Statistics record when \clutseg returns without making a guess.
+% TODO: need to give numbers in evaluation section about none_rate
 
 \subsubsection{Pose Estimation Error}
 
@@ -546,7 +548,7 @@ actually visible in the scene. In case it is, the translational error $e_t$ give
 ground truth pose $T$ and pose estimate $\hat{T}$ is
 
 \begin{equation}
-    e_t = \left|\ \hat{T}\left(\vec{0}\right) - T\left(\vec{0}\right)\ \right|
+    e_t = \normtwo{\ \hat{T}\left(\vec{0}\right) - T\left(\vec{0}\right)\ }
 \end{equation}
 
 The orientation error $e_\alpha$ is computed from the ground truth orientation $r$
@@ -576,8 +578,8 @@ to introduce a combined classification and estimation score.
 Let $\alpha_{max} = \frac{\pi}{9}$ and $t_{max} = 3\mbox{cm}$ be the maximum
 tolerable errors in orientation and translation, respectively. The choices are
 consistent with the {\it Solutions in Perceptions Challenge 2011}.  Then, for a
-query scene with ground truth $G$ and a guess $g$, the scene score function $u$
-is defined as
+query scene with ground truth $G$ and a guess $g$, we define the scene score
+function $u$ as
 
 \begin{equation}
 u: G, g \mapsto
@@ -609,7 +611,7 @@ defined by $t_{max}$ and $\alpha_{max}$.
 
 \subsubsection{Recognition Statistics}
 
-\clutseg collects statistics about the recognition process that do not involve
+\clutseg also collects statistics about the recognition process that do not involve
 ground truth. These statistics cover the number of guesses, matches, inliers in
 the detection and in the refinement stage. The runtime is recorded as well.
 
@@ -620,7 +622,7 @@ a validation set, it was vital to make a decision which regions of parameter
 space to explore first and which regions to explore next. In this work, the
 strategy was to select a few regions, and then search in the neighborhood of
 those parameter sets that performed well in the experiments conducted so far.
-The strategy resembled genetic programming.
+The strategy resembled genetic programming to a certain extent.
 
 \subsection{Experiment Runner}
 
@@ -637,13 +639,13 @@ resources.
 recorded statistics, as introduced in Sections~\ref{subsection:parameter-space}
 and \ref{subsection:measured-statistics}  The experiment runner can be executed
 in the spirit of a daemon process, and polls the database for new parameter
-sets when idle. New parameter sets are tested with computationally cheap tests
-for validity and those leading to errors are marked and skipped, such that one
-failing experiment does not kill the process. The primary purpose of the
-database was to collect experiment inputs and outputs in a central, accessible
-and convenient location.  No efforts have been spent on normalization,
-performance tuning or any other aspects that were not related to its primary
-purpose. For convenience, data can be selected from various database views.
+sets when idle. New parameter sets are tested for validity with computationally
+cheap tests.  The failing ones are marked and skipped, this one failing
+experiment does not kill the process. The primary purpose of the database was
+to collect experiment inputs and outputs in a central, accessible and
+convenient location.  No efforts have been spent on normalization, performance
+tuning or any other aspects that were not related to its primary purpose. For
+convenience, data can be selected from various database views.
 
 \subsubsection{Modelbase Cache}
 
