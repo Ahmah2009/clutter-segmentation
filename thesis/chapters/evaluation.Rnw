@@ -1,3 +1,7 @@
+<<echo=FALSE>>=
+    source("../scripts/common.R")
+@
+
 This chapter presents the experimental results of the \clutseg system, on the
 validation set, on a test set and results from a live test on a PR2 robot. It
 covers how the modelbase was built, how validation data, ground truth and the
@@ -54,7 +58,7 @@ estimation.
 % was collected once. Second, several modelbases were built according to 
 % the feature parameter specifications in the experiments. 
 
-\tod requires multiple views from the template object. For the model base, we
+\tod requires multiple views from the template object. For the modelbases, we
 saved about 60-70 views per object to a bag file, which has been observed to
 work better than with only 40 views. For each object, around 1 Gigabyte of data
 was recorded. The next preparatory step was to uncompress the bag files with a
@@ -82,37 +86,9 @@ jacobs\_coffee} show texture that repeats on different sides of the object.
 Finally, {\it haltbare\_milch} contains characteristic texture which is
 confined only to certain regions on its surface.
 
-\begin{figure}[h!]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{media/fiducial-object}
-        \caption{Relation between fiducial markers and object coordinate system}
-    \end{center}
-\end{figure}
-
-Note that there is a subtlety in the relationship of the fiducial markers and
-the object coordinate system. Let the {\it fiducial coordinate system} be
-attached to the fiducial markers. Its origin is defined midway between the
-two chessboards. Using 3-d camera calibration techniques, it is possible to
-compute the transformation $_fT^v$ between between fiducial coordinates and view
-(camera) coordinates. Yet, we need the object-view transformation $_oT^v$. The
-solution here is to just {\it define} the object coordinate system to be the
-same as the coordinate system attached to the fiducial markers
-
-\begin{equation}
-    _oT^v\ =\ _fT^v
-    \label{equation:fiducial-object-constraint}
-\end{equation}
-
-
-% TODO: xyz and uvw are useless, rather use V, F, O to denote the different
-% coordinate systems.
-
-This constraint requires that a template object must not move with respect to
-the fiducial markers, as this would be equivalent to redefining the object
-coordinate system. We remembered this definition by putting a small pencil mark
-on the point of the template object at the origin of the object coordinate
-system.
-
+Equation~\ref{equation:fiducial-object} requires that a template object must
+not move with respect to the fiducial markers when collecting raw data. This
+would be equivalent to redefining the object coordinate system.
 
 \subsection{Validation Set}
 
@@ -126,15 +102,15 @@ to form the validation set.
 Given a scene, ground truth requires to compute the object-view transformations
 $_oT^v_i$, $_oT^v_j$, and $_oT^v_k$ for the three objects $i$, $j$ and $k$ in
 the scene. We placed object $j$ in the center between the fiducial markers, such
-that constraint \ref{equation:fiducial-object-constraint} was satisfied, that is
+that 
 
 \begin{equation}
     _oT^v_j: \vec{p} \mapsto\ _fT^v \left(\vec{p}\right)
 \end{equation}
 
-In other words, object $j$ was placed on the rotating table exactly as when
-raw data for modelbase had been collected. The pencil markers helped to remember
-the setup.
+In other words, object $j$ was placed on the rotating table exactly as when raw
+data for modelbase had been collected. Pencil markers on the template objects
+helped us remembered the correct arrangement.
 
 \begin{figure}[h!]
     \begin{center}
@@ -154,8 +130,7 @@ offset of $-0.15$ and $0.13$ in x-direction of fiducial coordinates
     _oT^v_k: \vec{p} \mapsto\ _fT^v\left(\vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} \right)
 \end{equation}
 
-Units are specified in metres. Computation of ground truth was made easier 
-because the objects were placed upright and coplanar to the rotating table.
+Units are specified in metres.
 
 % TODO: future work might involve computation of ground truth in more complex
 % configurations
@@ -184,20 +159,188 @@ work well on the validation set.
 
 \subsection{Searched Parameter Space}
 
-In total, more than 2200 experiments with different parameter configurations
-have been conducted. 
-% TODO: number of experiments
 
 <<echo=FALSE>>=
-    library(RSQLite)
-    con = dbConnect(dbDriver("SQLite"), dbname = paste(Sys.getenv("CLUTSEG_PATH"), "/clutter-segmentation/clutseg/data/test.sqlite3", sep=""))
-    dbGetQuery(con, paste("select count(experiment.id) from response join experiment on experiment.response_id=response.id"))
+    # Get the number of experiments in total
+    e_all = dbGetQuery(con, paste(
+        "select count(e.id) as cnt,",
+        "sum(r.train_runtime) as total_train_runtime,",
+        "avg(r.train_runtime) as avg_train_runtime,",
+        "sum(r.test_runtime) as total_test_runtime,",
+        "avg(r.test_runtime) as avg_test_runtime",
+        "from experiment e",
+        "join response r on e.response_id = r.id"));
+    # Get the number of experiments with FAST and RBRIEF
+    e_fast_rbrief = dbGetQuery(con, paste(
+          "select count(e.id) as cnt",
+          "from experiment e",
+          "join paramset p on e.paramset_id = p.id",
+          "join pms_fe t on p.train_pms_fe_id = t.id",
+          "join pms_fe r on p.recog_pms_fe_id = r.id",
+          "where e.response_id not null",
+          "and t.detector_type = 'FAST'",
+          "and t.descriptor_type = 'rBRIEF'",
+          "and r.detector_type = 'FAST'",
+          "and r.descriptor_type = 'rBRIEF'"))
+    # Get the number of experiments with ORB
+    e_orb = dbGetQuery(con, paste(
+          "select count(e.id) as cnt",
+          "from experiment e",
+          "join paramset p on e.paramset_id = p.id",
+          "join pms_fe t on p.train_pms_fe_id = t.id",
+          "join pms_fe r on p.recog_pms_fe_id = r.id",
+          "where e.response_id not null",
+          "and t.detector_type = 'ORB-OpenCV'",
+          "and t.descriptor_type = 'ORB-OpenCV'",
+          "and t.extractor_type = 'ORB-OpenCV'",
+          "and r.detector_type = 'ORB-OpenCV'",
+          "and r.descriptor_type = 'ORB-OpenCV'",
+          "and r.extractor_type = 'ORB-OpenCV'"))
+
+    # TODO: solve problem with ORB and ORB-OpenCV
 @
+
+% TODO: introduce rBRIEF
+% TODO: introduce ORB-OpenCV and tell the difference from ORB
+
+
+
+
+In total, \Sexpr{e_all$cnt} experiments with different parameter sets have been
+conducted. In \Sexpr{e_fast_rbrief$cnt} experiments, we used FAST as a feature
+detector and rBRIEF as a feature descriptor. In \Sexpr{e_orb$cnt} experiments,
+we chose ORB instead.
+
+The experiments took more than \Sexpr{floor(e_all$total_test_runtime / 3600)}~hours
+of wall-time to compute on This is an average of
+\Sexpr{floor(10 * e_all$avg_test_runtime / 60) / 10}~minutes per experiment.
+Table~\ref{table:hardsoftware-parameter-optimization} lists the hardware and software
+configuration. Note that the hardware is more than six years old.
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lll}
+        Component & Type \\
+        \hline
+        Mainboard & ASUS K8V SE Deluxe \\
+        CPU & AMD Athlon64 3000+ S754 \\
+        RAM & 1 Gigabyte DDR-RAM & \\
+        OS & Ubuntu 10.10 Maverick \\
+    \end{tabular}
+    \caption{Hard- and software configuration for parameter optimization}
+    \label{table:hardsoftware-parameter-optimization}
+  \end{center}
+\end{table}
+
+
+
+<<echo=false>>=
+    rm(e_all)
+    rm(e_fast_rbrief)
+    rm(e_orb)
+@
+
 
 \subsection{Selected Parameter Set}
 
-The following parameter set, dubbed SPS, has been found to work well on the
-validation set.
+<<echo=false>>=
+    sps = dbGetQuery(con, paste(
+          "select e.id as id,",
+          "tf.detector_type as detector_type,",
+          "tf.descriptor_type as descriptor_type,",
+          "tf.extractor_type as extractor_type,",
+          "tf.n_features as n_features,",
+          "tf.octaves as octaves,",
+          "tf.scale_factor as scale_factor,",
+          "dm.matcher_type as detect_matcher_type,",
+          "dm.knn as detect_knn,",
+          "dm.do_ratio_test as detect_do_ratio_test,",
+          "dm.ratio_threshold as detect_ratio_threshold,",
+          "dg.ransac_iterations_count as detect_ransac_iterations_count,",
+          "dg.max_projection_error as detect_max_projection_error,",
+          "dg.min_inliers_count as detect_min_inliers_count,",
+          "rm.matcher_type as refine_matcher_type,",
+          "rm.knn as refine_knn,",
+          "rm.do_ratio_test as refine_do_ratio_test,",
+          "rm.ratio_threshold as refine_ratio_threshold,",
+          "rg.ransac_iterations_count as refine_ransac_iterations_count,",
+          "rg.max_projection_error as refine_max_projection_error,",
+          "rg.min_inliers_count as refine_min_inliers_count,",
+          "g.accept_threshold as accept_threshold",
+          "from experiment e",
+          "join response r on e.response_id = r.id",
+          "join paramset p on e.paramset_id = p.id",
+          "join pms_fe tf on p.train_pms_fe_id = tf.id",
+          "join pms_fe rf on p.recog_pms_fe_id = rf.id",
+          "join pms_match dm on p.detect_pms_match_id = dm.id",
+          "join pms_match rm on p.refine_pms_match_id = rm.id",
+          "join pms_guess dg on p.detect_pms_guess_id = dg.id",
+          "join pms_guess rg on p.refine_pms_guess_id = rg.id",
+          "join pms_clutseg g on p.recog_pms_clutseg_id = g.id",
+          "where tf.detector_type = 'ORB-OpenCV'",
+          "and tf.descriptor_type = 'ORB-OpenCV'",
+          "and tf.extractor_type = 'ORB-OpenCV'",
+          "and rf.detector_type = tf.detector_type",
+          "and rf.descriptor_type = tf.descriptor_type",
+          "and rf.extractor_type = tf.extractor_type",
+          "and rf.n_features = tf.n_features",
+          "and rf.octaves = tf.octaves",
+          "and rf.scale_factor = tf.scale_factor",
+          "order by r.succ_rate desc limit 1"))
+@
+
+Here we present a parameter set, dubbed SPS, that has been found to work well
+on the validation set. It contains values for all configurable system
+parameters. Table~\ref{table:selected-parameters-features} provides values for
+feature extraction. We used the same feature extraction parameters for the
+modelbase and for the query scenes. We used the default values from OpenCV for
+parameters {\tt octaves} and {\tt scale\_factor}.
+% TODO: introduce \n_features octaves and scale\_factor in theoretical and implementation part
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{ll}
+        Parameter & Value \\
+        \hline
+        {\tt detector\_type} & \Sexpr{sps$detector_type} \\
+        {\tt descriptor\_type} & \Sexpr{sps$descriptor_type} \\
+        {\tt extractor\_type} & \Sexpr{sps$extractor_type} \\
+        {\tt n\_features} & \Sexpr{sps$n_features} \\
+        {\tt octaves} & \Sexpr{sps$octaves} \\
+        {\tt scale\_factor} & \Sexpr{sps$scale_factor} \\
+    \end{tabular}
+    \caption{Selected \clutseg parameters for feature extraction}
+    \label{table:selected-parameters-features}
+  \end{center}
+\end{table}
+
+Table~\ref{table:sps-match-guess} shows parameter values for the
+detection and refinement stages. We used Locality Sensitive Hashing in both
+stages to match the binary features produced by Oriented BRIEF.
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{ll}
+        Parameter & Value \\
+        \hline
+        {\tt detect\_matcher\_type} & \Sexpr{sps$detect_matcher_type} \\
+        {\tt detect\_knn} & \Sexpr{sps$detect_knn} \\
+        {\tt detect\_do\_ratio\_test} & \Sexpr{sps$detect_do_ratio_test} \\
+        {\tt detect\_ratio\_threshold} & \Sexpr{sps$detect_ratio_threshold} \\
+        {\tt detect\_ransac\_iterations\_count} & \Sexpr{sps$detect_ransac_iterations_count} \\
+        {\tt detect\_max\_projection\_error} & \Sexpr{sps$detect_max_projection_error} \\
+        {\tt detect\_min\_inliers\_count} & \Sexpr{sps$detect_min_inliers_count} \\
+        {\tt refine\_matcher\_type} & \Sexpr{sps$refine_matcher_type} \\
+        {\tt refine\_knn} & \Sexpr{sps$refine_knn} \\
+        {\tt refine\_ransac\_iterations\_count} & \Sexpr{sps$refine_ransac_iterations_count} \\
+        {\tt refine\_max\_projection\_error} & \Sexpr{sps$refine_max_projection_error} \\
+        {\tt refine\_min\_inliers\_count} & \Sexpr{sps$refine_min_inliers_count} \\
+        {\tt accept\_threshold} & \Sexpr{sps$accept_threshold}
+    \end{tabular}
+    \caption{Selected \clutseg parameters for matching and pose estimation}
+    \label{table:sps-match-guess}
+  \end{center}
+\end{table}
 
 \section{Performance}
 
@@ -214,17 +357,35 @@ success rate is not predictive, though, as the validation set was used for
 optimizing the system. Because ground truth was available, more precise data
 can be presented on the validation set than for the test set. 
 
+% TODO: talk about detection stage
+
 \subsection{Performance on Test Set}
 \subsection{Performance in Live Test}
 
 \section{Issues}
 
-\subsection{Repetitions in texture}
+% \subsection{Prior Assumption about Orientation}
 
-The system had difficulties to recognize {\it icedtea} when shown from a
-certain angle.  It turned out that {\it icedtea} has smallprint almost all over
-its backside. The same set of letters repeatably appear over a large area,
-which probably makes it hard to obtain informative features.
+% many presentations of object recognition systems seem to make the prior assumption of objects appearing in upright pose.
+% the performance on the test set which showed objects in arbitrary orientation was below expectations
+% the model features were extracted by a scan of the object from positions on a circle
+% the query features are observed from a position on a sphere around the object
+% features are rotation-invariant only to rotation of objects around an axis parallel to the optical axis 
+% the number of matches significantly reduced on the images with objects in arbitrary orientation
+
+% Many presentations of object recognition systems in media and literature seem
+% to make the prior assumption that objects in query scenes are oriented in
+% upright position. Our test set shows scenes with objects not only in clutter,
+% but also in arbitrary orientation.  This adds extra difficulty. \clutseg had
+% problems with locating an object at least in TODO of TODO test scenes. When we
+% collected raw data for the modelbase, we made an implicit prior assumption
+% about the orientation of objects in query scenes. We scanned the template
+% object from several points on a circle around the object. Yet, the query scenes
+% show instances from arbitrary points on spheres around them.
+
+% Rotation-invariant feature detectors cope with 3D rotation of objects around an
+% axis parallel to the optical axis. SIFT features still operate up to 20 degrees
+% of rotation around an axis parallel to the image plane \cite{Lowe1999}. % TODO: confirm this
 
 \subsection{Incomplete model}
 
@@ -232,6 +393,13 @@ The bottom of the template object is facing the rotating table and is invisible
 to the camera from all viewpoints. This does not matter as long as instances of
 these template objects are standing upright. This does matter when instances occur
 in arbitrary orientation.
+
+\subsection{Repetitions in texture}
+
+The system had difficulties to recognize {\it icedtea} when shown from a
+certain angle.  It turned out that {\it icedtea} has smallprint almost all over
+its backside. The same set of letters repeatably appear over a large area,
+which probably makes it hard to obtain informative features.
 
 \subsection{Maximum projection error in RANSAC}
 
