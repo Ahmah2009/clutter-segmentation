@@ -548,10 +548,10 @@ on the scene. Statistics record when \clutseg returns without making a guess.
 
 Error in estimated pose can only be computed in case the guessed object is
 actually visible in the scene. In case it is, the translational error $e_t$ given
-ground truth pose $T$ and pose estimate $\hat{T}$ is
+ground truth pose $_oT^v$ and pose estimate $_o\hat{T}^v$ is
 
 \begin{equation}
-    e_t = \normtwo{\ \hat{T}\left(\vec{0}\right) - T\left(\vec{0}\right)\ }
+    e_t = \normtwo{\ _o\hat{T}^v\left(\vec{0}\right) -\ _oT^v\left(\vec{0}\right)\ }
 \end{equation}
 
 The orientation error $e_\alpha$ is computed from the ground truth orientation $r$
@@ -569,9 +569,9 @@ in OpenCV.
 
 \subsubsection{Scene Scores}
 
-Here, a scene score is presented that measures \clutseg's performance on a
-single query scene. The goal is to find a score function that closely models
-the utility of a guess made for a query scene.
+Here, we present a scene score that measures \clutseg's performance on a single
+query scene. The goal is to find a score function that closely models the
+utility of a guess made for a query scene.
 
 If the guessed object is not on the scene, clearly the utility of such a guess
 is zero. Also, utility does not decrease much more, if the orientation and
@@ -644,11 +644,13 @@ and \ref{subsection:measured-statistics}  The experiment runner can be executed
 in the spirit of a daemon process, and polls the database for new parameter
 sets when idle. New parameter sets are tested for validity with computationally
 cheap tests.  The failing ones are marked and skipped, this one failing
-experiment does not kill the process. The primary purpose of the database was
-to collect experiment inputs and outputs in a central, accessible and
-convenient location.  No efforts have been spent on normalization, performance
-tuning or any other aspects that were not related to its primary purpose. For
-convenience, data can be selected from various database views.
+experiment does not kill the process. A no-frills object-relational mapper
+provides a convenient interface to work with the database. The primary purpose
+of the database was to collect experiment inputs and outputs in a central,
+accessible and convenient location.  Few efforts have been spent on
+normalization, performance tuning or any other aspects that were not related to
+its primary purpose. For convenience, data can be selected from various
+database views.
 
 \subsubsection{Modelbase Cache}
 
@@ -656,9 +658,10 @@ Extracting models is computationally expensive and may take several minutes.
 As long as the feature parameters do not change in several experiments, there
 is no need to regenerate the models and the modelbase is retrieved by the SHA1
 hashcode of the feature parameters. A modelbase for four template objects takes
-up around 5 Megabytes on the filesystem. \tod stores the modelbase as
-compressed YAML text files. If disk space and reading the modelbase quickly
-into memory were an issue, then binary files would be a good choice.
+up around five Megabytes on the filesystem, depending on the choice of feature
+detector and descriptor. \tod stores the modelbase as compressed YAML text
+files. If disk space were scarce and reading the modelbase quickly into memory
+were an issue, then binary files would be a good choice.
 
 \subsubsection{Visualization Tools}
 

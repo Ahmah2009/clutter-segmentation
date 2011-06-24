@@ -58,46 +58,66 @@ estimation.
 % was collected once. Second, several modelbases were built according to 
 % the feature parameter specifications in the experiments. 
 
+
 \tod requires multiple views from the template object. For the modelbases, we
 saved about 60-70 views per object to a bag file, which has been observed to
 work better than with only 40 views. For each object, around 1 Gigabyte of data
 was recorded. The next preparatory step was to uncompress the bag files with a
 script included in both \clutseg and \tod, then perform pose estimation and
-masking as described in Section \ref{subsection:learning}. This being done, the
-final step of model extraction was left up to the experiment runner, since it
-depends on the feature parameters. The experiment runner needs access to the
-raw data. The resulting models of each template object were much smaller in
-size, and took up around 1 Megabyte of disk space each, three magnitudes less
-than the original raw data.
+masking for each view as described in Section \ref{subsection:learning}.  This
+post-processed raw data provides the masks and the object-view transformation
+which can be used to create several modelbases using different feature
+detectors and descriptors. The resulting models of each template object were
+much smaller in size than the original raw data. They took up around 1 Megabyte
+of disk space each, three magnitudes less than the original raw data. The
+feature detectors are responsible for this data reduction.
+In the experiments, ORB selected 394 keypoints on average per image of the
+modelbase raw data.
 
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{media/modelbase}
-        \caption[Modelbase used in evaluation]{The modelbase with four different template objects used in evaluation}
+        \caption[2D view of template objects used in evaluation]{The four different template objects used in evaluation}
+        \label{figure:modelbase}
     \end{center}
 \end{figure}
 
-Raw data was collected for four different household objects, commonly found in
-German supermarkets. These are {\it assam\_tea}, {\it haltbare\_milch}, {\it
-icedtea} and {\it jacobs\_coffee}. The objects have different properties. For
-example, {\it assam\_tea} is smaller than {\it icedtea} whose frontside shows
-much more characteristic texture than its back that is full of smallprint. {\it
-jacobs\_coffee} show texture that repeats on different sides of the object.
+Figure~\ref{figure:modelbase} shows the four different household objects for
+which we collected raw data. They are items commonly found in German
+supermarkets. These are {\it assam\_tea}, {\it haltbare\_milch}, {\it icedtea},
+and {\it jacobs\_coffee}. The objects have different properties. For example,
+{\it assam\_tea} is smaller than {\it icedtea}. The front of {\it icedtea}
+exhibits characteristic texture. Its back, though, only shows smallprint. {\it
+jacobs\_coffee} shows texture that repeats on different sides of the object.
 Finally, {\it haltbare\_milch} contains characteristic texture which is
 confined only to certain regions on its surface.
 
-Equation~\ref{equation:fiducial-object} requires that a template object must
-not move with respect to the fiducial markers when collecting raw data. This
-would be equivalent to redefining the object coordinate system.
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{media/modelbase-3D}
+        \caption[Model features of a selected modelbase]{Model features of a selected modelbase}
+        \label{figure:modelbase-3D}
+    \end{center}
+\end{figure}
+
+Figure~\ref{figure:modelbase-3D} shows the model features of a selected
+modelbase. From the dense 3D point cloud collected for each object, the feature
+detector chooses keypoints. This results in a sparse 3D point cloud
+representation for each template object.
+
+A practical consequence of Equation~\ref{equation:fiducial-object} is that a
+template object must not move with respect to the fiducial markers when
+collecting raw data. This would be equivalent to redefining the object
+coordinate system.
 
 \subsection{Validation Set}
 
 The validation set, which was used to optimize parameter sets, was collected
-similarly to the data for the modelbases. The fiducial markers were required
-for computing ground truth for the objects on the validation scenes. We
-recorded around 50-60 scenes, each of them showing three instances of objects
-in the modelbase. Out of those, we chose 21 scenes at roughly equal angle steps
-to form the validation set.
+similarly to the data for the modelbases. Again, the fiducial markers were
+required for computing ground truth for the objects on the validation scenes.
+We recorded around 50-60 scenes, each of them showing three instances of
+objects in the modelbase. Out of those, we chose 21 scenes at roughly equal
+angle steps to form the validation set.
 
 Given a scene, ground truth requires to compute the object-view transformations
 $_oT^v_i$, $_oT^v_j$, and $_oT^v_k$ for the three objects $i$, $j$ and $k$ in
@@ -108,9 +128,11 @@ that
     _oT^v_j: \vec{p} \mapsto\ _fT^v \left(\vec{p}\right)
 \end{equation}
 
-In other words, object $j$ was placed on the rotating table exactly as when raw
-data for modelbase had been collected. Pencil markers on the template objects
-helped us remembered the correct arrangement.
+In other words, object $j$ was placed on the rotating table the same way as
+when raw data for modelbase had been collected. Pencil markers on the template
+objects helped us remembered the correct arrangement. Imprecision was difficult
+to avoid, when we placed the objects manually on the table. This introduces
+some noise in the ground truth data.
 
 \begin{figure}[h!]
     \begin{center}
@@ -120,7 +142,7 @@ helped us remembered the correct arrangement.
 \end{figure}
 
 The other two objects $i$ and $k$ were placed upright next to object $i$, with
-offset of $-0.15$ and $0.13$ in x-direction of fiducial coordinates
+offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 
 \begin{equation}
     _oT^v_i: \vec{p} \mapsto\ _fT^v\left(\vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} \right)
@@ -130,7 +152,18 @@ offset of $-0.15$ and $0.13$ in x-direction of fiducial coordinates
     _oT^v_k: \vec{p} \mapsto\ _fT^v\left(\vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} \right)
 \end{equation}
 
-Units are specified in metres.
+% TODO: give average number of keypoints
+<<echo=false>>=
+    e_orb = dbGetQuery(con, paste(
+        "select distinct avg_keypoints",
+        "from response r",
+        "join experiment e on r.id = e.response_id",
+        "where e.name like '%orb%' and e.test_set='ias_kinect_test_grounded_21'"))
+@
+
+<<echo=false>>=
+    rm(e_orb)
+@
 
 % TODO: future work might involve computation of ground truth in more complex
 % configurations
@@ -409,6 +442,13 @@ The system had difficulties to recognize {\it icedtea} when shown from a
 certain angle.  It turned out that {\it icedtea} has smallprint almost all over
 its backside. The same set of letters repeatably appear over a large area,
 which probably makes it hard to obtain informative features.
+
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.2\textwidth]{media/icedtea_smallprint}
+        \caption[Repetitive texture on template object]{Repetitive texture on template object {\it icedtea}}
+    \end{center}
+\end{figure}
 
 \subsection{Maximum projection error in RANSAC}
 
