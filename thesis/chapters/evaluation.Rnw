@@ -450,19 +450,84 @@ which probably makes it hard to obtain informative features.
     \end{center}
 \end{figure}
 
-\subsection{Maximum projection error in RANSAC}
+\subsection{Consensus for Distant Pose Estimates}
 
 Generally, the system relies on the size of the consensus set to be a strong
-indicator for the goodness of an estimate. It was observed, though, that in one
-experiment, the model was badly aligned, yet had strong support by many
-inliers. The reason for the large consensus set is that the projection error is
-a measure on the image plane, and matching keypoints are designated inliers as
-long as they do not exceed the maximum projection error which is a circle
-induced by L2-norm on the image plane. The problem can be traced back to the
-fact objects that are far away from the camera merely degenerate to a point on
-the image plane. All correspondences within the circle are designated inliers.
+indicator for the goodness of an estimate. We observed that in one experiment
+and scene, \clutseg estimated a distance of 88 metres between {\it icedtea} and
+the camera. This bad estimate was almost two orders of magnitude away from
+ground truth. Yet it still had support by 14 inliers, enough in this scene to
+make it the best-ranked guess.
+% RANSAC and the Maximum Projection Error
+% Perspective Projection and RANSAC
+% RANSAC and Degenerate Projections
+% Degeneration of Projections in Perspective
+% => it is not a deficiency in the RANSAC paradigm
+% => it is a deficiency in the error measure for fitting
+% Projection error and Distant Pose Estimates
+% Consensus for Distant Pose Estimates
 
-% TODO: reformulate
+An explanation for the large consensus set is that the projection error is a
+measure on the image plane. Given a scene, consider any correspondence $c_i =
+(q_i, p_i) \in \mathbb{R}^2 \times \mathbb{R}^3 $ between a query feature with
+keypoint $q_i$ and a model feature with 3D point $p_i$. Let $_o\hat{T}^v$ be a
+pose estimate. Let $U: \mathbb{R}^3 \to \mathbb{R}^2$ denote perspective
+projection for the calibrated camera. Define the projection $\hat{q}_i$ of the
+model point $p_i$, aligned to the scene by $_o\hat{T}^v$, as
+
+\begin{equation}
+    \hat{q}_i := U\left(\ _o\hat{T}^v\left(p_i\right)\right)
+\end{equation}
+
+The correspondence $c_i$ is designated inlier if and only if the L2-distance
+between query keypoint and the projection of the model point aligned to the
+scene is less than a threshold $r$, precisely 
+
+% TODO: include predicate that z-coordinate (depth) of T(p_i) must be greater than zero
+% this is a geometrical constraint, see pnp_ransac.cpp
+
+\begin{equation}
+    c_i\ \text{ is an inlier w.r.t. }\ _o\hat{T}^v\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r
+    \label{equation:inlier-definition}
+\end{equation}
+
+Now, let us model the scenario, where a distant pose estimate was generated
+for an object that is close to the camera in truth. Let $_o\hat{T}^v$ denote
+ground truth for $_o\hat{T}^v$. 
+ 
+    % \normtwo{_o\hat{T}^v\left(\vec{0}\right) - _oT^v\left(\vec{0}\right)}
+\begin{equation}
+    e_t\left(_o\hat{T}^v,\ _oT^v\right) \geq l
+\end{equation}
+
+Choose $l$ large enough that the projection of the aligned model spans only one
+pixel $\hat{q}$ on the digital image plane. For the $n$ correspondences for this object, this means
+
+\begin{equation}
+    \forall{i \in \left[n\right]}: \hat{q}_i \approx \hat{q}
+    \label{equation:same-point}
+\end{equation} 
+
+Plugging Equation~\ref{equation:same-point} into Equation~\ref{equation:inlier-definition},
+we obtain an inlier criteria for the bad estimate
+
+\begin{equation}
+    \forall{i \in \left[n\right]}:\quad c_i\ \text{ is an inlier w.r.t. }\ _o\hat{T}^v\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r
+\end{equation}
+
+All correspondences within a circle of radius $r$ around $\hat{q}$ are
+designated inliers. If this circle contains many keypoints on the query image,
+the resulting consensus set of the pose estimate might grow larger than
+expected. The effect can possibly be neglected if radius $r$ is small. In fact,
+in the experiment exhibiting the phenomenon, the radius was set to $r = 12$
+(pixels). Note that this radius is equivalent to the parameter {\tt
+max\_projection\_error}.
+
+There are at least three hypothetical solutions to this issue. One might set
+parameter {\tt max\_projection\_error} to a low value.  The bad pose estimates
+could be pruned away by priorly assuming the objects to be within a certain
+range. Finally, radius $r$ could be replaced by a function that depends on the
+estimated distance $\normtwo{_o\hat{T}^v\left(\vec{0}\right)}$.
 
 \begin{figure}[h]
     \begin{center}
