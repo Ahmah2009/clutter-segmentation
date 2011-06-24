@@ -2,7 +2,7 @@
 
 function usage() {
     cat <<USAGE
-Usage: param_selection_test [--debug] 
+Usage: experiment_runner_test [--debug] 
 
 See script for documentation.
 USAGE
