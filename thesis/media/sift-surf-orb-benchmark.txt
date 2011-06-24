@@ -1,0 +1,4 @@
+extractor   time_img    time_kpt    quantity
+SIFT            2.0         20          250
+SURF            1.2         15          280
+ORB             0.2          1          400

@@ -404,6 +404,43 @@ can be presented on the validation set than for the test set.
 \subsection{Performance on Test Set}
 \subsection{Performance in Live Test}
 
+\subsection{Computation Speed of Oriented BRIEF}
+
+This section discusses a case, where Oriented BRIEF outperformed SIFT and SURF
+in speed of computation, while producing keypoints in greater quantities. We
+made this observation on the validation set.
+
+For SIFT, SURF and ORB with the default parameters specified in OpenCV revision
+TODO, Figure~\ref{figure:sift-surf-orb-benchmark} shows three statistics, averaged
+over 21 images. First, the average clock time required to extract features per
+image. Second, the average clock time required per keypoint and image. Third,
+the average number of keypoints extracted per image.
+
+\begin{figure}[h!]
+    \begin{center}
+<<echo=false>>=
+    png("sift-surf-orb-benchmark.png", 800, 400)
+    layout(matrix(c(1, 2, 3), 1, 3))
+
+    cols = c("orange", "darkgreen", "blue") 
+
+    par(cex=1.2)
+    par(cex.main=0.9)
+    d=as.data.frame(read.table("../media/sift-surf-orb-benchmark.txt", header=TRUE))
+    barplot(d$time_img, names.arg=d$extractor, main="Time per image",    ylab="time [s]",  col=cols)
+    barplot(d$time_kpt, names.arg=d$extractor, main="Time per keypoint", ylab="time [ms]", col=cols)
+    barplot(d$quantity, names.arg=d$extractor, main="Keypoint quantity", ylab="quantity",  col=cols)
+    invisible(dev.off())
+@
+     \includegraphics[width=0.6\textwidth]{media/feature-extractor-performance}
+     \caption{Benchmark results of SIFT, SURF and ORB}
+     \label{figure:sift-surf-orb-benchmark}
+    \end{center}
+\end{figure}
+
+Oriented BRIEF ran about X times faster than SIFT, and about Y times faster than SURF.
+
+
 \section{Issues}
 
 % \subsection{Prior Assumption about Orientation}
@@ -531,7 +568,7 @@ estimated distance $\normtwo{_o\hat{T}^v\left(\vec{0}\right)}$.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.6\textwidth]{media/ransac-max-projection-error-deficiency}
+        \includegraphics[width=0.8\textwidth]{media/ransac-max-projection-error-deficiency}
         \caption[Schematic explanation of distant pose estimate with many inliers]{Far-away pose estimate can result in many inliers}
     \end{center}
 \end{figure}
