@@ -242,7 +242,7 @@ Altogether, the experiments took more than \Sexpr{floor(e_all$total_test_runtime
 of wall-time to compute, an average of
 \Sexpr{round(e_all$avg_test_runtime / 60, 1)}~minutes per experiment.
 \refTable{table:hardsoftware-parameter-optimization} lists the hardware and software
-configuration. Note that the hardware is more than six years old.
+configuration. The hardware is more than six years old.
 
 \begin{table}[h!]
   \begin{center}
@@ -259,17 +259,17 @@ configuration. Note that the hardware is more than six years old.
   \end{center}
 \end{table}
 
-\begin{figure}
-    \begin{center}
-<<fig=true,png=true,size=0.5>>=
-    r_all = dbGetQuery(con, paste(
-        "select succ_rate",
-        "from response"));
-    hist(r_all$succ_rate, xlab = "Success Rate", main = "Histogram of Success Rates")
-@
-    \caption{Histogram of success rates in experiments}
-    \end{center}
-\end{figure}
+% \begin{figure}
+%    \begin{center}
+%<<fig=true,png=true,size=0.5>>=
+%    r_all = dbGetQuery(con, paste(
+%        "select succ_rate",
+%        "from response"));
+%    hist(r_all$succ_rate, xlab = "Success Rate", main = "Histogram of Success Rates")
+%@
+%    \caption{Histogram of success rates in experiments}
+%    \end{center}
+%\end{figure}
 
 <<>>=
     rm(e_all)
@@ -498,6 +498,68 @@ FAST and STAR. The parameter {\it n\_features} is simple and intuitive. Yet,
 ORB does not make any guarantee about the actual number of features extracted
 on the image. The parameter is just a hint. The question arises how
 well ORB responds to different numbers of desired features.
+
+\begin{figure}
+    \begin{center}
+<<>>=
+    png("orb-response-n-features.png", 500, 400)
+
+    col = c("magenta", "darkgreen", "blue", "red") 
+    par(cex=1.2)
+    par(cex.main=0.9)
+
+    r = read.table("../media/orb-response-n-features.txt", header=TRUE)
+
+    assam_tea = r[names(r) == "assam_tea"]
+    clutter = r[names(r) == "clutter"]
+    house = r[names(r) == "house"]
+    mandrill = r[names(r) == "mandrill"]
+
+    plot(r[[1]], r[[2]],
+         main="ORB response on desired number of features",
+         xlab="n_features",
+         ylab="actual number of features",
+         type="o", pch=21,
+         xlim=c(0, 4000), ylim=c(0, 2500), lty=2, col=col[1], asp=1)
+    lines(r[[1]],  r[[3]], type="o", pch=22, col=col[2], lty=2)
+    lines(r[[1]], r[[4]], type="o", pch=23, col=col[3], lty=2)
+    lines(r[[1]], r[[5]], type="o", pch=24, col=col[4], lty=2)
+    legend(3000, 2500, names(r)[2:5], pch=21:24, col=col)
+    invisible(dev.off())
+@
+     \includegraphics[width=0.6\textwidth]{orb-response-n-features}
+     \caption{ORB response on number of desired features}
+     \label{figure:orb-response-n-features}
+    \end{center}
+\end{figure}
+
+\refFigure{figure:orb-response-n-features} plots the number of desired features
+against the number of features that were actually obtained by ORB. The four
+test images {\it assam\_tea}, {\it clutter}, {\it house}, and {\it mandrill}
+carry different amount of informations, though all were sampled at the same
+resolution of 512x512 pixels. Increasing values for {\tt n\_features} have
+been tried until the number of actual keypoints reaches its maximum for all
+four images.
+
+{\it Mandrill} has very fine-grained texture, and ORB extracted maximally
+\Sexpr{max(mandrill)} keypoints on this image. This number is greater than for
+image {\it house}, where only \Sexpr{max(house)} features were chosen for all
+values of {\tt n\_features} greater or equal than \Sexpr{r[[1]][min(which(house == max(house)))]}.
+
+<<>>=
+   max_exceed = -min(min(r[[1]] - assam_tea),
+          min(r[[1]] - clutter),
+          min(r[[1]] - house),
+          min(r[[1]] - mandrill))
+@
+
+The actual number was never observed to exceed the desired number of keypoints
+by more than \Sexpr{max_exceed} keypoints.
+
+<<>>=
+    rm(r)
+    rm(max_exceed)
+@
 
 \section{Issues}
 

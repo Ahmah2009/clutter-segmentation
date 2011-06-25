@@ -32,6 +32,7 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <map>
 #include <stdint.h>
 #include <string>
 #include <tod/core/Features2d.h>
@@ -557,6 +558,9 @@ TEST_F(test_extractor, orb_opencv_custom_extract_features) {
     }
 }
 
+// SIFT-SURF-ORB Benchmark 
+// ---------------------------------------------------------------------------
+
 struct benchmark_t {
     benchmark_t() : time_cpu(0), time_real(0), quantity(0), n(0) {}
     Mat sample_img;
@@ -653,3 +657,56 @@ TEST_F(test_extractor, sift_surf_orb_benchmark) {
     }
 }
 
+// ORB response on n_features
+// ---------------------------------------------------------------------------
+
+size_t orb_response_n_features(const Mat & img, int n_features) {
+    Mat mask = Mat::ones(img.size(), CV_8UC1);
+    vector<KeyPoint> kpts;
+    ORB orb = ORB(n_features);
+    orb(img, mask, kpts);
+    if (n_features == 0) {
+        Mat canvas = img.clone();
+        drawKeypoints(canvas, kpts);
+        imwrite(str(boost::format("build/image-n-features-0-%d.png") % clock()), canvas);
+    }
+    return kpts.size();
+}
+
+TEST_F(test_extractor, orb_response_n_features) {
+    map<string, Mat> imgs;
+    imgs["assam_tea"] = imread("data/assam_tea.png", 0);
+    imgs["clutter"] = imread("data/clutter.jpg", 0);
+    imgs["house"] = imread("data/house.tiff", 0);
+    imgs["mandrill"] = imread("data/mandrill.tiff", 0);
+    // std::map guarantees order of keys (this is not the order of insertion)
+    cout << "n_features ";
+    for (map<string, Mat>::iterator img_it = imgs.begin(); img_it != imgs.end(); img_it++) {
+        cout << boost::format("%10s ") % img_it->first;
+        assert(img_it->second.empty() == false);
+    }
+    cout << endl;
+    size_t sum = 0;
+    // n_features = 0 leads to funny behaviour
+    for (int n_features = 0; n_features <= 50000; n_features += 250) {
+        if (n_features > 0) {
+            cout << boost::format("%10d ") % n_features;
+        }
+        size_t s = 0;
+        for (map<string, Mat>::iterator img_it = imgs.begin(); img_it != imgs.end(); img_it++) {
+            size_t r = orb_response_n_features(img_it->second, n_features);
+            if (n_features > 0) {
+                cout << boost::format("%10d ") % r;
+            }
+            s += r;
+        }
+        if (n_features > 0) {
+            cout << endl;
+        }
+        if (sum == s) {
+            break;
+        } else {
+            sum = s;
+        }
+    }
+}

@@ -47,6 +47,13 @@ features from multiple views of the template object. \tod extracts {\it model
 features} from the template object, and {\it query features} from the query
 scene. These features are asymmetric in nature.
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{../doc/tod_training}
+        \caption{\tod pipeline used for learning models of template objects}
+   \end{center}
+\end{figure}
+
 \subsubsection{Model Features}
 
 Given a single view, let $\vec{p}$ be a 3D point of a template object in object
@@ -204,6 +211,13 @@ the extraction of query features. Second, the matching of query features and
 model features to obtain a set of correspondences between query image and
 models. Third, the estimation of object poses based on this set of
 correspondences.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{../doc/tod_detecting_kinect}
+        \caption{\tod pipeline used for recognizing instances}
+   \end{center}
+\end{figure}
 
 \subsubsection{Query Features}
 
