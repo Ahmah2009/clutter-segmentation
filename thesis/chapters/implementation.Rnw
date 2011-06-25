@@ -147,7 +147,7 @@ The model includes only features that belong to the template object.  \tod
 segments the 3D point cloud of the template object using a box-shaped
 pass-through filter of a predefined size at the object origin.  Remember that
 \tod uses the object-view transformation to find the object origin in camera
-coordinates, precisely $\oTv \parenth{\vec{0}}$. Then, a radius outlier search
+coordinates, precisely $\oTv \pth{\vec{0}}$. Then, a radius outlier search
 removes all points with less than 20 neighbors within 2 cm. \tod projects the
 segmented point cloud onto the image plane. The set of projected points form a
 mask that is supposed to align as close as possible to the true region of
@@ -176,7 +176,7 @@ extractors provided in OpenCV. Each of these features is described by a
 keypoint $\vec{p'}$ on the image plane and a descriptor vector $\vec{d}$.
 Assuming a calibrated camera, each keypoint $\vec{p'}$ uniquely corresponds to
 a 3D point $\vec{p}$ in the scene. Applying the inverse object-view
-transformation, a model feature $(\vTo \parenth{\vec{p}}, \vec{d})$ is obtained.
+transformation, a model feature $(\vTo \pth{\vec{p}}, \vec{d})$ is obtained.
 
 Actually, \tod applies the inverse object-view transformation right before
 calling RANSAC for pose estimation, but it is equivalent, conceptually simpler
@@ -551,7 +551,7 @@ actually visible in the scene. In case it is, the translational error $e_t$ give
 ground truth pose $\oTv$ and pose estimate $\oTvh$ is
 
 \begin{equation}
-    e_t = \normtwo{\ \oTvh \parenth{ \vec{0} -\ \oTv \vec{0} }\ }
+    e_t = \normtwo{\ \oTvh \pth{ \vec{0} -\ \oTv \vec{0} }\ }
 \end{equation}
 
 The orientation error $e_\alpha$ is computed from the ground truth orientation $r$
@@ -559,7 +559,7 @@ and estimated orientation $\hat{r}$, specified in axis-angle representation, and
 using the dot-product
 
 \begin{equation}
-    e_\alpha = \left| \arccos \parenth{ \frac{\vec{r}^t\ \hat{\vec{r}}}{\normtwo{\vec{r}}\ \normtwo{\hat{\vec{r}}}} } \right|
+    e_\alpha = \left| \arccos \pth{ \frac{\vec{r}^t\ \hat{\vec{r}}}{\normtwo{\vec{r}}\ \normtwo{\hat{\vec{r}}}} } \right|
 \end{equation}
 
 Rodrigues' rotation formula can be used to efficiently convert back and forth
