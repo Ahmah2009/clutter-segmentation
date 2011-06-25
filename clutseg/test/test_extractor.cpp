@@ -19,22 +19,32 @@
 
 #include <gtest/gtest.h>
 
+#include "clutseg/ground.h"
+#include "clutseg/pose.h"
 #include "clutseg/viz.h"
 
-#include <stdint.h>
+#include <algorithm>
 #include <cv.h>
 #include <opencv2/highgui/highgui.hpp>
-#include <tod/core/Features2d.h>
-#include <tod/training/feature_extraction.h>
+#include <boost/bind.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-#include <string>
 #include <iostream>
+#include <stdint.h>
+#include <string>
+#include <tod/core/Features2d.h>
+#include <tod/training/feature_extraction.h>
+#include <utility>
+#include <vector>
 
+using namespace clutseg;
 using namespace std;
 using namespace tod;
 using namespace cv;
+
+namespace bfs = boost::filesystem;
 
 void keypointsOutsideMask(const vector<KeyPoint> keypoints, const Mat & mask, vector<KeyPoint> & outside) {
      // This proves that no keypoint has been detected outside of the region of
@@ -541,6 +551,71 @@ TEST_F(test_extractor, orb_opencv_custom_extract_features) {
         drawKeypoints(f2d.image, f2d.keypoints, c);
         imshow("orb_opencv_custom_extract_features", c);
         waitKey(-1);
+    }
+}
+
+struct benchmark_t {
+    benchmark_t() : time(0), quantity(0), n(0) {}
+    Mat sample_img;
+    double time;
+    int quantity;
+    int n;
+    void print(const string & name) const {
+        cout << boost::format("%9s %8.2f %8.2f %8.0f") % name % (time / n) % (1000 * time / quantity) % (quantity / n) << endl;
+    }
+};
+
+template<typename F>
+benchmark_t benchmark(F extract, const vector<bfs::path> & image_paths) {
+    benchmark_t bm;
+    int i = 0;
+    BOOST_FOREACH(const bfs::path & p, image_paths) {
+        Mat img = imread(p.string(), 0);
+        Mat mask = Mat::ones(img.size(), CV_8UC1);
+        vector<KeyPoint> kpts;
+        clock_t a = clock();
+        extract(img, mask, kpts);
+        clock_t b = clock();
+        bm.time += 1.0 * (b - a) / CLOCKS_PER_SEC; 
+        bm.quantity += kpts.size();
+        bm.n++;
+
+        if (i == 0) {
+            bm.sample_img = imread(p.string(), 1);
+            drawKeypoints(bm.sample_img, kpts);
+        }
+        i++;
+    }
+    return bm;
+}
+
+TEST_F(test_extractor, sift_surf_orb_benchmark) {
+    if (!fast()) {
+        // Read images
+        bfs::path p(getenv("CLUTSEG_PATH"));
+        bfs::path v = p / "ias_kinect_test_grounded_21";
+        GroundTruth g = loadGroundTruthWithoutPoses((v / "testdesc.txt").string());
+        vector<bfs::path> image_paths;
+        /* doesn't work for some ******* reason --- std::transform(g.begin(), g.end(),
+            images.begin(), images.end(),
+            boost::bind<string>(&std::pair<string, LabelSet>::first, _1)); 
+            ---  anyways the following is even simpler */
+        for (GroundTruth::iterator test_it = g.begin(); test_it != g.end(); test_it++) {
+            image_paths.push_back(v / test_it->first);
+        }
+
+        benchmark_t sift = benchmark(SIFT(), image_paths);
+        benchmark_t surf = benchmark(SURF(), image_paths);
+        benchmark_t orb = benchmark(ORB(), image_paths);
+
+        cout << boost::format("%9s %8s %8s %8s") % "extractor" % "time_img" % "time_kpt" % "quantity" << endl;
+        sift.print("SIFT");
+        surf.print("SURF");
+        orb.print("ORB");
+
+        imwrite("build/sift_surf_orb_benchmark_sift.png", sift.sample_img);
+        imwrite("build/sift_surf_orb_benchmark_surf.png", surf.sample_img);
+        imwrite("build/sift_surf_orb_benchmark_orb.png", orb.sample_img);
     }
 }
 
