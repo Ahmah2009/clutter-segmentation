@@ -299,7 +299,7 @@ void RBriefDescriptorExtractor::write(FileStorage&) const
   //todo: rbrief write
 }
 
-#ifdef OPENCV_R5024
+#if defined OPENCV_R5024 || defined OPENCV_R5465
     struct RoiPredicate
     {
         RoiPredicate(float _minX, float _minY, float _maxX, float _maxY)

@@ -176,7 +176,7 @@ Matcher* Matcher::create(MatcherParameters& params)
   cv::Ptr<DescriptorMatcher> matcher;
   if (params.type == "FLANN")
   {
-    #ifdef OPENCV_R5024
+    #if defined OPENCV_R5024 || defined OPENCV_R5465
         cvflann::set_distance_type(cvflann::FLANN_DIST_MANHATTAN, 0);
     #else
         cvflann::set_distance_type(cvflann::MANHATTAN, 0);
@@ -479,7 +479,7 @@ void FlannRatioTestMatcher::match(const Mat& queryDescriptors)
   objectMatches.clear();
   objectMatches.resize(objectIds.size());
 
-  #ifdef OPENCV_R5024
+  #if defined OPENCV_R5024 || defined OPENCV_R5465
       cvflann::set_distance_type(cvflann::FLANN_DIST_MANHATTAN, 0);
   #else
       cvflann::set_distance_type(cvflann::MANHATTAN, 0);

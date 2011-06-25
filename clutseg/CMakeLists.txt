@@ -12,7 +12,7 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 rosbuild_init()
 
 # set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DOPENCV_R5024=OPENCV_R5024")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-DOPENCV_R5465")
 
 # enable lots of compiler warnings, because I'm fucking hardcore
 # see http://www.ros.org/wiki/rosbuild

@@ -27,11 +27,12 @@ Adding a new patch
 Integrating OpenCV from trunk into ROS
 --------------------------------------
 
-OpenCV 1044 was blocking the usage of SiftFeatureDetector. Therefore, the
-latest OpenCV version (svn rev 5024) containing the bug fix has been backported
-and integrated into the diamondback release version. Several smaller changes
-had to be made to make this possible. Here is a rough guide of what was done
-for switching from OpenCV 2.2. Basically, switching from
+OpenCV 1044 was blocking the usage of SiftFeatureDetector. Also ORB has been
+implemented only in more recent versions of OpenCV. Therefore, the latest
+OpenCV version (svn rev 5465) containing the bug fix has been backported and
+integrated into the diamondback release version. Several smaller changes had to
+be made to make this possible. Here is a rough guide of what was done for
+switching from OpenCV 2.2. Basically, switching from
 https://code.ros.org/trac/opencv/browser/branches/2.2/) to
 https://code.ros.org/trac/opencv/browser/trunk
 
@@ -45,7 +46,7 @@ See also http://answers.ros.org/question/867/how-to-use-very-latest-opencv-versi
 4. Remove ROS_NOBUILD files in <diamondback>/stacks/vision_opencv/opencv2>
 5. Change <diamondback>/stacks/vision_opencv/opencv2/Makefile
     - adapt SVN_URL, set to "https://code.ros.org/svn/opencv/trunk"
-    - adapt SVN_REVISION, set to "-r5024"
+    - adapt SVN_REVISION, set to "-r5465"
     - disable this patch "# SVN_PATCH = pythontest.patch"
 6. Remake ROS packages opencv2 and cv_bridge
 (Maybe 7. Fix issues with missing includes)

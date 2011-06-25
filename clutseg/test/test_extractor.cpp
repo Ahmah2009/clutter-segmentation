@@ -219,12 +219,14 @@ class test_extractor : public ::testing::Test {
             // of interest.
             vector<KeyPoint> outside;
             keypointsOutsideMask(f2d_masked.keypoints, f2d_masked.mask, outside);
-            /* annoying-la Mat canvas;
+         
+            Mat canvas;
             cvtColor(f2d_masked.mask, canvas, CV_GRAY2BGR);
             clutseg::drawKeypoints(canvas, f2d_masked.keypoints, Scalar::all(-1));
             clutseg::drawKeypoints(canvas, outside, Scalar(0, 0, 255));
-            imshow("keypoints inside and outside of the mask", canvas);
-            waitKey(1200); */
+            imshow(params.detector_type, canvas);
+            waitKey(-1);
+   
             if (expect) {
                 EXPECT_EQ(0, outside.size());
                 return outside.size() == 0;
@@ -371,6 +373,7 @@ TEST_F(test_extractor, masking_works) {
     map<const string, FeatureExtractionParams*>::iterator end = feparams.end();
     while (it != end) {
         bool ok = expectMaskingWorks(*(it->second));
+
         cout << boost::format("%35s [%4s]") % it->first % (ok ? "OK" : "FAIL") << endl;
         it++;
     }
@@ -452,7 +455,7 @@ TEST_F(test_extractor, times) {
 // Miscellaneous other tests
 // ---------------------------------------------------------------------------
 
-#ifndef OPENCV_R5024 
+#if ! defined OPENCV_R5024 && ! defined OPENCV_R5465
     TEST_F(test_extractor, sift_feature_detector_ignoresMask) {
         // I expect having found an annoying bug in OpenCV
         // SiftFeatureDetector does not use the mask.
