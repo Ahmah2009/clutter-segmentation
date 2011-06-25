@@ -4,7 +4,7 @@ object recognition system, called the \clutseg system. This
 chapter covers its design and the improvements we added to the existing
 libraries. It finally explains how system parameters were found with the help
 of a semi-automatic experiment runner, and how \clutseg can be
-evaluated with regard to Chapter~\ref{chapter:evaluation}.
+evaluated with regard to \refChapter{chapter:evaluation}.
 
 \begin{figure}[h]
     \begin{center}
@@ -217,7 +217,7 @@ query features for a specific scene are represented by an instance of struct
 keypoint-descriptor pair produced by SIFT, SURF or ORB, or any other feature
 extractor, and we introduce this term to clearly tell features from the query
 and the model apart. Note that query features do not include 3D information.
-This is subject of discussion, and is addressed in Chapter~\ref{chapter:evaluation}.
+This is subject of discussion, and is addressed in \refChapter{chapter:evaluation}.
 
 % TODO: consistency chapter 4 and Chapter 4, use capital letter
 
@@ -317,10 +317,10 @@ more convenient interface.
 
 At the core of \clutseg is the idea that we can have more confidence in a
 guess, when it is supported by a large consensus set of inliers. The discussion
-whether this holds true is deferred to Chapter~\ref{chapter:evaluation}. It
+whether this holds true is deferred to \refChapter{chapter:evaluation}. It
 remains an assumption in this chapter that more inliers lead to higher
 probability of the guess being correct. Measures for correctness are defined in
-Section~\ref{subsection:measured-statistics}.
+\refSection{subsection:measured-statistics}.
 
 A {\it guess ranking} is a function $r$ that assigns a real-valued score to a
 guess $(i, \hat{T}, S)$. Different rankings can be defined and plugged into
@@ -329,7 +329,7 @@ of multiple guess rankings. Yet, the ranking of interest is a guess ranking
 $r_{S}$ that assigns scores to guesses according to the number of inliers:
 
 \begin{equation}
-    r_S: (i, \hat{T}, S) \mapsto \left|S \right|
+    r_S: (i, \hat{T}, S) \mapsto \norm{S}
 \end{equation}
 
 The number of inliers is not only interesting because of the assumed correlation
@@ -343,10 +343,9 @@ computation resources to lessen the expected error in pose estimates. Guess
 refinement as in \clutseg takes a guess $(i, \hat{T}, S)$, matches the query
 features and against the model features of the $i$-th template object alone,
 and estimates poses for this objects as described in
-Section~\ref{subsubsection:tod-feature-matching}, using a model base consisting
+\refSection{subsubsection:tod-feature-matching}, using a model base consisting
 only of this single object model. The best guess according to the chosen guess
-ranking is designated the {\it refined guess}. % and
-\ref{subsubsection:tod-pose-estimation}, respectively.
+ranking is designated the {\it refined guess}.
 
 Guess refinement aims at finding more matches between query features and the
 single object whose pose is to be refined. By ignoring other models only
@@ -457,7 +456,7 @@ supported by a full grid of samples in parameter space.
 Feature extraction parameters control the extraction of local 2D features.  A
 choice needs to be made for the feature detector and the feature descriptor.
 Feature detectors again need to be configured. The requirements described in
-Chapter~\ref{chapter:introduction} call for a feature detector that produces
+\refChapter{chapter:introduction} call for a feature detector that produces
 features in good quantities, and it shall be reasonably fast. Hence, the main
 focus was set on Oriented BRIEF, which takes three main parameters. The number
 of levels in the scale-space pyramid is denoted by {\tt octaves}, the
@@ -514,7 +513,7 @@ modified to keep trace of the minimum, maximum and average number of features
 extracted on the views. Also, the number of times where the computation of the
 object-view transformation failed due to undetected chessboards is tracked.
 The time required for building the model base is recorded as well. Results are
-presented in Chapter~\ref{chapter:evaluation}.
+presented in \refChapter{chapter:evaluation}.
 
 \subsubsection{Ground Truth}
 
@@ -524,7 +523,7 @@ which objects can be seen at what location and orientation in the scene. Thus,
 ground truth $G$ can be described as a set of labels
 
 \begin{equation}
-    G = \left\{ (i,\ \oTvi{i}) : \text{object $i$ is on scene at pose $\oTvi{}$} \right\}
+    G = \cbr{ (i,\ \oTvi{i}) : \text{object $i$ is on scene at pose $\oTvi{}$} }
 \end{equation}
 
 % TODO: introduce abbreviation for object-view transformation
@@ -559,7 +558,7 @@ and estimated orientation $\hat{r}$, specified in axis-angle representation, and
 using the dot-product
 
 \begin{equation}
-    e_\alpha = \left| \arccos \pth{ \frac{\vec{r}^t\ \hat{\vec{r}}}{\normtwo{\vec{r}}\ \normtwo{\hat{\vec{r}}}} } \right|
+    e_\alpha = \norm{ \arccos \pth{ \frac{\vec{r}^t\ \hat{\vec{r}}}{\normtwo{\vec{r}}\ \normtwo{\hat{\vec{r}}}} } }
 \end{equation}
 
 Rodrigues' rotation formula can be used to efficiently convert back and forth

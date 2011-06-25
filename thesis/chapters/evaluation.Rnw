@@ -64,7 +64,7 @@ saved about 60-70 views per object to a bag file, which has been observed to
 work better than with only 40 views. For each object, around 1 Gigabyte of data
 was recorded. The next preparatory step was to uncompress the bag files with a
 script included in both \clutseg and \tod, then perform pose estimation and
-masking for each view as described in Section \ref{subsection:learning}.  This
+masking for each view as described in \refSection{subsection:learning}.  This
 post-processed raw data provides the masks and the object-view transformation
 which can be used to create several modelbases using different feature
 detectors and descriptors. The resulting models of each template object were
@@ -82,7 +82,7 @@ modelbase raw data.
     \end{center}
 \end{figure}
 
-Figure~\ref{figure:modelbase} shows the four different household objects for
+\refFigure{figure:modelbase} shows the four different household objects for
 which we collected raw data. They are items commonly found in German
 supermarkets. These are {\it assam\_tea}, {\it haltbare\_milch}, {\it icedtea},
 and {\it jacobs\_coffee}. The objects have different properties. For example,
@@ -100,12 +100,12 @@ confined only to certain regions on its surface.
     \end{center}
 \end{figure}
 
-Figure~\ref{figure:modelbase-3D} shows the model features of a selected
+\refFigure{figure:modelbase-3D} shows the model features of a selected
 modelbase. From the dense 3D point cloud collected for each object, the feature
 detector chooses keypoints. This results in a sparse 3D point cloud
 representation for each template object.
 
-A practical consequence of Equation~\ref{equation:fiducial-object} is that a
+A practical consequence of \refEquation{equation:fiducial-object} is that a
 template object must not move with respect to the fiducial markers when
 collecting raw data. This would be equivalent to redefining the object
 coordinate system.
@@ -239,7 +239,7 @@ we chose ORB instead.
 Altogether, the experiments took more than \Sexpr{floor(e_all$total_test_runtime / 3600)}~hours
 of wall-time to compute, an average of
 \Sexpr{round(e_all$avg_test_runtime / 60, 1)}~minutes per experiment.
-Table~\ref{table:hardsoftware-parameter-optimization} lists the hardware and software
+\refTable{table:hardsoftware-parameter-optimization} lists the hardware and software
 configuration. Note that the hardware is more than six years old.
 
 \begin{table}[h!]
@@ -332,7 +332,7 @@ configuration. Note that the hardware is more than six years old.
 
 Here we present a parameter set, dubbed SPS, that has been found to work well
 on the validation set. It contains values for all configurable system
-parameters. Table~\ref{table:selected-parameters-features} provides values for
+parameters. \refTable{table:selected-parameters-features} provides values for
 feature extraction. We used the same feature extraction parameters for the
 modelbase and for the query scenes. We used the default values from OpenCV for
 parameters {\tt octaves} and {\tt scale\_factor}.
@@ -355,7 +355,7 @@ parameters {\tt octaves} and {\tt scale\_factor}.
   \end{center}
 \end{table}
 
-Table~\ref{table:sps-match-guess} shows parameter values for the
+\refTable{table:sps-match-guess} shows parameter values for the
 detection and refinement stages. We used Locality Sensitive Hashing in both
 stages to match the binary features produced by Oriented BRIEF.
 
@@ -412,7 +412,7 @@ computation.
 
 We first compared SIFT, SURF and ORB in terms of speed and quantity of features
 produced. We used the default parameters specified in OpenCV revision.
-Figure~\ref{figure:sift-surf-orb-benchmark} shows three statistics as a result,
+\refFigure{figure:sift-surf-orb-benchmark} shows three statistics as a result,
 averaged over 21 images. Time was measured in terms of clock cycles. First, the
 average time in seconds required to extract features per image. Second, the
 average time in milliseconds required per keypoint and image. Third, the
@@ -544,15 +544,15 @@ Choose $l$ large enough that the projection of the aligned model spans only one
 pixel $\hat{q}$ on the digital image plane. For the $n$ correspondences for this object, this means
 
 \begin{equation}
-    \forall{i \in \left[n\right]}: \hat{q}_i \approx \hat{q}
+    \forall{i \in \brt{n}}: \hat{q}_i \approx \hat{q}
     \label{equation:same-point}
 \end{equation} 
 
-Plugging Equation~\ref{equation:same-point} into Equation~\ref{equation:inlier-definition},
+Plugging \refEquation{equation:same-point} into \refEquation{equation:inlier-definition},
 we obtain an inlier criteria for the bad estimate
 
 \begin{equation}
-    \forall{i \in \left[n\right]}:\quad c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r
+    \forall{i \in \brt{n}}:\quad c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r
 \end{equation}
 
 All correspondences within a circle of radius $r$ around $\hat{q}$ are

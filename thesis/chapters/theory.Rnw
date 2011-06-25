@@ -1,5 +1,5 @@
 This chapter provides the theoretical foundations for building the 3D object
-recognition system as presented in Chapter~\ref{chapter:implementation}. It
+recognition system as presented in \refChapter{chapter:implementation}. It
 provides a review of required mathematical tools and the basics of multi-view
 3D object recognition. It covers the description of images using local
 features with state-of-the-art techniques, how to quickly establish
@@ -7,7 +7,7 @@ correspondences between known and unseen images, and finally how to estimate
 poses in presence of noise and mismatches in the correspondences.  Also, this
 chapter shows how the implemented system relates to the mathematical framework
 of classifiers and estimators, which is helpful for the evaluation given in
-Chapter~\ref{chapter:evaluation}.
+\refChapter{chapter:evaluation}.
 
 \section{Prerequisites in Geometry}
 
@@ -131,7 +131,7 @@ models are learnt from a single view of the template object \cite{Lowe1999}.
 Given a query image, local features are extracted and matched against the model.
 This approach works well, if the object in the query scene has approximately
 the same orientation as in the template view. Lowe reports that using SIFT
-features, discussed in Section~\ref{subsection:SIFT}, it is possible
+features, discussed in \refSection{subsection:SIFT}, it is possible
 to recognize objects up to a 20 degree rotation \cite{Lowe1999}. Unfortunately,
 considering only a single view is insufficient if query scenes show objects in
 arbitrary orientation.
