@@ -87,21 +87,21 @@ fiducial markers that are glued to the rotating table on opposite sides.
 
 Note that there is a subtlety in the relationship of the fiducial markers and
 the object coordinate system. In fact, the camera calibration computes the PRT
-$_fT^v$ between the {\it fiducial coordinate system} attached to the fiducial
+$\fTv$ between the {\it fiducial coordinate system} attached to the fiducial
 markers and the view coordinate system. The origin in fiducial coordinates is
 defined midway between the two chessboards. Yet, we need the object-view
-transformation $_oT^v$. The solution here is to just {\it define} the object
+transformation $\oTv$. The solution here is to just {\it define} the object
 coordinate system to be the same as the coordinate system attached to the
 fiducial markers, that is
 
 \begin{equation}
-    _oT^v: \real^3 \to \real^3, \vec{p} \mapsto\ _fT^v(\vec{p})
+    \oTv: \real^3 \to \real^3, \vec{p} \mapsto\ \fTv(\vec{p})
     \label{equation:fiducial-object}
 \end{equation}
 
 % TODO: use 2D instead of 2D, and 3D instead of 3D
 
-Computation of $_fT^v$ is yet another instance of the PnP problem. The 2D-3D
+Computation of $\fTv$ is yet another instance of the PnP problem. The 2D-3D
 correspondences are obtained from detecting the chessboard corners in the
 image.
 
@@ -147,16 +147,16 @@ The model includes only features that belong to the template object.  \tod
 segments the 3D point cloud of the template object using a box-shaped
 pass-through filter of a predefined size at the object origin.  Remember that
 \tod uses the object-view transformation to find the object origin in camera
-coordinates, precisely $\ovt{\vec{0}}$. Then, a radius outlier search removes
-all points with less than 20 neighbors within 2 cm. \tod projects the segmented
-point cloud onto the image plane. The set of projected points form a mask that
-is supposed to align as close as possible to the true region of interest. Due
-to some bug in underlying software, the estimate for the region of interest
-sometimes included parts of the chessboards next to the template objects. These
-undesired parts in the mask were observed to be separate connected components.
-Hence, we fixed the mask by opening the image with a disk of radius $10.3$,
-removing all but the largest connected component and dilating the mask with a
-disk of $2.3$ to compensate for the opening step.
+coordinates, precisely $\oTv \parenth{\vec{0}}$. Then, a radius outlier search
+removes all points with less than 20 neighbors within 2 cm. \tod projects the
+segmented point cloud onto the image plane. The set of projected points form a
+mask that is supposed to align as close as possible to the true region of
+interest. Due to some bug in underlying software, the estimate for the region
+of interest sometimes included parts of the chessboards next to the template
+objects. These undesired parts in the mask were observed to be separate
+connected components.  Hence, we fixed the mask by opening the image with a
+disk of radius $10.3$, removing all but the largest connected component and
+dilating the mask with a disk of $2.3$ to compensate for the opening step.
 
 % probably should not include a picture from other database?
 % \begin{figure}[h!]
@@ -176,15 +176,15 @@ extractors provided in OpenCV. Each of these features is described by a
 keypoint $\vec{p'}$ on the image plane and a descriptor vector $\vec{d}$.
 Assuming a calibrated camera, each keypoint $\vec{p'}$ uniquely corresponds to
 a 3D point $\vec{p}$ in the scene. Applying the inverse object-view
-transformation, a model feature $(\vot{\vec{p}}, \vec{d})$ is obtained.
+transformation, a model feature $(\vTo \parenth{\vec{p}}, \vec{d})$ is obtained.
 
 Actually, \tod applies the inverse object-view transformation right before
 calling RANSAC for pose estimation, but it is equivalent, conceptually simpler
 and computationally faster to do this only once while extracting features.
 
-\subsubsection{Model Base}
+\subsubsection{Modelbase}
 
-\tod stores all knowledge about the template objects in a {\it model base}.
+\tod stores all knowledge about the template objects in a {\it modelbase}.
 Each model is a set of model features, unified from several views. \tod uses a
 simple heuristic to select which model features are incorporated in a model, it
 selects the model features from views in roughly equal angle steps with respect
@@ -524,7 +524,7 @@ which objects can be seen at what location and orientation in the scene. Thus,
 ground truth $G$ can be described as a set of labels
 
 \begin{equation}
-    G = \left\{ (i,\ _oT^v_i) : \text{object $i$ is on scene at pose $_oT^v_i$} \right\}
+    G = \left\{ (i,\ \oTvi{i}) : \text{object $i$ is on scene at pose $\oTvi{}$} \right\}
 \end{equation}
 
 % TODO: introduce abbreviation for object-view transformation
@@ -548,10 +548,10 @@ on the scene. Statistics record when \clutseg returns without making a guess.
 
 Error in estimated pose can only be computed in case the guessed object is
 actually visible in the scene. In case it is, the translational error $e_t$ given
-ground truth pose $_oT^v$ and pose estimate $_o\hat{T}^v$ is
+ground truth pose $\oTv$ and pose estimate $\oTvh$ is
 
 \begin{equation}
-    e_t = \normtwo{\ _o\hat{T}^v\left(\vec{0}\right) -\ _oT^v\left(\vec{0}\right)\ }
+    e_t = \normtwo{\ \oTvh \left( \vec{0} \right) -\ \oTv \left( \vec{0} \right)\ }
 \end{equation}
 
 The orientation error $e_\alpha$ is computed from the ground truth orientation $r$

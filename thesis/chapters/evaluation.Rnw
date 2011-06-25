@@ -120,12 +120,12 @@ objects in the modelbase. Out of those, we chose 21 scenes at roughly equal
 angle steps to form the validation set.
 
 Given a scene, ground truth requires to compute the object-view transformations
-$_oT^v_i$, $_oT^v_j$, and $_oT^v_k$ for the three objects $i$, $j$ and $k$ in
+$\oTvi{i}$, $\oTvi{j}$, and $\oTv{k}$ for the three objects $i$, $j$ and $k$ in
 the scene. We placed object $j$ in the center between the fiducial markers, such
 that 
 
 \begin{equation}
-    _oT^v_j: \vec{p} \mapsto\ _fT^v \left(\vec{p}\right)
+    \oTvi{j}: \vec{p} \mapsto\ \fTv \left(\vec{p}\right)
 \end{equation}
 
 In other words, object $j$ was placed on the rotating table the same way as
@@ -145,11 +145,11 @@ The other two objects $i$ and $k$ were placed upright next to object $i$, with
 offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 
 \begin{equation}
-    _oT^v_i: \vec{p} \mapsto\ _fT^v\left(\vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} \right)
+    \oTvi{i}: \vec{p} \mapsto\ \fTv \left(\vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} \right)
 \end{equation}
 
 \begin{equation}
-    _oT^v_k: \vec{p} \mapsto\ _fT^v\left(\vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} \right)
+    \oTvi{k}: \vec{p} \mapsto\ \fTv \left(\vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} \right)
 \end{equation}
 
 % TODO: give average number of keypoints
@@ -510,13 +510,13 @@ make it the best-ranked guess.
 An explanation for the large consensus set is that the projection error is a
 measure on the image plane. Given a scene, consider any correspondence $c_i =
 (q_i, p_i) \in \real^2 \times \real^3 $ between a query feature with
-keypoint $q_i$ and a model feature with 3D point $p_i$. Let $_o\hat{T}^v$ be a
+keypoint $q_i$ and a model feature with 3D point $p_i$. Let $\oTvh$ be a
 pose estimate. Let $U: \real^3 \to \real^2$ denote perspective
 projection for the calibrated camera. Define the projection $\hat{q}_i$ of the
-model point $p_i$, aligned to the scene by $_o\hat{T}^v$, as
+model point $p_i$, aligned to the scene by $\oTvh$, as
 
 \begin{equation}
-    \hat{q}_i := U\left(\ _o\hat{T}^v\left(p_i\right)\right)
+    \hat{q}_i := U\left(\ \oTvh\left(p_i\right)\right)
 \end{equation}
 
 The correspondence $c_i$ is designated inlier if and only if the L2-distance
@@ -527,17 +527,17 @@ scene is less than a threshold $r$, precisely
 % this is a geometrical constraint, see pnp_ransac.cpp
 
 \begin{equation}
-    c_i\ \text{ is an inlier w.r.t. }\ _o\hat{T}^v\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r
+    c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r
     \label{equation:inlier-definition}
 \end{equation}
 
 Now, let us model the scenario, where a distant pose estimate was generated
-for an object that is close to the camera in truth. Let $_o\hat{T}^v$ denote
-ground truth for $_o\hat{T}^v$. 
+for an object that is close to the camera in truth. Let $\oTv$ denote
+ground truth for $\oTvh$. 
  
-    % \normtwo{_o\hat{T}^v\left(\vec{0}\right) - _oT^v\left(\vec{0}\right)}
+    % \normtwo{\oTvh\left(\vec{0}\right) - \oTv\left(\vec{0}\right)}
 \begin{equation}
-    e_t\left(_o\hat{T}^v,\ _oT^v\right) \geq l
+    e_t\left(\oTvh,\ \oTv\right) \geq l
 \end{equation}
 
 Choose $l$ large enough that the projection of the aligned model spans only one
@@ -552,7 +552,7 @@ Plugging Equation~\ref{equation:same-point} into Equation~\ref{equation:inlier-d
 we obtain an inlier criteria for the bad estimate
 
 \begin{equation}
-    \forall{i \in \left[n\right]}:\quad c_i\ \text{ is an inlier w.r.t. }\ _o\hat{T}^v\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r
+    \forall{i \in \left[n\right]}:\quad c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r
 \end{equation}
 
 All correspondences within a circle of radius $r$ around $\hat{q}$ are
@@ -567,7 +567,7 @@ There are at least three hypothetical solutions to this issue. One might set
 parameter {\tt max\_projection\_error} to a low value.  The bad pose estimates
 could be pruned away by priorly assuming the objects to be within a certain
 range. Finally, radius $r$ could be replaced by a function that depends on the
-estimated distance $\normtwo{_o\hat{T}^v\left(\vec{0}\right)}$.
+estimated distance $\normtwo{\oTvh\left(\vec{0}\right)}$.
 
 \begin{figure}[h]
     \begin{center}

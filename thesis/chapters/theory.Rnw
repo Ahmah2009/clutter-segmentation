@@ -56,25 +56,25 @@ used. The first kind is attached to the camera and is called {\it view
 coordinate system}. The second kind is attached to an object or its model and
 is called {\it object coordinate system}. The PRT between object coordinates
 and view coordinates is called {\it object-view transformation} and is denoted
-sy $_oT^v$. Subsequently, the inverse PRT is called {\it view-object
-transformation} and denoted by $_vT^o$
+sy $\oTv$. Subsequently, the inverse PRT is called {\it view-object
+transformation} and denoted by $\vTo$
 
 \begin{equation}
-_oT^v = \left( _oT^v\right)^{-1}
+  \vTo = \left( \oTv \right)^{-1}
 \end{equation}
 
 Here are two examples to show the usefulness of these definitions. To compute
 the distance between camera and the object origin, use
 
 \begin{equation}
-d = \left|\left|\ _oT^v\left( \vec{0} \right)\ \right|\right|_2
+d = \normtwo{\ \oTv \left( \vec{0} \right)\ }
 \end{equation}
 
 Compute the distance $d_{12}$ between the two objects $1$ and $2$ in a scene by
 
 \begin{equation}
-d_{12} = \left|\left|\ _oT_1^v\left( \vec{0} \right) -\ _oT_2^v\left( \vec{0}
-\right)\ \right|\right|_2
+d_{12} = \normtwo{\ \oTvi{1} \left( \vec{0} \right) -\ \oTvi{2} \left( \vec{0}
+\right)\ }
 \end{equation}
 
 \begin{figure}
