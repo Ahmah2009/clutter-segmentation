@@ -38,7 +38,7 @@ are attached to the object coordinate system.
 
   The PR2 robot was controlled by the Robot Operating System, which is a
 distributed system where nodes communicate by publishing and subscribing to
-topics. In our case, the interesting topics were the image and the 3-d point
+topics. In our case, the interesting topics were the image and the 3D point
 cloud, together forming the sought-after depth images. In ROS, data can be
 recorded in so-called bags. For depth images, these bags quickly grow large.
 
@@ -404,41 +404,44 @@ can be presented on the validation set than for the test set.
 \subsection{Performance on Test Set}
 \subsection{Performance in Live Test}
 
-\subsection{Computation Speed of Oriented BRIEF}
+\subsection{Oriented BRIEF}
 
-This section discusses a case, where Oriented BRIEF outperformed SIFT and SURF
-in speed of computation, while producing keypoints in greater quantities. We
-made this observation on the validation set.
+This section discusses performance and characteristics of Oriented BRIEF. It
+presents a case, where Oriented BRIEF outperformed SIFT and SURF in speed of
+computation. 
 
-For SIFT, SURF and ORB with the default parameters specified in OpenCV revision
-TODO, Figure~\ref{figure:sift-surf-orb-benchmark} shows three statistics, averaged
-over 21 images. First, the average clock time required to extract features per
-image. Second, the average clock time required per keypoint and image. Third,
-the average number of keypoints extracted per image.
+We first compared SIFT, SURF and ORB in terms of speed and quantity of features
+produced. We used the default parameters specified in OpenCV revision.
+Figure~\ref{figure:sift-surf-orb-benchmark} shows three statistics as a result,
+averaged over 21 images. Time was measured in terms of clock cycles. First, the
+average time in seconds required to extract features per image. Second, the
+average time in milliseconds required per keypoint and image. Third, the
+average number of keypoints extracted per image.
 
-\begin{figure}[h!]
+\begin{figure}
     \begin{center}
 <<echo=false>>=
     png("sift-surf-orb-benchmark.png", 800, 400)
     layout(matrix(c(1, 2, 3), 1, 3))
 
-    cols = c("orange", "darkgreen", "blue") 
-
+    col = c("orange", "darkgreen", "blue", "lightblue") 
     par(cex=1.2)
     par(cex.main=0.9)
+
     d=as.data.frame(read.table("../media/sift-surf-orb-benchmark.txt", header=TRUE))
-    barplot(d$time_img, names.arg=d$extractor, main="Time per image",    ylab="time [s]",  col=cols)
-    barplot(d$time_kpt, names.arg=d$extractor, main="Time per keypoint", ylab="time [ms]", col=cols)
-    barplot(d$quantity, names.arg=d$extractor, main="Keypoint quantity", ylab="quantity",  col=cols)
+    barplot(d$time_img, names.arg=d$extractor, main="Time per image",    ylab="time [s]",  ylim=c(0, 0.8), col=col)
+    barplot(d$time_kpt, names.arg=d$extractor, main="Time per keypoint", ylab="time [ms]", ylim=c(0, 0.5), col=col)
+    barplot(d$quantity, names.arg=d$extractor, main="Keypoint quantity", ylab="quantity", ylim=c(0, 2000), col=col)
     invisible(dev.off())
 @
-     \includegraphics[width=0.6\textwidth]{media/feature-extractor-performance}
-     \caption{Benchmark results of SIFT, SURF and ORB}
+     \includegraphics[width=\textwidth]{sift-surf-orb-benchmark}
+     \caption{Comparison of SIFT, SURF and ORB in times of speed and quantity}
      \label{figure:sift-surf-orb-benchmark}
     \end{center}
 \end{figure}
 
-Oriented BRIEF ran about X times faster than SIFT, and about Y times faster than SURF.
+Oriented BRIEF ran about \Sexpr{floor(d$time_img[1]/d$time_img[3])} times faster than
+SIFT, and about \Sexpr{floor(d$time_img[2]/d$time_img[3])} times faster than SURF.
 
 
 \section{Issues}
