@@ -509,9 +509,9 @@ make it the best-ranked guess.
 
 An explanation for the large consensus set is that the projection error is a
 measure on the image plane. Given a scene, consider any correspondence $c_i =
-(q_i, p_i) \in \mathbb{R}^2 \times \mathbb{R}^3 $ between a query feature with
+(q_i, p_i) \in \real^2 \times \real^3 $ between a query feature with
 keypoint $q_i$ and a model feature with 3D point $p_i$. Let $_o\hat{T}^v$ be a
-pose estimate. Let $U: \mathbb{R}^3 \to \mathbb{R}^2$ denote perspective
+pose estimate. Let $U: \real^3 \to \real^2$ denote perspective
 projection for the calibrated camera. Define the projection $\hat{q}_i$ of the
 model point $p_i$, aligned to the scene by $_o\hat{T}^v$, as
 

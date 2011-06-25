@@ -24,17 +24,17 @@ A {\it rigid transformation} is defined as combination of an orthogonal
 transformation and translation in Euclidean space. A {\it proper rigid
 transformation} additionally requires the orthogonal transformation to be a
 rotation. In three dimensions, a proper rigid transformation can be represented
-by a rotation matrix $R \in \mathbb{R}^3$ and a translation vector $\vec{t} \in
-\mathbb{R}^3$.
+by a rotation matrix $R \in \real^3$ and a translation vector $\vec{t} \in
+\real^3$.
 
 \begin{equation}
-    T: \mathbb{R}^3 \to \mathbb{R}^3, \vec{p} \mapsto R\vec{p} + \vec{t}
+    T: \real^3 \to \real^3, \vec{p} \mapsto R\vec{p} + \vec{t}
 \end{equation}
 
 The inverse transformation is given by
  
 \begin{equation}
-    T^{-1}: \mathbb{R}^3 \to \mathbb{R}^3, \vec{p} \mapsto R^{-1}(\vec{p} - \vec{t})
+    T^{-1}: \real^3 \to \real^3, \vec{p} \mapsto R^{-1}(\vec{p} - \vec{t})
 \end{equation}
 
 A proper rigid transformation, abbreviated by PRT in the following, can be used

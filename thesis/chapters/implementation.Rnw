@@ -95,7 +95,7 @@ coordinate system to be the same as the coordinate system attached to the
 fiducial markers, that is
 
 \begin{equation}
-    _oT^v: \mathbb{R}^3 \to \mathbb{R}^3, \vec{p} \mapsto\ _fT^v(\vec{p})
+    _oT^v: \real^3 \to \real^3, \vec{p} \mapsto\ _fT^v(\vec{p})
     \label{equation:fiducial-object}
 \end{equation}
 
