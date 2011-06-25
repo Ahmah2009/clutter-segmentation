@@ -125,7 +125,7 @@ the scene. We placed object $j$ in the center between the fiducial markers, such
 that 
 
 \begin{equation}
-    \oTvi{j}: \vec{p} \mapsto\ \fTv \left(\vec{p}\right)
+    \oTvi{j}: \vec{p} \mapsto\ \fTv \parenth{\vec{p}}
 \end{equation}
 
 In other words, object $j$ was placed on the rotating table the same way as
@@ -145,11 +145,11 @@ The other two objects $i$ and $k$ were placed upright next to object $i$, with
 offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 
 \begin{equation}
-    \oTvi{i}: \vec{p} \mapsto\ \fTv \left(\vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} \right)
+    \oTvi{i}: \vec{p} \mapsto\ \fTv \parenth{ \vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} }
 \end{equation}
 
 \begin{equation}
-    \oTvi{k}: \vec{p} \mapsto\ \fTv \left(\vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} \right)
+    \oTvi{k}: \vec{p} \mapsto\ \fTv \parenth{ \vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} }
 \end{equation}
 
 % TODO: give average number of keypoints
@@ -516,7 +516,7 @@ projection for the calibrated camera. Define the projection $\hat{q}_i$ of the
 model point $p_i$, aligned to the scene by $\oTvh$, as
 
 \begin{equation}
-    \hat{q}_i := U\left(\ \oTvh\left(p_i\right)\right)
+    \hat{q}_i := U\parenth{ \ \oTvh \parenth{ p_i}\ }
 \end{equation}
 
 The correspondence $c_i$ is designated inlier if and only if the L2-distance
@@ -537,7 +537,7 @@ ground truth for $\oTvh$.
  
     % \normtwo{\oTvh\left(\vec{0}\right) - \oTv\left(\vec{0}\right)}
 \begin{equation}
-    e_t\left(\oTvh,\ \oTv\right) \geq l
+    e_t \parenth{ \oTvh,\ \oTv } \geq l
 \end{equation}
 
 Choose $l$ large enough that the projection of the aligned model spans only one
@@ -567,7 +567,7 @@ There are at least three hypothetical solutions to this issue. One might set
 parameter {\tt max\_projection\_error} to a low value.  The bad pose estimates
 could be pruned away by priorly assuming the objects to be within a certain
 range. Finally, radius $r$ could be replaced by a function that depends on the
-estimated distance $\normtwo{\oTvh\left(\vec{0}\right)}$.
+estimated distance $\normtwo{\oTvh\parenth{\vec{0}}}$.
 
 \begin{figure}[h]
     \begin{center}

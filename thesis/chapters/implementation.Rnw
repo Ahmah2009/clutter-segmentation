@@ -551,7 +551,7 @@ actually visible in the scene. In case it is, the translational error $e_t$ give
 ground truth pose $\oTv$ and pose estimate $\oTvh$ is
 
 \begin{equation}
-    e_t = \normtwo{\ \oTvh \left( \vec{0} \right) -\ \oTv \left( \vec{0} \right)\ }
+    e_t = \normtwo{\ \oTvh \parenth{ \vec{0} -\ \oTv \vec{0} }\ }
 \end{equation}
 
 The orientation error $e_\alpha$ is computed from the ground truth orientation $r$
@@ -559,7 +559,7 @@ and estimated orientation $\hat{r}$, specified in axis-angle representation, and
 using the dot-product
 
 \begin{equation}
-    e_\alpha = \left| \arccos \left( \frac{\vec{r}^t\ \hat{\vec{r}}}{\normtwo{\vec{r}}\ \normtwo{\hat{\vec{r}}}} \right) \right|
+    e_\alpha = \left| \arccos \parenth{ \frac{\vec{r}^t\ \hat{\vec{r}}}{\normtwo{\vec{r}}\ \normtwo{\hat{\vec{r}}}} } \right|
 \end{equation}
 
 Rodrigues' rotation formula can be used to efficiently convert back and forth

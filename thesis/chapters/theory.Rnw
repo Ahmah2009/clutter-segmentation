@@ -60,21 +60,20 @@ sy $\oTv$. Subsequently, the inverse PRT is called {\it view-object
 transformation} and denoted by $\vTo$
 
 \begin{equation}
-  \vTo = \left( \oTv \right)^{-1}
+  \vTo = \parenth{ \oTv }^{-1}
 \end{equation}
 
 Here are two examples to show the usefulness of these definitions. To compute
 the distance between camera and the object origin, use
 
 \begin{equation}
-d = \normtwo{\ \oTv \left( \vec{0} \right)\ }
+d = \normtwo{\ \oTv \parenth{ \vec{0} }\ }
 \end{equation}
 
 Compute the distance $d_{12}$ between the two objects $1$ and $2$ in a scene by
 
 \begin{equation}
-d_{12} = \normtwo{\ \oTvi{1} \left( \vec{0} \right) -\ \oTvi{2} \left( \vec{0}
-\right)\ }
+d_{12} = \normtwo{\ \oTvi{1} \parenth{ \vec{0} } -\ \oTvi{2} \parenth{ \vec{0}} \ }
 \end{equation}
 
 \begin{figure}
@@ -283,7 +282,7 @@ keypoints and designates orientations $\alpha$ as
     \alpha = \arctan \frac{m_{01}}{m_{10}}
 \end{equation}
 
-Consider the vector $\left( m_{01}, m_{10}\right)^T$. The angle of the vector
+Consider the vector $\parenth{ m_{01}, m_{10} }^T$. The angle of the vector
 in becomes the orientation of the keypoint. If $f$ were a probability
 distribution, then this vector would contain the means of the marginal
 distributions of x and y, respectively.
