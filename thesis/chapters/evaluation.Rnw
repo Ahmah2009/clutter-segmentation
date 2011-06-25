@@ -428,8 +428,12 @@ except for ORB, where the number of desired features was set to 1500.
 
 \refFigure{figure:sift-surf-orb-benchmark} shows the CPU time per image, the
 CPU time per keypoint and the number of keypoints, averaged over 21 images from
-the validation set. The detectors are not parallelized and the measured CPU
-time was roughly equivalent to wall time. Oriented BRIEF ran about
+the validation set. None of the three detectors is parallelized and the
+measured CPU time was roughly equivalent to wall time. The hardware and
+software configuration of the notebook used for the benchmark is shown in table
+\refTable{table:hardsoftware-sift-surf-orb-benchmark}.
+
+Oriented BRIEF ran about
 \Sexpr{floor(d$img_cpu[sift]/d$img_cpu[orb])} times faster than SIFT, and about
 \Sexpr{floor(d$img_cpu[surf]/d$img_cpu[orb])} times faster than SURF.  Because
 ORB required only \Sexpr{d$img_cpu[orb]} milliseconds to compute keypoints and
@@ -458,6 +462,19 @@ pose estimation.
     \end{center}
 \end{figure}
 
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lll}
+        Component & Type \\
+        \hline
+        CPU & Intel Core i5-560M \\
+        RAM & 2 Gigabyte DDR3 & \\
+        OS & Ubuntu 10.10 Maverick \\
+    \end{tabular}
+    \caption{Hard- and software configuration for feature detector and descriptor benchmark}
+    \label{table:hardsoftware-sift-surf-orb-benchmark}
+  \end{center}
+\end{table}
 
 <<>>=
     rm(col)
