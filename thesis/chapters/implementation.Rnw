@@ -188,11 +188,11 @@ and computationally faster to do this only once while extracting features.
 Each model is a set of model features, unified from several views. \tod uses a
 simple heuristic to select which model features are incorporated in a model, it
 selects the model features from views in roughly equal angle steps with respect
-to the rotating table. \tod stores the model base in a hierarchical manner on
+to the rotating table. \tod stores the modelbase in a hierarchical manner on
 the filesystem, retaining data from views that are not actually included in the
 models.
 % TODO: refer to paper that select view based on informativeness, information content, entropy
-\footnote{The model base is represented by struct {\tt TrainingBase} in \tod.}
+\footnote{The modelbase is represented by struct {\tt TrainingBase} in \tod.}
 
 \subsection{Recognition}
 \label{subsection:recognition}
@@ -241,7 +241,7 @@ correspondences between these query features and model features. Let $C_i$ be
 the set of correspondences where a query feature has been matched with a model
 feature from the $i$-th template object. Finally, let $C = (C_1, \dots, C_n)$
 denote the partition of all correspondences for the query scene, where $n$ is
-the number of template objects described in the model base.  \tod integrates
+the number of template objects described in the modelbase.  \tod integrates
 different nearest-neighbor algorithms. There is FLANN, which we have not
 tested.  \tod offers brute-force matching algorithms. We used Locally Sensitive
 Hashing in \tod for matching.
@@ -343,7 +343,7 @@ computation resources to lessen the expected error in pose estimates. Guess
 refinement as in \clutseg takes a guess $(i, \hat{T}, S)$, matches the query
 features and against the model features of the $i$-th template object alone,
 and estimates poses for this objects as described in
-\refSection{subsubsection:tod-feature-matching}, using a model base consisting
+\refSection{subsubsection:tod-feature-matching}, using a modelbase consisting
 only of this single object model. The best guess according to the chosen guess
 ranking is designated the {\it refined guess}.
 
@@ -368,7 +368,7 @@ This section describes the full recognition process. It puts the ideas of
 guess ranking, guess refinement and guess rejection into context.
 
 Given a query scene, the \clutseg recognition process first calls \tod once to
-produce a set of initial guesses $D$ for all objects in the model base. A
+produce a set of initial guesses $D$ for all objects in the modelbase. A
 ranking defines a total order on $D$. The inlier ranking $r_S$ is used for this
 by default. \clutseg chooses the first ranked guess in $G_D$ and computes the
 refined guess. If the ranking of the refined guess is greater or equal than
@@ -512,7 +512,7 @@ recorded. The model construction is part of \tod's codebase and it had to be
 modified to keep trace of the minimum, maximum and average number of features
 extracted on the views. Also, the number of times where the computation of the
 object-view transformation failed due to undetected chessboards is tracked.
-The time required for building the model base is recorded as well. Results are
+The time required for building the modelbase is recorded as well. Results are
 presented in \refChapter{chapter:evaluation}.
 
 \subsubsection{Ground Truth}
