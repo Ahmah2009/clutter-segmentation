@@ -555,13 +555,31 @@ TEST_F(test_extractor, orb_opencv_custom_extract_features) {
 }
 
 struct benchmark_t {
-    benchmark_t() : time(0), quantity(0), n(0) {}
+    benchmark_t() : time_cpu(0), time_real(0), quantity(0), n(0) {}
     Mat sample_img;
-    double time;
+    double time_cpu;
+    double time_real;
     int quantity;
     int n;
+    static void header() {
+        cout << boost::format("%9s %8s %8s %8s %8s %8s")
+            % "extractor"
+            % "img_cpu"
+            % "img_real"
+            % "kpt_cpu"
+            % "kpt_real"
+            % "quantity"
+                << endl;
+    }
     void print(const string & name) const {
-        cout << boost::format("%9s %8.2f %8.2f %8.0f") % name % (time / n) % (1000 * time / quantity) % (quantity / n) << endl;
+        cout << boost::format("%9s %8.2f %8.2f %8.2f %8.2f %8.0f")
+            % name
+            % (time_cpu / n)
+            % (time_real / n)
+            % (time_cpu / quantity)
+            % (time_real / quantity)
+            % (quantity / n)
+                << endl;
     }
 };
 
@@ -570,22 +588,35 @@ benchmark_t benchmark(F extract, const vector<bfs::path> & image_paths) {
     benchmark_t bm;
     int i = 0;
     BOOST_FOREACH(const bfs::path & p, image_paths) {
+        cout << "." << flush;
         Mat img = imread(p.string(), 0);
         Mat mask = Mat::ones(img.size(), CV_8UC1);
         vector<KeyPoint> kpts;
+        // timing start
+        timeval at;
+        assert(gettimeofday(&at, NULL) == 0);
         clock_t a = clock();
+        // extract features
         extract(img, mask, kpts);
+        // timing end
         clock_t b = clock();
-        bm.time += 1.0 * (b - a) / CLOCKS_PER_SEC; 
+        timeval bt;
+        assert(gettimeofday(&bt, NULL) == 0);
+        timeval abt;
+        timersub(&bt, &at, &abt);
+        // update statistics
+        bm.time_cpu += 1000. * (b - a) / CLOCKS_PER_SEC; 
+        bm.time_real += (1000. * abt.tv_sec + abt.tv_usec / 1000.); 
         bm.quantity += kpts.size();
         bm.n++;
-
+        // save sample image
         if (i == 0) {
             bm.sample_img = imread(p.string(), 1);
             drawKeypoints(bm.sample_img, kpts);
         }
         i++;
     }
+    cout << endl;
     return bm;
 }
 
@@ -606,9 +637,9 @@ TEST_F(test_extractor, sift_surf_orb_benchmark) {
 
         benchmark_t sift = benchmark(SIFT(), image_paths);
         benchmark_t surf = benchmark(SURF(), image_paths);
-        benchmark_t orb = benchmark(ORB(), image_paths);
+        benchmark_t orb = benchmark(ORB(1500), image_paths);
 
-        cout << boost::format("%9s %8s %8s %8s") % "extractor" % "time_img" % "time_kpt" % "quantity" << endl;
+        benchmark_t::header();
         sift.print("SIFT");
         surf.print("SURF");
         orb.print("ORB");

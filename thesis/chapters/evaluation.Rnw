@@ -1,4 +1,7 @@
-<<echo=FALSE>>=
+\SweaveOpts{echo=FALSE}
+
+
+<<>>=
     source("../scripts/common.R")
 @
 
@@ -152,7 +155,7 @@ offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 \end{equation}
 
 % TODO: give average number of keypoints
-<<echo=false>>=
+<<>>=
     e_orb = dbGetQuery(con, paste(
         "select distinct avg_keypoints",
         "from response r",
@@ -160,7 +163,7 @@ offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
         "where e.name like '%orb%' and e.test_set='ias_kinect_test_grounded_21'"))
 @
 
-<<echo=false>>=
+<<>>=
     rm(e_orb)
 @
 
@@ -192,7 +195,7 @@ work well on the validation set.
 \subsection{Searched Parameter Space}
 
 
-<<echo=FALSE>>=
+<<>>=
     # Get the number of experiments in total
     e_all = dbGetQuery(con, paste(
         "select count(e.id) as cnt,",
@@ -258,7 +261,7 @@ configuration. Note that the hardware is more than six years old.
 
 \begin{figure}
     \begin{center}
-<<fig=true,png=true,echo=false,size=0.5>>=
+<<fig=true,png=true,size=0.5>>=
     r_all = dbGetQuery(con, paste(
         "select succ_rate",
         "from response"));
@@ -268,7 +271,7 @@ configuration. Note that the hardware is more than six years old.
     \end{center}
 \end{figure}
 
-<<echo=false>>=
+<<>>=
     rm(e_all)
     rm(e_fast_rbrief)
     rm(e_orb)
@@ -278,7 +281,7 @@ configuration. Note that the hardware is more than six years old.
 
 \subsection{Selected Parameter Set}
 
-<<echo=false>>=
+<<>>=
     sps = dbGetQuery(con, paste(
           "select e.id as id,",
           # parameters
@@ -405,21 +408,38 @@ can be presented on the validation set than for the test set.
 
 \subsection{Oriented BRIEF}
 
-This section discusses performance and characteristics of Oriented BRIEF. It
-presents a case, where Oriented BRIEF outperformed SIFT and SURF in speed of
-computation. 
+This section discusses results of experiments with Oriented BRIEF. It covers
+a benchmark that compares computation speed of ORB, SIFT, and SURF. It shows
+how ORB responds to the number of desired features, a parameter that cannot be
+found in many other feature detectors.
+
+\subsubsection{Computation Speed}
 
 We first compared SIFT, SURF and ORB in terms of speed and quantity of features
-produced. We used the default parameters specified in OpenCV revision.
-\refFigure{figure:sift-surf-orb-benchmark} shows three statistics as a result,
-averaged over 21 images. Time was measured in terms of clock cycles. First, the
-average time in seconds required to extract features per image. Second, the
-average time in milliseconds required per keypoint and image. Third, the
-average number of keypoints extracted per image.
+produced. We used the default parameters from OpenCV (SVN revision 5465),
+except for ORB, where the number of desired features was set to 1500.
+
+<<>>=
+    d=as.data.frame(read.table("../media/sift-surf-orb-benchmark.txt", header=TRUE))
+    sift = which(d$extractor == "SIFT")
+    surf = which(d$extractor == "SURF")
+    orb = which(d$extractor == "ORB")
+@
+
+\refFigure{figure:sift-surf-orb-benchmark} shows the CPU time per image, the
+CPU time per keypoint and the number of keypoints, averaged over 21 images from
+the validation set. The detectors are not parallelized and the measured CPU
+time was roughly equivalent to wall time. Oriented BRIEF ran about
+\Sexpr{floor(d$img_cpu[sift]/d$img_cpu[orb])} times faster than SIFT, and about
+\Sexpr{floor(d$img_cpu[surf]/d$img_cpu[orb])} times faster than SURF.  Because
+ORB required only \Sexpr{d$img_cpu[orb]} milliseconds to compute keypoints and
+descriptors for one image, the amount of time \clutseg spends in computing
+query features becomes negligible compared to the time spent in matching and
+pose estimation.
 
 \begin{figure}
     \begin{center}
-<<echo=false>>=
+<<>>=
     png("sift-surf-orb-benchmark.png", 800, 400)
     layout(matrix(c(1, 2, 3), 1, 3))
 
@@ -427,10 +447,9 @@ average number of keypoints extracted per image.
     par(cex=1.2)
     par(cex.main=0.9)
 
-    d=as.data.frame(read.table("../media/sift-surf-orb-benchmark.txt", header=TRUE))
-    barplot(d$time_img, names.arg=d$extractor, main="Time per image",    ylab="time [s]",  ylim=c(0, 0.8), col=col)
-    barplot(d$time_kpt, names.arg=d$extractor, main="Time per keypoint", ylab="time [ms]", ylim=c(0, 0.5), col=col)
-    barplot(d$quantity, names.arg=d$extractor, main="Keypoint quantity", ylab="quantity", ylim=c(0, 2000), col=col)
+    barplot(d$img_cpu, names.arg=d$extractor, main="CPU Time per image",    ylab="time [ms]",  ylim=c(0, 800), col=col)
+    barplot(d$kpt_cpu, names.arg=d$extractor, main="CPU Time per keypoint", ylab="time [ms]", ylim=c(0, 0.5), col=col)
+    barplot(d$quantity, names.arg=d$extractor, main="Keypoints per image", ylab="quantity", ylim=c(0, 2000), col=col)
     invisible(dev.off())
 @
      \includegraphics[width=\textwidth]{sift-surf-orb-benchmark}
@@ -439,9 +458,29 @@ average number of keypoints extracted per image.
     \end{center}
 \end{figure}
 
-Oriented BRIEF ran about \Sexpr{floor(d$time_img[1]/d$time_img[3])} times faster than
-SIFT, and about \Sexpr{floor(d$time_img[2]/d$time_img[3])} times faster than SURF.
 
+<<>>=
+    rm(col)
+    rm(d)
+    rm(sift)
+    rm(surf)
+    rm(orb)
+@
+
+\subsubsection{Feature Quantity}
+
+Sometimes it is necessary to control the number of features selected by a
+feature detector.  In general, the number of features selected by a feature
+detector should be configurable, using a simple and intuitive threshold
+\cite{Tuytelaars2007}.
+
+A parameter {\tt n\_features} specifies the number of desired features produced
+by Oriented BRIEF. Other feature detectors and descriptors in OpenCV, such as
+SIFT and SURF do not provide such a parameter. Neither do the feature detectors
+FAST and STAR. The parameter {\it n\_features} is simple and intuitive. Yet,
+ORB does not make any guarantee about the actual number of features extracted
+on the image. The parameter is just a hint. The question arises how
+well ORB responds to different numbers of desired features.
 
 \section{Issues}
 

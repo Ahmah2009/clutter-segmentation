@@ -1,5 +1,5 @@
-extractor time_img time_kpt quantity
-     SIFT     0.75     0.47     1593
-     SURF     0.31     0.16     1967
-      ORB     0.05     0.10      501
+extractor  img_cpu img_real  kpt_cpu kpt_real quantity
+     SIFT   744.76   748.65     0.47     0.47     1593
+     SURF   315.24   316.51     0.16     0.16     1967
+      ORB    52.86    52.47     0.04     0.04     1495
 
