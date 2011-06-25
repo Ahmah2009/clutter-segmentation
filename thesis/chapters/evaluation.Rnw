@@ -84,13 +84,12 @@ modelbase raw data.
 
 \refFigure{figure:modelbase} shows the four different household objects for
 which we collected raw data. They are items commonly found in German
-supermarkets. These are {\it assam\_tea}, {\it haltbare\_milch}, {\it icedtea},
-and {\it jacobs\_coffee}. The objects have different properties. For example,
-{\it assam\_tea} is smaller than {\it icedtea}. The front of {\it icedtea}
-exhibits characteristic texture. Its back, though, only shows smallprint. {\it
-jacobs\_coffee} shows texture that repeats on different sides of the object.
-Finally, {\it haltbare\_milch} contains characteristic texture which is
-confined only to certain regions on its surface.
+supermarkets. These are \assamTea, \haltbareMilch, \icedtea, and \jacobsCoffee.
+The objects have different properties. For example, \assamTea is smaller than
+\icedtea. The front of \icedtea exhibits characteristic texture. Its back,
+though, only shows smallprint.  \jacobsCoffee shows texture that repeats on
+different sides of the object.  Finally, \haltbareMilch contains characteristic
+texture which is confined only to certain regions on its surface.
 
 \begin{figure}[h!]
     \begin{center}
@@ -478,15 +477,15 @@ in arbitrary orientation.
 
 \subsection{Repetitions in texture}
 
-The system had difficulties to recognize {\it icedtea} when shown from a
-certain angle.  It turned out that {\it icedtea} has smallprint almost all over
+The system had difficulties to recognize \icedtea when shown from a
+certain angle.  It turned out that \icedtea has smallprint almost all over
 its backside. The same set of letters repeatably appear over a large area,
 which probably makes it hard to obtain informative features.
 
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.2\textwidth]{media/icedtea_smallprint}
-        \caption[Repetitive texture on template object]{Repetitive texture on template object {\it icedtea}}
+        \caption[Repetitive texture on template object]{Repetitive texture on template object \icedtea }
     \end{center}
 \end{figure}
 
@@ -494,7 +493,7 @@ which probably makes it hard to obtain informative features.
 
 Generally, the system relies on the size of the consensus set to be a strong
 indicator for the goodness of an estimate. We observed that in one experiment
-and scene, \clutseg estimated a distance of 88 metres between {\it icedtea} and
+and scene, \clutseg estimated a distance of 88 metres between \icedtea and
 the camera. This bad estimate was almost two orders of magnitude away from
 ground truth. Yet it still had support by 14 inliers, enough in this scene to
 make it the best-ranked guess.
