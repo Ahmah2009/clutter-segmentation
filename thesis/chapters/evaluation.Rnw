@@ -29,15 +29,15 @@ hardware and software setup.
 
 We used the Willow Garage PR2 robot at TUM to collect raw data.  On top of the
 PR2, a Kinect RGB-D camera was mounted. A wooden board with two chessboards
-attached was setup in about TODO meters distance from the camera. This board
-served as a rotating table. The chessboards were printed on white DIN-A4
-paper using a laser printer, and around them was enough white margin as
-recommended in the documentation of method {\tt findChessboardCorners} in
-OpenCV. The recording took place in an indoor laboratory environment whose
-lighting conditions were roughly similar to the ones to be expected in an
-application scenario. The board was manually rotated, carefully and not too
-fast.  The objects must not move with respect to the fiducial markers, which
-are attached to the object coordinate system.
+attached was setup in about one meter distance from the camera. This board
+served as a rotating table. The chessboards were printed on white DIN-A4 paper
+using a laser printer, and around them was enough white margin as recommended
+in the documentation of method {\tt findChessboardCorners} in OpenCV. The
+recording took place in an indoor laboratory environment whose lighting
+conditions were roughly similar to the ones to be expected in an application
+scenario. The board was manually rotated, carefully and not too fast.  The
+objects must not move with respect to the fiducial markers, which are attached
+to the object coordinate system.
 
   The PR2 robot was controlled by the Robot Operating System, which is a
 distributed system where nodes communicate by publishing and subscribing to
@@ -50,9 +50,6 @@ had a resolution of 640x480. The sampling rate was set to about one depth image
 per second. The camera matrix needs to be recorded as well, for it is required
 at least in solving the point-to-point correspondence problem in pose
 estimation. 
-
-% TODO: write chessboard, not chessboard, in order to be consistent with OpenCV, in order to be consistent with OpenCV
-
 
 \subsection{Modelbases}
 \label{subsection:modelbase}

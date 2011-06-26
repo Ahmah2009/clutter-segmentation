@@ -313,8 +313,8 @@ the size of the descriptor vector, the nearest neighbor algorithm and the used
 distance metric. Great speed-ups can be achieved by weakening the requirements
 and allowing for approximate nearest neighbors. Computing the Hamming distance
 between binary features is faster than the L2-norm for real-valued feature
-descriptors \cite{Calonder2010}. This holds especially true with AMD's and
-Intel's {\tt POPCNT} instruction. % TODO: cite
+descriptors \cite{Calonder2010}. This holds especially true when using the {\tt POPCNT}
+instruction, available in AMD and Intel architectures \cite{AMD2009, Intel2007}.
 
 % TODO: can also be adapted to match binary features such as BRIEF. 
 
@@ -376,7 +376,6 @@ then the hypothesized pose is verified for support by the remaining data
 
 % There are six degrees of freedom for an object to be located and oriented in
 % space, three for translation and three for orientation. 
-% TODO: how many projected points do we need
 % Three 2D points in perspective projection are INsufficient to fully determine a pose.
 % If there were no noise in the set of 2D correspondences, we would be able to
 % find poses of an object by simply taking any three correspondences belonging to
