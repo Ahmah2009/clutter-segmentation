@@ -1,10 +1,10 @@
 This chapter first covers the implementation of existing libraries from the
-{\it Robot Operating System}. On top of these libraries, we implemented a
+{\it Robot Operating System}. On top of these libraries, we implemented an
 object recognition system, called the \clutseg system. This
 chapter covers its design and the improvements we added to the existing
 libraries. It finally explains how system parameters were found with the help
 of a semi-automatic experiment runner, and how \clutseg can be
-evaluated with regard to \refChapter{chapter:evaluation}.
+evaluated.
 
 \begin{figure}[h]
     \begin{center}
@@ -16,7 +16,7 @@ evaluated with regard to \refChapter{chapter:evaluation}.
 \section{Textured Object Detection Library}
 
 This section analyzes the third-party software underlying the \clutseg system,
-and explains how it was modified and improved to better fulfill the
+and explains how it was modified and improved to better fulfill our
 requirements.  It describes how to extract models of template objects from
 multiple views, and covers the elementary pipeline that later recognizes
 instances in query scenes.
@@ -26,22 +26,21 @@ robot applications, having its roots in the STAIR project at Stanford
 University. It contains the third-party packages {\it tod}, {\it tod\_training}
 and {\it tod\_detecting}. In the following, the system formed by these three
 ROS packages is called \tod for easier reference. Throughout this work, \tod
-has been used in SVN revision 50479, and modifications are explicitly mentioned
-in the following. At this revision, \tod was experimental, unstable, and not
-covered by automatic tests. The system participated in the {\it Solutions in
-Perception Challenge} at ICRA 2011 in Shanghai for comparison.
+has been used in Subversion revision 50479, and modifications are explicitly
+mentioned in the following. At this revision, \tod was experimental, unstable,
+and not covered by automatic tests. The system participated in the {\it
+Solutions in Perception Challenge} at ICRA 2011 in Shanghai for comparison.
 
-\tod was developed to be used together with a Microsoft Kinect RGB-D camera.
-Recognition is solely based on intensity and depth information, so color
-information is not required. \tod offers two modes. One targets the Kinect
-RGB-D camera.  The other mode was supposed to work better with a Prosilica MP 5
-camera. The latter clusters correspondences prior to pose estimation, the
-former does not. \clutseg uses \tod in the Kinect mode.
+\tod offers two modes. One targets the Kinect RGB-D camera. The second mode was
+supposed to work better with a Prosilica MP 5 camera. While the latter clusters
+correspondences prior to pose estimation, the former does not. \tod recognizes
+objects solely by intensity and depth information, so color information is not
+required. \clutseg uses \tod in the Kinect mode.
 
 \subsection{Learning}
 \label{subsection:learning}
 
-In general, an object recognition system for needs models of the objects it
+In general, an object recognition system needs models of the objects it
 shall be able to recognize. \tod learns these descriptions by extracting local
 features from multiple views of the template object. \tod extracts {\it model
 features} from the template object, and {\it query features} from the query
@@ -71,7 +70,7 @@ of instances of struct {\tt Features3d}.}
 a rotating table. The template object is either manually or automatically
 rotated, and a depth camera takes images from multiple views. 
 % TODO: RGB is not required!
-The depth image are the basic unit processed in a pipeline that comprises three
+The depth image are the basic units processed in a pipeline that comprises three
 stages for each view.  First, the computation of the object-view
 transformation.  Second, the segmentation of the region of interest that shows
 the object on the image. Third, the extraction of local 2D features and the
@@ -193,7 +192,7 @@ and computationally faster to do this only once while extracting features.
 
 \tod stores all knowledge about the template objects in a {\it modelbase}.
 Each model is a set of model features, unified from several views. \tod uses a
-simple heuristic to select which model features are incorporated in a model, it
+simple heuristic to select which model features are incorporated in a model; it
 selects the model features from views in roughly equal angle steps with respect
 to the rotating table. \tod stores the modelbase in a hierarchical manner on
 the filesystem, retaining data from views that are not actually included in the
@@ -215,7 +214,7 @@ correspondences.
 \begin{figure}
     \begin{center}
         \includegraphics[width=0.8\textwidth]{../doc/tod_detecting_kinect}
-        \caption{\tod pipeline used for recognizing instances}
+        \caption[\tod recognition pipeline]{\tod recognition pipeline (Kinect mode)}
    \end{center}
 \end{figure}
 
@@ -227,18 +226,19 @@ correspondences.
 Let $\vec{p}$ be a 2D point on a query image, and $\vec{d}$ its descriptor
 vector. Then we call $(\vec{p}, \vec{d})$ a {\it query feature}. \footnote{The
 query features for a specific scene are represented by an instance of struct
-{\tt Features2d}.} Hence, such a query feature is nothing else than a
+{\tt Features2d}.} Hence, such a query feature is nothing but a
 keypoint-descriptor pair produced by SIFT, SURF or ORB, or any other feature
 extractor, and we introduce this term to clearly tell features from the query
 and the model apart. Note that query features do not include 3D information.
-This is subject of discussion, and is addressed in \refChapter{chapter:evaluation}.
+% This is subject of discussion, and is addressed in
+% \refChapter{chapter:evaluation}.
 
 % TODO: consistency chapter 4 and Chapter 4, use capital letter
 
 \subsubsection{Extraction of Query Features}
 
 Similarly to the extraction of model features, \tod uses one of the OpenCV
-feature extractors to find a set of query features on the image. It is
+feature extractors to find a set of query features in the image. It is
 reasonable to select the same feature extractor as in the model extraction.
 Both query feature and model feature extraction can be configured, so \tod
 allows to try different feature detectors with configurable parameters. 
@@ -290,7 +290,7 @@ iteration is stopped, and \tod continues with the correspondence set for the
 next template object, if any. This means that the inlier sets of two different
 guesses never share a correspondence.
 
-ROS package {\tt posest} in stack {\tt vslam} contains an implementation of
+The ROS package {\tt posest} in stack {\tt vslam} contains an implementation of
 RANSAC for the PNP problem, which is used by \tod. It is roughly similar to the
 RANSAC/LD algorithm presented in \cite{Fischler1981}. It solves the P4P
 problem.  The largest consensus set found is fed to the PNP-solver in OpenCV
@@ -309,23 +309,25 @@ set of guesses, which is the output of the \tod recognition process.
 
 This section discusses the implementation of the \clutseg object recognition
 system on top of \tod. We introduce three core concepts that shape \clutseg for
-the specific application requirements of locating the next object to resolve
-from the clutter. This means that only object in the scene needs to be located.
-First, a guess ranking helps to discard guesses with low confidence. Second,
-guess refinement aims at spending more computation resources on specifically
-improving pose estimates for guesses with high confidence. Third, guess
-rejection attenuates the probability of settling on the wrong guess.  Finally,
-this section covers the tools that help to find parameters for the clutseg
-system and help collect statistics to evaluate its performance.
+our specific application requirements of locating the next object to resolve
+from the clutter. This means that only one of the objects in the scene needs to
+be located.  First, a guess ranking helps to discard guesses with low
+confidence. Second, guess refinement aims at spending more computation
+resources on specifically improving pose estimates for guesses with high
+confidence. Third, guess rejection attenuates the probability of settling on
+the wrong guess.  Finally, this section covers the tools that help to find
+parameters for the clutseg system and help collect statistics to evaluate its
+performance.
 
-The reasons why \clutseg was developed were three-fold. First, given the
+The reasons why \clutseg was developed were two-fold. First, given the
 robotic task of resolving the clutter in the scene requires the robot to locate
 one object in the scene. \tod produces several guesses, and to select a
 suitable one is within the scope of this work. Second, the performance of \tod
 was expected to be improved by building a system that more specifically
-targeted at the task at hand. Third, when working with experimental, unstable
-third-party software, it often proves useful to wrap certain parts of it with a
-more convenient interface.
+targeted at the task at hand. 
+% Third, when working with experimental, unstable
+% third-party software, it often proves useful to wrap certain parts of it with a
+% more convenient interface.
 
 \subsection{Guess Ranking}
 
@@ -353,7 +355,7 @@ an object by supplying more 3D points.
 \subsection{Guess Refinement}
 
 Given a guess, the idea of {\it guess refinement} is to spend additional
-computation resources to lessen the expected error in pose estimates. Guess
+computation resources to reduce the expected error in pose estimates. Guess
 refinement as in \clutseg takes a guess $(i, \hat{T}, S)$, matches the query
 features and against the model features of the $i$-th template object alone,
 and estimates poses for this objects as described in
@@ -366,7 +368,7 @@ single object whose pose is to be refined. By ignoring other models only
 correspondences between the query scene and one model are found. Such an
 approach is optimistic, and possibly dangerous, especially in cases where the
 guess to refine is a false positive.  The validity of such an approach has at
-least to empirically verified by experimentation.
+least to empirically be verified by experimentation.
 
 \subsection{Guess Rejection}
 
@@ -455,13 +457,13 @@ detectors. This would result in around $6 \cdot 10^6$ parameter sets. A full
 factorial design for finding optimal parameters, as recommended in
 \cite{Alpaydin2010} becomes difficult. The pragmatic approach chosen in this
 work is based on three ideas. First, we aim at reducing the dimensions of
-parameter space by priorly selecting parameter values by reasoning and the
+parameter space by priorly selecting parameter values by reasoning and by the
 experience of other researchers. Second, tools were developed together with
 \clutseg that support visual inspection of experiment results to support an
 intuitive analysis. Third, the exploration of parameter space is done
 selectively, and parameter sets in promising regions are more thoroughly
-investigated into. The danger of such an approach is obviously the chance to
-reach a local optimum instead of the targeted global optimum, and the drawback
+investigated. The danger of such an approach is obviously the chance to only
+find a local optimum instead of the targeted global optimum, and the drawback
 is that results have to be formulated with even more care since they are not
 supported by a full grid of samples in parameter space.
 
@@ -481,19 +483,20 @@ are desired.
 \subsubsection{Feature Matching Parameters}
 
 The matching process in the detection step and the refinement step have some
-parameters in common. The choice of matcher is denoted by {\tt
-detect\_matcher\_type} ({\tt refine\_matcher\_type}), but partly dictated by
-the prior choice of feature descriptor. A binary feature descriptor calls for a
-matcher that is well-designed to work with binary vectors. Also, brute-force is
-hardly a choice except for use as comparison to approximate nearest neighbor
-search algorithms. The focus is on the Locally Sensitive Hashing algorithm
-implemented in \tod. Parameter {\tt detect\_knn} ({\tt refine\_knn}) is a hint
-to the matching algorithm about how many neighbors per query feature shall be
-retrieved. The ratio test can be enabled or disabled by {\tt
-detect\_do\_ratio\_test} and configured by {\tt detect\_ratio\_threshold}
-for the detection step. In the refinement step it does not make sense and is
-disabled by default. The default value for {\tt detect\_ratio\_threshold} is selected
-to be $0.8$, as recommended in \cite{Lowe1999}.
+parameters in common. It is possible to plug different matching algorithms into
+\tod. The choice is denoted by {\tt detect\_matcher\_type} ({\tt
+refine\_matcher\_type}), but partly dictated by the prior choice of feature
+descriptor. A binary feature descriptor calls for a matcher that is
+well-designed to work with binary vectors. Also, brute-force is hardly a choice
+except for use as comparison to approximate nearest neighbor search algorithms.
+We focus on the Locally Sensitive Hashing algorithm implemented in \tod.
+Parameter {\tt detect\_knn} ({\tt refine\_knn}) is a hint to the matching
+algorithm about how many neighbors per query feature shall be retrieved. The
+ratio test can be enabled or disabled by {\tt detect\_do\_ratio\_test} and
+configured by {\tt detect\_ratio\_threshold} for the detection step. In the
+refinement step it does not make sense and is disabled by default. The default
+value for {\tt detect\_ratio\_threshold} is selected to be $0.8$, as
+recommended in \cite{Lowe1999}.
 
 % TODO: check whether correspondences or what kind of points are removed in tod
 % guess generator after each call to ransac
@@ -513,11 +516,13 @@ than {\tt detect\_min\_inliers\_count} ({\tt refine\_min\_inliers\_count}).
 \subsection{Measured Statistics}
 \label{subsection:measured-statistics}
 
-\clutseg supports measuring its performance. This section explains how errors
-and scores are computed for given query scenes or whole sets of query scenes
-where ground truth is available. It covers statistics that are recorded in the
-learning and the recognition process, which are aimed to simplify reasoning
-about the system's performance and the influence of parameters. 
+\clutseg supports measuring its performance with regard to scene score, success
+rate, pose estimation error and classification error on a given set of scenes.
+This section explains how errors and scores are computed for given query scenes
+or whole sets of query scenes where ground truth is available. We cover the
+statistics that are recorded in the learning and the recognition process, which
+are aimed to simplify reasoning about the system's performance and the
+influence of parameters. 
 
 \subsubsection{Learning Statistics}
 
@@ -532,9 +537,9 @@ presented in \refChapter{chapter:evaluation}.
 \subsubsection{Ground Truth}
 
 The error \clutseg makes on a query scene can only be computed if ground truth
-is available. Ground truth data for a scene consists of set of labels that tell
+is available. Ground truth data for a scene consists of a set of labels that tell
 which objects can be seen at what location and orientation in the scene. Thus,
-ground truth $G$ can be described as a set of labels
+the ground truth $G$ can be described as a set of labels
 
 \begin{equation}
     G = \cbr{ (i,\ \oTvi{i}) : \text{object $i$ is on scene at pose $\oTvi{}$} }
@@ -546,15 +551,17 @@ ground truth $G$ can be described as a set of labels
 \subsubsection{Classification Error}
 
 \clutseg only attempts to partially estimate ground truth. It does not try to
-label all objects in the scene, but only one. Mapping to ROC terminology is
-not straight-forward. Ignoring the estimated pose, it is possible to put a guess
-made by \clutseg into one of four categories. True positive if the guessed
-object is actually on the scene. False positive if the guessed object is not on
-the scene. True negative if there is no guess and the scene is empty.  False
-negative if the scene shows objects but \clutseg did not make a guess.
+label all objects in the scene, but only one. Mapping to ROC terminology is not
+straight-forward. Ignoring the estimated pose, it is possible to put a guess
+made by \clutseg into one of four categories (a-d). (a) True positive if the
+guessed object is actually on the scene. (b) False positive if the guessed
+object is not on the scene. (c) True negative if there is no guess and the
+scene is empty. (d) False negative if the scene shows objects but \clutseg did
+not make a guess.
+
 Unfortunately, this scheme does not cover the case in which two objects have
 been confused. In the application scenario, several objects are expected to be
-on the scene. Statistics record when \clutseg returns without making a guess.
+on the scene. 
 % TODO: need to give numbers in evaluation section about none_rate
 
 \subsubsection{Pose Estimation Error}
@@ -587,9 +594,9 @@ query scene. The goal is to find a score function that closely models the
 utility of a guess made for a query scene.
 
 If the guessed object is not on the scene, clearly the utility of such a guess
-is zero. Also, utility does not decrease much more, if the orientation and
-translation error is beyond a certain margin of error. The idea is therefore
-to introduce a combined classification and estimation score. 
+is zero. Also, the utility does not decrease much more, if the orientation and
+translation error is beyond a certain margin of error. The idea is therefore to
+introduce a combined classification and estimation score. 
 
 Let $\alpha_{max} = \frac{\pi}{9}$ and $t_{max} = 3\mbox{cm}$ be the maximum
 tolerable errors in orientation and translation, respectively. The choices are
@@ -638,32 +645,30 @@ a validation set, it was vital to make a decision which regions of parameter
 space to explore first and which regions to explore next. In this work, the
 strategy was to select a few regions, and then search in the neighborhood of
 those parameter sets that performed well in the experiments conducted so far.
-The strategy resembled genetic programming to a certain extent.
+The strategy resembles genetic programming to a certain extent.
 
 \subsection{Experiment Runner}
 
-This section describes how \clutseg provides an experiment runner that tries to
-efficiently test different parameter sets against a validation or test set. It
-describes how a database was employed to keep track of parameter sets and
-experiment results, the visualization tools that make the results accessible
-for analysis, and the major implementation decisions that saved computing
-resources.
+In this section we describe \clutseg's experiment runner that allows to permits
+testing different parameter sets against a set of scenes. It describes how a
+database was employed to keep track of parameter sets and experiment results,
+the visualization tools that make the results accessible for analysis, and the
+major implementation decisions that saved computing resources.
 
 \subsubsection{Experiment Database}
 
 \clutseg employs a SQLITE3 database to keep track of parameter sets and the
 recorded statistics, as introduced in Sections~\ref{subsection:parameter-space}
 and \ref{subsection:measured-statistics}  The experiment runner can be executed
-in the spirit of a daemon process, and polls the database for new parameter
-sets when idle. New parameter sets are tested for validity with computationally
-cheap tests.  The failing ones are marked and skipped, this one failing
-experiment does not kill the process. A no-frills object-relational mapper
-provides a convenient interface to work with the database. The primary purpose
-of the database was to collect experiment inputs and outputs in a central,
-accessible and convenient location.  Few efforts have been spent on
-normalization, performance tuning or any other aspects that were not related to
-its primary purpose. For convenience, data can be selected from various
-database views.
+in the background. It polls the database for new parameter sets when idle.  New
+parameter sets are tested for validity with computationally cheap tests.  The
+failing ones are marked and skipped, thus one failing experiment does not kill
+the process. A no-frills object-relational mapper provides a convenient
+interface to work with the database. The primary purpose of the database was to
+collect experiment inputs and outputs in a central, accessible and convenient
+location.  Few efforts have been spent on normalization, performance tuning or
+any other aspects that were not related to its primary purpose. For
+convenience, data can be selected from various database views.
 
 \subsubsection{Modelbase Cache}
 
@@ -674,18 +679,18 @@ hashcode of the feature parameters. A modelbase for four template objects takes
 up around five Megabytes on the filesystem, depending on the choice of feature
 detector and descriptor. \tod stores the modelbase as compressed YAML text
 files. If disk space were scarce and reading the modelbase quickly into memory
-were an issue, then binary files would be a good choice.
+were an issue, then binary files would be a better choice.
 
 \subsubsection{Visualization Tools}
 
-\clutseg connects with OpenCV and R project to visualize the recognition
-results in query scene and the statistical data acquired in experiments.  It
-provides functions for visualizing guesses and ground truth in parallel,
-showing inliers, translational and rotational errors in the manner of a
-heads-up display. It provides command-line tools to inspect views of the
-modelbase, that is the region of interest, the extracted keypoints, and the
-estimated pose. Imagemagick is used to generate montage images that show the
-results of one experiment at once. Finally, \tod allows to visualize matches
-between the query scene and the modelbase. R is used to pull data from the
-database and plot them.
+\clutseg employs OpenCV and R to visualize the recognition results in
+query scene and the statistical data acquired in experiments.  It provides
+functions for visualizing guesses and ground truth in parallel, showing
+inliers, translational and rotational errors in the manner of a heads-up
+display. It provides command-line tools to inspect views of the modelbase, that
+is the region of interest, the extracted keypoints, and the estimated pose.
+Imagemagick is used to generate montage images that show the results of one
+experiment at once. Finally, \tod allows to visualize matches between the query
+scene and the modelbase. R is used to pull data from the database and plot
+them.
 

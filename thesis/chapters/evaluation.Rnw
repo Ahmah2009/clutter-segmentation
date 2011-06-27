@@ -8,9 +8,10 @@
 This chapter presents the experimental results of the \clutseg system, on the
 validation set, on a test set and results from a live test on a PR2 robot. It
 covers how the modelbase was built, how validation data, ground truth and the
-test data have been obtained. The parameter set found by experimentation is is
-discussed. Scenarios are presented in which the system performed well, and also
-limitations and issues that became apparent during the evaluation.
+test data have been obtained. We discuss the parameter set found by
+experimentation.  Scenarios are presented in which the system performed well.
+We also cover the limitations and issues that were revealed during the
+evaluation.
 
 \section{Data Acquisition}
 \label{section:data-acquisition}
@@ -39,11 +40,10 @@ scenario. The board was manually rotated, carefully and not too fast.  The
 objects must not move with respect to the fiducial markers, which are attached
 to the object coordinate system.
 
-  The PR2 robot was controlled by the Robot Operating System, which is a
-distributed system where nodes communicate by publishing and subscribing to
-topics. In our case, the interesting topics were the image and the 3D point
-cloud, together forming the sought-after depth images. In ROS, data can be
-recorded in so-called bags. For depth images, these bags quickly grow large.
+In ROS, distributed nodes communicate by publishing and subscribing to topics.
+In our case, the interesting topics were the image and the 3D point cloud,
+together forming the sought-after depth images. In ROS, depth images and other
+data can be recorded in so-called bags.
 
   The resolution of the image was 1280x1024 pixels, and the dense point cloud
 had a resolution of 640x480. The sampling rate was set to about one depth image
@@ -68,11 +68,11 @@ masking for each view as described in \refSection{subsection:learning}.  This
 post-processed raw data provides the masks and the object-view transformation
 which can be used to create several modelbases using different feature
 detectors and descriptors. The resulting models of each template object were
-much smaller in size than the original raw data. They took up around 1 Megabyte
-of disk space each, three magnitudes less than the original raw data. The
-feature detectors are responsible for this data reduction.
-In the experiments, ORB selected 394 keypoints on average per image of the
-modelbase raw data.
+much smaller in size than the original raw data. The models took up around 1
+Megabyte of disk space each, three magnitudes less than the original raw data.
+The feature detectors are responsible for this data reduction.  In the
+experiments, ORB selected 394 keypoints on average per image of the modelbase
+raw data.
 
 \begin{figure}[h!]
     \begin{center}
@@ -116,7 +116,7 @@ similarly to the data for the modelbases. Again, the fiducial markers were
 required for computing ground truth for the objects on the validation scenes.
 We recorded around 50-60 scenes, each of them showing three instances of
 objects in the modelbase. Out of those, we chose 21 scenes at roughly equal
-angle steps to form the validation set.
+angle increments to form the validation set.
 
 Given a scene, ground truth requires to compute the object-view transformations
 $\oTvi{i}$, $\oTvi{j}$, and $\oTv{k}$ for the three objects $i$, $j$ and $k$ in
@@ -128,7 +128,7 @@ that
 \end{equation}
 
 In other words, object $j$ was placed on the rotating table the same way as
-when raw data for modelbase had been collected. Pencil markers on the template
+when raw data for modelbase was being collected. Pencil markers on the template
 objects helped us remembered the correct arrangement. Imprecision was difficult
 to avoid, when we placed the objects manually on the table. This introduces
 some noise in the ground truth data.
@@ -449,12 +449,12 @@ pose estimation.
     par(cex.main=0.9)
 
     barplot(d$img_cpu, names.arg=d$extractor, main="CPU Time per image",    ylab="time [ms]",  ylim=c(0, 800), col=col)
-    barplot(d$kpt_cpu, names.arg=d$extractor, main="CPU Time per keypoint", ylab="time [ms]", ylim=c(0, 0.5), col=col)
-    barplot(d$quantity, names.arg=d$extractor, main="Keypoints per image", ylab="quantity", ylim=c(0, 2000), col=col)
+    barplot(d$kpt_cpu, names.arg=d$extractor, main="CPU Time per feature", ylab="time [ms]", ylim=c(0, 0.5), col=col)
+    barplot(d$quantity, names.arg=d$extractor, main="Features per image", ylab="quantity", ylim=c(0, 2000), col=col)
     invisible(dev.off())
 @
      \includegraphics[width=\textwidth]{sift-surf-orb-benchmark}
-     \caption{Comparison of SIFT, SURF and ORB in times of speed and quantity}
+     \caption{Comparison of SIFT, SURF and ORB in terms of speed and number of features}
      \label{figure:sift-surf-orb-benchmark}
     \end{center}
 \end{figure}
@@ -468,7 +468,7 @@ pose estimation.
         RAM & 2 Gigabyte DDR3 & \\
         OS & Ubuntu 10.10 Maverick \\
     \end{tabular}
-    \caption{Hard- and software configuration for feature detector and descriptor benchmark}
+    \caption{Hard- and software configuration for computation speed benchmark}
     \label{table:hardsoftware-sift-surf-orb-benchmark}
   \end{center}
 \end{table}
@@ -608,10 +608,10 @@ which probably makes it hard to obtain informative features.
 
 Generally, the system relies on the size of the consensus set to be a strong
 indicator for the goodness of an estimate. We observed that in one experiment
-and scene, \clutseg estimated a distance of 88 metres between \icedtea and
-the camera. This bad estimate was almost two orders of magnitude away from
-ground truth. Yet it still had support by 14 inliers, enough in this scene to
-make it the best-ranked guess.
+and scene, \clutseg estimated a distance of 88 metres between \icedtea and the
+camera. This bad estimate was almost two orders of magnitude off ground truth.
+Yet it still had support by 14 inliers, enough in this scene to make it the
+best-ranked guess.
 % RANSAC and the Maximum Projection Error
 % Perspective Projection and RANSAC
 % RANSAC and Degenerate Projections

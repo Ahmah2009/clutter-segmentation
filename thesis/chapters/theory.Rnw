@@ -1,17 +1,18 @@
 This chapter provides the theoretical foundations for building the 3D object
-recognition system as presented in \refChapter{chapter:implementation}. It
-provides a review of required mathematical tools and the basics of multi-view
-3D object recognition. It covers the description of images using local
-features with state-of-the-art techniques, how to quickly establish
-correspondences between known and unseen images, and finally how to estimate
-poses in presence of noise and mismatches in the correspondences.  Also, this
-chapter shows how the implemented system relates to the mathematical framework
+recognition system as presented in \refChapter{chapter:implementation}. We
+review the required mathematical tools and the basics 3D object recognition
+with models learnt from multiple views. We discuss Oriented BRIEF, a new
+feature detector and descriptor. We refer to approximative nearest neighbor
+search, which permits to quickly establish correspondences between known and
+unseen images. Then, we show how pose estimation is related to other problems,
+and how to solve it in the presence of noise and mismatches in the correspondences.
+Finally, this chapter shows how the implemented system relates to the framework
 of classifiers and estimators, which is helpful for the evaluation given in
 \refChapter{chapter:evaluation}.
 
 \section{Prerequisites in Geometry}
 
-This section establishs mathematical tools and notation that are used
+This section establishes the mathematical tools and the notation that are used
 throughout this work.
 
 % TODO: talk about pin-hole camera model assumption
@@ -20,12 +21,12 @@ throughout this work.
 
 % TODO: reference to definition of rigid transformations
 
-A {\it rigid transformation} is defined as combination of an orthogonal
-transformation and translation in Euclidean space. A {\it proper rigid
+A {\it rigid transformation} is defined as an orthogonal transformation
+followed by a translation in Euclidean space. A {\it proper rigid
 transformation} additionally requires the orthogonal transformation to be a
-rotation. In three dimensions, a proper rigid transformation can be represented
-by a rotation matrix $R \in \real^3$ and a translation vector $\vec{t} \in
-\real^3$.
+rotation. In three dimensions, a proper rigid transformation of vectors can be
+represented by a rotation matrix $R \in \real^{3\times3}$ and a translation vector
+$\vec{t} \in \real^3$.
 
 \begin{equation}
     T: \real^3 \to \real^3, \vec{p} \mapsto R\vec{p} + \vec{t}
@@ -39,9 +40,8 @@ The inverse transformation is given by
 
 A proper rigid transformation, abbreviated by PRT in the following, can be used
 to describe a rigid motion of an object with respect to a reference coordinate
-system. In physics, this is called active transformation, and explains the 
+system. In physics, this is called an active transformation, and explains the 
 relationship between two different points in the same coordinate system.
-
 
 Another interpretation is to see a PRT as a passive transformation. The PRT
 transforms vector coordinates between two different coordinate system. This
@@ -52,25 +52,25 @@ The passive interpretation is used throughout this work.
 
 Coordinates of points in 3D space can be specified with respect to any
 coordinate system. In this work, two different kinds of coordinate systems are
-used. The first kind is attached to the camera and is called {\it view
+used. The first kind is attached to the camera and is called the {\it view
 coordinate system}. The second kind is attached to an object or its model and
-is called {\it object coordinate system}. The PRT between object coordinates
-and view coordinates is called {\it object-view transformation} and is denoted
-sy $\oTv$. Subsequently, the inverse PRT is called {\it view-object
-transformation} and denoted by $\vTo$
+is called the {\it object coordinate system}. The PRT between object
+coordinates and view coordinates is called the {\it object-view transformation}
+and is denoted sy $\oTv$. Subsequently, the inverse PRT is called the {\it
+view-object transformation} and denoted by $\vTo$
 
 \begin{equation}
   \vTo = \pth{ \oTv }^{-1}
 \end{equation}
 
-Here are two examples to show the usefulness of these definitions. To compute
-the distance between camera and the object origin, use
+Here are two examples that show the usefulness of these definitions. To compute
+the distance between the camera and the object origin, we may use
 
 \begin{equation}
 d = \normtwo{\ \oTv \pth{ \vec{0} }\ }
 \end{equation}
 
-Compute the distance $d_{12}$ between the two objects $1$ and $2$ in a scene by
+The distance $d_{12}$ between the two objects $1$ and $2$ in a scene may be computed by
 
 \begin{equation}
 d_{12} = \normtwo{\ \oTvi{1} \pth{ \vec{0} } -\ \oTvi{2} \pth{ \vec{0}} \ }
@@ -86,9 +86,9 @@ d_{12} = \normtwo{\ \oTvi{1} \pth{ \vec{0} } -\ \oTvi{2} \pth{ \vec{0}} \ }
 
 Note that there exists a coordinate system for every object and view.  When
 talking in general about object recognition, it is often more intuitive to talk
-about the {\em pose} of an object. If precise wording is required, it is
-preferred to talk about the object-view transformation that brings object
-coordinates into view coordinates for a specific view-object pair.
+about the {\em pose} of an object. If precise wording is required, we prefer to
+talk about the object-view transformation that brings object coordinates into
+view coordinates for a specific view-object pair.
 
 % \subsection{Perspective-N-Point Problem}
 
@@ -96,7 +96,7 @@ coordinates into view coordinates for a specific view-object pair.
 
 Object recognition is the problem of labeling or locating objects in a query
 scene. This section describes relevant mathematics and techniques used in 3D
-object recognition using local 2D features.
+object recognition with local 2D features.
 % TODO: provide references to other approaches, or different subxxx of Object Recognition (CAD based, etc.)
 % instead of just talking about doing it
 References to other approaches,
@@ -116,7 +116,7 @@ objects and find candidates that match the description in the query scene.  We
 can distinguish between local and global approaches. An example for a global
 approach is template matching. Yet, in scenes with occlusion, local methods are
 clearly preferred. Object recognition using local features is based on the
-detection of keypoints in an image. There is a multitude of different methods
+detection of keypoints in an image. A multitude of different methods is
 available, but they all aim at choosing keypoints that are repeatable for the
 same object over different images. A feature consists of a keypoint and a
 feature descriptor that captures information about its local image
@@ -126,8 +126,8 @@ of a vector norm provides a means of measuring similarity between two features.
 
 \subsubsection{Learning Models from a Single View}
 
-Lowe describes an approach to object recognition using local features where
-models are learnt from a single view of the template object \cite{Lowe1999}.
+Lowe describes approach to object recognition using local features where
+each model is learnt from a single view of the template object \cite{Lowe1999}.
 Given a query image, local features are extracted and matched against the model.
 This approach works well, if the object in the query scene has approximately
 the same orientation as in the template view. Lowe reports that using SIFT
@@ -238,7 +238,7 @@ The scale-invariant feature transform became popular in object recognition.  It
 is desirable that images of objects at different scales produce more or less
 the same features. SIFT achieves this by selecting keypoints from a scale-space
 pyramid in order to generate scale-invariant features. SIFT is both a feature
-detector and descriptor. Lowe further described a system that lets
+detector and descriptor. Lowe further describes a system that lets
 correspondences vote in Hough space, which is dimensioned by location,
 orientation and scale \cite{Lowe1999}. When bins contain more than a predefined
 number of votes, the object is said to be recognized at this pose. SIFT has
@@ -250,8 +250,9 @@ also been successfully applied to panorama stitching \cite{Brown2006}.
 detector and the BRIEF feature descriptor, plus modifications that render the
 extracted features orientation-invariant. It was designed to outperform SIFT
 and SURF at least in terms of computation time. An implementation is already
-available in the development branch (trunk) of OpenCV, a corresponding paper is
-expected to be published at ICCV 2011.
+available in the development branch (trunk) of OpenCV, and a corresponding
+paper is expected to be published at the {\it International Conference on
+Computer Vision} 2011.
 
 FAST is a feature detector based on analyzing Bresenham circles around
 candidate keypoints. Generated features are neither orientation nor rotation
@@ -282,10 +283,10 @@ keypoints and designates orientations $\alpha$ as
     \alpha = \arctan \frac{m_{01}}{m_{10}}
 \end{equation}
 
-Consider the vector $\pth{ m_{01}, m_{10} }^T$. The angle of the vector
-in becomes the orientation of the keypoint. If $f$ were a probability
+Consider the vector $\pth{ m_{01}, m_{10} }^T$. The angle of this vector
+becomes the orientation of the keypoint. If $f$ were a probability
 distribution, then this vector would contain the means of the marginal
-distributions of x and y, respectively.
+distributions of $x$ and $y$, respectively.
 
 % TODO: verify correlation problem and relation to descriptor entropy
 
@@ -295,11 +296,12 @@ BRIEF vectors obtained from rotated test patterns. Such correlation reduces
 entropy of the BRIEF descriptor. The solution is to compute test patterns that
 have only little correlation.
 
-A more detailed theoretical treatment of ORB should be deferred until the
+A more detailed theoretical treatment of ORB needs to be deferred until the
 publication of the corresponding authoritative paper. The description about ORB
-given here was based on knowledge extracted from a presentation at ICRA 2011 in
-Shanghai, the ORB implementation from OpenCV trunk, and inference from FAST and
-BRIEF. It is thus to be handled with care.
+given here was based on knowledge extracted from a presentation at the {\it
+International Conference on Robotics and Automation} (ICRA) 2011 in Shanghai, the ORB
+implementation from OpenCV trunk, and inference from FAST and BRIEF. It is thus
+to be handled with care.
 
 \subsection{Feature Matching}
 \label{subsection:feature-matching}
@@ -312,7 +314,7 @@ the query images to the features from the model. Computation time depends on
 the size of the descriptor vector, the nearest neighbor algorithm and the used
 distance metric. Great speed-ups can be achieved by weakening the requirements
 and allowing for approximate nearest neighbors. Computing the Hamming distance
-between binary features is faster than the L2-norm for real-valued feature
+between binary features is faster than computing the L2-norm for real-valued feature
 descriptors \cite{Calonder2010}. This holds especially true when using the {\tt POPCNT}
 instruction, available in AMD and Intel architectures \cite{AMD2009, Intel2007}.
 
@@ -358,8 +360,8 @@ problem in literature.
 
 \subsubsection{RANSAC}
 
-RANSAC stands for {\it RANdom SAmple Consensus} and is a randomized algorithm
-that fits a parametrized model to given data, which is robust to outliers.  The
+RANSAC stands for {\it RANdom SAmple Consensus}. It is a randomized algorithm
+that fits a parametrized model to given data. It is robust to outliers.  The
 pose estimation problem in this context can be reduced to the location
 determination problem or the equivalent PnP problem \cite{Fischler1981}.
 Generally, this algorithm randomly chooses a small set of data points that
@@ -392,8 +394,9 @@ then the hypothesized pose is verified for support by the remaining data
 This section shows how object recognition relates to machine learning,
 especially to classification and estimation theory. It also covers the basics
 of a machine learning experiment, which are required for optimizing parameters
-and understanding the strengths and weaknesses of an object recognition system.
-When evaluating the system, a measure of {\it goodness} needs to be defined.
+and for understanding the strengths and weaknesses of an object recognition
+system.  When evaluating the system, a measure of {\it goodness} needs to be
+defined.
 
 \subsection{Classification}
 
@@ -404,23 +407,23 @@ object recognition can be seen as a {\it multi-label classification} problem,
 as described in \cite{Tsoumakas2007}.  An image is described by a set of
 labels, and symmetrically, the classification result is a set of labels that
 predict which objects are on the image.  Receiver operating characteristics
-(ROC) can be used to evaluate standard two-class classifiers
-\cite{Fawcett2006}. Standard measures of goodness are the true and false
-positive rates that can be computed from confusion matrices. In case of
-multi-label classification, it is possible to define similar metrics
-\cite{Tsoumakas2007}.  Unfortunately, even if object pose were not an issue,
-assuming objects to appear uniquely on an image might be unrealistic. For
-example, a shopping bag as in the application scenario of this work is best
-represented by a multiset, and not by a multi-label set.  Given a finite set of
-labels, the number of multi-label sets is finite, the number of multisets is
-not. A problem with infinite number of decisions is more a problem of
-estimation than classification \cite{Melsa1978}. For example, trying to define
-a specificity metric on it is difficult, since the number of negatives in a
+(ROC) can be used to evaluate standard two-class classifiers \cite{Fawcett2006,
+Melsa1978}. Standard measures of goodness are the true and false positive rates
+that can be computed from confusion matrices. In case of multi-label
+classification, it is possible to define similar metrics \cite{Tsoumakas2007}.
+Unfortunately, even if object pose were not an issue, assuming objects to
+appear uniquely on an image might be unrealistic. For example, a shopping bag
+as in the application scenario of this work is best represented by a multiset,
+and not by a multi-label set.  Given a finite set of labels, the number of
+multi-label sets is finite, the number of multisets is not. A problem with an
+infinite number of decisions is an estimation problem rather than a
+classification problem \cite{Melsa1978}. For example, trying to define a
+specificity metric on it is difficult, since the number of negatives in a
 multi-set is generally infinite.
 
 \subsection{Estimation}
 
-Estimation can be regarded as the continuous extension of classification
+Estimation can be regarded as the continuous generalization of classification
 \cite{Melsa1978}. Clearly, if it is known which objects are on a scene, object
 recognition can be seen as an estimation problem. For each object on the scene,
 it is the task of the object recognition system to estimate the six degrees of
@@ -440,7 +443,7 @@ scenes that contain multiple instances of the same object are not considered.
 
 In the presented system, the algorithms for detecting, describing and matching
 features are parametrized, as well as the pose estimation and the final
-decision process. This leads to the question on how to find a parameter set
+decision process. This leads to the question of how to find a parameter set
 such that the system performs well in the application scenario.
 
 \subsubsection{Validation Set}
@@ -456,7 +459,7 @@ avaible. This optimization technique is well-known in machine learning.
 \subsubsection{Test Set}
 
 It is interesting to estimate the error which a classifier or estimator is
-expected to make when working on unseen instances. This is the generalization
+expected to make when working on new instances. This is the generalization
 error which cannot be estimated on the validation set. Instead a separate test
 set is required to estimate the generalization error \cite{Alpaydin2010}.
 % , and is related to the problem of assuming appropriate priors
