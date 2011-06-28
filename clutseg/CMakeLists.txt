@@ -48,6 +48,9 @@ target_link_libraries(clutsegmenter ${PROJECT_NAME})
 rosbuild_add_executable(clutsegmenter_node apps/clutsegmenter_node.cpp)
 target_link_libraries(clutsegmenter_node ${PROJECT_NAME})
 
+rosbuild_add_executable(detect_features apps/detect_features.cpp)
+target_link_libraries(detect_features ${PROJECT_NAME})
+
 rosbuild_add_executable(fixmask apps/fixmask.cpp)
 target_link_libraries(fixmask ${PROJECT_NAME})
 
