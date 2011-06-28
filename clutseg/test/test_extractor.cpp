@@ -1237,7 +1237,7 @@ double bit_pattern_31_mean_corr[256*2] = {
 };
 
 /* TODO: this test is very drafty, needs review whether the ORB patterns have
- * been correctly interpreted.
+ * been correctly interpreted. */
 TEST_F(test_extractor, orb_draw_test_locations) {
     // Find extents of the test patterns
     int pmin = *min_element(bit_pattern_31_, bit_pattern_31_ + 256*4);

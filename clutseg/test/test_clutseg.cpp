@@ -4,6 +4,7 @@
 
 #include "test.h"
 
+#include "clutseg/check.h"
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
 #include "clutseg/db.h"
@@ -251,14 +252,14 @@ TEST_F(test_clutseg, recog_foremost_in_clutter) {
     refine_params.guessParams.minInliersCount = 30;
 
     Ptr<GuessRanking> prox_ranking = new ProximityRanking();
-    Clutsegmenter s(
+    sgm = Clutsegmenter(
         cache.trainFeaturesDir(tr_feat).string(),
         detect_params,
         refine_params,
         prox_ranking
     );
 
-    ASSERT_TRUE(s.isDoRefine());
+    ASSERT_TRUE(sgm.isDoRefine());
     recognize("recog_foremost_in_clutter");
 }
 
@@ -279,3 +280,16 @@ TEST_F(test_clutseg, Reconfigure) {
     EXPECT_FLOAT_EQ(15.0, sgm.getAcceptThreshold());
 }
 
+TEST_F(test_clutseg, recog_using_tar) {
+    SKIP_IF_FAST
+
+    string bd = "build/test_clutseg.recog_using_tar";
+    // untar 
+    assert(system(str(boost::format("mkdir -p %s") % bd).c_str()) == 0);
+    assert(system(str(boost::format("tar xvf data/orb.tar -C %s") % bd).c_str()) == 0);
+    assert_path_exists(bd);
+
+    // TODO: check in one modelbase 
+    sgm = Clutsegmenter(bd);
+    recognize("recog_using_tar");
+}

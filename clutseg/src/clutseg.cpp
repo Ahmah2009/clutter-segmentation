@@ -21,6 +21,17 @@ using namespace tod;
 namespace clutseg {
 
     Clutsegmenter::Clutsegmenter() : initialized_(false) {}
+
+    Clutsegmenter::Clutsegmenter(const std::string & baseDirectory) :
+                                    baseDirectory_(baseDirectory),
+                                    ranking_(new InliersRanking()),
+                                    accept_threshold_(10),
+                                    do_refine_(true),
+                                    initialized_(true) {
+        loadParams(baseDirectory_ + "/detect.config.yaml", detect_params_);
+        loadParams(baseDirectory_ + "/refine.config.yaml", refine_params_);
+        loadBase();
+    }
         
     Clutsegmenter::Clutsegmenter(const string & baseDirectory,
                                     const string & detect_config,
