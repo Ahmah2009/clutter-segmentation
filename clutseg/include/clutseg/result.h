@@ -53,6 +53,7 @@ namespace clutseg {
 
     };
 
+    // TODO: rename to Query, also move to query.h
     struct ClutsegQuery {
         
         ClutsegQuery() : img(), cloud() {}

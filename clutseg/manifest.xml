@@ -9,6 +9,12 @@
   <depend package="pcl_visualization" />
   <depend package="opencv_candidate" />
   <depend package="tod_detecting" />
+  <!-- <depend package="sensor_msgs" />
+  <depend package="opencv2" />
+  <depend package="cv_bridge" />
+  <depend package="roscpp" />
+  <depend package="std_msgs" />-->
+  <depend package="image_transport" />
 
   <rosdep name="sqlite3" />
   <rosdep name="imagemagick" />

@@ -45,6 +45,9 @@ target_link_libraries(blackbox_recognizer ${PROJECT_NAME})
 rosbuild_add_executable(clutsegmenter apps/clutsegmenter.cpp)
 target_link_libraries(clutsegmenter ${PROJECT_NAME})
 
+rosbuild_add_executable(clutsegmenter_node apps/clutsegmenter_node.cpp)
+target_link_libraries(clutsegmenter_node ${PROJECT_NAME})
+
 rosbuild_add_executable(fixmask apps/fixmask.cpp)
 target_link_libraries(fixmask ${PROJECT_NAME})
 
