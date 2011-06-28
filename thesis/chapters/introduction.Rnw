@@ -116,9 +116,9 @@ In the presented approach, we first learn a model from each rigid textured
 object, one by one. An object is rotated in front of the camera, which takes
 images and 3D scans from different views of the object. Then, local 2D features
 are extracted from each grayscale image. The local 2D features, together with
-the associated 3D points on the object's surface, form the model of this
-object. The model is a sparse point cloud and is described in a standard
-coordinate system.
+the associated 3D points on the object's surface, form {\it model features} and
+make up the the model of this object. The model is a sparse point cloud and is
+described in a standard coordinate system.
 
 \begin{figure}[h]
     \begin{center}
@@ -131,8 +131,8 @@ coordinate system.
 Given a single view of a scene, we use the models to recognize instances of the
 learnt template objects in this query scene. First, local 2D features are
 extracted from a grayscale image depicting the query scene. Nearest-neighbor
-search permits to find correspondences between the query features and the
-models. Based on these correspondences, a model-fitting algorithm that is
+search permits to find correspondences between these query features and the
+model features. Based on these correspondences, a model-fitting algorithm that is
 robust to outliers, aligns models to the 3D scene such that their projections
 onto the image plane best explain the observed data.  Finally, if an aligned
 model sufficiently explains the correspondences, the object is said to appear
@@ -159,20 +159,22 @@ sets. Finally, \tod uses RANSAC as the afore-mentioned model-fitting algorithm
 to estimate the object poses. The confidence value is measured by the number of
 correspondences consistent with this pose. 
 
-We present a new system called \clutseg, built on top of \tod. Its purpose is
-three-fold. Primarily, it adapts \tod to our purpose of resolving a cluttered
-scene.  Second, it helps choose between the multitude of available feature
-detectors and descriptors and select one of the nearest-neighbor search
-algorithms. Third, for \tod and \clutseg have many parameters, experiment
-runner helps find good parameter values.
-
-The cluttered scenes (\refFigure{figure:intro} (b)) in this work do not only
+We face cluttered scenes (\refFigure{figure:intro} (b)) that do not only
 exhibit high rates of occlusion, but also show objects in arbitrary
 orientation.  For our requirements, it is sufficient to resolve the clutter
 object by object. Hence, we chose to concentrate on finding the pose of only
-one object in the scene. \clutseg does this by ranking the initial guesses from
-\tod by confidence value. Then, the best-ranked guesses are refined until a
-guess with sufficiently high confidence value is found.
+one object in the scene.
+
+For this, we present a new system called \clutseg, built on top of \tod. Its
+purpose is three-fold. Primarily, it adapts \tod to our purpose of resolving a
+cluttered scene by locating one object in the scene.  Second, it helps choose
+between the multitude of available feature detectors and descriptors and select
+one of the nearest-neighbor search algorithms. Third, for \tod and \clutseg
+have many parameters, experiment runner helps find good parameter values.
+
+\clutseg locates an object by ranking the initial guesses from \tod by
+confidence value. Then, the best-ranked guesses are refined until a guess with
+sufficiently high confidence value is found.
 
 We chose Oriented BRIEF as a feature detector and descriptor because its binary
 features were appealing and it had not been subject to research so far. We

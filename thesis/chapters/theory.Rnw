@@ -12,8 +12,19 @@ of classifiers and estimators, which is helpful for the evaluation given in
 
 \section{Prerequisites in Geometry}
 
-This section establishes the mathematical tools and the notation that are used
-throughout this work.
+A model of an object is described in its own coordinate system. Another
+coordinate system is defined by the depth camera used to assemble the model.
+In this section, we explain how a coordinate system attached to the camera and
+a coordinate system attached to the object relate by proper rigid
+transformations. We precisely define the pose of an object with respect to the
+camera in terms of a proper rigid transformation. We also describe how pose
+estimation is related to camera calibration and the perspective-n-point
+problem.
+
+% standard coordinate system
+% multiple views
+% perspective transformation
+% pose estimation is just estimation of a transformation
 
 % TODO: talk about pin-hole camera model assumption
 
@@ -22,11 +33,14 @@ throughout this work.
 % TODO: reference to definition of rigid transformations
 
 A {\it rigid transformation} is defined as an orthogonal transformation
-followed by a translation in Euclidean space. A {\it proper rigid
-transformation} additionally requires the orthogonal transformation to be a
-rotation. In three dimensions, a proper rigid transformation of vectors can be
-represented by a rotation matrix $R \in \real^{3\times3}$ and a translation vector
-$\vec{t} \in \real^3$.
+followed by a translation in Euclidean space. An orthogonal transformation is
+either a reflection or a rotation. A {\it proper rigid transformation}
+additionally requires the orthogonal transformation to be a rotation
+\footnote{The definitions of rigid transformations found in the literature are
+inconsistent. Reflections are excluded from rigid transformations in
+\cite{Forsyth2003}, but included in \cite{Galarza2007}.} . In three dimensions,
+a proper rigid transformation of vectors can be represented by a rotation
+matrix $R \in \real^{3\times3}$ and a translation vector $\vec{t} \in \real^3$.
 
 \begin{equation}
     T: \real^3 \to \real^3, \vec{p} \mapsto R\vec{p} + \vec{t}
@@ -40,57 +54,134 @@ The inverse transformation is given by
 
 A proper rigid transformation, abbreviated by PRT in the following, can be used
 to describe a rigid motion of an object with respect to a reference coordinate
-system. In physics, this is called an active transformation, and explains the 
+system. In physics, this is called an active transformation, and explains the
 relationship between two different points in the same coordinate system.
 
 Another interpretation is to see a PRT as a passive transformation. The PRT
-transforms vector coordinates between two different coordinate system. This
-explains how the very same point is seen from two different coordinate systems.
-The passive interpretation is used throughout this work.
+transforms vector coordinates between two different coordinate system.  The
+passive interpretation is used throughout this work.
 
 \subsection{Object-View Transformations}
 
-Coordinates of points in 3D space can be specified with respect to any
-coordinate system. In this work, two different kinds of coordinate systems are
-used. The first kind is attached to the camera and is called the {\it view
-coordinate system}. The second kind is attached to an object or its model and
-is called the {\it object coordinate system}. The PRT between object
-coordinates and view coordinates is called the {\it object-view transformation}
-and is denoted sy $\oTv$. Subsequently, the inverse PRT is called the {\it
-view-object transformation} and denoted by $\vTo$
+3D points can be specified in coordinates with respect to any coordinate
+system. This gives rise to the question of what coordinate systems are
+convenient and how many are necessary. In our case, the two different
+coordinate systems discussed in the following prove sufficient.
+
+The {\it view coordinate system} is attached to the camera. Two of its basis
+vectors define the image plane and the remaining basis vector is directed
+towards the scene.  The view coordinate system is convenient for the robot. For
+example, if the robot is programmed to grasp an object at two points, it needs
+to know the view coordinates of the two grasping points. The {\it object
+coordinate system} is attached to the object. Both coordinate systems are shown
+in \refFigure{figure:coordinate-frames}. The PRT between object coordinates and
+view coordinates is called the {\it object-view transformation} and is denoted
+by $\oTv$. Subsequently, its inverse PRT is called {\it view-object
+transformation} and denoted by $\vTo$
 
 \begin{equation}
   \vTo = \pth{ \oTv }^{-1}
 \end{equation}
 
-Here are two examples that show the usefulness of these definitions. To compute
-the distance between the camera and the object origin, we may use
+We stick to the subscript and superscript notation introduced in
+\cite{Forsyth2003}.  Here is an example that indicates the usefulness of these
+definitions. To compute the distance between the camera and the object origin,
+we may use
 
 \begin{equation}
 d = \normtwo{\ \oTv \pth{ \vec{0} }\ }
-\end{equation}
-
-The distance $d_{12}$ between the two objects $1$ and $2$ in a scene may be computed by
-
-\begin{equation}
-d_{12} = \normtwo{\ \oTvi{1} \pth{ \vec{0} } -\ \oTvi{2} \pth{ \vec{0}} \ }
 \end{equation}
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=0.5\textwidth]{media/coordinate-frames}
     \end{center}
-    \caption{Transformation between object and view coordinate systems}
+    \caption{Object coordinate system and view coordinate system}
     \label{figure:coordinate-frames}
 \end{figure}
 
-Note that there exists a coordinate system for every object and view.  When
-talking in general about object recognition, it is often more intuitive to talk
-about the {\em pose} of an object. If precise wording is required, we prefer to
-talk about the object-view transformation that brings object coordinates into
-view coordinates for a specific view-object pair.
+The object-view transformation defines the relationship between camera and
+object. Since we are only interested in the {\em relative} location and
+orientation of the object with respect to the camera, we simplify things by
+assuming the camera to be fixed and by always looking at scenes from the eyes
+of the robot. Then, it is possible to restrict ourselves to the study of rigid
+motions of objects, which are equivalent to the change of object-view
+transformations. Note that if there are multiple objects in a scene, then there
+exists a object-view transformation for each object. For example, if there are
+two objects $1$ and $2$ in the scene, the distance $d_{12}$ between them may be
+computed by
 
-% \subsection{Perspective-N-Point Problem}
+\begin{equation}
+d_{12} = \normtwo{\ \oTvi{1} \pth{ \vec{0} } -\ \oTvi{2} \pth{ \vec{0}} \ }
+\end{equation}
+
+where $\oTvi{1}$ and $\oTvi{2}$ are the respective object-view transformations,
+which uniquely determine the object poses with respect to the camera.
+
+We can reformulate the problem of recognizing and estimating the pose of several
+objects in a scene as
+
+\begin{verbatim}
+    Estimate the object-view transformation for each
+    of the objects in the scene.
+\end{verbatim}
+
+In the weakened case of only one object
+
+\begin{verbatim}
+    Estimate the object-view transformation for one
+    of the objects in the scene.
+\end{verbatim}
+
+\subsection{Camera Model}
+
+In our selected approach, we construct models by associating local 2D features
+extracted from the image plane with corresponding 3D points in the scene, as
+shown in \refFigure{figure:hm-features-model}. In the recognition process,
+models are aligned to the scene and projected onto the image plane to verify
+whether they explain the observed data. In both cases, it is required to know
+about the nature of the relationship between the scene and its 2D image, which
+is explained by the camera model.
+
+Since both \tod and \clutseg use OpenCV, an open source library for computer
+vision, we adopt their camera model. It is a pinhole camera model, where a
+perspective projection is used to determine the projection of a 3D point on the
+image plane \cite{Bradski2008}. The image plane, unlike the original pinhole
+camera, is conveniently defined in front of the center of perspective
+\cite{Forsyth2003, Bradski2008}. 
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{media/camera-model}
+    \end{center}
+    \caption{}
+    \label{figure:camera-model}
+\end{figure}
+
+In the previous section, it was shown that estimating the pose of an object
+with respect to the camera is equivalent to estimating the object-view
+transformation. There is a third way to look at this problem, and this is the
+estimation of the extrinsic parameters of the camera. Unlike the intrinsic
+camera parameters that describe properties of the camera independently of its
+standpoint, the extrinsic parameters relate the camera pose to some given
+coordinate system in its environment.
+
+% TODO: refer to problem definition in previous section
+
+\begin{verbatim}
+    For each object in the scene, estimate the extrinsic camera
+    parameters with respect to its object coordinate system. 
+\end{verbatim}
+
+Estimation of camera parameters belongs to the topic of {\it camera
+calibration}.  In fact, \tod uses camera calibration techniques from OpenCV,
+where the intrinsic parameters are known, but the extrinsic parameters remain
+to be estimated.
+
+Given correspondencies of $n$ 3D points with respect to a coordinate system,
+and their $n$ projections onto the image are known, the extrinsic parameters
+can be estimated. This is the perspective-$n$-point problem (PnP)
+\cite{Fischler1981}.
 
 \section{Object Recognition}
 
