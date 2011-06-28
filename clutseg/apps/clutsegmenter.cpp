@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
         string(getenv("CLUTSEG_PATH")) + "/ias_kinect_train/config.yaml"
     );
 
-    ClutsegQuery query;
+    Query query;
 
     readInput(argc, argv, query.img, query.cloud);
 

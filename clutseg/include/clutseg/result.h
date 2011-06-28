@@ -53,23 +53,6 @@ namespace clutseg {
 
     };
 
-    // TODO: rename to Query, also move to query.h
-    struct ClutsegQuery {
-        
-        ClutsegQuery() : img(), cloud() {}
-        ClutsegQuery(const cv::Mat & img,
-                        const PointCloudT & cloud) :
-                            img(img),
-                            cloud(cloud) {}
-        ClutsegQuery(const PointCloudT & cloud) :
-                            img(img),
-                            cloud(cloud) {}
-
-        cv::Mat img;
-        PointCloudT cloud;
-
-    };
-
     typedef std::map<std::string, Result > SetResult;
 
 }

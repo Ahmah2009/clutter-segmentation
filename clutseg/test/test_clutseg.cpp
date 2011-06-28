@@ -138,7 +138,7 @@ class test_clutseg : public ::testing::Test {
 
         void recognize(const string & test_name) {
             check_preconditions();
-            ClutsegQuery query(clutter_img, clutter_cloud);
+            Query query(clutter_img, clutter_cloud);
             sgm.recognize(query, res);
             ASSERT_TRUE(res.guess_made);
             check_postconditions();
@@ -187,7 +187,7 @@ TEST_F(test_clutseg, change_params_online) {
 TEST_F(test_clutseg, recog_haltbare_milch) {
     SKIP_IF_FAST 
 
-    ClutsegQuery query(haltbare_milch_train_img, haltbare_milch_train_cloud);
+    Query query(haltbare_milch_train_img, haltbare_milch_train_cloud);
     sgm.recognize(query, res);
     EXPECT_TRUE(res.guess_made);
     EXPECT_EQ("haltbare_milch", res.refine_choice.getObject()->name);

@@ -165,7 +165,7 @@ namespace clutseg {
         return do_refine_;
     }
 
-    void Clutsegmenter::recognize(const ClutsegQuery & query, Result & result) {
+    void Clutsegmenter::recognize(const Query & query, Result & result) {
         { /* begin statistics */ 
             stats_.queries++;
         } /* end statistics */

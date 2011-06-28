@@ -8,6 +8,7 @@
 #include "clutseg/common.h"
 #include "clutseg/paramsel.h"
 #include "clutseg/options.h"
+#include "clutseg/query.h"
 #include "clutseg/ranking.h"
 #include "clutseg/result.h"
 	
@@ -128,7 +129,7 @@ namespace clutseg {
              * locations. High-ranked guesses are refined by applying more computing
              * resources and by using a object-specific test until the refined guess meets
              * an acceptance criterium, which is given by a ranking threshold. */
-            void recognize(const ClutsegQuery & query, Result & result);
+            void recognize(const Query & query, Result & result);
 
         private:
 

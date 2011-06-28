@@ -7,6 +7,7 @@
 
 #include "clutseg/ground.h"
 #include "clutseg/paramsel.h"
+#include "clutseg/query.h"
 #include "clutseg/result.h"
 
 #include "clutseg/gcc_diagnostic_disable.h"
@@ -28,7 +29,7 @@ namespace clutseg {
         TestReport() {}
 
         TestReport(const Experiment & experiment,
-                    const ClutsegQuery & query,
+                    const Query & query,
                     const Result & result,
                     const LabelSet & ground,
                     const std::string & img_name,
@@ -43,7 +44,7 @@ namespace clutseg {
                         camera(camera) {}
     
         Experiment experiment;
-        ClutsegQuery query;
+        Query query;
         Result result;
         LabelSet ground;
        

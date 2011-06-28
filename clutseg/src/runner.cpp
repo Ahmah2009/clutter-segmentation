@@ -102,7 +102,7 @@ namespace clutseg {
                 pcl::io::loadPCDFile(cloud_path.string(), queryCloud);
                 cout << "[RUN] Loaded query cloud " << cloud_path << endl;
             }
-            ClutsegQuery query(queryImage, queryCloud);
+            Query query(queryImage, queryCloud);
             Result res;
             clock_t b = clock();
             sgm.recognize(query, res);
