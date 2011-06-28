@@ -283,13 +283,6 @@ TEST_F(test_clutseg, Reconfigure) {
 TEST_F(test_clutseg, recog_using_tar) {
     SKIP_IF_FAST
 
-    string bd = "build/test_clutseg.recog_using_tar";
-    // untar 
-    assert(system(str(boost::format("mkdir -p %s") % bd).c_str()) == 0);
-    assert(system(str(boost::format("tar xvf data/orb.tar -C %s") % bd).c_str()) == 0);
-    assert_path_exists(bd);
-
-    // TODO: check in one modelbase 
-    sgm = Clutsegmenter(bd);
+    sgm = Clutsegmenter("data/orb.tar", true);
     recognize("recog_using_tar");
 }

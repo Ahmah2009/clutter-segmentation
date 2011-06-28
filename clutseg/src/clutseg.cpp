@@ -11,6 +11,7 @@
 #include <tod/detecting/Loader.h>
 #include <boost/foreach.hpp>
 #include <limits>
+#include <cstdlib>
 #include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace std;
@@ -22,15 +23,35 @@ namespace clutseg {
 
     Clutsegmenter::Clutsegmenter() : initialized_(false) {}
 
-    Clutsegmenter::Clutsegmenter(const std::string & baseDirectory) :
-                                    baseDirectory_(baseDirectory),
+    Clutsegmenter::Clutsegmenter(const std::string & baseDirectory, bool tar) :
                                     ranking_(new InliersRanking()),
                                     accept_threshold_(10),
                                     do_refine_(true),
                                     initialized_(true) {
+        if (tar) {
+            char tmp[19] = "/tmp/clutsegXXXXXX";
+            if (mkdtemp(tmp) == NULL) {
+                throw runtime_error("Cannot create temporary directory");
+            }
+            baseDirectory_ = string(tmp);
+            cout << "[CLUTSEG]: Extracting TAR archive " << baseDirectory << " to " << baseDirectory_ << endl;
+            int st = system(str(boost::format("mkdir -p %s") % baseDirectory_).c_str());
+            assert(st == 0);
+            st = system(str(boost::format("tar xf %s -C %s") % baseDirectory % baseDirectory_).c_str());
+            assert(st == 0);
+        } else { 
+            baseDirectory_ = baseDirectory;
+        }
+
         loadParams(baseDirectory_ + "/detect.config.yaml", detect_params_);
         loadParams(baseDirectory_ + "/refine.config.yaml", refine_params_);
         loadBase();
+        
+        if (tar) {
+            cout << "[CLUTSEG]: Removing directory " << baseDirectory_ << endl;
+            int st = system(str(boost::format("rm -r %s") % string(baseDirectory_)).c_str());
+            assert(st == 0);
+        }
     }
         
     Clutsegmenter::Clutsegmenter(const string & baseDirectory,

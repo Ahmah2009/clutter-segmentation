@@ -71,10 +71,12 @@ namespace clutseg {
             /** Constructed segmenter will be invalid and cannot be used. */
             Clutsegmenter();
    
-            /** Reads models from baseDirectory and reads detect and refine configurations
-             * from <baseDirectory>/detect.config.yaml and <baseDirectory>/refine.config.yaml
-             * and uses default values for accept_threshold and the ranking. */ 
-            Clutsegmenter(const std::string & baseDirectory);
+            /** Reads models from baseDirectory and reads detect and refine
+             * configurations from <baseDirectory>/detect.config.yaml and
+             * <baseDirectory>/refine.config.yaml and uses default values for
+             * accept_threshold and the ranking. If tar == true, then
+             * baseDirectory is interpreted as a tar file. */ 
+            Clutsegmenter(const std::string & baseDirectory, bool tar = false);
 
             Clutsegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
