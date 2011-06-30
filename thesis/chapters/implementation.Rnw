@@ -8,9 +8,9 @@ evaluated.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.4\textwidth]{media/clutseg-dependency-stack}
-        \caption[\clutseg software dependencies]{\clutseg depends on \tod, ROS, PCL and OpenCV}
-    \end{center}
+        \includegraphics[width=0.6\textwidth]{media/clutseg-deps}
+        \caption[\clutseg software dependencies]{\clutseg depends (amongst others) on \tod, ROS,
+        PCL, OpenCV, VSLAM, R, and SQLITE.} \end{center}
 \end{figure}
 
 \section{Textured Object Detection Library}
@@ -289,6 +289,15 @@ set $C_i - \bigcup_{k=1}^{j-1} S_{ik}$, and $C$ forms a partition. If not, then
 iteration is stopped, and \tod continues with the correspondence set for the
 next template object, if any. This means that the inlier sets of two different
 guesses never share a correspondence.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{media/inlier-criteria.png}
+        \caption{A model aligned to a scene.}
+   \end{center}
+\end{figure}
+
+
 
 The ROS package {\tt posest} in stack {\tt vslam} contains an implementation of
 RANSAC for the PNP problem, which is used by \tod. It is roughly similar to the

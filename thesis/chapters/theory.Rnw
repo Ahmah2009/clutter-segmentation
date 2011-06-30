@@ -232,7 +232,7 @@ arbitrary orientation.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.4\textwidth]{media/single-view-or}
+        \includegraphics[width=0.55\textwidth]{media/single-view-or}
         \caption{Recognition with models learned from a single view}
     \end{center}
 \end{figure}
@@ -248,7 +248,7 @@ recorded from different viewpoints.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{media/multi-view-or}
+        \includegraphics[width=0.8\textwidth]{media/multi-view-or}
         \caption{Recognition with models learned from multiple views}
     \end{center}
 \end{figure}
@@ -274,8 +274,8 @@ algorithms assign orientations to keypoints. Detectors can be roughly
 partitioned into three groups. First, there are {\it corner detectors}, such as
 Harris and SUSAN, that select points with high curvature. Second, {\it blob
 detectors} such as SURF or DoG look for points that are surrounded by all
-brighter or darker pixels. Third, there are {\it region detectors}, such as
-MSER, which extract features by finding image regions.
+brighter or darker pixels \cite{Bay2006}. Third, there are {\it region
+detectors}, such as MSER, which extract features by finding image regions.
 
 There is generally no such thing as the best feature detector. As often in
 engineering, all we can do is making the best choice for the task at hand.  An
