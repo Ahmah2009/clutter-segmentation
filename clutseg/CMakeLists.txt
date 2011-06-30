@@ -39,6 +39,9 @@ rosbuild_add_gtest(utest ${tsts})
 target_link_libraries(utest sqlite3 ${PROJECT_NAME})
 
 # rosbuild_link_boost(${PROJECT_NAME})
+rosbuild_add_executable(assemble_model apps/assemble_model.cpp)
+target_link_libraries(assemble_model ${PROJECT_NAME})
+
 rosbuild_add_executable(blackbox_recognizer apps/blackbox_recognizer.cpp)
 target_link_libraries(blackbox_recognizer ${PROJECT_NAME})
 
@@ -50,6 +53,9 @@ target_link_libraries(clutsegmenter_node ${PROJECT_NAME})
 
 rosbuild_add_executable(detect_features apps/detect_features.cpp)
 target_link_libraries(detect_features ${PROJECT_NAME})
+
+rosbuild_add_executable(draw_ground_truth apps/draw_ground_truth.cpp)
+target_link_libraries(draw_ground_truth ${PROJECT_NAME})
 
 rosbuild_add_executable(fixmask apps/fixmask.cpp)
 target_link_libraries(fixmask ${PROJECT_NAME})
@@ -86,6 +92,9 @@ target_link_libraries(poseinfo ${PROJECT_NAME})
 
 rosbuild_add_executable(siftmask apps/siftmask.cpp)
 target_link_libraries(siftmask ${PROJECT_NAME})
+
+rosbuild_add_executable(view_correspondences apps/view_correspondences.cpp)
+target_link_libraries(view_correspondences ${PROJECT_NAME})
 
 rosbuild_add_executable(xyz_to_xyzrgb apps/xyz_to_xyzrgb.cpp)
 target_link_libraries(xyz_to_xyzrgb ${PROJECT_NAME})
