@@ -23,7 +23,7 @@ namespace bfs = boost::filesystem;
 
 int main(int argc, char **argv) {
     if (argc != 6) { 
-        cerr << "Usage: view_correspondences <modelbase> <trainbase> <object> <query-image> <output-image>" << endl;
+        cerr << "Usage: draw_correspondences <modelbase> <trainbase> <object> <query-image> <output-image>" << endl;
         return -1;
     }
 
