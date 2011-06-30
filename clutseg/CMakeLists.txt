@@ -57,17 +57,14 @@ target_link_libraries(detect_features ${PROJECT_NAME})
 rosbuild_add_executable(draw_ground_truth apps/draw_ground_truth.cpp)
 target_link_libraries(draw_ground_truth ${PROJECT_NAME})
 
+rosbuild_add_executable(draw_keypoints apps/draw_keypoints.cpp)
+target_link_libraries(draw_keypoints ${PROJECT_NAME})
+
 rosbuild_add_executable(fixmask apps/fixmask.cpp)
 target_link_libraries(fixmask ${PROJECT_NAME})
 
-rosbuild_add_executable(ground_truth_collector apps/ground_truth_collector.cpp)
-target_link_libraries(ground_truth_collector ${PROJECT_NAME})
-
-rosbuild_add_executable(keypoints_viewer apps/keypoints_viewer.cpp)
-target_link_libraries(keypoints_viewer ${PROJECT_NAME})
-
-rosbuild_add_executable(keypoints_image apps/keypoints_image.cpp)
-target_link_libraries(keypoints_image ${PROJECT_NAME})
+rosbuild_add_executable(collect_ground_truth apps/collect_ground_truth.cpp)
+target_link_libraries(collect_ground_truth ${PROJECT_NAME})
 
 rosbuild_add_executable(migrate_to_labelset apps/migrate_to_labelset.cpp)
 target_link_libraries(migrate_to_labelset ${PROJECT_NAME})
@@ -81,8 +78,8 @@ target_link_libraries(experiment_enqueue ${PROJECT_NAME})
 rosbuild_add_executable(posetester apps/posetester.cpp)
 target_link_libraries(posetester ${PROJECT_NAME})
 
-rosbuild_add_executable(poseviewer apps/poseviewer.cpp)
-target_link_libraries(poseviewer ${PROJECT_NAME})
+rosbuild_add_executable(view_pose apps/view_pose.cpp)
+target_link_libraries(view_pose ${PROJECT_NAME})
 
 rosbuild_add_executable(poserandomizer apps/poserandomizer.cpp)
 target_link_libraries(poserandomizer ${PROJECT_NAME})
@@ -93,8 +90,8 @@ target_link_libraries(poseinfo ${PROJECT_NAME})
 rosbuild_add_executable(siftmask apps/siftmask.cpp)
 target_link_libraries(siftmask ${PROJECT_NAME})
 
-rosbuild_add_executable(view_correspondences apps/view_correspondences.cpp)
-target_link_libraries(view_correspondences ${PROJECT_NAME})
+rosbuild_add_executable(draw_correspondences apps/draw_correspondences.cpp)
+target_link_libraries(draw_correspondences ${PROJECT_NAME})
 
 rosbuild_add_executable(xyz_to_xyzrgb apps/xyz_to_xyzrgb.cpp)
 target_link_libraries(xyz_to_xyzrgb ${PROJECT_NAME})

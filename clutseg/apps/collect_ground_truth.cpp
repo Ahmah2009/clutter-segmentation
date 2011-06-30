@@ -24,9 +24,9 @@ using namespace tod;
 namespace bfs = boost::filesystem;
 
 void print_help() {
-    cerr << "Usage: ground_truth_collector <test-dir> <object-min-x> <object-zero-x> <object-max-x>  [--verbose]" << endl;
+    cerr << "Usage: collect_ground_truth <test-dir> <object-min-x> <object-zero-x> <object-max-x>  [--verbose]" << endl;
     cerr << endl
-        << "ground_truth_collector iterates over a directory and looks for pose files and" << endl
+        << "collect_ground_truth iterates over a directory and looks for pose files and" << endl
         << "corresponding images that show three objects. It calculates their respective poses." << endl
         << endl
         << "For each image, the pose estimated from fiducial markers is read. If it is not" << endl

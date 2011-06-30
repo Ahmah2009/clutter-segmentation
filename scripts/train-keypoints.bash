@@ -25,7 +25,7 @@ pushd $CLUTSEG_PATH/$base > /dev/null
                 for img in image_?????.png ; do
                     if [ -f $img.features.yaml.gz ] ; then
                         echo "Creating keypoints image for $subj/$img ..."
-                        keypoints_image $img $img.features.yaml.gz $img.keypoints.png
+                        draw_keypoints $img $img.features.yaml.gz $img.keypoints.png
                     else
                         echo "Skipping $subj/$img, no feature.yaml.gz found."
                     fi 
