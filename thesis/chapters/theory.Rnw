@@ -62,6 +62,7 @@ transforms vector coordinates between two different coordinate system.  The
 passive interpretation is used throughout this work.
 
 \subsection{Object-View Transformations}
+\label{section:object-view-transformations}
 
 3D points can be specified in coordinates with respect to any coordinate
 system. This gives rise to the question of what coordinate systems are
@@ -118,20 +119,19 @@ d_{12} = \normtwo{\ \oTvi{1} \pth{ \vec{0} } -\ \oTvi{2} \pth{ \vec{0}} \ }
 where $\oTvi{1}$ and $\oTvi{2}$ are the respective object-view transformations,
 which uniquely determine the object poses with respect to the camera.
 
-We can reformulate the problem of recognizing and estimating the pose of several
-objects in a scene as
+We can reformulate our problem of recognizing objects as
 
-\begin{verbatim}
-    Estimate the object-view transformation for each
-    of the objects in the scene.
-\end{verbatim}
+\begin{quote}
+    ``Find the object-view transformation for each
+    of the objects in the scene.''
+\end{quote}
 
 In the weakened case of only one object
 
-\begin{verbatim}
-    Estimate the object-view transformation for one
-    of the objects in the scene.
-\end{verbatim}
+\begin{quote}
+    ``Find the object-view transformation for one
+    of the objects in the scene.''
+\end{quote}
 
 \subsection{Camera Model}
 
@@ -150,13 +150,13 @@ image plane \cite{Bradski2008}. The image plane, unlike the original pinhole
 camera, is conveniently defined in front of the center of perspective
 \cite{Forsyth2003, Bradski2008}. 
 
-\begin{figure}[h]
-    \begin{center}
-        \includegraphics[width=0.8\textwidth]{media/camera-model}
-    \end{center}
-    \caption{}
-    \label{figure:camera-model}
-\end{figure}
+% \begin{figure}[h]
+%    \begin{center}
+%        \includegraphics[width=0.8\textwidth]{media/camera-model}
+%    \end{center}
+%    \caption{}
+%     \label{figure:camera-model}
+% \end{figure}
 
 In the previous section, it was shown that estimating the pose of an object
 with respect to the camera is equivalent to estimating the object-view
@@ -164,14 +164,17 @@ transformation. There is a third way to look at this problem, and this is the
 estimation of the extrinsic parameters of the camera. Unlike the intrinsic
 camera parameters that describe properties of the camera independently of its
 standpoint, the extrinsic parameters relate the camera pose to some given
-coordinate system in its environment.
+coordinate system in its environment. Thus, equivalently to the problem
+definitions given previously in \refSection{section:object-view-transformations},
+we can see our object recognition problem as
 
 % TODO: refer to problem definition in previous section
 
-\begin{verbatim}
-    For each object in the scene, estimate the extrinsic camera
-    parameters with respect to its object coordinate system. 
-\end{verbatim}
+\begin{quote}
+    ``Find the extrinsic camera parameters with
+    respect to the coordinate system of one of the objects
+    in the scene.''
+\end{quote}
 
 Estimation of camera parameters belongs to the topic of {\it camera
 calibration}.  In fact, \tod uses camera calibration techniques from OpenCV,

@@ -77,7 +77,7 @@ raw data.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{media/modelbase}
-        \caption[2D view of template objects used in evaluation]{The four different template objects used in evaluation}
+        \caption[2D view of objects used in evaluation]{The four objects used in evaluation}
         \label{figure:modelbase}
     \end{center}
 \end{figure}
@@ -91,9 +91,11 @@ though, only shows smallprint.  \jacobsCoffee shows texture that repeats on
 different sides of the object.  Finally, \haltbareMilch contains characteristic
 texture which is confined only to certain regions on its surface.
 
-\begin{figure}[h!]
+% FIXME: cannot show the models, move to issues!
+
+\begin{figure}
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{media/modelbase-3D}
+        \includegraphics[width=0.3\textwidth]{media/modelbase-3D}
         \caption[Model features of a selected modelbase]{Model features of a selected modelbase}
         \label{figure:modelbase-3D}
     \end{center}
@@ -116,12 +118,29 @@ similarly to the data for the modelbases. Again, the fiducial markers were
 required for computing ground truth for the objects on the validation scenes.
 We recorded around 50-60 scenes, each of them showing three instances of
 objects in the modelbase. Out of those, we chose 21 scenes at roughly equal
-angle increments to form the validation set.
+angle increments to form the validation set. The scenes show the objects in
+varying levels of occlusion. Each object appears in upright orientation.
+
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{media/validation-scene}
+\caption{From left to right: (a) A validation scene showing \jacobsCoffee,
+\haltbareMilch, \icedtea, and the ground truth. (b) Three coordinate systems
+that must align with the object coordinate systems of the three instances.}
+\label{figure:validation-scene}
+\end{center}
+\end{figure}
+
 
 Given a scene, ground truth requires to compute the object-view transformations
-$\oTvi{i}$, $\oTvi{j}$, and $\oTv{k}$ for the three objects $i$, $j$ and $k$ in
-the scene. We placed object $j$ in the center between the fiducial markers, such
-that 
+$\oTvi{i}$, $\oTvi{j}$, and $\oTvi{k}$ for the three objects $i$, $j$ and $k$
+in the scene. \refFigure{figure:validation-scene} shows three coordinate
+systems, defined with respect to the fiducial markers. The object coordinate
+system was defined for an object when the model was being learnt. Therefore, an
+object must be such placed in the validation scene that its object coordinate
+system aligns with one of the three coordinate systems as depicted in
+\refFigure{figure:validation-scene}. We placed object $j$ in the center between
+the fiducial markers, such that 
 
 \begin{equation}
     \oTvi{j}: \vec{p} \mapsto\ \fTv \pth{\vec{p}}
@@ -132,13 +151,6 @@ when raw data for modelbase was being collected. Pencil markers on the template
 objects helped us remembered the correct arrangement. Imprecision was difficult
 to avoid, when we placed the objects manually on the table. This introduces
 some noise in the ground truth data.
-
-\begin{figure}[h!]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{media/fiducial-object-3}
-        \caption{Relation between fiducial markers and three object coordinate systems}
-    \end{center}
-\end{figure}
 
 The other two objects $i$ and $k$ were placed upright next to object $i$, with
 offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
@@ -454,7 +466,8 @@ pose estimation.
     invisible(dev.off())
 @
      \includegraphics[width=\textwidth]{sift-surf-orb-benchmark}
-     \caption{Comparison of SIFT, SURF and ORB in terms of speed and number of features}
+     \caption[Comparison of SIFT, SURF and ORB in terms of speed]
+    {Comparison of SIFT, SURF and ORB in terms of speed and number of features}
      \label{figure:sift-surf-orb-benchmark}
     \end{center}
 \end{figure}
