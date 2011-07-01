@@ -5,6 +5,7 @@
  */
 
 #include "clutseg/db.h"
+#include "clutseg/experiment.h"
 #include "clutseg/paramsel.h"
 
 using namespace clutseg;
@@ -377,6 +378,45 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }
 
+    // Fuse detection parameters from 3959 with refinement parameters from
+    // 3835. Experiment 3959 has correctly identified all positives (i.e.
+    // tp_rate = 1) and produced no false negatives (i.e. fp_rate = 0),
+    // duplicate guesses ignored. Also, it produced only a few guesses per
+    // image. Also, high SIPC score (as defined in clutseg!) Choose 3959
+    // because it has high scene score (> 0.9) and high success rate on the
+    // validation set (> 0.95). Also, it does not use exceedingly high
+    // parameter values for max_projection_error, which avoids the degeneracy
+    // problem with the fixed-radius error circle on the image plane when
+    // deciding about inlier.
+    Experiment e3959 = clone_setup(db, 3959);
+    Experiment e3835 = clone_setup(db, 3835);
+
+    Experiment ee;
+    // Verify assumptions that the same feature extraction parameters have been
+    // used, the same training set (should be the case anyway).
+    assert(sha1(e3959.paramset.train_pms_fe) == sha1(e3835.paramset.train_pms_fe));
+    assert(sha1(e3959.paramset.recog_pms_fe) == sha1(e3835.paramset.recog_pms_fe));
+    assert(e3959.train_set == e3835.train_set);
+    assert(e3959.test_set == e3835.test_set);
+
+    ee.train_set = e3959.train_set;
+    ee.test_set = e3959.test_set;
+    ee.human_note = "derived from 3959 (detection) and 3835 (refinement)";
+
+    ee.paramset.train_pms_fe = e3959.paramset.train_pms_fe;
+    ee.paramset.recog_pms_fe = e3959.paramset.recog_pms_fe;
+    ee.paramset.detect_pms_match = e3959.paramset.detect_pms_match;
+    ee.paramset.detect_pms_guess = e3959.paramset.detect_pms_guess;
+
+    ee.paramset.refine_pms_match = e3835.paramset.refine_pms_match;
+    ee.paramset.refine_pms_guess = e3835.paramset.refine_pms_guess;
+    ee.paramset.pms_clutseg = e3835.paramset.pms_clutseg;
+
+    ee.name = str(boost::format("orb-lshbinary-%d") % orb);
+    orb++;
+    ee.batch = "run-14";
+    insert_if_not_exist(db, ee);
+
     /* that one is nonsense
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
     {
@@ -568,7 +608,7 @@ void insert_experiments(sqlite3* & db) {
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        cerr << "Usage: experiment_enqueue <database>" << endl;
+        cerr << "Usage: experiments_enqueue <database>" << endl;
         return -1;
     }
 

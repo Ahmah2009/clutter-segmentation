@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     // ros::NodeHandle n;
 
     if (argc != 4 && argc != 5) {
-        cerr << "Usage: experiment_runner <database> <train_cache> <result_dir>" << endl;
+        cerr << "Usage: run_experiments <database> <train_cache> <result_dir>" << endl;
         return -1;
     }
     bfs::path db_path = argv[1];

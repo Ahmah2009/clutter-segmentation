@@ -2,7 +2,7 @@
 
 function usage() {
     cat <<USAGE
-Usage: param_selection_run [--debug|--memcheck]
+Usage: experiment_runner [--debug|--memcheck]
 USAGE
 }
 
@@ -19,7 +19,7 @@ fi
 
 pushd $CLUTSEG_PATH/clutter-segmentation/clutseg > /dev/null
     if [ "$?" = 0 ] ; then
-        nice -n 1 $memcheck $debug bin/experiment_runner $CLUTSEG_EXPERIMENT_DB $CLUTSEG_TRAIN_CACHE_DIR $CLUTSEG_RESULT_DIR
+        nice -n 1 $memcheck $debug bin/run_experiments $CLUTSEG_EXPERIMENT_DB $CLUTSEG_TRAIN_CACHE_DIR $CLUTSEG_RESULT_DIR
     fi
 popd > /dev/null
 

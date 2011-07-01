@@ -69,11 +69,11 @@ target_link_libraries(collect_ground_truth ${PROJECT_NAME})
 rosbuild_add_executable(migrate_to_labelset apps/migrate_to_labelset.cpp)
 target_link_libraries(migrate_to_labelset ${PROJECT_NAME})
 
-rosbuild_add_executable(experiment_runner apps/experiment_runner.cpp)
-target_link_libraries(experiment_runner ${PROJECT_NAME})
+rosbuild_add_executable(run_experiments apps/run_experiments.cpp)
+target_link_libraries(run_experiments ${PROJECT_NAME})
 
-rosbuild_add_executable(experiment_enqueue apps/experiment_enqueue.cpp)
-target_link_libraries(experiment_enqueue ${PROJECT_NAME})
+rosbuild_add_executable(enqueue_experiments apps/enqueue_experiments.cpp)
+target_link_libraries(enqueue_experiments ${PROJECT_NAME})
 
 rosbuild_add_executable(posetester apps/posetester.cpp)
 target_link_libraries(posetester ${PROJECT_NAME})
