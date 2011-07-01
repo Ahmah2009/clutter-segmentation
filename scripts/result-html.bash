@@ -316,5 +316,6 @@ if has_opt --upload && [ "$CLUTSEG_RESULT_URL" != "" ] ; then
 	opt+=" --delete"
     fi 
     rsync $opt $CLUTSEG_ARTIFACT_DIR/report/ $CLUTSEG_RESULT_URL
+    rsync $opt $CLUTSEG_EXPERIMENT_DB $CLUTSEG_RESULT_URL
 fi
 
