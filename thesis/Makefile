@@ -10,7 +10,7 @@ main.pdf: main.tex
 	pdflatex main.tex
 	pdflatex main.tex
 
-main.tex: main.Rnw chapters/introduction.tex chapters/theory.tex chapters/implementation.tex chapters/evaluation.tex chapters/conclusion.tex components/settings.tex components/commands.tex
+main.tex: main.Rnw chapters/introduction.tex chapters/theory.tex chapters/implementation.tex chapters/evaluation.tex chapters/conclusion.tex components/settings.tex components/commands.tex bibliography/literature.bib
 	Rscript scripts/PngSweave.R main.Rnw
 
 chapters/introduction.tex: chapters/introduction.Rnw

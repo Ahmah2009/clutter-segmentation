@@ -128,7 +128,7 @@
   \clearemptydoublepage
 
     % \nocite{*} 
-	\bibliography{bibliography/literature.bib}
+	\bibliography{bibliography/literature}
 	
  
 \end{document}

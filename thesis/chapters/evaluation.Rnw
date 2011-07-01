@@ -696,6 +696,13 @@ could be pruned away by priorly assuming the objects to be within a certain
 range. Finally, radius $r$ could be replaced by a function that depends on the
 estimated distance $\normtwo{\oTvh\pth{\vec{0}}}$.
 
+% Proof is missing:
+% A final note; let us assume that, as the only source of noise, we have Gaussian
+% noise added to the 3D model points. Standard deviation then corresponds to
+% spheres around the model points. Spheres appear as ellipses under perspective
+% projection \cite{Moore1989}, and approximating an ellipse by a sphere seems
+% reasonable.
+
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/ransac-max-projection-error-deficiency}
@@ -709,7 +716,4 @@ estimated distance $\normtwo{\oTvh\pth{\vec{0}}}$.
         \caption[Sample of distant pose estimate with many inliers]{On a test scene, the badly aligned pose still results in many inliers}
     \end{center}
 \end{figure}
-
-
-
 
