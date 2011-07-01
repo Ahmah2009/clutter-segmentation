@@ -3,6 +3,7 @@
 
 clutter-segmentation - a ROS package for recognizing objects in cluttered scenes
 
+
 .SH Installation
 
 The clutseg package is built on top of ROS packages tod_training and
@@ -63,6 +64,7 @@ You can get it from http://cran.r-project.org/web/packages/RSQLite, as this R
 package is not prepackaged for Ubuntu Meerkat. Follow the installation
 instructions on the website.
 
+
 .SH Running tests
 
 Since clutter-segmentation has been developed against unstable and not exactly
@@ -88,4 +90,63 @@ or another example
    bin/utest --gtest_filter=ConnCompTest.FillSmallConnectedComponents
 
 for running only a specific test.
+
+
+.SH Learning Models from TOD raw data 
+
+TOD comes with some example raw data that can be used for populating a modelbase.
+There are also test images available. The general approach to generate a modelbase
+and use it for recognition is described in two tutorials:
+
+    http://www.ros.org/wiki/tod_training/Tutorials
+    http://www.ros.org/wiki/tod_detecting/Tutorials.
+
+
+The tutorial http://www.ros.org/wiki/tod_training/Tutorials/BaseCreation
+explains how to create a training base. According to this tutorial, the
+training objects are assumed to have a fiducial marker rigidly attached to
+them.  This might create problems when we try to use existing databases with
+images that actually do not contain any fiducial marker. The tutorial also
+expects ROS bags that contain synchronized messages of certain types.
+Unfortunately, it seems that it's only the topic names listed but not the data
+types. Inspecting the sample data using rosbag info show the different kinds of
+data that might have to be included in training data:
+
+camera_info   sensor_msgs/CameraInfo 
+image         sensor_msgs/Image      
+image_mono    sensor_msgs/Image      
+points2       sensor_msgs/PointCloud2
+tf            tf/tfMessage 
+
+
+There are some ROS bags available that can be used for training purposes.
+
+    $ wget http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/fat_free_milk.bag
+    $ wget http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/fat_free_milk.tf.bag
+    $ ...
+    
+Get some configuration data for training, edit config.txt to specify all available bags.
+
+    $ wget http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/fiducial.yml
+    $ wget http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/config.yaml
+    $ wget http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/config.txt
+    $ wget http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/features.config.yaml
+    $ wget http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/README
+
+Extract the bag file using 
+
+    $ rosrun tod_training dump_all.py bags base
+
+and generate the training data base using
+  
+    # these two configuration files are required for training 
+    $ cp bags/fiducial.yml base/
+    $ cp bags/config.yaml base/
+    $ cp bags/features.config.yaml base/
+    $ cd base
+    $ rosrun tod_training train_all.sh
+    $ cp bags/config.txt base/config.txt
+
+The tutorial describing how to generate bags for training is just an empty
+stub.
 
