@@ -199,7 +199,7 @@ void insert_experiments(sqlite3* & db) {
         e.paramset.refine_pms_guess.ransacIterationsCount = 200;
         e.name = str(boost::format("fast-rbrief-multiscale-lshbinary-%d") % j);
         e.batch = "run-6";
-	insert_if_not_exist(db, e);
+        insert_if_not_exist(db, e);
     }
 
     sqlite3_stmt *select100;
@@ -264,6 +264,117 @@ void insert_experiments(sqlite3* & db) {
                 insert_if_not_exist(db, e);
             }
         }
+    }
+
+    sqlite3_stmt *select100all2;
+
+    sql = "select experiment.id from experiment join response "
+          "where experiment.response_id = response.id and experiment.id "
+          "order by succ_rate desc limit 100";
+    db_prepare(db, select100all2, sql);
+    cout << "[SQL] " << sql << endl;
+    ids100all.clear();
+    while (sqlite3_step(select100all2) == SQLITE_ROW) {
+        ids100all.push_back(sqlite3_column_int(select100all2, 0));
+    }
+    sqlite3_finalize(select100all2);
+
+    size_t orb = 0;
+    // Just test ORB on the best 100 configurations got so far
+    for (size_t i = 0; i < ids100all.size(); i++, orb++) {
+        Experiment e = clone_setup(db, ids100all[i]);
+        e.paramset.train_pms_fe.detector_type = "ORB-OpenCV";
+        e.paramset.train_pms_fe.descriptor_type = "ORB-OpenCV";
+        e.paramset.train_pms_fe.extractor_type = "ORB-OpenCV";
+        e.paramset.train_pms_fe.extractor_params["octaves"] = 3;
+        e.paramset.train_pms_fe.extractor_params["scale_factor"] = 1.2f;
+        e.paramset.train_pms_fe.detector_params["n_features"] = 5000;
+        e.paramset.recog_pms_fe.detector_type = "ORB-OpenCV";
+        e.paramset.recog_pms_fe.descriptor_type = "ORB-OpenCV";
+        e.paramset.recog_pms_fe.extractor_type = "ORB-OpenCV";
+        e.paramset.recog_pms_fe.extractor_params["octaves"] = 3;
+        e.paramset.recog_pms_fe.extractor_params["scale_factor"] = 1.2f;
+        e.paramset.recog_pms_fe.detector_params["n_features"] = 5000;
+        // so far, only *-lshbinary tested
+        e.name = str(boost::format("orb-lshbinary-%d") % orb);
+        e.batch = "run-10";
+        insert_if_not_exist(db, e);
+    }
+
+    sqlite3_stmt *selectFirst750;
+
+    sql = "select id from experiment where id > 1 and id <= 751";
+
+    db_prepare(db, selectFirst750, sql);
+    cout << "[SQL] " << sql << endl;
+    vector<int> first750ids;
+    while (sqlite3_step(selectFirst750) == SQLITE_ROW) {
+        first750ids.push_back(sqlite3_column_int(selectFirst750, 0));
+    }
+    sqlite3_finalize(selectFirst750);
+
+    // Go a step back and check 750 first experiments with RBRIEF + FAST
+    // again, just with ORB. Use 5000 features, that might be the only
+    // difference. So roughly explore parameter space of first batch.
+    for (size_t i = 0; i < first750ids.size(); i++, orb++) {
+        Experiment e = clone_setup(db, first750ids[i]);
+        e.paramset.train_pms_fe.detector_type = "ORB-OpenCV";
+        e.paramset.train_pms_fe.descriptor_type = "ORB-OpenCV";
+        e.paramset.train_pms_fe.extractor_type = "ORB-OpenCV";
+        e.paramset.train_pms_fe.extractor_params["octaves"] = 3;
+        e.paramset.train_pms_fe.extractor_params["scale_factor"] = 1.2f;
+        e.paramset.train_pms_fe.detector_params["n_features"] = 5000;
+        e.paramset.recog_pms_fe.detector_type = "ORB-OpenCV";
+        e.paramset.recog_pms_fe.descriptor_type = "ORB-OpenCV";
+        e.paramset.recog_pms_fe.extractor_type = "ORB-OpenCV";
+        e.paramset.recog_pms_fe.extractor_params["octaves"] = 3;
+        e.paramset.recog_pms_fe.extractor_params["scale_factor"] = 1.2f;
+        e.paramset.recog_pms_fe.detector_params["n_features"] = 5000;
+        e.name = str(boost::format("orb-lshbinary-%d") % orb);
+        e.batch = "run-11";
+        insert_if_not_exist(db, e);
+    }
+
+    // Search in the neighborhood of orb-lshbinary-80, id = 2336
+    for (size_t detectMinInliersCount = 5; detectMinInliersCount <= 8; detectMinInliersCount++) { // 4 
+        for (size_t detectMaxProjectionError = 5; detectMaxProjectionError <= 12; detectMaxProjectionError++) { // 8
+            for (size_t refineMinInliersCount = 11; refineMinInliersCount <= 18; refineMinInliersCount += 2) { // 5   test 11, 13, 15, 17, 19
+                for (size_t refineMaxProjectionError = 5; refineMaxProjectionError <= 8; refineMaxProjectionError++) { // 4
+                    for (size_t ransacIterationsCount = 500; ransacIterationsCount <= 1000; ransacIterationsCount += 500, orb++) { // 2
+                        // 4 * 8 * 5 * 4 * 2 = 4 * 40 * 8 = 1240 
+                        Experiment e = clone_setup(db, 2336);
+                        e.paramset.detect_pms_guess.minInliersCount = detectMinInliersCount;
+                        e.paramset.detect_pms_guess.maxProjectionError = detectMaxProjectionError;
+                        e.paramset.detect_pms_guess.ransacIterationsCount = ransacIterationsCount;
+                        e.paramset.refine_pms_guess.minInliersCount = refineMinInliersCount;
+                        e.paramset.refine_pms_guess.maxProjectionError = refineMaxProjectionError;
+                        e.paramset.refine_pms_guess.ransacIterationsCount = ransacIterationsCount;
+                        e.name = str(boost::format("orb-lshbinary-%d") % orb);
+                        e.batch = "run-12";
+                        insert_if_not_exist(db, e);
+                    }
+                }
+            }
+        }
+    }
+
+    sqlite3_stmt *select50BestFromRun12;
+    sql = "select e.id from experiment e join response r on e.response_id = r.id where e.batch='run-12' order by r.succ_rate desc limit 50";
+    db_prepare(db, select50BestFromRun12, sql);
+    cout << "[SQL] " << sql << endl;
+    vector<int> the50BestFromRun12ids;
+    while (sqlite3_step(select50BestFromRun12) == SQLITE_ROW) {
+        the50BestFromRun12ids.push_back(sqlite3_column_int(select50BestFromRun12, 0));
+    }
+    sqlite3_finalize(select50BestFromRun12);
+
+    for (size_t i = 0; i < the50BestFromRun12ids.size(); i++, orb++) {
+        Experiment e = clone_setup(db, the50BestFromRun12ids[i]);
+        e.paramset.detect_pms_match.doRatioTest = 1;
+        e.paramset.detect_pms_match.ratioThreshold = 0.8;
+        e.name = str(boost::format("orb-lshbinary-%d") % orb);
+        e.batch = "run-13";
+        insert_if_not_exist(db, e);
     }
 
     /* that one is nonsense
