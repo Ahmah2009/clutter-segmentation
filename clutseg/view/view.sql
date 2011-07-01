@@ -6,6 +6,7 @@ drop view if exists view_experiment_detect_roc;
 drop view if exists view_experiment_scores;
 drop view if exists view_experiment_detect_sipc;
 drop view if exists view_experiment_refine_sipc;
+drop view if exists view_experiment_locate_sipc;
 drop view if exists view_experiment_all;
 
 create view view_experiment_response as
