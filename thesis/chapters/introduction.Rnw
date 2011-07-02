@@ -143,8 +143,8 @@ grayscale {\it query image} depicting the query scene. These features are
 called {\it query features} in order to distinguish them from model features.
 Nearest-neighbor search permits to find {\it correspondences} between a query
 feature and one or more model features. Some of these correspondences for a
-query scene are shown in \refFigure{figure:correspondences-pose}. Based on
-these correspondences, a model-fitting algorithm that is robust with respect to
+query scene are shown in \refFigure{figure:matches}. Based on these
+correspondences, a model-fitting algorithm that is robust with respect to
 outliers, aligns models to the 3D scene such that their projections onto the
 image plane best explain the observed data.  Finally, if an aligned model
 sufficiently explains the correspondences, the system {\it guesses} the object
@@ -155,42 +155,44 @@ the likelihood principle.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=\textwidth]{media/correspondences-pose}
+        \includegraphics[width=\textwidth]{media/matches}
     \end{center}
-    \caption{}
-    \label{figure:correspondences-pose}
+    \caption{The correspondences between the query image (left), and a selected
+view of the template object (right).} \label{figure:matches}
 \end{figure}
 
 \subsubsection{Implementation}
 
 The basic steps in learning models and recognizing objects are already
-implemented in the Textured Object Detection stack. \tod supports the use
-different local 2D feature detectors and descriptors. It supports a range of
+implemented in the Textured Object Detection (\tod) stack. \tod supports the use
+of different local 2D feature detectors and descriptors. It supports a range of
 nearest-neighbor search algorithms that find correspondences between feature
 sets. Finally, \tod uses RANSAC as the afore-mentioned model-fitting algorithm
-to estimate the object poses. The confidence value is measured by the number of
+for estimating the object poses. The confidence value is measured by the number of
 correspondences consistent with this pose. 
 
-We face cluttered scenes (\refFigure{figure:intro} (b)) that do not only
-exhibit high rates of occlusion, but also show objects in arbitrary
-orientation.  For our requirements, it is sufficient to resolve the clutter
+We face cluttered scenes (\refFigure{figure:clutter-pr2-kinect} (a)) that do
+not only exhibit high occlusion rates, but also show objects in arbitrary
+orientations. For our application, it is sufficient to resolve the clutter
 object by object. Hence, we chose to concentrate on finding the pose of only
-one object in the scene.
+one object in the scene. In the following, when we are talking about {\it
+recognizing} an object, we mean both detecting its presence and estimating its
+pose.
 
-For this, we present a new system called \clutseg, built on top of \tod. Its
-purpose is three-fold. Primarily, it adapts \tod to our purpose of resolving a
-cluttered scene by locating one object in the scene.  Second, it helps choose
-between the multitude of available feature detectors and descriptors and select
-one of the nearest-neighbor search algorithms. Third, for \tod and \clutseg
-have many parameters, experiment runner helps find good parameter values.
+We present a new system called \clutseg, built on top of \tod. Its purpose is
+three-fold: Primarily, it adapts \tod to our purpose of resolving a cluttered
+scene by locating one object in the scene.  Second, it helps choosing between
+the multitude of available feature detectors and descriptors, and selecting one
+of the nearest-neighbor search algorithms. Third, since \tod and \clutseg have
+many parameters, an experiment runner helps finding good parameter values.
 
 \clutseg locates an object by ranking the initial guesses from \tod by
 confidence value. Then, the best-ranked guesses are refined until a guess with
 sufficiently high confidence value is found.
 
 We chose Oriented BRIEF as a feature detector and descriptor because its binary
-features were appealing and it had not been subject to research so far. We
-traded correctness for speed and chose Locality Sensitive Hashing to find
+features were appealing, and because it had not been much researched so far. We
+traded exactness for speed and chose Locality Sensitive Hashing for finding
 approximate nearest neighbors.
 
 % The new Oriented

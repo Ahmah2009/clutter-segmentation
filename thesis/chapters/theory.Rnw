@@ -1,25 +1,24 @@
 This chapter provides the theoretical foundations for building the 3D object
 recognition system as presented in \refChapter{chapter:implementation}. We
-review the required mathematical tools and the basics 3D object recognition
-with models learnt from multiple views. We discuss Oriented BRIEF, a new
-feature detector and descriptor. We refer to approximative nearest neighbor
-search, which permits to quickly establish correspondences between known and
-unseen images. Then, we show how pose estimation is related to other problems,
-and how to solve it in the presence of noise and mismatches in the correspondences.
-Finally, this chapter shows how the implemented system relates to the framework
-of classifiers and estimators, which is helpful for the evaluation given in
-\refChapter{chapter:evaluation}.
+review the required mathematical tools together with the basics of 3D object
+recognition where models are learnt from multiple views. We discuss Oriented
+BRIEF, a new feature detector and descriptor. We resort to approximative
+nearest neighbor search, which permits to quickly establish correspondences
+between the query image and the models. Then, we show how pose estimation is
+related to other problems, and how to solve it in the presence of noise and
+mismatches in the correspondences.  Finally, this chapter shows how the
+implemented system relates to the framework of classifiers and estimators,
+which is helpful for the evaluation given in \refChapter{chapter:evaluation}.
 
 \section{Prerequisites in Geometry}
 
 A model of an object is described in its own coordinate system. Another
-coordinate system is defined by the depth camera used to assemble the model.
-In this section, we explain how a coordinate system attached to the camera and
-a coordinate system attached to the object relate by proper rigid
-transformations. We precisely define the pose of an object with respect to the
-camera in terms of a proper rigid transformation. We also describe how pose
-estimation is related to camera calibration and the perspective-n-point
-problem.
+coordinate system is defined by the depth camera.  In this section, we explain
+how a coordinate system attached to the camera and a coordinate system attached
+to the object are related by proper rigid transformations. We precisely define the
+pose of an object with respect to the camera in terms of a proper rigid
+transformation. We also describe how pose estimation is related to camera
+calibration and the perspective-n-point problem.
 
 % standard coordinate system
 % multiple views
@@ -32,15 +31,16 @@ problem.
 
 % TODO: reference to definition of rigid transformations
 
-A {\it rigid transformation} is defined as an orthogonal transformation
-followed by a translation in Euclidean space. An orthogonal transformation is
-either a reflection or a rotation. A {\it proper rigid transformation}
-additionally requires the orthogonal transformation to be a rotation
-\footnote{The definitions of rigid transformations found in the literature are
-inconsistent. Reflections are excluded from rigid transformations in
-\cite{Forsyth2003}, but included in \cite{Galarza2007}.} . In three dimensions,
-a proper rigid transformation of vectors can be represented by a rotation
-matrix $R \in \real^{3\times3}$ and a translation vector $\vec{t} \in \real^3$.
+A {\it rigid transformation} is defined as an orthogonal
+transformation followed by a translation in Euclidean space. An orthogonal
+transformation is either a reflection or a rotation. A {\it proper rigid
+transformation} additionally requires the orthogonal transformation to be a
+rotation \footnote{The definitions of rigid transformations found in the
+literature are inconsistent. Reflections are excluded from rigid
+transformations in \cite{Forsyth2003}, but included in \cite{Galarza2007}.} .
+In three dimensions, a proper rigid transformation of vectors can be
+represented by a rotation matrix $R \in \real^{3\times3}$ and a translation
+vector $\vec{t} \in \real^3$.
 
 \begin{equation}
     T: \real^3 \to \real^3, \vec{p} \mapsto R\vec{p} + \vec{t}
@@ -49,13 +49,13 @@ matrix $R \in \real^{3\times3}$ and a translation vector $\vec{t} \in \real^3$.
 The inverse transformation is given by
  
 \begin{equation}
-    T^{-1}: \real^3 \to \real^3, \vec{p} \mapsto R^{-1}(\vec{p} - \vec{t})
+    T^{-1}: \real^3 \to \real^3, \vec{p} \mapsto R^{-1}(\vec{p} - \vec{t}) = R^T(\vec{p} - \vec{t})
 \end{equation}
 
-A proper rigid transformation, abbreviated by PRT in the following, can be used
-to describe a rigid motion of an object with respect to a reference coordinate
-system. In physics, this is called an active transformation, and explains the
-relationship between two different points in the same coordinate system.
+A proper rigid transformation (PRT) can be used to describe a rigid motion of
+an object with respect to a reference coordinate system. In physics, this is
+called an active transformation, and explains the relationship between two
+different points in the same coordinate system.
 
 Another interpretation is to see a PRT as a passive transformation. The PRT
 transforms vector coordinates between two different coordinate system.  The
@@ -65,20 +65,20 @@ passive interpretation is used throughout this work.
 \label{section:object-view-transformations}
 
 3D points can be specified in coordinates with respect to any coordinate
-system. This gives rise to the question of what coordinate systems are
-convenient and how many are necessary. In our case, the two different
-coordinate systems discussed in the following prove sufficient.
+system. The question arises which coordinate systems are convenient and how
+many are necessary. In our case, the two different coordinate systems discussed
+in the following prove sufficient.
 
 The {\it view coordinate system} is attached to the camera. Two of its basis
 vectors define the image plane and the remaining basis vector is directed
-towards the scene.  The view coordinate system is convenient for the robot. For
+towards the scene. The view coordinate system is convenient for the robot. For
 example, if the robot is programmed to grasp an object at two points, it needs
 to know the view coordinates of the two grasping points. The {\it object
-coordinate system} is attached to the object. Both coordinate systems are shown
-in \refFigure{figure:coordinate-frames}. The PRT between object coordinates and
-view coordinates is called the {\it object-view transformation} and is denoted
-by $\oTv$. Subsequently, its inverse PRT is called {\it view-object
-transformation} and denoted by $\vTo$
+coordinate system}, on the other hand, is attached to the object. Both
+coordinate systems are shown in \refFigure{figure:coordinate-frames}. The PRT
+between object coordinates and view coordinates is called the {\it object-view
+transformation} and is denoted by $\oTv$. Subsequently, its inverse PRT is
+called {\it view-object transformation} and denoted by $\vTo$
 
 \begin{equation}
   \vTo = \pth{ \oTv }^{-1}
@@ -103,19 +103,15 @@ d = \normtwo{\ \oTv \pth{ \vec{0} }\ }
 
 The object-view transformation defines the relationship between camera and
 object. Since we are only interested in the {\em relative} location and
-orientation of the object with respect to the camera, we simplify things by
+orientation of the object with respect to the camera, we simplify matters by
 assuming the camera to be fixed and by always looking at scenes from the eyes
-of the robot. Then, it is possible to restrict ourselves to the study of rigid
-motions of objects, which are equivalent to the change of object-view
-transformations. Note that if there are multiple objects in a scene, then there
-exists a object-view transformation for each object. For example, if there are
-two objects $1$ and $2$ in the scene, the distance $d_{12}$ between them may be
-computed by
-
+of the robot. Note that if there are multiple objects in a scene, then there
+exists one object-view transformation for each object. For example, if there
+are two objects $1$ and $2$ in the scene, the distance $d_{12}$ between them
+may be computed by
 \begin{equation}
 d_{12} = \normtwo{\ \oTvi{1} \pth{ \vec{0} } -\ \oTvi{2} \pth{ \vec{0}} \ }
 \end{equation}
-
 where $\oTvi{1}$ and $\oTvi{2}$ are the respective object-view transformations,
 which uniquely determine the object poses with respect to the camera.
 
@@ -126,7 +122,7 @@ We can reformulate our problem of recognizing objects as
     of the objects in the scene.''
 \end{quote}
 
-In the weakened case of only one object
+In the special case of a single object
 
 \begin{quote}
     ``Find the object-view transformation for one
@@ -140,15 +136,14 @@ extracted from the image plane with corresponding 3D points in the scene, as
 shown in \refFigure{figure:hm-features-model}. In the recognition process,
 models are aligned to the scene and projected onto the image plane to verify
 whether they explain the observed data. In both cases, it is required to know
-about the nature of the relationship between the scene and its 2D image, which
+the nature of the relationship between the scene and its 2D image, which
 is explained by the camera model.
 
 Since both \tod and \clutseg use OpenCV, an open source library for computer
 vision, we adopt their camera model. It is a pinhole camera model, where a
-perspective projection is used to determine the projection of a 3D point on the
-image plane \cite{Bradski2008}. The image plane, unlike the original pinhole
-camera, is conveniently defined in front of the center of perspective
-\cite{Forsyth2003, Bradski2008}. 
+perspective projection is used to determine the projection of a 3D point onto
+the image plane \cite{Bradski2008}. This plane is conveniently defined in front
+of the center of perspective \cite{Forsyth2003, Bradski2008}. 
 
 % \begin{figure}[h]
 %    \begin{center}
@@ -183,8 +178,8 @@ to be estimated.
 
 Given correspondencies of $n$ 3D points with respect to a coordinate system,
 and their $n$ projections onto the image are known, the extrinsic parameters
-can be estimated. This is the perspective-$n$-point problem (PnP)
-\cite{Fischler1981}.
+can be estimated. It is an instance of the {\it perspective-$n$-point} (PnP)
+problem \cite{Fischler1981}.
 
 \section{Object Recognition}
 
