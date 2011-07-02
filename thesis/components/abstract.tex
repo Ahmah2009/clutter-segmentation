@@ -15,19 +15,19 @@
 Recognition of textured objects is fundamental in many robotic applications in
 household environments. This work addresses the perception task of finding a
 rigid textured object and its 3D pose in a cluttered scene such that the
-cluttered scene can then be resolved by successive removal of objects by a
-robot.
+cluttered scene can subsequently be resolved by successive removal of objects
+by a robot.
 
-A system is presented that learns 3D models and local 2D features from
-templates, and is then able to recognize objects in cluttered scenes by matching
-observed local 2D features against the learned templates and then estimating
-the poses of objects in the scene. Confidence values provide a measure of
-goodness for estimated object poses. For the object with the highest confidence
-value, the pose is refined in order to reduce error, and that estimate
-provides a basis for the grasping pipeline of a robot. The system is based on
-the existing, yet unstable and immature textured object recognition stack in
-the Robot Operating System. Recent developments in object recognition are reviewed
-in this context, especially the Oriented BRIEF feature detector and descriptor.
+A system is presented that learns local 2D features and 3D models from
+templates. It is able detect an object and estimate its pose in a cluttered
+scene by matching observed local 2D features against the learned models.
+Confidence values provide a measure of goodness for estimated object poses. For
+the object with the highest confidence value, the pose is refined in order to
+reduce error, and that estimate provides a basis for the grasping pipeline of a
+robot.  The system is based on the existing, yet immature and unstable textured
+object recognition stack in the Robot Operating System. Recent developments in
+object recognition are reviewed in this context, especially the Oriented BRIEF
+feature detector and descriptor.
 
 Experiments have shown that in XX percent of cluttered scenes in a validation
 set, an object is correctly recognized in the scene within a margin for

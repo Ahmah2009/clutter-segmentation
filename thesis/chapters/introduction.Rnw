@@ -2,59 +2,59 @@
 
 Object recognition is one of the fundamental tasks in computer vision. One of
 its applications is in robotics. Especially in household environments it is
-often not only necessary for a robot to detect the presence of an object, but
-also to locate this object in order to grasp it, and to make further decisions
-on a semantic level.
+often not only necessary for a robot to detect the presence of an object; for
+grasping and for making further decisions on a semantic level, it also needs
+to find the pose of the object.
 
 A particular application addressed by this work is a robot in a household
-environment which is given the task to go shopping. The robot then empties the
-shopping bag onto a table, and then plans to move the items bought to
+environment which is given the task to go shopping. Afterwards, the robot
+empties the shopping bag onto a table, and plans to move the items bought to
 appropriate storage facilities. The shopping items on the table form a
-cluttered scene. Most of the shopping items are rigid bodies and can be
-distinguished by characteristic texture, composed of pictorial descriptions of
-the product, labels, and company logos. High levels of occlusion and the
-presence of several such textured objects in a single scene renders recognition
-of these shopping items difficult. The objects might be arbitrarily oriented,
-and prior assumptions about their principal axes are likely invalid.
+cluttered scene. Most of these are rigid bodies and can be distinguished by
+characteristic texture, which is composed of pictorial descriptions of the
+product, labels, and company logos. High levels of occlusion and the presence
+of several such textured objects in a single scene renders recognition of these
+shopping items difficult. The objects might be arbitrarily oriented, and prior
+assumptions about their principal axes are likely invalid.
 
-The system presented in this work enables a PR2 robot to locate one object in
-the cluttered scene and provide sufficient information to a grasping pipeline,
-such that the clutter can be resolved by removing items one-by-one from the
-scene. Although, in the shopping scenario, the robot might have prior knowledge
-about which objects to locate in the scene, this information is not used in
-this work, in order to develop a system that is general enough to be applied to
-other application scenarios.
+The system presented in this work enables a PR2 robot to detect an object and
+estimate its pose in the cluttered scene and provide sufficient information to
+a grasping pipeline, such that the clutter can be resolved by removing items
+one-by-one from the scene. Although, in the shopping scenario, the robot might
+have prior knowledge about which objects the scene contains, this information
+is not used in this work, in order to develop a system that is general enough
+to be applied to other application scenarios.
 
 \section{Problem Statement}
 \label{section:problem-statement}
 
-The challenge is therefore to correctly identify a rigid textured object and
-determine its pose in a scene with clutter and high occlusion, and subsequently
-provide enough information to allow the robot to grasp the object and to remove it
-from the cluttered scene.
+The challenge is therefore to correctly identify a rigid textured object, to
+determine its pose in a scene with clutter and high occlusion, and to
+subsequently provide enough information to allow the robot to grasp the object
+and to remove it from the cluttered scene.
 
 \section{Related Work}
 
-In literature many approaches to object recognition are described. They differ
-in scope, targeted application and techniques. Those techniques using local
-features have been especially relevant to this work. 
+In the literature many approaches to object recognition are described. They
+differ in techniques and scope. Techniques using local features have been
+especially relevant to this work. 
 
 Tuytelaars and Mikolajczyk qualitatively review local feature detectors
-and descriptors \cite{Tuytelaars2007}, and provide guidance in making an
+and descriptors \cite{Tuytelaars2007}, and provide guidance for making an
 appropriate choice between a multitude of available detectors and descriptors.
 Lowe's work on the scale-invariant feature transform explains the principles
 of the scale-space pyramid and rotation invariance of features \cite{Lowe1999}.
 Rosten and Drummond introduce the FAST feature detector \cite{Rosten2010}.
 % while Agrawal et al. presented the CenSurE feature detector \cite{Agrawal2008},
 % both designed to be efficient.
-Calonder et al. describe BRIEF, a feature descriptor whose generated descriptor
-vectors are efficient to match \cite{Calonder2010}. Oriented BRIEF, derived
-from FAST and BRIEF, is the feature detector and descriptor chosen in this
-work, although literature had not been present at the time of writing.
-Matching observed features with model features is a common sub-task in object
-recognition. 
+Calonder et al.\ describe BRIEF, a feature descriptor whose generated
+descriptor vectors are efficient to match \cite{Calonder2010}. Oriented BRIEF,
+derived from FAST and BRIEF, is the feature detector and descriptor chosen in
+this work, though a publication had not been present at the time of writing
+\cite{Rublee2011}.  Matching observed features with model features is a common
+sub-task in object recognition. 
 % For this, Muja described the FLANN library \cite{Muja2009}.
-Gionis et al. introduce, and Slaney and Casey summarize Locality Sensitive
+Gionis et al.\ introduce, and Slaney and Casey summarize Locality Sensitive
 Hashing \cite{Gionis1999, Slaney2008}, which finds approximate
 nearest neighbors.
 % Lowe showed how to recognize
@@ -85,61 +85,73 @@ theory.
 \subsubsection{General Approach}
 
 Objects generally differ in shape and appearance. Recognizing the shopping
-items as shown in \refFigure{figure:intro} (a) is difficult. The shopping items
-are often shaped similarly. Worse, different products are sold in packagings of
-the same shape. The distinguishable feature of these objects is texture.
+items in a scene as shown in \refFigure{figure:clutter-pr2-kinect} (a) is
+difficult. In general, shopping items are often shaped similarly. Worse,
+different products are sold in packagings of the same shape. The distinguishing
+feature of these objects is texture.
 
-Thus, it seemed natural to rely on texture to recognize objects. Originally, it
-had been considered to combine the information from textured surface with the
-information contained in the shape of the rigid bodies. Finally, we
-concentrated on using texture information exclusively, and based our system on
-the existing Textured Object Detection (\tod) stack in the Robot Operating
-System.
+Thus, it seems natural to rely on texture to recognize objects. Originally, it
+had been considered to combine the information from textured surfaces with the
+information contained in the shapes of the rigid bodies. In the end, we solely
+used texture information, and based our system on the existing Textured Object
+Detection (\tod) stack in the Robot Operating System.
 
-\begin{figure}[h]
+\begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{media/clutter-pr2-kinect}
     \end{center}
-    \caption{}
+    \caption[A cluttered scene, a Kinect depth image, and a PR2 robot]{From left to right: (a) Rigid textured objects occluding each
+        other in a cluttered scene; (b) a 3D-visualization of the same scene, obtained
+        with a Kinect RGB-D camera; (c) the PR2 robot at Technische Universität
+        München.}
     \label{figure:clutter-pr2-kinect}
 \end{figure}
 
 We required our system to run on a PR2 robot at Technische Universität München,
-as depicted in \refFigure{figure:intro} (b). The PR2 is a robotic platform
-produced by Willow Garage. A Kinect RGB-depth camera is mounted on top of the
-robot. It simultaneously provides color images and 3D depth information. The
-Kinect camera measures the time-of-flight of near-infrared rays to compute the
-distance between camera and points in 3D space within a range of 0.8-3.5 meters
-\cite{PrimeSense2010}, and an example is shown in \refFigure{figure:intro} (c).
+as depicted in \refFigure{figure:clutter-pr2-kinect} (c). The PR2 is a robotic
+platform produced by Willow Garage. A Kinect RGB-depth camera is mounted on top
+of the robot. It simultaneously provides color images and 3D depth information.
+The Kinect camera measures the time-of-flight of near-infrared rays to compute
+the distance between camera and points in 3D space within a range of 0.8-3.5
+meters \cite{PrimeSense2010}. A depth image obtained by this camera is
+visualized in \refFigure{figure:clutter-pr2-kinect} (b).
 
 In the presented approach, we first learn a model from each rigid textured
 object, one by one. An object is rotated in front of the camera, which takes
-images and 3D scans from different views of the object. Then, local 2D features
-are extracted from each grayscale image. The local 2D features, together with
-the associated 3D points on the object's surface, form {\it model features} and
-make up the the model of this object. The model is a sparse point cloud and is
-described in a standard coordinate system.
+images and 3D scans from different views of the object. For each view, local 2D
+features are extracted from the grayscale image.
+\refFigure{figure:keypoints} shows both an image of a textured object
+(a), and visualizes the keypoints extracted from a grayscale version of the
+image (a). The local 2D features, together with the associated 3D points on the
+object's surface, form the {\it model features}. The model features make up the
+model of this object. The model is a sparse point cloud that is described in a
+standard coordinate system.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=\textwidth]{media/hm-features-model}
+        \includegraphics[width=0.5\textwidth]{media/keypoints}
     \end{center}
-    \caption{}
-    \label{figure:hm-features-model}
+    \caption[A textured object and extracted keypoints]{From left to right: (a) Textured object \haltbareMilch; (b) the
+        keypoints of local 2D features detected on textured surface of \haltbareMilch.}
+    \label{figure:keypoints}
 \end{figure}
 
-Given a single view of a scene, we use the models to recognize instances of the
-learnt template objects in this query scene. First, local 2D features are
-extracted from a grayscale image depicting the query scene. Nearest-neighbor
-search permits to find correspondences between these query features and the
-model features. Based on these correspondences, a model-fitting algorithm that is
-robust to outliers, aligns models to the 3D scene such that their projections
-onto the image plane best explain the observed data.  Finally, if an aligned
-model sufficiently explains the correspondences, the object is said to appear
-in the query scene at the aligned pose, or equivalently a {\it guess} is made.
-A {\it confidence value} measures the degree to which a guess explains the
-observed data. Although we do not explicitly make use of a statistical model,
-this is a likelihood-based approach.
+Given an image of a scene, we use the models to recognize instances of the
+template objects. For clarity, we call a scene a {\it query scene} if we want
+to recognize objects in it. First, local 2D features are extracted from a
+grayscale {\it query image} depicting the query scene. These features are
+called {\it query features} in order to distinguish them from model features.
+Nearest-neighbor search permits to find {\it correspondences} between a query
+feature and one or more model features. Some of these correspondences for a
+query scene are shown in \refFigure{figure:correspondences-pose}. Based on
+these correspondences, a model-fitting algorithm that is robust with respect to
+outliers, aligns models to the 3D scene such that their projections onto the
+image plane best explain the observed data.  Finally, if an aligned model
+sufficiently explains the correspondences, the system {\it guesses} the object
+to appear in the query scene at the aligned pose. A {\it confidence value}
+measures the degree to which a guess explains the observed data. Although we do
+not explicitly make use of a statistical model, the general idea is based on
+the likelihood principle.
 
 \begin{figure}[h]
     \begin{center}
