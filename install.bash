@@ -17,45 +17,86 @@ d=$1
 
 if [ -d $d ] ; then
     if [ "$(ls -A $d)" ]; then
-        echo "ERROR: $d is not empty."
-        exit
+        echo -e -n "\033[1m"
+        c=""
+        while [ "$c" != "y" ] && [ "$c" != "n" ] ; do
+            echo "Directory $d is not empty. Continue [y/n]? "
+            read c
+        done
+        tput sgr0
+        if [ "$c" != "y" ] ; then
+            exit 1
+        fi
     fi
 else
     mkdir -p $d
 fi
 
+function print_status() {
+    col=""
+    if [ "$3" = "SUCCESS" ] ; then 
+        col="\E[32m"
+    fi
+    printf "\033[1m$col%-55s %-12s [%-7s]\033[0m\n" "$1" "$2" "$3"
+    tput sgr0
+}
+
 # $1 requirement 
 # $2 command 
 # $3 description
 function step() {
-    printf "%-55s " "$3"
-    if ! $1 ; then
-        printf "%-12s " "please wait"
-        $2 >> /dev/null
+    if $1 ; then
+        print_status "$3" "please wait" "PENDING"
+        echo "Executing <$2> ..."
+        $2 # >> /dev/null
+        s=$?
+        m=$([ "$s" = "0" ] && echo "SUCCESS" || echo "FAILURE")
+        print_status "$3" "finished" "$m"
+        if [ "$s" != "0" ] ; then
+            echo -e '\033[1m\E[31mFAILURE.'
+            tput sgr0
+            exit 1
+        fi
     else
-        printf "%-12s " "skipping"
+        print_status "$3" "skipped" "SUCCESS"
     fi
-    $1 && echo "[SUCCESS]" || echo "[FAILURE]"
 }
 
-function available() {
-    [ "$(which $1)" != "" ]
+function not_a_dir() {
+    if [ -d "$1" ] ; then
+        return 1
+    else
+        return 0
+    fi 
 }
 
-ALWAYS=0
-RSQLITE=RSQLite_0.9-4.tar.gz
-RCRAN=http://cran.r-project.org/src/contrib
+function not_available() {
+    [ "$(which $1)" = "" ]
+}
+
+function always() {
+    return 0 
+}
+
+RSQLITE='RSQLite_0.9-4.tar.gz'
+RCRAN='http://cran.r-project.org/src/contrib'
 
 pushd $d >> /dev/null
-    step "[ -d clutter-segmentation ]"  "git clone --quiet indefero@code.in.tum.de:clutter-segmentation.git"        "Cloning repository clutter-segmentation.git"
-    step "available rosinstall"         "sudo easy_install rosinstall"                                              "Installing rosinstall tool" 
-    step $ALWAYS                        "rosinstall . clutter-segmentation/clutter-segmentation.rosinstall"         "Checking out dependencies via rosinstall"
-    step $ALWAYS                        "source setup.bash"                                                         "Sourcing environment via setup.bash"
-    step $ALWAYS                        "rosdep install clutseg"                                                    "Installing dependencies via rosdep"
-    step $ALWAYS                        "export CLUTSEG_PATH=$(pwd)"                                                "Exporting CLUTSEG_PATH"
-    step $ALWAYS                        "export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH"   "Amending PATH"
-    step $ALWAYS                        "mods-link"                                                                 "Applying patches and modifications"
-    step $ALWAYS                        "rosmake --rosdep-install clutseg"                                          "Building clutseg using rosmake"
-    step $ALWAYS                        "wget $RCRAN/$RSQLITE && R CMD INSTALL $RSQLITE && rm $RSQLITE"             "Installing RSQLite"
+    step "not_a_dir clutter-segmentation"   "git clone indefero@code.in.tum.de:clutter-segmentation.git"               "Cloning repository clutter-segmentation.git"
+    step "not_available rosinstall"         "sudo easy_install rosinstall"                                             "Installing rosinstall tool" 
+    step "always"                           "rosinstall . clutter-segmentation/clutter-segmentation.rosinstall"        "Checking out dependencies via rosinstall"
+    step "always"                           "source setup.bash"                                                        "Sourcing environment via setup.bash"
+    step "always"                           "rosdep install clutseg"                                                   "Installing dependencies via rosdep"
+    step "always"                           "export CLUTSEG_PATH=$(pwd)"                                               "Exporting CLUTSEG_PATH"
+    step "always"                           "export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH"  "Amending PATH"
+    step "always"                           "mods-link"                                                                "Applying patches and modifications"
+    step "always"                           "rosdep install clutseg"                                                   "Installing clutseg system dependencies"
+    step "always"                           "rosmake clutseg"                                                          "Building clutseg using rosmake"
+    step "always"                           "roscd clutseg"                                                            "Changing to clutseg path"
+    step "always"                           "make tests"                                                               "Compiling clutseg tests"
+    step "always"                           "wget $RCRAN/$RSQLITE"                                                     "Downloading RSQLite Archive"
+    step "always"                           "sudo R CMD INSTALL $RSQLITE"                                              "Installing RSQLite"
+    step "always"                           "rm $RSQLITE"                                                              "Removing RSQLite Archive"
+    step "always"                           "bin/utest --gtest_filter=test_extractor.orb_extract_features"             "Running simple ORB test"
 popd >> /dev/null
 
