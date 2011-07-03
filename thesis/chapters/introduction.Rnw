@@ -56,7 +56,7 @@ sub-task in object recognition.
 % For this, Muja described the FLANN library \cite{Muja2009}.
 Gionis et al.\ introduce, and Slaney and Casey summarize Locality Sensitive
 Hashing \cite{Gionis1999, Slaney2008}, which finds approximate
-nearest neighbors.
+nearest neighbours.
 % Lowe showed how to recognize
 % objects up to a 20 degree rotation using the scale-invariant feature transform
 % (SIFT), making use of the Hough Transform where correspondences vote for the
@@ -141,7 +141,7 @@ template objects. For clarity, we call a scene a {\it query scene} if we want
 to recognize objects in it. First, local 2D features are extracted from a
 grayscale {\it query image} depicting the query scene. These features are
 called {\it query features} in order to distinguish them from model features.
-Nearest-neighbor search permits to find {\it correspondences} between a query
+Nearest-neighbour search permits to find {\it correspondences} between a query
 feature and one or more model features. Some of these correspondences for a
 query scene are shown in \refFigure{figure:matches}. Based on these
 correspondences, a model-fitting algorithm that is robust with respect to
@@ -166,7 +166,7 @@ view of the template object (right).} \label{figure:matches}
 The basic steps in learning models and recognizing objects are already
 implemented in the Textured Object Detection (\tod) stack. \tod supports the use
 of different local 2D feature detectors and descriptors. It supports a range of
-nearest-neighbor search algorithms that find correspondences between feature
+nearest-neighbour search algorithms that find correspondences between feature
 sets. Finally, \tod uses RANSAC as the afore-mentioned model-fitting algorithm
 for estimating the object poses. The confidence value is measured by the number of
 correspondences consistent with this pose. 
@@ -183,7 +183,7 @@ We present a new system called \clutseg, built on top of \tod. Its purpose is
 three-fold: Primarily, it adapts \tod to our purpose of resolving a cluttered
 scene by locating one object in the scene.  Second, it helps choosing between
 the multitude of available feature detectors and descriptors, and selecting one
-of the nearest-neighbor search algorithms. Third, since \tod and \clutseg have
+of the nearest-neighbour search algorithms. Third, since \tod and \clutseg have
 many parameters, an experiment runner helps finding good parameter values.
 
 \clutseg locates an object by ranking the initial guesses from \tod by
@@ -193,7 +193,7 @@ sufficiently high confidence value is found.
 We chose Oriented BRIEF as a feature detector and descriptor because its binary
 features were appealing, and because it had not been much researched so far. We
 traded exactness for speed and chose Locality Sensitive Hashing for finding
-approximate nearest neighbors.
+approximate nearest neighbours.
 
 % The new Oriented
 % BRIEF 2D local feature detector additionally aroused our curiosity.
@@ -203,7 +203,7 @@ approximate nearest neighbors.
 % extracted from multiple views in order to account for instances appearing in
 % arbitrary orientations. Oriented BRIEF, a feature detector and binary feature
 % descriptor, is used to generate local 2D features for both the models and the
-% query scenes. Local Sensitive Hashing, an approximate nearest neighbor search
+% query scenes. Local Sensitive Hashing, an approximate nearest neighbour search
 % algorithm, finds correspondences between features of the models and the query
 % scene. RANSAC is used to solve the perspective-n-point problem to generate a
 % set of pose estimates. The pose estimate with the largest consensus set

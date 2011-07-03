@@ -74,7 +74,7 @@ descriptors from multiple objects. There does not exist an inverse relationship
 between feature descriptors and the object that generated it. We can only
 decide on likelihood criteria, for example we assign each feature to the
 template object which has the most similar feature descriptor from all template
-objects (nearest neighbor). If a query feature descriptor has close neighbors
+objects (nearest neighbour). If a query feature descriptor has close neighbours
 to training descriptors from more than one template object, then this query
 feature is difficult to discriminate and we might ignore this feature.
 
@@ -365,7 +365,7 @@ of a rectangular box that is used to extract the 3-dimensional region of
 interest. The box shape is hard-coded and cannot be altered without changing
 the source code. After retrieving all those points in the point cloud that fall
 into this box, outliers are removed (via RadiusOutlierRemoval) that have not
-enough neighbors within a certain radius. Using OpenCV the segmented cloud in
+enough neighbours within a certain radius. Using OpenCV the segmented cloud in
 the 3-dimensional region of interest is projected (Perspective projection) on a
 2-dimensional image which then becomes the black\&white mask that masks the
 2-dimensional stereo image. This perspective projection actually requires the
@@ -616,7 +616,7 @@ The matching process tries to find matches between keypoint descriptors in the
 query image and the train images. OpenCV's DescriptorMatcher is used to - find
 the k best matches for each keypoint descriptor in the query image and the
 keypoint descriptors of the training images. It's performed using some
-k-nearest-neighbors algorithm in OpenCV. A cv::DMatch describes such a match
+k-nearest-neighbours algorithm in OpenCV. A cv::DMatch describes such a match
 between a query keypoint descriptor and a training keypoint descriptor. The
 Matcher is responsible for keeping track of which match belongs to which object
 and corresponds to which training image. One query keypoint can find many
@@ -630,7 +630,7 @@ See
     \item[matcher\_type] Specifies which matcher implementation to use. Choose
         between FLANN, BF, BF-BINARY, LSH-BINARY.  See Matcher.cpp
     \item[ratio\_threshold] Used by RatioTestMatcher. See SIFT paper from Lowe 99. See Matcher.cpp
-    \item[knn] defines the number of nearest neighbors to find for each query
+    \item[knn] defines the number of nearest neighbours to find for each query
         keypoint. Equal to parameter k in OpenCV's knnMatch. Must be greater than 1.
         Setting knn = 30 (was 3) produced less positives on ias\_kinect\_test\_all, and
         knn = 100 even less. See Matcher.cpp

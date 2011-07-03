@@ -118,6 +118,7 @@
 		\addcontentsline{toc}{part}{Appendix}
 		
 		\appendix %---------------------------------------
+
 		
 		% \input{components/terms}
 
