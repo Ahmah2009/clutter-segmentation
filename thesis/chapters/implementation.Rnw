@@ -728,6 +728,6 @@ heads-up display. It provides command-line tools to inspect views of the
 modelbase, that is the region of interest, the extracted keypoints, and the
 estimated pose.  Imagemagick is used to generate montage images that show the
 results of one experiment at once. Finally, \tod allows to visualize matches
-between the query scene and the modelbase. \rproject is used to pull data from
-the database and plot them.
+between the query scene and the modelbase. \rproject is used for pulling data
+from the database and for plotting them.
 

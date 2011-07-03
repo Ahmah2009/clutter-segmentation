@@ -6,20 +6,20 @@
 @
 
 This chapter presents the experimental results of the \clutseg system, on the
-validation set, on a test set and results from a live test on a PR2 robot. It
-covers how the modelbase was built, how validation data, ground truth and the
-test data have been obtained. We discuss the parameter set found by
-experimentation.  Scenarios are presented in which the system performed well.
-We also cover the limitations and issues that were revealed during the
-evaluation.
+validation set, on a test set and results from a live test on the PR2 robot at
+Technische Universität München. It covers how the modelbase was built, how
+validation data, ground truth, and the test data have been obtained. We discuss
+the parameter set found by experimentation. Scenes are presented in which the
+system performs well.  We also cover the limitations and issues that were
+revealed during the evaluation.
 
 \section{Data Acquisition}
 \label{section:data-acquisition}
 
 This section shows how all the data required for constructing the modelbases,
 the validation set and the test set was obtained. Those three artifacts all
-required raw data, which was collected in a similar fashion, using the same
-hardware and software setup.
+required raw data, which has been collected in a similar fashion, using the
+same hardware and software setup.
 
 % The Robot
 % Operating System running on the PR2 robot is organized as a distributed system
@@ -32,7 +32,7 @@ We used the Willow Garage PR2 robot at TUM to collect raw data.  On top of the
 PR2, a Kinect RGB-D camera was mounted. A wooden board with two chessboards
 attached was setup in about one meter distance from the camera. This board
 served as a rotating table. The chessboards were printed on white DIN-A4 paper
-using a laser printer, and around them was enough white margin as recommended
+using a laser printer, and around them was enough white margin, as recommended
 in the documentation of method {\tt findChessboardCorners} in OpenCV. The
 recording took place in an indoor laboratory environment whose lighting
 conditions were roughly similar to the ones to be expected in an application
@@ -60,19 +60,19 @@ estimation.
 
 
 \tod requires multiple views from the template object. For the modelbases, we
-saved about 60-70 views per object to a bag file, which has been observed to
-work better than with only 40 views. For each object, around 1 Gigabyte of data
-was recorded. The next preparatory step was to uncompress the bag files with a
-script included in both \clutseg and \tod, then perform pose estimation and
-masking for each view as described in \refSection{subsection:learning}.  This
-post-processed raw data provides the masks and the object-view transformation
-which can be used to create several modelbases using different feature
-detectors and descriptors. The resulting models of each template object were
-much smaller in size than the original raw data. The models took up around 1
-Megabyte of disk space each, three magnitudes less than the original raw data.
-The feature detectors are responsible for this data reduction.  In the
-experiments, ORB selected 394 keypoints on average per image of the modelbase
-raw data.
+saved about 60--70 views per object to a bag file, which has been observed to
+work better than a bag with only 40 views. For each object, around 1 Gigabyte
+of data was recorded. The next preparatory steps consisted in uncompressing the
+bag files with a script included in both \clutseg and \tod, in estimating the
+object-view transformation for each view, and in masking for each view as
+described in \refSection{subsection:learning}.  This post-processed raw data
+provides the masks and the object-view transformation which can be used to
+create several modelbases using different feature detectors and descriptors.
+The resulting models of each template object were much smaller in size than the
+original raw data. The models took up around 1 Megabyte of disk space each,
+three magnitudes less than the original raw data.  The feature detectors are
+responsible for this data reduction.  In the experiments, ORB selected 394
+keypoints on average per image of the modelbase raw data.
 
 \begin{figure}[h!]
     \begin{center}
@@ -113,12 +113,12 @@ coordinate system.
 
 \subsection{Validation Set}
 
-The validation set, which was used to optimize parameter sets, was collected
-similarly to the data for the modelbases. Again, the fiducial markers were
-required for computing ground truth for the objects on the validation scenes.
-We recorded around 50-60 scenes, each of them showing three instances of
-objects in the modelbase. Out of those, we chose 21 scenes at roughly equal
-angle increments to form the validation set. The scenes show the objects in
+The validation set, which was used for optimizing parameter values, was
+collected similarly to the data for the modelbases. Again, the fiducial markers
+were required for computing ground truth for the objects on the validation
+scenes.  We recorded around 50--60 scenes, each of them showing three instances
+of objects in the modelbase. Out of those, we chose 21 scenes at roughly equal
+angle increments to form the validation set. The scenes show the objects with
 varying levels of occlusion. Each object appears in upright orientation.
 
 \begin{figure}[h!]
@@ -132,12 +132,12 @@ that must align with the object coordinate systems of the three instances.}
 \end{figure}
 
 
-Given a scene, ground truth requires to compute the object-view transformations
+Given a scene, ground truth requires the computation of the object-view transformations
 $\oTvi{i}$, $\oTvi{j}$, and $\oTvi{k}$ for the three objects $i$, $j$ and $k$
 in the scene. \refFigure{figure:validation-scene} shows three coordinate
 systems, defined with respect to the fiducial markers. The object coordinate
 system was defined for an object when the model was being learnt. Therefore, an
-object must be such placed in the validation scene that its object coordinate
+object must be placed in the validation scene such that its object coordinate
 system aligns with one of the three coordinate systems as depicted in
 \refFigure{figure:validation-scene}. We placed object $j$ in the center between
 the fiducial markers, such that 
@@ -146,11 +146,11 @@ the fiducial markers, such that
     \oTvi{j}: \vec{p} \mapsto\ \fTv \pth{\vec{p}}
 \end{equation}
 
-In other words, object $j$ was placed on the rotating table the same way as
-when raw data for modelbase was being collected. Pencil markers on the template
-objects helped us remembered the correct arrangement. Imprecision was difficult
-to avoid, when we placed the objects manually on the table. This introduces
-some noise in the ground truth data.
+In other words, object $j$ was placed on the rotating table in the same way as
+when raw data for a modelbase was being collected. Pencil markers on the
+template objects helped us to remember the correct arrangement. Imprecision was
+difficult to avoid when we placed the objects manually on the table. This
+introduces some noise in the ground truth data.
 
 The other two objects $i$ and $k$ were placed upright next to object $i$, with
 offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
@@ -184,11 +184,14 @@ offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 
 \subsection{Test Set}
 
+% TODO: fix OpenCV-ORB <=> ORB naming issue
+% FIXME: fix selected parameter set
+
 The test set was made of cluttered scenes of various character. All four
 objects are shown on the test scene. Some scenes showed objects in upright
 position, but some objects occluding others. Other scenes showed objects in
-arbitrary orientation and medium occlusion. Other, yet more difficult scenes,
-showed objects in arbitrary orientation and severe occlusion.
+arbitrary orientations and with medium occlusion. Other, yet more difficult
+scenes, showed objects in arbitrary orientations and with severe occlusion.
 
 The test set data has been collected similarly to the validation set, but
 ground truth was not computed. The evaluation on the test set was therefore
@@ -197,7 +200,7 @@ restricted to visual analysis.
 \section{Experiments}
 
 This section describes the regions in parameter space that have been covered by
-experiments. This knowledge is required to interpret data from multiple
+experiments. This knowledge is required for interpreting data from multiple
 experiments. It also presents a selected parameter set that has been found to
 work well on the validation set.
 
@@ -248,10 +251,10 @@ detector and rBRIEF as a feature descriptor. In \Sexpr{e_orb$cnt} experiments,
 we chose ORB instead. 
 
 Altogether, the experiments took more than \Sexpr{floor(e_all$total_test_runtime / 3600)}~hours
-of wall-time to compute, an average of
+of wall-clock time to compute, an average of
 \Sexpr{round(e_all$avg_test_runtime / 60, 1)}~minutes per experiment.
 \refTable{table:hardsoftware-parameter-optimization} lists the hardware and software
-configuration. The hardware is more than six years old.
+configuration.
 
 \begin{table}[h!]
   \begin{center}
@@ -397,18 +400,19 @@ stages to match the binary features produced by Oriented BRIEF.
 \section{Performance}
 
 Performance of the \clutseg system has been tested on the validation set, on a
-separate test set and in a live test on the PR2 robot. This section reviews
-performance for a parameter set that worked well on the validation set. It also
-covers observations made on a broad range of experiments.
+separate test set, and in a live test on the PR2 robot. This section reviews
+\clutseg's performance for a parameter set that worked well on the validation
+set. It also covers observations made on a broad range of experiments.
 
 \subsection{Performance on Validation Set}
 
 The \clutseg system correctly located and labeled an object within error bounds
 of 3 cm and 20 degrees in rotation in \Sexpr{floor(sps$succ_rate * 100)}\% of
-the validation scenes. It got an average scene score of \Sexpr{round(sps$value, 2)}.
-The success rate is not predictive, though, as the validation set was used for
-optimizing the system. Because ground truth was available, more precise data
-can be presented on the validation set than for the test set. 
+the validation scenes. It achieved an average scene score of
+\Sexpr{round(sps$value, 2)}.  The success rate is over-optimistic with regard
+to test scenes, though, because the validation set was used for optimizing the
+system. For ground truth was available for the validation set, more precise data can be presented on
+it than for the test set. 
 
 % TODO: talk about detection stage
 
@@ -417,16 +421,17 @@ can be presented on the validation set than for the test set.
 
 \subsection{Oriented BRIEF}
 
-This section discusses results of experiments with Oriented BRIEF. It covers
+This subsection discusses results of experiments with Oriented BRIEF. It covers
 a benchmark that compares computation speed of ORB, SIFT, and SURF. It shows
 how ORB responds to the number of desired features, a parameter that cannot be
 found in many other feature detectors.
 
-\subsubsection{Computation Speed}
+\subsubsection{Computational Speed}
 
-We first compared SIFT, SURF and ORB in terms of speed and quantity of features
-produced. We used the default parameters from OpenCV (SVN revision 5465),
-except for ORB, where the number of desired features was set to 1500.
+We first compared SIFT, SURF and ORB in terms of computational speed and the
+quantity of features produced. We used the default parameters from OpenCV (SVN
+revision 5465), except for ORB, where the number of desired features was set to
+1500.
 
 <<>>=
     d=as.data.frame(read.table("../media/sift-surf-orb-benchmark.txt", header=TRUE))
@@ -436,16 +441,16 @@ except for ORB, where the number of desired features was set to 1500.
 @
 
 \refFigure{figure:sift-surf-orb-benchmark} shows the CPU time per image, the
-CPU time per keypoint and the number of keypoints, averaged over 21 images from
-the validation set. None of the three detectors is parallelized and the
-measured CPU time was roughly equivalent to wall time. The hardware and
-software configuration of the notebook used for the benchmark is shown in 
+CPU time per keypoint, and the number of keypoints, averaged over 21 images
+from the validation set. None of the three detectors is parallelized, and the
+measured CPU time was roughly equivalent to wall-clock time. The hardware and
+software configuration of the notebook used for the benchmark is shown in
 \refTable{table:hardsoftware-sift-surf-orb-benchmark}.
 
 Oriented BRIEF ran about
 \Sexpr{floor(d$img_cpu[sift]/d$img_cpu[orb])} times faster than SIFT, and about
 \Sexpr{floor(d$img_cpu[surf]/d$img_cpu[orb])} times faster than SURF.  Because
-ORB required only \Sexpr{d$img_cpu[orb]} milliseconds to compute keypoints and
+ORB required only \Sexpr{d$img_cpu[orb]} milliseconds for computing keypoints and
 descriptors for one image, the amount of time \clutseg spends in computing
 query features becomes negligible compared to the time spent in matching and
 pose estimation.
@@ -598,10 +603,11 @@ by more than \Sexpr{max_exceed} keypoints.
 
 \subsection{Incomplete model}
 
-The bottom of the template object is facing the rotating table and is invisible
-to the camera from all viewpoints. This does not matter as long as instances of
-these template objects are standing upright. This does matter when instances occur
-in arbitrary orientation.
+When recording data for a modelbase, the bottom of each template object is
+facing the rotating table, and is thus invisible to the camera from all
+viewpoints.  This does not matter as long as instances of these template
+objects are standing upright. This does matter however, when instances occur in
+arbitrary orientation.
 
 \subsection{Repetitions in texture}
 
@@ -622,8 +628,8 @@ which probably makes it hard to obtain informative features.
 Generally, the system relies on the size of the consensus set to be a strong
 indicator for the goodness of an estimate. We observed that in one experiment
 and scene, \clutseg estimated a distance of 88 metres between \icedtea and the
-camera. This bad estimate was almost two orders of magnitude off ground truth.
-Yet it still had support by 14 inliers, enough in this scene to make it the
+camera. This bad estimate was almost two orders of magnitude off the ground truth.
+Yet it still had support by 14 inliers --- enough in this scene to make it the
 best-ranked guess.
 % RANSAC and the Maximum Projection Error
 % Perspective Projection and RANSAC
@@ -692,9 +698,9 @@ max\_projection\_error}.
 
 There are at least three hypothetical solutions to this issue. One might set
 parameter {\tt max\_projection\_error} to a low value.  The bad pose estimates
-could be pruned away by priorly assuming the objects to be within a certain
-range. Finally, radius $r$ could be replaced by a function that depends on the
-estimated distance $\normtwo{\oTvh\pth{\vec{0}}}$.
+could be pruned away by the a-priori assumption that objects are within a
+certain range. Finally, radius $r$ could be replaced by a function that depends
+on the estimated distance $\normtwo{\oTvh\pth{\vec{0}}}$.
 
 % Proof is missing:
 % A final note; let us assume that, as the only source of noise, we have Gaussian
@@ -706,7 +712,7 @@ estimated distance $\normtwo{\oTvh\pth{\vec{0}}}$.
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/ransac-max-projection-error-deficiency}
-        \caption[Schematic explanation of distant pose estimate with many inliers]{Far-away pose estimate can result in many inliers}
+        \caption[Schematic explanation of distant pose estimate with many inliers]{A far-away pose estimate can result in many inliers}
     \end{center}
 \end{figure}
 
