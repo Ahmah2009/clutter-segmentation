@@ -33,7 +33,7 @@ PR2, a Kinect RGB-D camera was mounted. A wooden board with two chessboards
 attached was setup in about one meter distance from the camera. This board
 served as a rotating table. The chessboards were printed on white DIN-A4 paper
 using a laser printer, and around them was enough white margin, as recommended
-in the documentation of method {\tt findChessboardCorners} in OpenCV. The
+in the documentation of method {\tt findChessboardCorners} in \opencv. The
 recording took place in an indoor laboratory environment whose lighting
 conditions were roughly similar to the ones to be expected in an application
 scenario. The board was manually rotated, carefully and not too fast.  The
@@ -294,6 +294,7 @@ configuration.
 \subsection{Selected Parameter Set}
 
 <<>>=
+    sps_id = 4180
     sps = dbGetQuery(con, paste(
           "select e.id as id,",
           # parameters
@@ -317,10 +318,7 @@ configuration.
           "rg.ransac_iterations_count as refine_ransac_iterations_count,",
           "rg.max_projection_error as refine_max_projection_error,",
           "rg.min_inliers_count as refine_min_inliers_count,",
-          "g.accept_threshold as accept_threshold,",
-          # statistics
-          "r.succ_rate as succ_rate,",
-          "r.value as value",
+          "g.accept_threshold as accept_threshold",
           # joins 
           "from experiment e",
           "join response r on e.response_id = r.id",
@@ -341,14 +339,15 @@ configuration.
           "and rf.n_features = tf.n_features",
           "and rf.octaves = tf.octaves",
           "and rf.scale_factor = tf.scale_factor",
-          "order by r.succ_rate desc limit 1"))
+          "and e.id = ", sprintf("%d", sps_id)))
+          #"order by r.succ_rate desc limit 1"))
 @
 
 Here we present a parameter set, dubbed SPS, that has been found to work well
 on the validation set. It contains values for all configurable system
 parameters. \refTable{table:selected-parameters-features} provides values for
 feature extraction. We used the same feature extraction parameters for the
-modelbase and for the query scenes. We used the default values from OpenCV for
+modelbase and for the query scenes. We used the default values from \opencv for
 parameters {\tt octaves} and {\tt scale\_factor}.
 % TODO: introduce \n_features octaves and scale\_factor in theoretical and implementation part
 
@@ -399,20 +398,96 @@ stages to match the binary features produced by Oriented BRIEF.
 
 \section{Performance}
 
-Performance of the \clutseg system has been tested on the validation set, on a
+The performance of the \clutseg system has been tested on the validation set, on a
 separate test set, and in a live test on the PR2 robot. This section reviews
 \clutseg's performance for a parameter set that worked well on the validation
 set. It also covers observations made on a broad range of experiments.
 
 \subsection{Performance on Validation Set}
 
-The \clutseg system correctly located and labeled an object within error bounds
-of 3 cm and 20 degrees in rotation in \Sexpr{floor(sps$succ_rate * 100)}\% of
-the validation scenes. It achieved an average scene score of
-\Sexpr{round(sps$value, 2)}.  The success rate is over-optimistic with regard
-to test scenes, though, because the validation set was used for optimizing the
-system. For ground truth was available for the validation set, more precise data can be presented on
-it than for the test set. 
+<<>>=
+    sps_avg = dbGetQuery(con, paste(
+          "select e.id as id,",
+          "avg(r.succ_rate) as avg_succ_rate,",
+          "avg(r.value) as avg_value,",
+          "avg(r.none_rate) as avg_none_rate,",
+          "avg(r.mislabel_rate) as avg_mislabel_rate,",
+          "avg(r.avg_succ_trans_err) as avg_succ_trans_err,",
+          "avg(r.avg_succ_angle_err) as avg_succ_angle_err,",
+          "avg(r.avg_trans_err) as avg_trans_err,",
+          "avg(r.avg_angle_err) as avg_angle_err,",
+          "avg(r.avg_detect_inliers) as avg_detect_inliers,",
+          "avg(r.avg_detect_choice_inliers) as avg_detect_choice_inliers,",
+          "avg(r.avg_refine_inliers) as avg_refine_inliers,",
+          "avg(r.avg_refine_choice_inliers) as avg_refine_choice_inliers",
+          # joins 
+          "from experiment e",
+          "join response r on e.response_id = r.id",
+          "and (e.batch='run-16' or e.id = 4180)")) # FIXME:
+
+    avg_fail_angle_err = function(s) {
+        return (s$avg_angle_err - s$avg_succ_rate * s$avg_succ_angle_err) / (1 - s$avg_succ_rate)
+    }
+
+    avg_fail_trans_err = function(s) {
+        (s$avg_trans_err - s$avg_succ_rate * s$avg_succ_trans_err) / (1 - s$avg_succ_rate)
+    }
+@
+
+For \clutseg uses randomized algorithms, we have run it with the SPS
+values for 20 times on the validation set to measure the average performance.
+The system correctly recognized an object within error bounds of 3 cm and 20
+degrees in rotation in
+\Sexpr{signif(sps_avg$avg_succ_rate * 100, 2)}\% of the validation scenes. One
+of the scenes where \clutseg successfully recognized an object is visualized in
+\refFigure{figure:validation-scene-success}, which shows the ground truth with
+labeled axes, the estimated pose, and the keypoints of query features that
+found both a match with a model feature and support the pose estimate.
+
+The guesses that remained within the afore-mentioned error bounds showed an average
+error of \Sexpr{signif(100 * sps_avg$avg_succ_trans_err, 2)} cm in translation,
+and \Sexpr{signif(sps_avg$avg_succ_angle_err * 180 / pi, 1)} degrees in
+rotation. When only considering the guesses which exceeded the error bounds,
+the average translational error was \Sexpr{signif(100 * avg_fail_trans_err(sps_avg), 2)} cm,
+and the average rotational error was \Sexpr{signif(180 / pi * avg_fail_angle_err(sps_avg), 1)} degrees.
+\clutseg achieved an average scene score of
+\Sexpr{signif(sps_avg$avg_value, 2)}.
+<<>>=
+    if (sps_avg$avg_none_rate > 0) {
+        m1 = sprintf("No guess was made in %.1f percent of the scenes.")
+    } else {
+        m1 = sprintf("A guess was made in every scene.")
+    }
+    if (sps_avg$avg_mislabel_rate > 0) {
+        m2 = sprintf("An object was mistakenly believed to be in the scene in %.1f percent of all scenes.")
+    } else {
+        m2 = sprintf("Objects were not confused in any of the scenes.")
+    }
+@
+\Sexpr{m1}
+\Sexpr{m2}
+<<>>=
+    rm(m1)
+    rm(m2)
+@
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=\textwidth]{media/validation-scene-success}
+        \caption[Validation scene with successfully recognized \icedtea.]{From left to right: (a) A validation scene; (b) a visualization of the estimated pose for \icedtea. }
+        \label{figure:validation-scene-success}
+    \end{center}
+\end{figure}
+
+A pose estimate returned by \clutseg was supported by
+\Sexpr{round(sps_avg$avg_refine_choice_inliers)} correspondences on average.
+
+% TODO: averaging
+
+The success rate is over-optimistic with regard to the test scenes, though,
+because the validation set was used for optimizing the system. For ground truth
+was available for the validation set, more precise data can be presented on it
+than for the test set. 
 
 % TODO: talk about detection stage
 
@@ -429,7 +504,7 @@ found in many other feature detectors.
 \subsubsection{Computational Speed}
 
 We first compared SIFT, SURF and ORB in terms of computational speed and the
-quantity of features produced. We used the default parameters from OpenCV (SVN
+quantity of features produced. We used the default parameters from \opencv (SVN
 revision 5465), except for ORB, where the number of desired features was set to
 1500.
 
@@ -507,7 +582,7 @@ detector should be configurable, using a simple and intuitive threshold
 \cite{Tuytelaars2007}.
 
 A parameter {\tt n\_features} specifies the number of desired features produced
-by Oriented BRIEF. Other feature detectors and descriptors in OpenCV, such as
+by Oriented BRIEF. Other feature detectors and descriptors in \opencv, such as
 SIFT and SURF do not provide such a parameter. Neither do the feature detectors
 FAST and STAR. The parameter {\it n\_features} is simple and intuitive. Yet,
 ORB does not make any guarantee about the actual number of features extracted
