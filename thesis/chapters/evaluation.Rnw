@@ -124,9 +124,9 @@ varying levels of occlusion. Each object appears in upright orientation.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/validation-scene}
-\caption{From left to right: (a) A validation scene showing \jacobsCoffee,
+\caption[The object coordinate systems defined in a validation scene]{From left to right: (a) A validation scene showing \jacobsCoffee,
 \haltbareMilch, \icedtea, and the ground truth. (b) Three coordinate systems
-that must align with the object coordinate systems of the three instances.}
+that must align with the object coordinate systems of the three instances}
 \label{figure:validation-scene}
 \end{center}
 \end{figure}
@@ -423,7 +423,7 @@ set. It also covers observations made on a broad range of experiments.
           # joins 
           "from experiment e",
           "join response r on e.response_id = r.id",
-          "and (e.batch='run-16' or e.id = 4180)")) # FIXME:
+          "and (e.batch='run-16')"))
 
     avg_fail_angle_err = function(s) {
         return (s$avg_angle_err - s$avg_succ_rate * s$avg_succ_angle_err) / (1 - s$avg_succ_rate)
@@ -474,7 +474,7 @@ and the average rotational error was \Sexpr{signif(180 / pi * avg_fail_angle_err
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=\textwidth]{media/validation-scene-success}
-        \caption[Validation scene with successfully recognized \icedtea.]{From left to right: (a) A validation scene; (b) a visualization of the estimated pose for \icedtea. }
+        \caption[Validation scene with successfully recognized \icedtea]{From left to right: (a) A validation scene; (b) a visualization of the estimated pose for \icedtea}
         \label{figure:validation-scene-success}
     \end{center}
 \end{figure}
@@ -735,7 +735,7 @@ scene is less than a threshold $r$, precisely
 % this is a geometrical constraint, see pnp_ransac.cpp
 
 \begin{equation}
-    c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r
+    c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r  \quad \wedge \quad \text{$p_i$ is visible}
     \label{equation:inlier-definition}
 \end{equation}
 
@@ -749,7 +749,8 @@ ground truth for $\oTvh$.
 \end{equation}
 
 Choose $l$ large enough that the projection of the aligned model spans only one
-pixel $\hat{q}$ on the digital image plane. For the $n$ correspondences for this object, this means
+pixel $\hat{q}$ on the digital image plane. For the $n$ correspondences for
+this object, this means
 
 \begin{equation}
     \forall{i \in \brt{n}}: \hat{q}_i \approx \hat{q}
@@ -760,22 +761,23 @@ Plugging \refEquation{equation:same-point} into \refEquation{equation:inlier-def
 we obtain an inlier criteria for the bad estimate
 
 \begin{equation}
-    \forall{i \in \brt{n}}:\quad c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r
+    \forall{i \in \brt{n}}:\quad c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r \quad \wedge \quad \text{$p_i$ is visible}
 \end{equation}
 
 All correspondences within a circle of radius $r$ around $\hat{q}$ are
 designated inliers. If this circle contains many keypoints on the query image,
 the resulting consensus set of the pose estimate might grow larger than
-expected. The effect can possibly be neglected if radius $r$ is small. In fact,
-in the experiment exhibiting the phenomenon, the radius was set to $r = 12$
+expected. The effect can be neglected if radius $r$ is very small.  In the
+experiment that exhibited the phenomenon, the radius was set to $r = 12$
 (pixels). Note that this radius is equivalent to the parameter {\tt
 max\_projection\_error}.
 
 There are at least three hypothetical solutions to this issue. One might set
-parameter {\tt max\_projection\_error} to a low value.  The bad pose estimates
-could be pruned away by the a-priori assumption that objects are within a
-certain range. Finally, radius $r$ could be replaced by a function that depends
-on the estimated distance $\normtwo{\oTvh\pth{\vec{0}}}$.
+the parameter {\tt max\_projection\_error} to a lower value, which is what we have
+done. The bad pose estimates could be pruned away by the a-priori assumption
+that objects are within a certain range. Finally, the radius $r$ could be replaced
+by a function that depends on the estimated distance
+$\normtwo{\oTvh\pth{\vec{0}}}$.
 
 % Proof is missing:
 % A final note; let us assume that, as the only source of noise, we have Gaussian
@@ -786,7 +788,7 @@ on the estimated distance $\normtwo{\oTvh\pth{\vec{0}}}$.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.8\textwidth]{media/ransac-max-projection-error-deficiency}
+        \includegraphics[width=0.7\textwidth]{media/ransac-max-projection-error-deficiency}
         \caption[Schematic explanation of distant pose estimate with many inliers]{A far-away pose estimate can result in many inliers}
     \end{center}
 \end{figure}

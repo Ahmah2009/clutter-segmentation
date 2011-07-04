@@ -1,3 +1,144 @@
 \section{Key Results}
+
+% Made TOD work despite of many issues
+Whilst our evaluation revealed that many issues remain to be solved, we showed
+that an object recognition system can be built basically on three concepts:
+First, extracting local 2D features using off-the-shelve feature detectors and
+descriptors.  Second, nearest-neighbour search to find correspondences between
+the scene under investigation and the models. Third, a model-fitting algorithm
+that aligns models to the scene such that they are consistent with these
+correspondences.
+
+% ORB is blazingly fast
+% TODO: numbers!
+Our experiments showed the Oriented BRIEF feature detector and descriptor to be
+extremely fast when compared with SIFT, and also when compared with SURF. ORB
+is interesting for real-time applications.  Oriented BRIEF is one of the first
+feature detectors and descriptors that permit to conveniently specify the
+number of features to be extracted.
+
+% Binary features are extremely fast to match with LSH
+Locally-Sensitive Hashing proved to work well with binary features; it achieved
+a speed-up of %TODO
+times over brute-force matching in the validation scenes, and the success rate
+and the average scene score were not impacted by trading exactness for speed.
+
+% RANSAC can cope with lots of noise
+Although RANSAC turned out to be surprisingly robust to outliers and noise, our
+evaluation showed that it can only do so with a large number of iterations.
+Hence, most of the time was spent in RANSAC when recognizing objects in a
+scene, compared to the nearest-neighbour search with Locally-Sensitive Hashing,
+or to the negligible amount of time spent in generating local 2D features with
+Oriented BRIEF.
+
+% Many parameters cause serious trouble
+\clutseg and \tod use randomized and approximate algorithms, and deal with
+noisy data. They are exposed to high levels of uncertainty. This calls for a
+statistical analysis, which can only be accomplished if the systems are
+designed from the beginning to incorporate methods for collecting statistical
+data.
+
+
 \section{Contribution}
+
+We helped to fix issues with \tod, \ros and \opencv. We provided a test case
+that helped to make the SIFT implementation in \opencv respect the image mask
+provided when extracting features using SIFT. A problem with the
+DynamicFeatureAdaptor in \opencv which adaptively tries to extract a
+pre-specified number of features from an image was fixed soon after our bug
+report. We helped improve the YAML implementation for \opencv 2.3. Usability
+issues have been reported for the point cloud viewer in \ros. A number of
+issues has been fixed with our help in \tod.
+
+We gave an early introduction to the new Oriented BRIEF feature detector and
+descriptor in \opencv, and showed that it outperforms SIFT and SURF in terms of
+speed in our experiments. We had good experience with using Oriented BRIEF
+together with Locality-Sensitive Hashing.
+
+We formulated the problem of estimating the pose of an object in terms of
+camera calibration and show how it can be reduced to solving the
+perspective-n-point problem. We showed how RANSAC, when used for solving the
+perspective-n-point problem, can find bad solutions in case the projection
+error threshold on the image plane is chosen too large.  We proposed an
+enhancement to RANSAC that involves a projection error threshold that depends
+on the distance of the aligned model point to the image plane.
+
+We presented the use of dithered binary images for camera calibration with
+chessboard-based fiducial markers in order to achieve more robustness in
+collecting the ground truth.
+
+We implemented \clutseg to transform the experimental \tod library into a
+working system, turning it from a blackbox into a system that reveals its inner
+workings. We discussed the issues that showed up in its evaluation, without
+hiding that many problems still remain to be solved.
+
+We provided an experiment runner that served as a robust tool for optimizing
+the system parameters. The experiments verified the assumption that it is a
+good idea to base confidence values on the number of correspondences that are
+consistent with pose estimates, and that starting from a fairly inexact set of
+initial guesses, we can obtain a guess with high confidence by refining the
+initial guess with the highest ranking.
+
+% OpenCV SIFT
+% OpenCV ORB
+% Visualization
+% Problem formulation
+% OpenCV camera calibration
+% Proposed enhancement for RANSAC
+% Identified issues with the presented approach
+% Voting for confidence values based on RANSAC inlier count
+% Developed a visualization tool
+% Showed the benefit of incorporating tools for collecting data
+% Showed the benefit of incorporating tools for analysing data 
+
 \section{Future Work}
+
+% get rid of the fiducial markers
+% remove systematic error in model extraction
+% collect model views from spherical viewpoints
+The collection of raw data for models can be improved. We could do away with
+the fiducial markers by rotating the objects with a robotic manipulator. The
+ground truth can be computed by the transformations that correspond to the
+joints of the robotic manipulator. This should get rid of the systematic error
+we observed in our collected models. Certainly, it simplifies the collection of
+raw data, as there is no longer the need to prepare a rotating table with
+fiducial markers, and no need to provide a description to the robot on how to
+recover the ground truth from fiducial markers. Furthermore, a robotic manipulator
+(grasping the object) permits to move the template object in all six degrees of
+freedom. Hence, the models could include model features extracted from a template
+object in arbitrary orientations; thus accounting for the objects to appear in 
+arbitrary orientations in the query scenes.
+
+The performance of \tod and \clutseg is not yet sufficient to robustly
+recognize objects in a cluttered scene with objects in arbitrary orientations
+and high occlusion rates (see \refFigure{figure:clutter-pr2-kinect} (a)). Yet,
+a lot of information received from a query scene is not being used. The
+information gained by extracting local features from the 2D appearance could be
+supplemented by also considering features from the 3D shape of objects.
+
+% incorporate feature uncertainty
+A second idea would be to take the uncertainty in the correspondences into
+account. We can weight correspondences according to the distance between query
+feature descriptor and model feature descriptor. We let RANSAC draw
+correspondences randomly with probabilities proportional to the weights,
+instead drawing from a uniform distribution. This way, RANSAC will more often
+consider close correspondences between the query image and the modelbase; we
+expect that this permits to run RANSAC with fewer iterations. Even more, the
+confidence value for a pose can be computed from the sum of weights of all
+those correspondences that are consistent with this pose, a voting scheme that
+accounts for uncertainty. The ideas about taking uncertainty into account is
+not new; a method based on model feature uncertainty, and which also involves
+weighting correspondences is presented in \cite{Pope2000}.
+
+% deal with overlapping aligned models
+% combine 3D shape and 2D appearance information
+% measure feature quality
+
+% invent methods to collect ground truth
+
+Whatever method is used, experiments tell which method works best. These
+experiments require the availability of the ground truth for test scenes. The
+collection of ground truth in this work has been limited to multiple objects
+standing upright on a table.  Future work involves computing the ground truth
+for scenes with objects in arbitrary orientations.
+
