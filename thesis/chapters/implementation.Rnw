@@ -32,7 +32,7 @@ storing and retrieving experimental data, and \rproject for analysing data.
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/clutseg-deps}
         \caption[\clutseg software dependencies]{\clutseg depends (amongst others) on \tod, \ros,
-        \pcl, \opencv, \vslam, \rproject, and \sqlite.} \end{center}
+        \pcl, \opencv, \vslam, \rproject, and \sqlite} \end{center}
 \end{figure}
 
 \section{Textured Object Detection Library}
@@ -124,10 +124,10 @@ between the fiducial markers and the object coordinate system} \end{center}
 \end{figure}
 
 There is a subtlety in the relationship between the fiducial markers and the
-object coordinate system. In fact, the camera calibration computes the PRT
-$\fTv$ between the {\it fiducial coordinate system} attached to the fiducial
-markers and the view coordinate system. The origin in fiducial coordinates is
-defined halfway between the two chessboards. Yet, we need the object-view
+object coordinate system. The camera calibration computes the PRT $\fTv$
+between the {\it fiducial coordinate system} attached to the fiducial markers
+and the view coordinate system. The origin in fiducial coordinates is defined
+halfway between the two chessboards. Yet, we need the object-view
 transformation $\oTv$. The solution here consists in just {\it defining} the
 object coordinate system to be the same as the coordinate system attached to
 the fiducial markers, that is
@@ -273,10 +273,10 @@ Similarly to the extraction of model features, \tod uses one of the \opencv
 feature extractors to find a set of query features in the image. It is
 reasonable to select the same feature extractor as in the model extraction.
 Both query feature and model feature extraction can be configured, so \tod
-allows to try different feature detectors with configurable parameters. 
-In fact, \tod also provides rBRIEF, an experimental modified version of BRIEF,
-which we used in some experiments but then replaced it in favor of Oriented BRIEF
-from \opencv.
+allows to try different feature detectors with configurable parameters.  \tod
+also provides rBRIEF, an experimental modified version of BRIEF, which we used
+in some experiments but then replaced it in favor of Oriented BRIEF from
+\opencv.
 
 \subsubsection{Feature Matching}
 \label{subsubsection:tod-feature-matching}

@@ -103,7 +103,7 @@ Detection (\tod) stack in the Robot Operating System.
     \caption[A cluttered scene, a Kinect depth image, and a PR2 robot]{From left to right: (a) Rigid textured objects occluding each
         other in a cluttered scene; (b) a 3D-visualization of the same scene, obtained
         with a Kinect RGB-D camera; (c) the PR2 robot at Technische Universität
-        München.}
+        München}
     \label{figure:clutter-pr2-kinect}
 \end{figure}
 
@@ -132,7 +132,7 @@ standard coordinate system.
         \includegraphics[width=0.5\textwidth]{media/keypoints}
     \end{center}
     \caption[A textured object and extracted keypoints]{From left to right: (a) Textured object \haltbareMilch; (b) the
-        keypoints of local 2D features detected on textured surface of \haltbareMilch.}
+        keypoints of local 2D features detected on textured surface of \haltbareMilch}
     \label{figure:keypoints}
 \end{figure}
 
@@ -158,7 +158,7 @@ the likelihood principle.
         \includegraphics[width=\textwidth]{media/matches}
     \end{center}
     \caption{The correspondences between the query image (left), and a selected
-view of the template object (right).} \label{figure:matches}
+view of the template object (right)} \label{figure:matches}
 \end{figure}
 
 \subsubsection{Implementation}

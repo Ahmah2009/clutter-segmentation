@@ -174,9 +174,9 @@ we can see our object recognition problem as
 \end{quote}
 
 Estimation of camera parameters belongs to the topic of {\it camera
-calibration}.  In fact, \tod uses camera calibration techniques from OpenCV,
-where the intrinsic parameters are known, but the extrinsic parameters remain
-to be estimated.
+calibration}.  \tod uses camera calibration techniques from OpenCV, where the
+intrinsic parameters are known, but the extrinsic parameters remain to be
+estimated.
 
 Given correspondencies of $n$ 3D points with respect to a coordinate system,
 and their $n$ projections onto the image are known, the extrinsic parameters
