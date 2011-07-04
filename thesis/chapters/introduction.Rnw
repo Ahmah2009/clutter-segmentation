@@ -44,7 +44,7 @@ and descriptors \cite{Tuytelaars2007}, and provide guidance for making an
 appropriate choice between a multitude of available detectors and descriptors.
 Lowe's work on the scale-invariant feature transform explains the principles
 of the scale-space pyramid and rotation invariance of features \cite{Lowe1999}.
-Rosten and Drummond introduce the FAST feature detector \cite{Rosten2010}.
+Rosten and Drummond introduce the FAST feature detector \cite{Rosten2006}.
 % while Agrawal et al. presented the CenSurE feature detector \cite{Agrawal2008},
 % both designed to be efficient.
 Calonder et al.\ describe BRIEF, a feature descriptor whose generated

@@ -703,9 +703,9 @@ which probably makes it hard to obtain informative features.
 Generally, the system relies on the size of the consensus set to be a strong
 indicator for the goodness of an estimate. We observed that in one experiment
 and scene, \clutseg estimated a distance of 88 metres between \icedtea and the
-camera. This bad estimate was almost two orders of magnitude off the ground truth.
-Yet it still had support by 14 inliers --- enough in this scene to make it the
-best-ranked guess.
+camera (\refFigure{figure:distant-pose-estimate}). This bad estimate was almost
+two orders of magnitude off the ground truth.  Yet it still had support by 14
+inliers --- enough in this scene to make it the best-ranked guess.
 % RANSAC and the Maximum Projection Error
 % Perspective Projection and RANSAC
 % RANSAC and Degenerate Projections
@@ -749,8 +749,9 @@ ground truth for $\oTvh$.
 \end{equation}
 
 Choose $l$ large enough that the projection of the aligned model spans only one
-pixel $\hat{q}$ on the digital image plane. For the $n$ correspondences for
-this object, this means
+pixel $\hat{q}$ on the digital image plane
+(\refFigure{figure:distant-pose-estimate-scheme}). For the $n$ correspondences
+of this object, this means
 
 \begin{equation}
     \forall{i \in \brt{n}}: \hat{q}_i \approx \hat{q}
@@ -758,8 +759,7 @@ this object, this means
 \end{equation} 
 
 Plugging \refEquation{equation:same-point} into \refEquation{equation:inlier-definition},
-we obtain an inlier criteria for the bad estimate
-
+we obtain an inlier criteria for the bad estimate:
 \begin{equation}
     \forall{i \in \brt{n}}:\quad c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r \quad \wedge \quad \text{$p_i$ is visible}
 \end{equation}
@@ -788,15 +788,35 @@ $\normtwo{\oTvh\pth{\vec{0}}}$.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{media/ransac-max-projection-error-deficiency}
+        \includegraphics[width=0.55\textwidth]{media/ransac-max-projection-error-deficiency}
         \caption[Schematic explanation of distant pose estimate with many inliers]{A far-away pose estimate can result in many inliers}
+        \label{figure:distant-pose-estimate-scheme}
     \end{center}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
     \begin{center}
         \includegraphics[width=0.6\textwidth]{media/ransac-max-projection-error-deficiency-sample}
         \caption[Sample of distant pose estimate with many inliers]{On a test scene, the badly aligned pose still results in many inliers}
+        \label{figure:distant-pose-estimate}
     \end{center}
 \end{figure}
+
+\subsection{Systematic Error in Model}
+\label{subsection:systematic-error-model}
+
+Unfortunately, a visualization of the extracted 3D models revealed a systematic error.
+The visualization is correct because it works for the 3D models from the tutorials.
+The modelbases as used for the evaluation were corrupted by a systematic error of unknown
+source. \refFigure{figure:systematic-error-model} shows the point cloud visualizations of
+{\it downy}, an object from the \tod tutorial (a), and of the \icedtea model we created (b-c).
+% FIXME:
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{media/systematic-error-model}
+        \caption{From left to right: (a) Correct model of {\it downy}; (b) side view of {\icedtea} model; (c) top view of {\icedtea} model}
+        \label{figure:systematic-error-model}
+    \end{center}
+\end{figure}
+
 

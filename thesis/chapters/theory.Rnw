@@ -25,11 +25,7 @@ calibration and the perspective-n-point problem.
 % perspective transformation
 % pose estimation is just estimation of a transformation
 
-% TODO: talk about pin-hole camera model assumption
-
 \subsection{Rigid Transformations}
-
-% TODO: reference to definition of rigid transformations
 
 A {\it rigid transformation} is defined as an orthogonal
 transformation followed by a translation in Euclidean space. An orthogonal
@@ -165,8 +161,6 @@ coordinate system in its environment. Thus, equivalently to the problem
 definitions given previously in \refSection{section:object-view-transformations},
 we can see our object recognition problem as
 
-% TODO: refer to problem definition in previous section
-
 \begin{quote}
     ``Find the extrinsic camera parameters with
     respect to the coordinate system of one of the objects
@@ -214,15 +208,15 @@ estimating the pose of objects in the scene.
 In object recognition, the question arises on how to generate a description of
 an object, and how to describe a query scene. We can distinguish local
 approaches from global approaches. An example for a global approach is template
-matching.  Yet, in scenes with occlusion, local methods are clearly preferable.
-Object recognition using local features is based on the detection of keypoints
-in an image. A multitude of different methods is available, but they all aim at
-choosing keypoints that are repeatable for the same object over different
-images. A 2D local feature consists of a keypoint and a feature descriptor that
-captures information about its local image neighbourhood. Feature descriptors
-are often vectors and their distance in terms of a vector norm provides a means
-for measuring the similarity between two features. 
-% TODO: cite, maybe Lowe
+matching. Yet, in scenes with occlusion, local methods are clearly preferable
+\cite{Pope2000}.  Object recognition using local features is based on the
+detection of keypoints in an image. A multitude of different methods is
+available, but they all aim at choosing keypoints that are repeatable for the
+same object over different images. A 2D local feature consists of a keypoint
+and a feature descriptor that captures information about its local image
+neighbourhood. Feature descriptors are often vectors and their distance in
+terms of a vector norm provides a means for measuring the similarity between
+two features. 
 
 \subsubsection{Learning Models from a Single View}
 
@@ -262,13 +256,6 @@ incorporates features recorded from different viewpoints.
 Notably, the strategy on how to select which features extracted from the
 template views are incorporated into the model has been subject of research
 \cite{Pope2000}. Learning models from multiple views is the basis of this work. 
-% TODO: cite Section
-
-% ections \ref{subsection:feature-detectors} and
-% \ref{subsection:feature-descriptors} show how to extract a description of the
-%query image and the template views. Section \ref{subsection:feature-matching}
-% presents methods for fast establishment of correspondences, and section
-% \ref{subsection:pose-estimation} shows how to infer on object poses. 
 
 \subsection{Feature Detectors}
 \label{subsection:feature-detectors}
@@ -276,14 +263,18 @@ template views are incorporated into the model has been subject of research
 % TODO: strip section about feature detectors down to the bare essence
 
 % FIXME: re-read Tuytelaars to get this right
-A feature detector designates keypoints on an image.  Some feature detector
-algorithms assign an orientation to each keypoint. Detectors can be roughly
-partitioned into three groups \cite{Tuytelaars2007}. First, there are {\it
-corner detectors}, such as Harris and SUSAN, that select points with high
-curvature. Second, {\it blob detectors} such as SURF or DoG look for points
-that are surrounded by brighter or darker pixels \cite{Bay2006}. Third, there
-are {\it region detectors}, such as MSER, which extract features by finding
-image regions.
+A feature detector designates keypoints in an image. There exists a multitude
+of feature detectors in the literature, and more efforts have been spent into
+inventing new ones than comparing existing ones \cite{Rosten2010}.
+
+% Some feature detector
+% algorithms assign an orientation to each keypoint. Detectors can be roughly
+% partitioned into three groups \cite{Tuytelaars2007}. First, there are {\it
+% corner detectors}, such as Harris and SUSAN, that select points with high
+% curvature. Second, {\it blob detectors} such as SURF or DoG look for points
+% that are surrounded by brighter or darker pixels \cite{Bay2006}. Third, there
+% are {\it region detectors}, such as MSER, which extract features by finding
+% image regions.
 
 There is generally no such thing as the best feature detector. As often in
 engineering, all we can do is making the best choice for the task at hand.  An
@@ -348,21 +339,29 @@ successfully been applied to panorama stitching \cite{Brown2006}.
 
 \subsubsection{FAST}
 
-FAST is a feature detector based on analyzing Bresenham circles around
-candidate keypoints. The generated features are neither orientation nor
-rotation invariant.
+FAST is a feature detector that designates keypoints by looking at a Bresenham
+circle of 16 pixels in diameter around a candidate keypoint. If 9 contiguous
+pixels of the diameter pixels are all brighter (a), or all darker (b) than the
+center pixel plus (a), or minus (b) a certain threshold, then the circle center
+is designated keypoint \cite{Rosten2006}. FAST is efficient because it can rule
+out certain candidate keypoints by reasoning on the diameter pixels values
+north, east, south and west of the center. FAST-ER builds on this idea, but
+reasons about the diameter pixels in an order optimized by ID3; the information
+gain is computed on a set of training images \cite{Rosten2010}. \opencv 2.2
+just contains an implementation of FAST, presumably because of its smaller code
+size.
 
 \subsubsection{BRIEF}
 
 BRIEF generates binary feature descriptors for a given set of keypoints. The
-BRIEF descriptor vectors depend on rotation. They are formed by a bit string
-computed from the image neighbourhood of a given keypoint. Each bit stores the
-result of comparing pixel intensities between two 2D points in the
-neighbourhood, which are called {\it test locations}. The test locations are
-initially sampled from a 2D Gaussian distribution once, and together form a
-{\it test pattern} \cite{Calonder2010}. Finding nearest neighbours of binary
-descriptors according to their Hamming distance is faster than for real-valued
-features using the L2 norm.
+BRIEF descriptor vectors are sensitive to rotation \cite{Calonder2010}. They
+are formed by a bit string computed from the image neighbourhood of a given
+keypoint. Each bit stores the result of comparing pixel intensities between two
+2D points in the neighbourhood, which are called {\it test locations}. The test
+locations are initially sampled from a 2D Gaussian distribution once, and
+together form a {\it test pattern} \cite{Calonder2010}. Finding nearest
+neighbours of binary descriptors according to their Hamming distance is faster
+than for real-valued features using the L2 norm.
 
 \subsubsection{Oriented BRIEF}
 

@@ -69,7 +69,7 @@ scene.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=0.8\textwidth]{../doc/tod_training}
+        \includegraphics[width=\textwidth]{../doc/tod_training}
         \caption{\tod pipeline used for learning models of template objects}
    \end{center}
 \end{figure}
@@ -92,8 +92,7 @@ on the image plane; it is of no further interest after computing the descriptor
 vector and finding the associated 3D point on the template object. Yet, a model
 feature does not retain information about its 3D neighborhood such as the
 normal orientation.  The model of a template object in \tod is just a set of
-model features. \footnote{A model is represented by a set of instances of
-struct {\tt Features3d}.}
+model features.
 
 \subsubsection{Model Extraction}
 
@@ -230,7 +229,6 @@ equal angle steps with respect to the rotating table. \tod stores the modelbase
 in a hierarchical manner on the filesystem, retaining data even from views that
 are not actually included in the models.
 % TODO: refer to paper that select view based on informativeness, information content, entropy
-\footnote{The modelbase is represented by struct {\tt TrainingBase} in \tod.}
 
 \subsection{Recognition}
 \label{subsection:recognition}
@@ -245,23 +243,19 @@ correspondences.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=0.8\textwidth]{../doc/tod_detecting_kinect}
+        \includegraphics[width=\textwidth]{../doc/tod_detecting_kinect}
         \caption[\tod recognition pipeline]{\tod recognition pipeline (Kinect mode)}
    \end{center}
 \end{figure}
 
 \subsubsection{Query Features}
 
-% TODO: dot after or before footnote? concerns the whole document
-% TODO: footnotes allowed? concerns the whole document
-% TODO: remove footnote
 Let $\vec{p}$ be a 2D point on a query image, and $\vec{d}$ its descriptor
-vector. Then we call $(\vec{p}, \vec{d})$ a {\it query feature}. \footnote{The
-query features for a specific scene are represented by an instance of struct
-{\tt Features2d}.} Hence, such a query feature is nothing but a
-keypoint-descriptor pair produced by SIFT, SURF or ORB, or any other feature
-extractor, and we introduce this term to clearly tell features from the query
-and the model apart. Note that query features do not include 3D information.
+vector. Then we call $(\vec{p}, \vec{d})$ a {\it query feature}.  Hence, such a
+query feature is nothing but a keypoint-descriptor pair produced by SIFT, SURF
+or ORB, or any other feature extractor, and we introduce this term to clearly
+tell features from the query and the model apart. Note that query features do
+not include 3D information.
 % This is subject of discussion, and is addressed in
 % \refChapter{chapter:evaluation}.
 
@@ -729,5 +723,5 @@ modelbase, that is the region of interest, the extracted keypoints, and the
 estimated pose.  Imagemagick is used to generate montage images that show the
 results of one experiment at once. Finally, \tod allows to visualize matches
 between the query scene and the modelbase. \rproject is used for pulling data
-from the database and for plotting them.
+from the database and for plotting it. 
 
