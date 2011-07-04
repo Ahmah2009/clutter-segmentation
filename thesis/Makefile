@@ -10,7 +10,7 @@ main.pdf: main.tex
 	pdflatex main.tex
 	pdflatex main.tex
 
-main.tex: main.Rnw chapters/introduction.tex chapters/theory.tex chapters/implementation.tex chapters/evaluation.tex chapters/conclusion.tex components/settings.tex components/commands.tex bibliography/literature.bib
+main.tex: main.Rnw chapters/introduction.tex chapters/theory.tex chapters/implementation.tex chapters/evaluation.tex chapters/conclusion.tex chapters/appendix.tex components/settings.tex components/commands.tex bibliography/literature.bib
 	Rscript scripts/PngSweave.R main.Rnw
 
 chapters/introduction.tex: chapters/introduction.Rnw
@@ -27,6 +27,9 @@ chapters/evaluation.tex: chapters/evaluation.Rnw
 
 chapters/conclusion.tex: chapters/conclusion.Rnw
 	cd chapters && Rscript ../scripts/PngSweave.R conclusion.Rnw
+
+chapters/appendix.tex: chapters/appendix.Rnw
+	cd chapters && Rscript ../scripts/PngSweave.R appendix.Rnw
 
 .PHONY: install-deps
 install-deps:
