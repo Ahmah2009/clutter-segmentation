@@ -59,9 +59,10 @@ We formulated the problem of estimating the pose of an object in terms of
 camera calibration and show how it can be reduced to solving the
 perspective-n-point problem. We showed how RANSAC, when used for solving the
 perspective-n-point problem, can find bad solutions in case the projection
-error threshold on the image plane is chosen too large.  We proposed an
-enhancement to RANSAC that involves a projection error threshold that depends
-on the distance of the aligned model point to the image plane.
+error threshold on the image plane is chosen too large.
+% We proposed a modification to RANSAC for the PnP problem that the projection error
+% threshold might depends on the distance of the aligned model point to the image
+% plane.
 
 We presented the use of dithered binary images for camera calibration with
 chessboard-based fiducial markers in order to achieve more robustness in

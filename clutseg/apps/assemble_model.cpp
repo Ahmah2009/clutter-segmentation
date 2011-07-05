@@ -17,6 +17,7 @@
     // Put this include at the very end, otherwise the compiler will
     // complain with lengthy messsages
     #include <opencv2/core/eigen.hpp>
+    #include <opencv2/highgui/highgui.hpp>
 #include "clutseg/gcc_diagnostic_enable.h"
 
 using namespace cv;
@@ -25,8 +26,8 @@ using namespace std;
 using namespace tod;
 
 int main(int argc, char **argv) {
-    if (argc != 4) {
-        cerr << "Usage: assemble_model <base> <object> <dst>" << endl;
+    if (argc != 4 && argc != 9) {
+        cerr << "Usage: assemble_model <base> <object> <dst> [<xmin> <xmax> <ymin> <ymax> <hist_xy>]" << endl;
         cerr << endl <<
             "Reads in a model from the modelbase (a.k.a. TrainingBase) and generates a\n"
             "point cloud file that contains all model points (corresponding to features)\n"
@@ -99,7 +100,8 @@ int main(int argc, char **argv) {
         }
 
         model += view_cloud;
-    /*
+
+        /* This is a second way to do the transform, leads to the same results
         vector<int> indices;
         pcl::removeNaNFromPointCloud(view_cloud, view_cloud, indices);
 
@@ -121,5 +123,61 @@ int main(int argc, char **argv) {
 
     io::savePCDFileASCII(argv[3], model);
 
+    if (argc > 8) {
+        // Draw a 2D projection of the model onto the x-y-plane. This can be seen
+        // as a 2D histogram where image intensity represents the frequency.
+        /*
+        float x_min = numeric_limits<float>::max();
+        float x_max = numeric_limits<float>::min();
+        float y_min = numeric_limits<float>::max();
+        float y_max = numeric_limits<float>::min();
+        BOOST_FOREACH(PointXYZ p, model) {
+            x_min = min(x_min, p.x);
+            x_max = max(x_max, p.x);
+            y_min = min(y_min, p.y);
+            y_max = max(y_max, p.y);
+        }
+        cout << "x_min = " << x_min << endl;
+        cout << "x_max = " << x_max << endl;
+        cout << "y_min = " << y_min << endl;
+        cout << "y_max = " << y_max << endl;
+        */
+        /*
+        float x_min = -0.02;
+        float x_max = 0.12;
+        float y_min = -0.02;
+        float y_max = 0.12;
+        */
+        float x_min = atof(argv[4]);
+        float x_max = atof(argv[5]);
+        float y_min = atof(argv[6]);
+        float y_max = atof(argv[7]);
+        int scale = 2000;
+        Mat xy_hist = Mat::zeros(scale * (y_max - y_min), scale * (x_max - x_min), CV_8UC1);
+        // Calculate the histogram
+        uint8_t m = 0;
+        BOOST_FOREACH(PointXYZ p, model) {
+            int i = (int) floor(scale * (p.y - y_min));
+            int j = (int) floor(scale * (p.x - x_min));
+            if (i < xy_hist.rows &&  i >= 0 && j < xy_hist.cols && j >= 0) {
+                xy_hist.at<uint8_t>(i, j) += 1;
+                m = max(m, xy_hist.at<uint8_t>(i, j));
+            }
+        }
+
+        xy_hist *= (255 / m);
+        xy_hist = 255 - xy_hist; 
+        Mat xy_hist_bgr;
+        cvtColor(xy_hist, xy_hist_bgr, CV_GRAY2BGR);
+        /* does not work yet
+        int o_i = (int) floor(scale * (0 - y_min));
+        int o_j = (int) floor(scale * (0 - x_min));
+        // x-axis
+        line(xy_hist_bgr, Point(o_i, 0), Point(o_i, xy_hist.cols), Scalar(0, 0, 255));
+        // y-axis
+        line(xy_hist_bgr, Point(0, o_j), Point(xy_hist.rows, o_j), Scalar(0, 255, 0));*/
+        imwrite(argv[8], xy_hist_bgr);
+    }
+    
     return 0;
 }

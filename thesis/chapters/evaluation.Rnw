@@ -772,6 +772,14 @@ experiment that exhibited the phenomenon, the radius was set to $r = 12$
 (pixels). Note that this radius is equivalent to the parameter {\tt
 max\_projection\_error}.
 
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.55\textwidth]{media/ransac-max-projection-error-deficiency}
+        \caption[Schematic explanation of distant pose estimate with many inliers]{A far-away pose estimate can result in many inliers}
+        \label{figure:distant-pose-estimate-scheme}
+    \end{center}
+\end{figure}
+
 There are at least three hypothetical solutions to this issue. One might set
 the parameter {\tt max\_projection\_error} to a lower value, which is what we have
 done. The bad pose estimates could be pruned away by the a-priori assumption
@@ -786,14 +794,6 @@ $\normtwo{\oTvh\pth{\vec{0}}}$.
 % projection \cite{Moore1989}, and approximating an ellipse by a sphere seems
 % reasonable.
 
-\begin{figure}[h]
-    \begin{center}
-        \includegraphics[width=0.55\textwidth]{media/ransac-max-projection-error-deficiency}
-        \caption[Schematic explanation of distant pose estimate with many inliers]{A far-away pose estimate can result in many inliers}
-        \label{figure:distant-pose-estimate-scheme}
-    \end{center}
-\end{figure}
-
 \begin{figure}
     \begin{center}
         \includegraphics[width=0.6\textwidth]{media/ransac-max-projection-error-deficiency-sample}
@@ -805,13 +805,17 @@ $\normtwo{\oTvh\pth{\vec{0}}}$.
 \subsection{Systematic Error in Model}
 \label{subsection:systematic-error-model}
 
-Unfortunately, a visualization of the extracted 3D models revealed a systematic error.
-The visualization is correct because it works for the 3D models from the tutorials.
-The modelbases as used for the evaluation were corrupted by a systematic error of unknown
-source. \refFigure{figure:systematic-error-model} shows the point cloud visualizations of
-{\it downy}, an object from the \tod tutorial (a), and of the \icedtea model we created (b-c).
-% FIXME:
-\begin{figure}
+Unfortunately, analysis of the 3D models used in the evaluation revealed that
+the models have been corrupted by a systematic error. The 3D point clouds that
+make up the 3D models do not meet our expectations. We compared our models with
+the \tod models of \campbellsChickenNoodle, \downy, \fatFreeMilk, and
+\goodEarthTea from the \tod tutorials
+\footnote{http://vault.willowgarage.com/wgdata1/vol1/tod\_kinect\_bags/training
+$\,$. Accessed 5 July 2011.}. Whilst \downy's model seems valid when projected
+onto a plane (\refFigure{figure:systematic-error-model} a), \icedtea's model
+does not (\refFigure{figure:systematic-error-model} b-c).
+
+\begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/systematic-error-model}
         \caption{From left to right: (a) Correct model of {\it downy}; (b) side view of {\icedtea} model; (c) top view of {\icedtea} model}
@@ -819,4 +823,34 @@ source. \refFigure{figure:systematic-error-model} shows the point cloud visualiz
     \end{center}
 \end{figure}
 
+In order to prove that our models got corrupted by some systematic error,
+\refFigure{figure:clutseg-model-xyhist} shows the {\it $x$-$y$-histograms} of
+the $x,y$-coordinates of the model points. These histograms were computed by
+projecting the model points orthogonally onto the $x,y$-plane, counting the
+number of points that fall into the same bin of 320x320 bins (pixels) in total.
+Outliers have not been included in the histogram. Especially \icedtea's
+$x$-$y$-histogram has roughly the form of a hash ('\#'). 
 
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=\textwidth]{media/clutseg-model-xyhist}
+        \caption[X-Y-Histograms of \clutseg models]{From left to right: xy-histogram (a) of \assamTea, (b) of \haltbareMilch, (c) of \jacobsCoffee, (d) of \icedtea}
+        \label{figure:clutseg-model-xyhist}
+    \end{center}
+\end{figure}
+
+In comparison, the \tod model histograms are as expected
+(\refFigure{figure:tod-model-xyhist}). Even the texture-less lid on the top of
+\fatFreeMilk can be seen on the histogram (\refFigure{figure:tod-model-xyhist} c).  Just like \icedtea, \fatFreeMilk is a cuboid. Hence, their
+$x$-$y$-histograms should be similar, which is not the case.
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=\textwidth]{media/tod-model-xyhist}
+        \caption[X-Y-Histograms of \tod models]{From left to right: xy-histogram (a) of {\it campbells\_chicken\_noodle}, (b) of {\it downy}, (c) of {\it fat\_free\_milk}, (d) of {\it good\_earth\_tea}}
+        \label{figure:tod-model-xyhist}
+    \end{center}
+\end{figure}
+
+Unfortunately, the source for the systematic error is yet unknown, although the
+odds are high that it is related to camera calibration and accuracy of the
+depth image.

@@ -1,2 +1,8 @@
-source(paste(Sys.getenv("CLUTSEG_PATH"), "clutter-segmentation/thesis/scripts/Thibaut_Jombart_Sweave.R", sep="/"))
+if (file.exists("scripts/Thibaut_Jombart_Sweave.R")) {
+    source("scripts/Thibaut_Jombart_Sweave.R")
+} else if (file.exists("../scripts/Thibaut_Jombart_Sweave.R")) {
+    source("../scripts/Thibaut_Jombart_Sweave.R")
+} else if (file.exists("Thibaut_Jombart_Sweave.R")) {
+    source("Thibaut_Jombart_Sweave.R")
+}
 Sweave(commandArgs(TRUE)[1])
