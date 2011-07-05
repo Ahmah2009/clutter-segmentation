@@ -2,13 +2,13 @@ all: main.pdf
 
 main.pdf: main.tex
 	#if test -f ~/Mendeley/Bachelorarbeit.bib ; then cp ~/Mendeley/Bachelorarbeit.bib bibliography/literature.bib ; fi
-	pdflatex main.tex
-	bibtex main.aux
-	makeglossaries main
+	pdflatex main.tex | grep "Warning"
+	bibtex main.aux | grep "Warning"
+	makeglossaries main | grep "Warning"
 	makeindex main.tex
-	pdflatex main.tex
-	pdflatex main.tex
-	pdflatex main.tex
+	pdflatex main.tex | grep "Warning"
+	pdflatex main.tex | grep "Warning"
+	pdflatex main.tex | grep "Warning"
 
 main.tex: main.Rnw chapters/introduction.tex chapters/theory.tex chapters/implementation.tex chapters/evaluation.tex chapters/conclusion.tex chapters/appendix.tex components/settings.tex components/commands.tex bibliography/literature.bib
 	Rscript scripts/PngSweave.R main.Rnw
