@@ -23,7 +23,7 @@
   <rosdep name="r-cran-dbi" />
 
   <export>
-      <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lclutseg_util -lsqlite3" />
+      <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lclutseg -lsqlite3" />
   </export>
 
 

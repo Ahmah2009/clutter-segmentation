@@ -29,7 +29,7 @@ rosbuild_add_library(${PROJECT_NAME} ${srcs} ${hdrs} )
 
 rosbuild_add_gtest(utest ${tsts})
 
-target_link_libraries(utest clutseg_util ${PROJECT_NAME})
+target_link_libraries(utest clutseg ${PROJECT_NAME})
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
