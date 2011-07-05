@@ -823,13 +823,14 @@ does not (\refFigure{figure:systematic-error-model} b-c).
     \end{center}
 \end{figure}
 
-In order to prove that our models got corrupted by some systematic error,
 \refFigure{figure:clutseg-model-xyhist} shows the {\it $x$-$y$-histograms} of
 the $x,y$-coordinates of the model points. These histograms were computed by
 projecting the model points orthogonally onto the $x,y$-plane, counting the
 number of points that fall into the same bin of 320x320 bins (pixels) in total.
-Outliers have not been included in the histogram. Especially \icedtea's
-$x$-$y$-histogram has roughly the form of a hash ('\#'). 
+Outliers are not included in the histogram. Both object coordinate axes are
+drawn onto the histograms. The histogram clearly shows the erroneous models,
+especially in the case of \icedtea's; its $x$-$y$-histogram has roughly the
+form of a hash ('\#'). 
 
 \begin{figure}[h]
     \begin{center}
@@ -839,9 +840,9 @@ $x$-$y$-histogram has roughly the form of a hash ('\#').
     \end{center}
 \end{figure}
 
-In comparison, the \tod model histograms are as expected
+In comparison, the \tod model histograms look as expected
 (\refFigure{figure:tod-model-xyhist}). Even the texture-less lid on the top of
-\fatFreeMilk can be seen on the histogram (\refFigure{figure:tod-model-xyhist} c).  Just like \icedtea, \fatFreeMilk is a cuboid. Hence, their
+\fatFreeMilk can be made out on the histogram (\refFigure{figure:tod-model-xyhist} c).  Just like \icedtea, \fatFreeMilk is a cuboid. Hence, their
 $x$-$y$-histograms should be similar, which is not the case.
 \begin{figure}[h]
     \begin{center}
@@ -852,5 +853,5 @@ $x$-$y$-histograms should be similar, which is not the case.
 \end{figure}
 
 Unfortunately, the source for the systematic error is yet unknown, although the
-odds are high that it is related to camera calibration and accuracy of the
-depth image.
+odds are that the issue is related to camera calibration and/or the accuracy of
+the depth image.
