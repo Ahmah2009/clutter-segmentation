@@ -1,4 +1,4 @@
-\chapter*{Classes}
+\chapter{Classes}
 
 The following table lists selected classes in \clutseg and its dependencies
 that are related to concepts mentioned in this work. This mapping is meant to
@@ -25,7 +25,7 @@ provide a rough guidance that helps close the gap to the implementation.
     \label{table:class-mapping}
 \end{table}
 
-\chapter*{Bug Reports}
+\chapter{Bug Reports}
 
 This is a list of related bug reports filed in the course of this work. For
 most of them, patches have been supplied.
@@ -36,6 +36,7 @@ most of them, patches have been supplied.
         \hline
         \opencv & 1044 & SiftFeatureDetector::detect ignores mask parameter \\
         \opencv & 1127 & cv::Exception when reading empty YAML file \\
+        \opencv & 1169 & ORB n\_features=0 \\
         \ros & 5072 & pcd\_viewer in pcl\_visualization fails to load files in directories ending on .pcd \\
         \ros & 5073 & pcd\_viewer in pcl\_visualization does not restore terminal state when sent to background \\
         \tod & 5083 & Getting OpenCV errors when using recognizer in tod\_detecting \\
