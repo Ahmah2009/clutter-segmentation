@@ -95,7 +95,7 @@ d = \normtwo{\ \oTv \pth{ \vec{0} }\ }
     \begin{center}
         \includegraphics[width=0.5\textwidth]{media/coordinate-frames}
     \end{center}
-    \caption{Object coordinate system and view coordinate system}
+    \caption{The view coordinate system and the object coordinate system}
     \label{figure:coordinate-frames}
 \end{figure}
 
@@ -131,7 +131,7 @@ In the special case of a single object
 
 In our selected approach, we construct models by associating local 2D features
 extracted from the image plane with corresponding 3D points in the scene, as
-shown in \refFigure{figure:hm-features-model}. In the recognition process,
+shown in \refFigure{figure:keypoints}. In the recognition process,
 models are aligned to the scene and projected onto the image plane to verify
 whether they explain the observed data. In both cases, it is required to know
 the nature of the relationship between the scene and its 2D image, which
@@ -233,7 +233,7 @@ arbitrary orientations.
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.55\textwidth]{media/single-view-or}
-        \caption{Recognition with models learned from a single view}
+        \caption{Object recognition with models learned from a single view}
     \end{center}
 \end{figure}
 
@@ -249,12 +249,12 @@ incorporates features recorded from different viewpoints.
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{media/multi-view-or}
-        \caption{Recognition with models learned from multiple views}
+        \caption{Object recognition with models learned from multiple views}
     \end{center}
 \end{figure}
 
-Notably, the strategy on how to select which features extracted from the
-template views are incorporated into the model has been subject of research
+Generally, there is no need to incorporate all collected features into the
+model. A strategy on how to select features from multiple views is presented in
 \cite{Pope2000}. Learning models from multiple views is the basis of this work. 
 
 \subsection{Feature Detectors}
@@ -372,7 +372,6 @@ and SURF at least in terms of computation time. An implementation is already
 available in the development branch (trunk) of OpenCV, and a corresponding
 paper is expected to be published at the {\it International Conference on
 Computer Vision} 2011.
-% TODO: include image for test locations from orb\_patterns in opencv trunk
 
 ORB computes image moments for assigning orientations to keypoints detected by
 FAST. Image moments of order $(p + q)$ are defined for a 2D digital image $f$
@@ -389,8 +388,8 @@ keypoints and designates orientations $\alpha$ as
     \alpha = \arctan \frac{m_{01}}{m_{10}}
 \end{equation}
 
-Consider the vector $\pth{ m_{01}, m_{10} }^T \in \real^2$. The angle of this vector
-becomes the orientation of the keypoint. If $f$ were a probability
+Consider the vector $\pth{ m_{01}, m_{10} }^T \in \real^2$. The angle of this
+vector becomes the orientation of the keypoint. If $f$ were a probability
 distribution, then this vector would contain the means of the marginal
 distributions of $x$ and $y$, respectively.
 
@@ -398,9 +397,18 @@ distributions of $x$ and $y$, respectively.
 
 A problem arises, when rotating the BRIEF test pattern according to the FAST
 keypoint orientation. There is a correlation between the image moments and the
-BRIEF vectors obtained from rotated test patterns. Such ia correlation reduces
-the entropy of computed BRIEF descriptors. The solution is to compute test
-patterns that have only little correlation.
+BRIEF vectors obtained from a rotated test pattern. Such a correlation reduces
+the entropy of computed BRIEF descriptors. The solution is to compute a test
+pattern that has only little correlation. Oriented BRIEF uses test locations as
+depicted in \refFigure{figure:orb-test-locations}.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{media/orb-test-locations}
+        \label{figure:orb-test-locations}
+        \caption{The 256 test locations of Oriented BRIEF}
+    \end{center}
+\end{figure}
 
 The description about ORB given above is based on a presentation at the {\it
 International Conference on Robotics and Automation} (ICRA) 2011 in Shanghai,
@@ -415,17 +423,16 @@ In object recognition that is based on local features, correspondences between
 known views of the object and the query image can be established by matching
 the query features with model features. The computation time depends on the
 size of the descriptor vector, the nearest neighbour algorithm and the used
-distance metric. If exactness is not required, that is approximate nearest neighbours
-are sufficient, then speed-ups can be achieved. % TODO: cite
+distance metric. If exactness is not required, i.e. approximate nearest
+neighbours are sufficient, then speed-ups can be achieved. % TODO: cite
 Computing the Hamming distance between binary features is faster than computing
 the L2-norm for real-valued feature descriptors \cite{Calonder2010}. This holds
-especially true when using the {\tt POPCNT} instruction, available in AMD and
-Intel architectures \cite{AMD2009, Intel2007}.
-
-% TODO: can also be adapted to match binary features such as BRIEF. 
+especially true when using the {\tt POPCNT} instruction, which is available at
+least in AMD and Intel architectures \cite{AMD2009, Intel2007}.
 
 \subsubsection{Locality Sensitive Hashing}
 
+% TODO: cite can also be adapted to match binary features such as BRIEF. 
 % TODO: consistent use of uppercase and lowercase in algorithm names
 
 SIFT, ORB and other feature detectors and descriptors are used to describe an
@@ -433,24 +440,19 @@ image in terms of local features. Nearest neighbour matching can then find
 correspondences between two feature sets. Locality Sensitive Hashing (LSH)
 quickly finds nearest neighbours, and trades exactness in favour of a reduction
 in computation time. Not always does it return the absolute nearest neighbour.
-Locality Sensitive Hashing is a randomized algorithm that performs multiple
-scalar projections of a high-dimensional vector, and reasons that the scalar
-projections are similar for similar input vectors. It can be extended to find
-nearest neighbours for binary features. LSH has applications in object
-recognition, image retrieval, music retrieval, and identification of duplicates
+LSH is a randomized algorithm that performs multiple scalar projections of a
+high-dimensional vector, and reasons that the scalar projections are similar
+for similar input vectors. It can be extended to find nearest neighbours for
+binary features. LSH has applications in object recognition, image retrieval,
+music retrieval, and identification of duplicates
 \cite{Slaney2008}.
 
 \subsection{Pose Estimation}
 \label{subsection:pose-estimation}
 
-% TODO: Revamp introductory sentences for pose estimation
-
-This section shows that estimating the pose of an object can be reduced to the
-perspective-$n$-point (PnP) problem, which can be solved by RANSAC even in the
-presence of outliers. There exist many different terms for the pose estimation
-problem in literature. 
-
-\subsubsection{RANSAC}
+The previous sections showed how the problem of recognizing objects is related
+to the estimation of extrinsic parameters, and in particular, to the
+perspective-$n$-point (PnP) problem. The PnP problem can be solved by RANSAC.
 
 RANSAC stands for {\it RANdom SAmple Consensus}. It is a randomized algorithm
 that fits a parametrized model to given data. It is robust with respect to

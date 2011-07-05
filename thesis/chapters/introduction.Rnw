@@ -131,7 +131,7 @@ standard coordinate system.
     \begin{center}
         \includegraphics[width=0.5\textwidth]{media/keypoints}
     \end{center}
-    \caption[A textured object and extracted keypoints]{From left to right: (a) Textured object \haltbareMilch; (b) the
+    \caption[The textured object \haltbareMilch and extracted keypoints]{From left to right: (a) Textured object \haltbareMilch; (b) the
         keypoints of local 2D features detected on textured surface of \haltbareMilch}
     \label{figure:keypoints}
 \end{figure}
@@ -157,7 +157,7 @@ the likelihood principle.
     \begin{center}
         \includegraphics[width=\textwidth]{media/matches}
     \end{center}
-    \caption{The correspondences between the query image (left), and a selected
+    \caption[The correspondences between a query image and a selected model view]{The correspondences between the query image (left), and a selected
 view of the template object (right)} \label{figure:matches}
 \end{figure}
 

@@ -31,7 +31,7 @@ storing and retrieving experimental data, and \rproject for analysing data.
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/clutseg-deps}
-        \caption[\clutseg software dependencies]{\clutseg depends (amongst others) on \tod, \ros,
+        \caption[The software dependencies of \clutseg]{\clutseg depends (amongst others) on \tod, \ros,
         \pcl, \opencv, \vslam, \rproject, and \sqlite} \end{center}
 \end{figure}
 
@@ -70,7 +70,7 @@ scene.
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{../doc/tod_training}
-        \caption{\tod pipeline used for learning models of template objects}
+        \caption{The pipeline of \tod used for learning models}
    \end{center}
 \end{figure}
 
@@ -118,8 +118,9 @@ two opposite sides. The extrinsic parameters of the camera specify the
 object-view transformation.
 
 \begin{figure}[h!] \begin{center}
-\includegraphics[width=0.5\textwidth]{media/fiducial-object} \caption{Relation
-between the fiducial markers and the object coordinate system} \end{center}
+\includegraphics[width=0.5\textwidth]{media/fiducial-object} \caption{The
+relation between the fiducial markers and the object coordinate system}
+\end{center}
 \end{figure}
 
 There is a subtlety in the relationship between the fiducial markers and the
@@ -170,7 +171,7 @@ fallback. We tested several other image processing techniques on the 23 images.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=\textwidth]{media/pose-pre-process}
-        \caption[Pre-processed images for camera calibration]{From left to right: (1)
+        \caption[An original and three pre-processed images for camera calibration]{From left to right: (1)
 Original image where pose estimation failed; after (2) Dithering to Binary;
 after (3) Color Reduction; after (4) Local Adaptive Thresholding. On images 2,
 3, and 4, the pose was successfully estimated.}
@@ -244,7 +245,7 @@ correspondences.
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{../doc/tod_detecting_kinect}
-        \caption[\tod recognition pipeline]{\tod recognition pipeline (Kinect mode)}
+        \caption[The recognition pipeline of \tod]{\tod recognition pipeline (Kinect mode)}
    \end{center}
 \end{figure}
 
@@ -319,10 +320,9 @@ guesses never share a correspondence.
 \begin{figure}
     \begin{center}
         \includegraphics[width=0.7\textwidth]{media/inlier-criteria.png}
-        \caption{A model aligned to a scene.}
+        \caption{A model aligned to the query scene}
    \end{center}
 \end{figure}
-
 
 
 The \ros package {\tt posest} in stack {\tt vslam} contains an implementation of
