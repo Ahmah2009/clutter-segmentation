@@ -92,6 +92,35 @@ namespace clutseg {
     /** Draws ground truth poses and labels */
     void drawGroundTruth(cv::Mat & canvas, const clutseg::LabelSet & groundTruth,
                             const opencv_candidate::Camera & camera);
+
+
+    enum CoordinatePlane {
+        XY, YZ, ZX 
+    };
+
+    /**
+     * Draws a histogram of a point cloud by projecting it orthogonally onto
+     * a coordinate planes.
+     *
+     * @param hist      the destination image, a histogram
+     * @param cloud     the point cloud
+     * @param plane     one of the three Cartesian coordinate planes
+     * @param a_min     A-coordinates less than a_min will be ignored 
+     * @param a_max     A-coordinates greater than a_max will be ignored
+     * @param a_w       width of bins in axis direction of A
+     * @param b_min     B-coordinates less than b_min will be ignored
+     * @param b_max     B-coordinates greater than b_max will be ignored
+     * @param b_w       width of bins in axis direction of B
+     * @param draw_axes whether to draw the axis onto the destination image
+     */
+    void drawCoordinateHist(cv::Mat & hist,
+                                    const pcl::PointCloud<pcl::PointXYZ> cloud,
+                                    const CoordinatePlane & plane,
+                                    float a_min, float a_max, float a_w,
+                                    float b_min, float b_max, float b_w,
+                                    bool draw_axes = false);
+
+
 }
 
 #endif

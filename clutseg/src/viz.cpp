@@ -12,6 +12,7 @@
 #include <time.h>
 
 using namespace cv;
+using namespace pcl;
 using namespace std;
 using namespace tod;
 using namespace opencv_candidate;
@@ -259,6 +260,54 @@ namespace clutseg {
                     np.name + ".x", np.name + ".y", np.name + ".z");
         }
     }
-             
+ 
+
+    void drawCoordinateHist(Mat & hist,
+                                    const pcl::PointCloud<PointXYZ> cloud,
+                                    const CoordinatePlane & plane,
+                                    float a_min, float a_max, float a_w,
+                                    float b_min, float b_max, float b_w,
+                                    bool draw_axes) {
+        int r = ceil((b_max - b_min) / b_w);
+        int c = ceil((a_max - a_min) / a_w); 
+        Mat h = Mat::zeros(r, c, CV_32FC1);
+        float m = 0.0;
+        BOOST_FOREACH(const PointXYZ p, cloud) {
+            float a = 0;
+            float b = 0;
+            if (plane == XY) {
+                a = p.x;
+                b = p.y;
+            } else if (plane == YZ) {
+                a = p.y;
+                b = p.z;
+            } else if (plane == ZX) {
+                a = p.z;
+                b = p.x;
+            } else {
+                assert(0);
+            }
+
+            int i = (b - b_min) / b_w;
+            int j = (a - a_min) / a_w; 
+            if (i >= 0 && i < c && j >= 0 && j < r) {
+                h.at<float>(i, j) += 1.0f;
+                m = max(h.at<float>(i, j), m);
+            }
+        }
+        // Normalize
+        h *= 255 / m;
+        // Invert intensities 
+        h = 255 - h; 
+        // Convert to color
+        cvtColor(h, hist, CV_GRAY2BGR);
+        if (draw_axes) {
+            // Draw x-axis (i.e. y = 0) in red
+            line(hist, Point(max(0, int(-b_min / b_w)), 0), Point(max(int(-b_min / b_w), 0), c), Scalar(0, 0, 255));
+            // Draw y-axis (i.e. x = 0) in green
+            line(hist, Point(0, min(int(-a_min / a_w), r)), Point(r, min(int(-a_min / a_w), c)), Scalar(0, 255, 0));
+        }
+    }
+
 }
 
