@@ -120,7 +120,6 @@ namespace clutseg {
                                     float b_min, float b_max, float b_w,
                                     bool draw_axes = false);
 
-
 }
 
 #endif
