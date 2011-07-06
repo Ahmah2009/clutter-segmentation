@@ -52,3 +52,36 @@ most of them, patches have been supplied.
     \end{tabular} 
     \label{table:bug-reports}
 \end{table} 
+
+\chapter{Hardware and Software Setup}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lll}
+        Component & Type \\
+        \hline
+        Mainboard & ASUS K8V SE Deluxe \\
+        CPU & AMD Athlon64 3000+ S754 \\
+        RAM & 1 Gigabyte DDR-RAM & \\
+        OS & Ubuntu 10.10 Maverick \\
+    \end{tabular}
+    \caption[Hard- and software configuration for parameter optimization]{Hard- and software configuration for parameter optimization.}
+    \label{table:hardsoftware-parameter-optimization}
+  \end{center}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{lll}
+        Component & Type \\
+        \hline
+        CPU & Intel Core i5-560M \\
+        RAM & 2 Gigabyte DDR3 & \\
+        OS & Ubuntu 10.10 Maverick \\
+    \end{tabular}
+    \caption[Hard- and software configuration for computation speed benchmark]
+        {Hard- and software configuration for computation speed benchmark.}
+    \label{table:hardsoftware-sift-surf-orb-benchmark}
+  \end{center}
+\end{table}
+

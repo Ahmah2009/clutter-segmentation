@@ -71,10 +71,10 @@ reference and influenced the terminology in this work \cite{Forsyth2003}. The
 same applies to Gonzalez and Woods in the field of image processing
 \cite{Gonzalez2010}.  Alpaydin's excellent introduction to machine learning
 \cite{Alpaydin2010} has influenced our experiment design and parameter
-optimization. Fawcett \cite{Fawcett2006} published a detailed guide on how to
+optimization. Fawcett published a detailed guide on how to
 evaluate the performance of classifiers through analysis of receiver operating
-characteristics. Melsa and Cohn \cite{Melsa1978} cover decision and estimation
-theory.
+characteristics \cite{Fawcett2006}. Melsa and Cohn cover decision and estimation
+theory \cite{Melsa1978}.
 
 % Haltakov and Pangercic have developed the ODUFinder library for the Robot
 % Operating System to detect both non-textured objects and textured objects,
@@ -100,10 +100,11 @@ Detection (\tod) stack in the Robot Operating System.
     \begin{center}
         \includegraphics[width=\textwidth]{media/clutter-pr2-kinect}
     \end{center}
-    \caption[A cluttered scene, a Kinect depth image, and a PR2 robot]{From left to right: (a) Rigid textured objects occluding each
-        other in a cluttered scene; (b) a 3D-visualization of the same scene, obtained
-        with a Kinect RGB-D camera; (c) the PR2 robot at Technische Universität
-        München}
+    \caption[A cluttered scene, a Kinect depth image, and a PR2 robot]{From
+        left to right: (a) Four rigid textured objects occluding each other in a
+        cluttered scene; (b) a 3D-visualization of the same scene, obtained with a
+        Kinect RGB-D camera; (c) the PR2 robot at Technische Universität München with a
+        Kinect camera mounted on its top}
     \label{figure:clutter-pr2-kinect}
 \end{figure}
 

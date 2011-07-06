@@ -27,14 +27,14 @@ calibration and the perspective-n-point problem.
 
 \subsection{Rigid Transformations}
 
-A {\it rigid transformation} is defined as an orthogonal
+A {\it rigid transformation} of coordinates is defined as an orthogonal
 transformation followed by a translation in Euclidean space. An orthogonal
 transformation is either a reflection or a rotation. A {\it proper rigid
 transformation} additionally requires the orthogonal transformation to be a
-rotation \footnote{The definitions of rigid transformations found in the
-literature are inconsistent. Reflections are excluded from rigid
-transformations in \cite{Forsyth2003}, but included in \cite{Galarza2007}.} .
-In three dimensions, a proper rigid transformation of vectors can be
+rotation (the definitions of rigid transformations found in the literature are
+inconsistent, though: Reflections are excluded from rigid transformations in
+\cite{Forsyth2003}, but included in \cite{Galarza2007}, we stick to the
+latter).  In three dimensions, a proper rigid transformation of vectors can be
 represented by a rotation matrix $R \in \real^{3\times3}$ and a translation
 vector $\vec{t} \in \real^3$.
 
@@ -222,18 +222,20 @@ two features.
 
 Lowe describes an approach to object recognition based on local features where
 each model is learnt from a single view of the template object \cite{Lowe1999}.
-Given a query image, local features are extracted and matched against the
-model.  This approach works well, if the object in the query scene has
-approximately the same orientation as in the template view. Lowe reports that
-using SIFT features, discussed in \refSection{subsection:SIFT}, it is possible
-to recognize objects up to a 20 degree rotation \cite{Lowe1999}. Unfortunately,
-considering only a single view is insufficient if query scenes show objects in
-arbitrary orientations.
+Given a query image, local features are extracted and matched against the model
+(\refFigure{figure:single-view-or}). This approach works well, if the object in
+the query scene has approximately the same orientation as in the template view.
+Lowe reports that using SIFT features, discussed in
+\refSection{subsection:SIFT}, it is possible to recognize objects up to a 20
+degree rotation \cite{Lowe1999}. Unfortunately, considering only a single view
+is insufficient if query scenes show objects in arbitrary orientations.
 
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.55\textwidth]{media/single-view-or}
-        \caption{Object recognition with models learned from a single view}
+        \caption[Object recognition with models learned from a single view]{Object recognition with models learned from a single view. The example shows three correspondences
+between query features ($\times$) and model features ($\bullet$).}
+        \label{figure:single-view-or}
     \end{center}
 \end{figure}
 
@@ -244,12 +246,19 @@ The single-view scheme can be extended to allow for recognizing objects in
 arbitrary orientations. In order to accomplish this, a description of a
 template object is based on local features extracted from multiple views of the
 object. Local features from a query scene are matched against the model that
-incorporates features recorded from different viewpoints.
+incorporates features recorded from different viewpoints
+(\refFigure{figure:multi-view-or}).
 
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{media/multi-view-or}
-        \caption{Object recognition with models learned from multiple views}
+        \caption[Object recognition with models learned from multiple
+            views]{Object recognition with models learned from multiple views.  The example
+            shows correspondences between query features ($\times$) and model features
+            ($\bullet$). Correspondence $c_1$ is matched to the right model, but the
+            location is incorrect. Correspondences $c_2$ and $c_3$ are correct.  Finally,
+            correspondence $c_4$ is mismatched.}
+        \label{figure:multi-view-or}
     \end{center}
 \end{figure}
 
@@ -289,7 +298,10 @@ correspondences between two images. A feature detector designates keypoints
 after examining the local image neighbourhood. These neighbourhoods can for
 example be deformed by noise, image discretization, a change of viewpoint or a
 change in lighting conditions \cite{Tuytelaars2007}. These deformations have to
-be addressed by a feature detector to achieve repeatability.
+be addressed by a feature detector to achieve repeatability. In order to
+achieve invariance as regards scale and rotation, features can be extracted at
+multiple scales, and orientations can be assigned to keypoints
+(\refTable{table:feature-detectors}).
 
 An informative feature identifies an image neighbourhood that shows high
 variation in intensity. If not, the features would be difficult to distinguish.
@@ -321,7 +333,9 @@ search. A feature descriptor that permits for efficient matching is BRIEF
             ORB & yes & yes 
         \end{tabular}
     \end{center}
-    \caption{Properties of selected feature detectors}
+    \label{table:feature-detectors}
+    \caption[Properties of selected feature detectors]{Properties of selected
+            feature detectors. SIFT, SURF, and ORB are also feature descriptors}
 \end{table}
 
 \subsubsection{SIFT}
@@ -455,11 +469,11 @@ to the estimation of extrinsic parameters, and in particular, to the
 perspective-$n$-point (PnP) problem. The PnP problem can be solved by RANSAC.
 
 RANSAC stands for {\it RANdom SAmple Consensus}. It is a randomized algorithm
-that fits a parametrized model to given data. It is robust with respect to
-outliers.  The pose estimation problem in this context can be reduced to the
+that fits a parametrized model to the data. It is robust with respect to
+outliers. The pose estimation problem in this context can be reduced to the
 location determination problem or the equivalent PnP problem
-\cite{Fischler1981}.  Generally, this algorithm randomly chooses a small set of
-data points that fully determine the model parameters.  Then it forms a
+\cite{Fischler1981}.  Generally, this algorithm randomly chooses a small subset
+of the data that fully determines the model parameters.  Then it forms a
 consensus set of {\it inliers}, that is, all data points that are consistent
 with the model up to a certain margin of error. RANSAC constructs a fixed
 number of such consensus sets and then chooses the model with the largest

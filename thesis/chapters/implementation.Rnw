@@ -32,7 +32,7 @@ storing and retrieving experimental data, and \rproject for analysing data.
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/clutseg-deps}
         \caption[The software dependencies of \clutseg]{\clutseg depends (amongst others) on \tod, \ros,
-        \pcl, \opencv, \vslam, \rproject, and \sqlite} \end{center}
+        \pcl, \opencv, \vslam, \rproject, and \sqlite.} \end{center}
 \end{figure}
 
 \section{Textured Object Detection Library}
@@ -70,7 +70,8 @@ scene.
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{../doc/tod_training}
-        \caption{The pipeline of \tod used for learning models}
+        \caption[The pipeline of \tod used for learning models]{The pipeline of \tod used for learning models. The rectangular
+nodes represent processes, the slanted nodes represent data.}
    \end{center}
 \end{figure}
 
@@ -245,7 +246,7 @@ correspondences.
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{../doc/tod_detecting_kinect}
-        \caption[The recognition pipeline of \tod]{\tod recognition pipeline (Kinect mode)}
+        \caption[The recognition pipeline of \tod]{\tod recognition pipeline (Kinect mode).}
    \end{center}
 \end{figure}
 
@@ -319,8 +320,15 @@ guesses never share a correspondence.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{media/inlier-criteria.png}
-        \caption{A model aligned to the query scene}
+        \includegraphics[width=0.55\textwidth]{media/inlier-criteria.png}
+        \caption[A model aligned to the query scene]{A model aligned to the
+            query scene. The query features ($\times$) correspond to model features
+            ($\bullet$).  The correspondence belonging to the lower right query feature is
+            consistent with the pose estimate because the aligned model point projected
+            onto the image plane ($\triangle$) is within a certain distance of the query
+            feature; this correspondence is said to be an {\it inlier}, or equivalently, it
+            is said to belong to the consensus set for the aligned model. The other
+            correspondence is designated {\it $outlier$}.}
    \end{center}
 \end{figure}
 
@@ -568,7 +576,7 @@ recorded as well. Results are presented in \refChapter{chapter:evaluation}.
 \subsubsection{Ground Truth}
 
 The error \clutseg makes on a query scene can only be computed when ground
-truth is available. Ground truth data for a scene consists of a set of labels
+truth is available. The ground truth data for a scene consist of a set of labels
 that tell which objects can be seen at which location and which orientation in
 the scene. Thus, the ground truth $G$ can be described as a set of labels
 \begin{equation}
@@ -723,5 +731,5 @@ modelbase, that is the region of interest, the extracted keypoints, and the
 estimated pose.  Imagemagick is used to generate montage images that show the
 results of one experiment at once. Finally, \tod allows to visualize matches
 between the query scene and the modelbase. \rproject is used for pulling data
-from the database and for plotting it. 
+from the database and for plotting the data. 
 

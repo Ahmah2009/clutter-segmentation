@@ -18,7 +18,7 @@ revealed during the evaluation.
 
 This section shows how all the data required for constructing the modelbases,
 the validation set and the test set was obtained. Those three artifacts all
-required raw data, which has been collected in a similar fashion, using the
+required raw data, which have been collected in a similar fashion, using the
 same hardware and software setup.
 
 % The Robot
@@ -65,8 +65,8 @@ work better than a bag with only 40 views. For each object, around 1 Gigabyte
 of data was recorded. The next preparatory steps consisted in uncompressing the
 bag files with a script included in both \clutseg and \tod, in estimating the
 object-view transformation for each view, and in masking for each view as
-described in \refSection{subsection:learning}.  This post-processed raw data
-provides the masks and the object-view transformation which can be used to
+described in \refSection{subsection:learning}.  These post-processed raw data
+provide the masks and the object-view transformation which can be used to
 create several modelbases using different feature detectors and descriptors.
 The resulting models of each template object were much smaller in size than the
 original raw data. The models took up around 1 Megabyte of disk space each,
@@ -119,8 +119,8 @@ varying levels of occlusion. Each object appears in upright orientation.
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/validation-scene}
 \caption[The object coordinate systems defined in a validation scene]{From left to right: (a) A validation scene showing \jacobsCoffee,
-\haltbareMilch, \icedtea, and the ground truth. (b) Three coordinate systems
-that must align with the object coordinate systems of the three instances}
+\haltbareMilch, \icedtea, and the ground truth; (b) three coordinate systems
+that must align with the object coordinate systems of the three instances.}
 \label{figure:validation-scene}
 \end{center}
 \end{figure}
@@ -187,16 +187,16 @@ position, but some objects occluding others. Other scenes showed objects in
 arbitrary orientations and with medium occlusion. Other, yet more difficult
 scenes, showed objects in arbitrary orientations and with severe occlusion.
 
-The test set data has been collected similarly to the validation set, but
+The test set data have been collected similarly to the validation set, but
 ground truth was not computed. The evaluation on the test set was therefore
 restricted to visual analysis.
 
 \section{Experiments}
 
-This section describes the regions in parameter space that have been covered by
-experiments. This knowledge is required for interpreting data from multiple
-experiments. It also presents a selected parameter set that has been found to
-work well on the validation set.
+Here we describe the regions in parameter space that have been covered by our
+experiments. We discuss the observations made during experimentation and
+present the parameter set that has been found to work well on the validation
+set.
 
 \subsection{Searched Parameter Space}
 
@@ -250,33 +250,6 @@ of wall-clock time to compute, an average of
 \refTable{table:hardsoftware-parameter-optimization} lists the hardware and software
 configuration.
 
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{lll}
-        Component & Type \\
-        \hline
-        Mainboard & ASUS K8V SE Deluxe \\
-        CPU & AMD Athlon64 3000+ S754 \\
-        RAM & 1 Gigabyte DDR-RAM & \\
-        OS & Ubuntu 10.10 Maverick \\
-    \end{tabular}
-    \caption{Hard- and software configuration for parameter optimization}
-    \label{table:hardsoftware-parameter-optimization}
-  \end{center}
-\end{table}
-
-% \begin{figure}
-%    \begin{center}
-%<<fig=true,png=true,size=0.5>>=
-%    r_all = dbGetQuery(con, paste(
-%        "select succ_rate",
-%        "from response"));
-%    hist(r_all$succ_rate, xlab = "Success Rate", main = "Histogram of Success Rates")
-%@
-%    \caption{Histogram of success rates in experiments}
-%    \end{center}
-%\end{figure}
-
 <<>>=
     rm(e_all)
     rm(e_fast_rbrief)
@@ -284,6 +257,35 @@ configuration.
 @
 
 \subsection{Observations}
+
+Finding good parameters has been an interactive process. New parameter sets
+have been evaluated in batches. A smoothed scatter plot shows the achieved
+success rates on the validation set over time
+(\refFigure{figure:experiment-progress}~a). Experiments 3105--4129 have
+explored the neighbourhood of a promising experiment 2336. This explains the
+plateau starting with experiment 3100. The few experiments where \clutseg
+achieved a success rate of greater than $90\%$ on the validation set
+(\refFigure{figure:experiment-progress}~b) are outliers. This is indicated by
+averaging runs with the same parameter values as a prior experiment with 
+a high success rate.
+
+\begin{figure}
+    \begin{center}
+  \setkeys{Gin}{width=\textwidth} 
+<<fig=true,png=true,height=4, width=10>>=
+    r_all = dbGetQuery(con, paste(
+        "select experiment_id, succ_rate",
+        "from view_experiment_response"));
+    xy = lowess(r_all$experiment_id, r_all$succ_rate, f = 1./150)
+    # plot(r_all$experiment_id, r_all$succ_rate, type="lines")
+    layout(matrix(c(1, 2), 1, 2))
+    plot(xy$x, xy$y, type="lines", xlab="Experiment identifier", ylab = "Success rate")
+    hist(r_all$succ_rate, xlab = "Success rate", main="")
+@
+    \end{center}
+    \label{figure:experiment-progress}
+\end{figure}
+
 
 \subsection{Selected Parameter Set}
 
@@ -357,7 +359,8 @@ parameters {\tt octaves} and {\tt scale\_factor}.
         {\tt octaves} & \Sexpr{sps$octaves} \\
         {\tt scale\_factor} & \Sexpr{sps$scale_factor} \\
     \end{tabular}
-    \caption{Selected \clutseg parameters for feature extraction}
+    \caption[Selected \clutseg parameters for feature extraction]{Selected
+        \clutseg parameters for feature extraction.}
     \label{table:selected-parameters-features}
   \end{center}
 \end{table}
@@ -385,7 +388,9 @@ stages to match the binary features produced by Oriented BRIEF.
         {\tt refine\_min\_inliers\_count} & \Sexpr{sps$refine_min_inliers_count} \\
         {\tt accept\_threshold} & \Sexpr{sps$accept_threshold}
     \end{tabular}
-    \caption{Selected \clutseg parameters for matching and pose estimation}
+    \caption[Selected \clutseg parameters for feature matching and pose
+            estimation]{Selected \clutseg parameters for feature matching and pose
+            estimation.}
     \label{table:sps-match-guess}
   \end{center}
 \end{table}
@@ -395,7 +400,8 @@ stages to match the binary features produced by Oriented BRIEF.
 The performance of the \clutseg system has been tested on the validation set, on a
 separate test set, and in a live test on the PR2 robot. This section reviews
 \clutseg's performance for a parameter set that worked well on the validation
-set. It also covers observations made on a broad range of experiments.
+set. 
+% It also covers observations made on a broad range of experiments.
 
 \subsection{Performance on Validation Set}
 
@@ -468,7 +474,7 @@ and the average rotational error was \Sexpr{signif(180 / pi * avg_fail_angle_err
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=\textwidth]{media/validation-scene-success}
-        \caption[A validation scene where \icedtea is recognized]{From left to right: (a) A validation scene; (b) a visualization of the estimated pose for \icedtea}
+        \caption[A validation scene where \icedtea is recognized]{From left to right: (a) A validation scene; (b) a visualization of the estimated pose for \icedtea.}
         \label{figure:validation-scene-success}
     \end{center}
 \end{figure}
@@ -541,24 +547,10 @@ pose estimation.
 @
      \includegraphics[width=\textwidth]{sift-surf-orb-benchmark}
      \caption[A comparison of SIFT, SURF and ORB in terms of speed]
-    {Comparison of SIFT, SURF and ORB in terms of speed and number of features}
+    {Comparison of SIFT, SURF and ORB in terms of speed and number of features.}
      \label{figure:sift-surf-orb-benchmark}
     \end{center}
 \end{figure}
-
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}{lll}
-        Component & Type \\
-        \hline
-        CPU & Intel Core i5-560M \\
-        RAM & 2 Gigabyte DDR3 & \\
-        OS & Ubuntu 10.10 Maverick \\
-    \end{tabular}
-    \caption{Hard- and software configuration for computation speed benchmark}
-    \label{table:hardsoftware-sift-surf-orb-benchmark}
-  \end{center}
-\end{table}
 
 <<>>=
     rm(col)
@@ -612,7 +604,8 @@ well ORB responds to different numbers of desired features.
     invisible(dev.off())
 @
      \includegraphics[width=0.6\textwidth]{orb-response-n-features}
-     \caption{The response of Oriented BRIEF on the number of desired features}
+     \caption[The response of Oriented BRIEF on the number of desired features]
+         {The response of Oriented BRIEF on the number of desired features.}
      \label{figure:orb-response-n-features}
     \end{center}
 \end{figure}
@@ -670,13 +663,6 @@ by more than \Sexpr{max_exceed} keypoints.
 % axis parallel to the optical axis. SIFT features still operate up to 20 degrees
 % of rotation around an axis parallel to the image plane \cite{Lowe1999}. % TODO: confirm this
 
-\subsection{Incomplete model}
-
-When recording data for a modelbase, the bottom of each template object is
-facing the rotating table, and is thus invisible to the camera from all
-viewpoints.  This does not matter as long as instances of these template
-objects are standing upright. This does matter however, when instances occur in
-arbitrary orientation.
 
 \subsection{Repetitions in texture}
 
@@ -688,7 +674,7 @@ which probably makes it hard to obtain informative features.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.2\textwidth]{media/icedtea_smallprint}
-        \caption[Repetitive texture shown on the back of \icedtea]{Repetitive texture on template object \icedtea }
+        \caption[Repetitive texture shown on the back of \icedtea]{Repetitive texture on template object \icedtea.}
     \end{center}
 \end{figure}
 
@@ -772,7 +758,7 @@ max\_projection\_error}.
             \caption[A schematic explanation of a far-away aligned model with many
 inliers]{An example, where all points of a far-away aligned model are projected to the same point
 ($\triangle = \hat{q}$) on the image plane. All four correspondences $c_1$, $c_2$,
-$c_3$, and $c_4$ are designated inliers because all the associated query keypoints (x)
+$c_3$, and $c_4$ are designated inliers because all the associated query keypoints ($\times$)
 fall into the circle around point $\hat{p}$.}
 \label{figure:far-away-aligned-model}
     \end{center}
@@ -792,15 +778,23 @@ $\normtwo{\oTvh\pth{\vec{0}}}$.
 % projection \cite{Moore1989}, and approximating an ellipse by a sphere seems
 % reasonable.
 
-\begin{figure}
+\begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.6\textwidth]{media/ransac-max-projection-error-deficiency-sample}
-        \caption[An example scene with a far-away aligned model]{On a test scene, the badly aligned pose still results in many inliers}
+        \includegraphics[width=0.4\textwidth]{media/ransac-max-projection-error-deficiency-sample}
+        \caption[An example scene with a far-away aligned model]{On a test scene, the badly aligned pose still results in many inliers.}
         \label{figure:distant-pose-estimate}
     \end{center}
 \end{figure}
 
-\subsection{Systematic Error in Model}
+\subsection{Incomplete Models}
+
+When recording data for a modelbase, the bottom of each template object is
+facing the rotating table, and is thus invisible to the camera from all
+viewpoints.  This does not matter as long as instances of these template
+objects are standing upright. This does matter however, when instances occur in
+arbitrary orientation.
+
+\subsection{Systematic Error in Models}
 \label{subsection:systematic-error-model}
 
 Unfortunately, analysis of the 3D models used in the evaluation revealed that
@@ -810,13 +804,13 @@ the \tod models of \campbellsChickenNoodle, \downy, \fatFreeMilk, and
 \goodEarthTea from the \tod tutorials
 \footnote{http://vault.willowgarage.com/wgdata1/vol1/tod\_kinect\_bags/training
 $\,$. Accessed 5 July 2011.}. Whilst \downy's model seems valid when projected
-onto a plane (\refFigure{figure:systematic-error-model} a), \icedtea's model
-does not (\refFigure{figure:systematic-error-model} b-c).
+onto a plane (\refFigure{figure:systematic-error-model}~a), \icedtea's model
+does not (\refFigure{figure:systematic-error-model}~b-c).
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{media/systematic-error-model}
-        \caption[The 3D models of \downy and \icedtea extracted from multiple views]{From left to right: (a) Correct model of {\it downy}; (b) side view of {\icedtea} model; (c) top view of {\icedtea} model}
+        \caption[The 3D models of \downy and \icedtea extracted from multiple views]{From left to right: (a) Correct model of {\it downy}; (b) side view of {\icedtea} model; (c) top view of {\icedtea} model.}
         \label{figure:systematic-error-model}
     \end{center}
 \end{figure}
@@ -833,7 +827,7 @@ form of a hash ('\#').
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=\textwidth]{media/clutseg-model-xyhist}
-        \caption[The coordinate histograms of four \clutseg models]{From left to right: $xy$-coordinate histogram of (a) \assamTea, (b) \haltbareMilch, (c) \jacobsCoffee, (d) \icedtea}
+        \caption[The coordinate histograms of four \clutseg models]{From left to right: $xy$-coordinate histogram of (a) \assamTea, (b) \haltbareMilch, (c) \jacobsCoffee, (d) \icedtea.}
         \label{figure:clutseg-model-xyhist}
     \end{center}
 \end{figure}
@@ -841,13 +835,13 @@ form of a hash ('\#').
 In comparison, the \tod model histograms look as expected
 (\refFigure{figure:tod-model-xyhist}). Even the texture-less lid on the top of
 \fatFreeMilk can be made out on the histogram
-(\refFigure{figure:tod-model-xyhist} c).  Just like \icedtea, \fatFreeMilk is a
+(\refFigure{figure:tod-model-xyhist}~c).  Just like \icedtea, \fatFreeMilk is a
 cuboid. Hence, their $xy$-coordinate histograms should be similar, which is not the
 case.
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=\textwidth]{media/tod-model-xyhist}
-        \caption[The coordinate histograms of four \tod models]{From left to right: $xy$-coordinate histogram of (a) {\it campbells\_chicken\_noodle}, (b) {\it downy}, (c) {\it fat\_free\_milk}, (d) {\it good\_earth\_tea}}
+        \caption[The coordinate histograms of four \tod models]{From left to right: $xy$-coordinate histogram of (a) {\it campbells\_chicken\_noodle}, (b) {\it downy}, (c) {\it fat\_free\_milk}, (d) {\it good\_earth\_tea}.}
         \label{figure:tod-model-xyhist}
     \end{center}
 \end{figure}
