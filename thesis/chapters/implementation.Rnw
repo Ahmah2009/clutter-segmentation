@@ -7,14 +7,6 @@ object (\refFigure{figure:clutseg-input-output}) (b).
 \clutseg is based on the existing Textured Object Detection (\tod) Library,
 which we discuss in detail.
 
-% TODO: have I introduced ROS already?
-% TODO: is OpenCV introduced yet?
-% TODO: is PCL introduced?
-% TODO: is VSLAM introduced
-% TODO: is R introduced?
-% TODO: is SQLITE introduced?
-% TODO: add references to OpenCV and ROS in bibliography?
-
 % TODO:
 % the improvements we added to the existing libraries.
 % It finally explains how system parameters were found with the help
@@ -35,22 +27,52 @@ storing and retrieving experimental data, and \rproject for analysing data.
         \pcl, \opencv, \vslam, \rproject, and \sqlite.} \end{center}
 \end{figure}
 
+{\it OpenCV} is an open-source library for computer vision. It provides for
+image representation, input and output as well as for many image processing
+operations. It offers methods for camera calibration and feature detection,
+which are used by \clutseg and \tod.
+
+The {\it Robot Operating System} (\ros) is an open-source framework for the
+development of robot applications, having its roots in the STAIR project at
+Stanford University. In \ros, distributed nodes communicate by publishing and
+subscribing to topics. In our case, the interesting topics were the image and
+the 3D point cloud, together forming the sought-after depth images. In ROS,
+depth images and other data can be recorded in so-called bags. \ros contains
+the \vslam package, which is only used by \tod because it contains a RANSAC
+implementation for solving the PnP problem.
+
+The {\it Point Cloud Library} (\ros) is concerned with processing 3D data. A
+point cloud is a set of vertices in space; a low-level representation of
+three-dimensional entities in space. For example, the output of the Kinect
+camera is a point cloud.
+
+{\it SQLite} is a reliable file-based relational database that is well-suited
+for local applications. It is thoroughly tested with over a million tests, and
+hassle-free to use. It provides convenient command-line tools that allow for
+exporting data quickly into human-readable formats.
+
+{\it R} is an open-source environment for statistical computing and graphics.
+It excels in good documentation. R supports many different sources of data, and
+in particular also a \sqlite database.
+
+% TODO: add references to OpenCV and ROS in bibliography?
+
 \section{Textured Object Detection Library}
 
-This section analyzes the software underlying the \clutseg system, and explains
-how it was modified and improved to better fulfill our requirements.  It
-describes how to extract models of template objects from multiple views, and
+In this section we analyze the software underlying the \clutseg system. We
+explain how we modified it and improved it to better fulfill our requirements.
+We describe how to extract models of template objects from multiple views, and
 covers the elementary pipeline that later recognizes instances in query scenes.
 
-The {\it Robot Operating System} (\ros) is a framework for the development of
-robot applications, having its roots in the STAIR project at Stanford
-University. It contains the packages {\it tod}, {\it tod\_training}
-and {\it tod\_detecting}. In the following, the system formed by these three
-\ros packages is called \tod for easier reference. Throughout this work, \tod
-has been used in Subversion revision 50479, and modifications are explicitly
-mentioned in the following. At this revision, \tod was experimental, unstable,
-and not covered by automatic tests. The system participated in the {\it
-Solutions in Perception Challenge} contest at ICRA 2011 in Shanghai for comparison.
+The Robot Operating System contains the packages {\it tod}, {\it tod\_training}
+and {\it tod\_detecting}. The system formed by these three \ros packages is
+called \tod for easier reference \footnote{German readers will note the
+unfortunate choice in abbreviating ``textured object detection''.}. Throughout
+this work, \tod has been used in Subversion revision 50479, and modifications
+are explicitly mentioned in the following. At this revision, \tod was
+experimental, unstable, and not covered by automatic tests. The system
+participated in the {\it Solutions in Perception Challenge} contest at ICRA
+2011 in Shanghai for comparison.
 
 \tod offers two modes. One targets the Kinect RGB-D camera. The second mode is
 optimized for working better with a Prosilica MP 5 camera \cite{Shishkov2011}.
@@ -136,8 +158,6 @@ the fiducial markers, that is
     \oTv: \real^3 \to \real^3, \vec{p} \mapsto\ \fTv(\vec{p})
     \label{equation:fiducial-object}
 \end{equation}
-
-% TODO: use 2D instead of 2D, and 3D instead of 3D
 
 The computation of $\fTv$ is yet another instance of the PnP problem. The 2D-3D
 correspondences are obtained from detecting the chessboard corners in the
@@ -258,10 +278,6 @@ query feature is nothing but a keypoint-descriptor pair produced by SIFT, SURF
 or ORB, or any other feature extractor, and we introduce this term to clearly
 tell features from the query and the model apart. Note that query features do
 not include 3D information.
-% This is subject of discussion, and is addressed in
-% \refChapter{chapter:evaluation}.
-
-% TODO: consistency chapter 4 and Chapter 4, use capital letter
 
 \subsubsection{Extraction of Query Features}
 
@@ -659,7 +675,6 @@ too much. On the other hand, it does not provide useful gradient information in
 regions of bad parameter sets, given the function's flat surface beyond a
 certain region defined by $t_{max}$ and $\alpha_{max}$.
 
-% TODO: maybe future work, need more complete ground truth for more complex evaluation
 % For example, let two objects A and B be on the scene. \clutseg makes a guess,
 % but confusing objects A and B, it states that A was found at a pose close to
 % object B, and also with inliers emanating from object B. In this case, the

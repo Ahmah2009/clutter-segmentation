@@ -40,11 +40,6 @@ scenario. The board was manually rotated, carefully and not too fast.  The
 objects must not move with respect to the fiducial markers, which are attached
 to the object coordinate system.
 
-In ROS, distributed nodes communicate by publishing and subscribing to topics.
-In our case, the interesting topics were the image and the 3D point cloud,
-together forming the sought-after depth images. In ROS, depth images and other
-data can be recorded in so-called bags.
-
   The resolution of the image was 1280x1024 pixels, and the dense point cloud
 had a resolution of 640x480. The sampling rate was set to about one depth image
 per second. The camera matrix needs to be recorded as well, for it is required
@@ -157,29 +152,9 @@ offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
     \oTvi{k}: \vec{p} \mapsto\ \fTv \pth{ \vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} }
 \end{equation}
 
-% TODO: give average number of keypoints
-<<>>=
-    e_orb = dbGetQuery(con, paste(
-        "select distinct avg_keypoints",
-        "from response r",
-        "join experiment e on r.id = e.response_id",
-        "where e.name like '%orb%' and e.test_set='ias_kinect_test_grounded_21'"))
-@
 
-<<>>=
-    rm(e_orb)
-@
-
-% TODO: future work might involve computation of ground truth in more complex
-% configurations
-
-
-% TODO: figure object-coordinate-syste
 
 \subsection{Test Set}
-
-% TODO: fix OpenCV-ORB <=> ORB naming issue
-% FIXME: fix selected parameter set
 
 The test set was made of cluttered scenes of various character. All four
 objects are shown on the test scene. Some scenes showed objects in upright
@@ -279,13 +254,17 @@ a high success rate.
     xy = lowess(r_all$experiment_id, r_all$succ_rate, f = 1./150)
     # plot(r_all$experiment_id, r_all$succ_rate, type="lines")
     layout(matrix(c(1, 2), 1, 2))
-    plot(xy$x, xy$y, type="lines", xlab="Experiment identifier", ylab = "Success rate")
-    hist(r_all$succ_rate, xlab = "Success rate", main="")
+    plot(xy$x, xy$y, type="lines", main="Success rate over time", xlab="Experiment identifier", ylab = "Success rate")
+    hist(r_all$succ_rate, xlab = "Success rate", main="Histogram of success rates")
 @
     \end{center}
+    \caption[The observed success rates in the experiments]{From left to right:
+(a) the smoothed scatter plot of the success rates. Identifiers are assigned to
+experiments in increasing order over time. (b) The observed distribution of
+success rates. Useless parameter values result in a zero success rate.
+Only a few parameter sets led to success rates greater than $90\%$.}
     \label{figure:experiment-progress}
 \end{figure}
-
 
 \subsection{Selected Parameter Set}
 
@@ -416,8 +395,10 @@ set.
           "avg(r.avg_succ_angle_err) as avg_succ_angle_err,",
           "avg(r.avg_trans_err) as avg_trans_err,",
           "avg(r.avg_angle_err) as avg_angle_err,",
+          "avg(r.avg_detect_matches) as avg_detect_matches,",
           "avg(r.avg_detect_inliers) as avg_detect_inliers,",
           "avg(r.avg_detect_choice_inliers) as avg_detect_choice_inliers,",
+          "avg(r.avg_refine_matches) as avg_refine_matches,",
           "avg(r.avg_refine_inliers) as avg_refine_inliers,",
           "avg(r.avg_refine_choice_inliers) as avg_refine_choice_inliers",
           # joins 
@@ -479,17 +460,50 @@ and the average rotational error was \Sexpr{signif(180 / pi * avg_fail_angle_err
     \end{center}
 \end{figure}
 
-A pose estimate returned by \clutseg was supported by
-\Sexpr{round(sps_avg$avg_refine_choice_inliers)} correspondences on average.
+<<>>=
+    e_orb = dbGetQuery(con, paste(
+        "select distinct avg_keypoints",
+        "from response r",
+        "join experiment e on r.id = e.response_id",
+        "join paramset p on p.id = e.paramset_id",
+        "join pms_fe f on f.id = p.recog_pms_fe_id",
+        "where f.extractor_type='ORB'",
+        "and f.detector_type='ORB'",
+        "and f.descriptor_type='ORB'",
+        "and f.n_features=5000",
+        "and e.id=", sps_id,
+        "and e.test_set='ias_kinect_test_grounded_21'"))
+@
 
-% TODO: averaging
+% TODO: check whether n_features has been introduced
+On average, \Sexpr{round(e_orb$avg_keypoints)} keypoints have been extracted
+from a validation scene. In the detection stage, where \tod generates a set of
+initial guesses (\refSection{subsection:recognition}), LSH found
+\Sexpr{round(sps_avg$avg_detect_matches)} correspondences on average. At least
+\Sexpr{round(e_orb$avg_keypoints - sps_avg$avg_detect_matches)} query features
+remained unmatched. On average, an initial guess was supported by
+\Sexpr{round(sps_avg$avg_detect_inliers)} correspondences.
 
-The success rate is over-optimistic with regard to the test scenes, though,
-because the validation set was used for optimizing the system. For ground truth
-was available for the validation set, more precise data can be presented on it
-than for the test set. 
+In refinement, LSH found \Sexpr{round(sps_avg$avg_refine_matches)}
+correspondences on average, all of them matching a single object. The average
+guess in refinement was supported by \Sexpr{round(sps_avg$avg_refine_inliers)}
+correspondences. The average pose estimate returned by \clutseg had a
+confidence value of \Sexpr{round(sps_avg$avg_refine_choice_inliers)}.
 
-% TODO: talk about detection stage
+The initial guess that was selected for refinement had a support of
+\Sexpr{round(sps_avg$avg_detect_choice_inliers)} correspondences.  The
+confidence values in the detection stage and the refinement stage cannot be
+compared because which of the correspondences are designated inlier depends on
+the {\tt refine\_max\_projection\_error} parameter.
+
+<<>>=
+    rm(e_orb)
+@
+
+The success rate of \Sexpr{round(100 * sps_avg$avg_succ_rate)}\% is over-optimistic with regard to the test scenes, because the
+validation set was used for optimizing the system. For ground truth was
+available for the validation set, more precise data can be presented on it than
+for the test set. 
 
 \subsection{Performance on Test Set}
 \subsection{Performance in Live Test}
@@ -562,20 +576,30 @@ pose estimation.
 
 \subsubsection{Feature Quantity}
 
-Sometimes it is necessary to control the number of features selected by a
-feature detector.  In general, the number of features selected by a feature
-detector should be configurable, using a simple and intuitive threshold
+In this work, it has been necessary to control the number of features selected
+by a feature detector.  In general, the number of features selected by a
+feature detector should be configurable, using a simple and intuitive threshold
 \cite{Tuytelaars2007}.
 
-A parameter {\tt n\_features} specifies the number of desired features produced
-by Oriented BRIEF. Other feature detectors and descriptors in \opencv, such as
-SIFT and SURF do not provide such a parameter. Neither do the feature detectors
-FAST and STAR. The parameter {\it n\_features} is simple and intuitive. Yet,
-ORB does not make any guarantee about the actual number of features extracted
-on the image. The parameter is just a hint. The question arises how
-well ORB responds to different numbers of desired features.
+The parameter {\tt n\_features} specifies the number of desired features
+produced by Oriented BRIEF. Other feature detectors and descriptors in \opencv,
+such as SIFT and SURF do not provide such a parameter. Neither do the feature
+detectors FAST and STAR. The parameter {\it n\_features} is simple and
+intuitive. Yet, ORB does not make any guarantee about the actual number of
+features extracted on the image. The parameter is just a hint. The question
+arises how well ORB responds to different numbers of desired features.
 
 \begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{media/orb-response-test-images}
+        \caption[Four test images for Oriented BRIEF]{From left to right: (a)
+            \assamTea, (b) {\it clutter}, (c) {\it house}, and (d) {\it mandrill}.}
+            \label{figure:orb-response-test-images}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+
     \begin{center}
 <<>>=
     png("orb-response-n-features.png", 500, 400)
@@ -603,7 +627,7 @@ well ORB responds to different numbers of desired features.
     legend(3000, 2500, names(r)[2:5], pch=21:24, col=col)
     invisible(dev.off())
 @
-     \includegraphics[width=0.6\textwidth]{orb-response-n-features}
+     \includegraphics[width=0.65\textwidth]{orb-response-n-features}
      \caption[The response of Oriented BRIEF on the number of desired features]
          {The response of Oriented BRIEF on the number of desired features.}
      \label{figure:orb-response-n-features}
@@ -613,10 +637,10 @@ well ORB responds to different numbers of desired features.
 \refFigure{figure:orb-response-n-features} plots the number of desired features
 against the number of features that were actually obtained by ORB. The four
 test images {\it assam\_tea}, {\it clutter}, {\it house}, and {\it mandrill}
-carry different amount of informations, though all were sampled at the same
-resolution of 512x512 pixels. Increasing values for {\tt n\_features} have
-been tried until the number of actual keypoints reaches its maximum for all
-four images.
+(\refFigure{figure:orb-response-test-images}) carry different amount of
+informations, though all were sampled at the same resolution of 512x512 pixels.
+Increasing values for {\tt n\_features} have been tried until the number of
+actual keypoints reaches its maximum for all four images.
 
 {\it Mandrill} has very fine-grained texture, and ORB extracted maximally
 \Sexpr{max(mandrill)} keypoints on this image. This number is greater than for
@@ -686,14 +710,6 @@ and scene, \clutseg estimated a distance of 88 metres between \icedtea and the
 camera (\refFigure{figure:distant-pose-estimate}). This bad estimate was almost
 two orders of magnitude off the ground truth.  Yet it still had support by 14
 inliers --- enough in this scene to make it the best-ranked guess.
-% RANSAC and the Maximum Projection Error
-% Perspective Projection and RANSAC
-% RANSAC and Degenerate Projections
-% Degeneration of Projections in Perspective
-% => it is not a deficiency in the RANSAC paradigm
-% => it is a deficiency in the error measure for fitting
-% Projection error and Distant Pose Estimates
-% Consensus for Distant Pose Estimates
 
 An explanation for the large consensus set is that the projection error is a
 measure on the image plane. Given a scene, consider any correspondence $c_i =
@@ -711,9 +727,6 @@ The correspondence $c_i$ is designated inlier if and only if the L2-distance
 between query keypoint and the projection of the model point aligned to the
 scene is less than a threshold $r$, precisely 
 
-% TODO: include predicate that z-coordinate (depth) of T(p_i) must be greater than zero
-% this is a geometrical constraint, see pnp_ransac.cpp
-
 \begin{equation}
     c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r  \quad \wedge \quad \text{$p_i$ is visible}
     \label{equation:inlier-definition}
@@ -723,7 +736,6 @@ Now, let us model the scenario, where a distant pose estimate was generated
 for an object that is close to the camera in truth. Let $\oTv$ denote
 ground truth for $\oTvh$. 
  
-    % \normtwo{\oTvh\left(\vec{0}\right) - \oTv\left(\vec{0}\right)}
 \begin{equation}
     e_t \pth{ \oTvh,\ \oTv } \geq l
 \end{equation}
