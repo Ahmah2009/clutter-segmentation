@@ -354,7 +354,7 @@ successfully been applied to panorama stitching \cite{Brown2006}.
 \subsubsection{FAST}
 
 FAST is a feature detector that designates keypoints by looking at a Bresenham
-circle of 16 pixels in diameter around a candidate keypoint. If 9 contiguous
+circle of 16 pixels in diameter around a candidate keypoint. If nine contiguous
 pixels of the diameter pixels are all brighter (a), or all darker (b) than the
 center pixel plus (a), or minus (b) a certain threshold, then the circle center
 is designated keypoint \cite{Rosten2006}. FAST is efficient because it can rule
