@@ -65,18 +65,18 @@ system. The question arises which coordinate systems are convenient and how
 many are necessary. In our case, the two different coordinate systems discussed
 in the following prove sufficient.
 
-The {\it view coordinate system} is attached to the camera. Two of its basis
+The {\it \gls{view coordinate system}} is attached to the camera. Two of its basis
 vectors define the image plane and the remaining basis vector is directed
 towards the scene. The view coordinate system is convenient for the robot. For
 example, if the robot is programmed to grasp an object at two points, it needs
-to know the view coordinates of the two grasping points. The {\it object
-coordinate system}, on the other hand, is attached to the object. The model
+to know the view coordinates of the two grasping points. The {\it \gls{object
+coordinate system}}, on the other hand, is attached to the object. The model
 features are located in the object coordinate system, which is also called
 model coordinate system in the literature \cite{Pope2000}. Both coordinate
 systems are shown in \refFigure{figure:coordinate-frames}. The PRT between
-object coordinates and view coordinates is called the {\it object-view
-transformation} and is denoted by $\oTv$. Subsequently, its inverse PRT is
-called {\it view-object transformation} and denoted by $\vTo$
+object coordinates and view coordinates is called the {\it \gls{object-view
+transformation}} and is denoted by $\oTv$. Subsequently, its inverse PRT is
+called {\it \gls{view-object transformation}} and denoted by $\vTo$
 
 \begin{equation}
   \vTo = \pth{ \oTv }^{-1}
@@ -474,7 +474,7 @@ outliers. The pose estimation problem in this context can be reduced to the
 location determination problem or the equivalent PnP problem
 \cite{Fischler1981}.  Generally, this algorithm randomly chooses a small subset
 of the data that fully determines the model parameters.  Then it forms a
-consensus set of {\it inliers}, that is, all data points that are consistent
+consensus set of {\it \glspl{inlier}}, that is, all data points that are consistent
 with the model up to a certain margin of error. RANSAC constructs a fixed
 number of such consensus sets and then chooses the model with the largest
 consensus to compute the final estimate.

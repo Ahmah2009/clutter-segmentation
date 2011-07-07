@@ -430,7 +430,7 @@ and \Sexpr{signif(sps_avg$avg_succ_angle_err * 180 / pi, 1)} degrees in
 rotation. When only considering the guesses which exceeded the error bounds,
 the average translational error was \Sexpr{signif(100 * avg_fail_trans_err(sps_avg), 2)} cm,
 and the average rotational error was \Sexpr{signif(180 / pi * avg_fail_angle_err(sps_avg), 1)} degrees.
-\clutseg achieved an average scene score of
+\clutseg achieved an average guess score of
 \Sexpr{signif(sps_avg$avg_value, 2)}.
 <<>>=
     if (sps_avg$avg_none_rate > 0) {

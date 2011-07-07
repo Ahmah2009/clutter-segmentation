@@ -1,28 +1,142 @@
-\chapter{Terms}
-\label{chapter:terms}
+% \chapter{Terms}
+% \label{chapter:terms}
+% 
+% \begin{description}
+%    \item[template object] a real-world object we want to be able to recognize
+%    \item[model] a set of features that describes a template object
+%    \item[model view] a 2d image and a point cloud that show a template object from a certain camera viewpoint
+%    \item[model image] the 2d image belonging to a model view
+%    \item[model cloud] a point cloud belonging to a model view 
+%    \item[model keypoint] a 2d keypoint belonging to a model image 
+%    \item[model feature] a 2d keypoint, a corresponding 3d point in model frame, and a descriptor vector
+%    \item[model frame] a coordinate system attached to the template object 
+%    \item[model coordinates] coordinates relative to the model frame 
+%    \item[camera frame] a coordinate system attached to the camera 
+%    \item[camera coordinates] coordinates relative to the camera frame 
+%    \item[camera origin] origin of camera frame 
+%    \item[template pose] Defines the transformation of model coordinates into
+%        camera coordinates in a given model view. 
+%    \item[estimated pose] Estimate for an object's pose in the query image. The
+%        translation vector of the estimated pose is equal to the template origin
+%        relative to the camera frame.
+%    \item[query image] a test image on which objects are to be recognized 
+%    \item[query cloud] a test image on which objects are to be recognized 
+%    \item[query keypoint] a 2d keypoint in the query image
+%    \item[query feature] a 2d keypoint, a corresponding 3d point in camera frame and a descriptor vector 
+%\end{description}
 
-\begin{description}
-    \item[template object] a real-world object we want to be able to recognize
-    \item[model] a set of features that describes a template object
-    \item[model view] a 2d image and a point cloud that show a template object from a certain camera viewpoint
-    \item[model image] the 2d image belonging to a model view
-    \item[model cloud] a point cloud belonging to a model view 
-    \item[model keypoint] a 2d keypoint belonging to a model image 
-    \item[model feature] a 2d keypoint, a corresponding 3d point in model frame, and a descriptor vector
-    \item[model frame] a coordinate system attached to the template object 
-    \item[model coordinates] coordinates relative to the model frame 
-    \item[camera frame] a coordinate system attached to the camera 
-    \item[camera coordinates] coordinates relative to the camera frame 
-    \item[camera origin] origin of camera frame 
-    \item[template pose] Defines the transformation of model coordinates into
-        camera coordinates in a given model view. 
-    \item[estimated pose] Estimate for an object's pose in the query image. The
-        translation vector of the estimated pose is equal to the template origin
-        relative to the camera frame.
-    \item[query image] a test image on which objects are to be recognized 
-    \item[query cloud] a test image on which objects are to be recognized 
-    \item[query keypoint] a 2d keypoint in the query image
-    \item[query feature] a 2d keypoint, a corresponding 3d point in camera frame and a descriptor vector 
-\end{description}
+\newglossaryentry{template object}{
+    name={template object},
+    description={used for learning a model, as opposed to the instances in a query scene}
+}
 
+\newglossaryentry{object-view transformation}{
+    name={object-view transformation},
+    description={transforms coordinates from the object coordinate system into the view coordinate system}
+}
+
+\newglossaryentry{view-object transformation}{
+    name={view-object transformation},
+    description={transforms coordinates from the view coordinate system into the object coordinate system}
+}
+
+\newglossaryentry{object coordinate system}{
+    name={object coordinate system},
+    description={describes the 3D points of an object or a model}
+}
+
+\newglossaryentry{view coordinate system}{
+    name={view coordinate system},
+    description={describes 3D points relative to the camera}
+}
+
+\newglossaryentry{fiducial coordinate system}{
+    name={fiducial coordinate system},
+    description={describes 3D points relative to the fiducial markers}
+}
+
+\newglossaryentry{query scene}{
+    name={query scene},
+    description={a scene under investigation where objects are to be recognized}
+}
+
+\newglossaryentry{query image}{
+    name={query image},
+    description={the image of a query scene taken by the camera}
+}
+
+\newglossaryentry{point cloud}{}
+\newglossaryentry{pose}{}
+
+\newglossaryentry{guess}{
+    name={guess},
+    plural={guesses},
+    description={a pose estimate for a specific object; has a confidence value}
+}
+
+\newglossaryentry{guess ranking}{
+    name={guess ranking},
+    description={orders guesses by a measure of ``goodness'', for example by confidence value}
+}
+
+\newglossaryentry{guess rejection}{
+    name={guess rejection},
+    description={rejects a guess if it is not ``good'' enough, for example if it has a too low confidence value}
+}
+
+\newglossaryentry{guess refinement}{
+    name={guess refinement},
+    description={tries to estimate the pose of a specific object in the scene as accurate as possible}
+}
+
+\newglossaryentry{confidence value}{
+    name={confidence value},
+    description={size of the consensus set found by RANSAC}
+}
+
+\newglossaryentry{query feature}{
+    name={query feature},
+    description={a local 2D feature extracted from a query image}
+}
+
+\newglossaryentry{guess score}{
+    name={guess score},
+    description={assigns a score that describes the distance of a guess to the ground truth in a scene}
+}
+
+\newglossaryentry{model feature}{
+    name={model feature},
+    description={a local feature; the basic building block for a model of a template object}
+}
+
+\newglossaryentry{aligned model}{
+    name={aligned model},
+    description={a model inserted into the scene with a certain pose}
+}
+
+\newglossaryentry{inlier}{
+    name={inlier},
+    description={a correspondence that is consistent with a pose estimate up to
+    a certain margin of error; member of the consensus set returned by RANSAC}
+}
+
+\newglossaryentry{feature extraction}{
+    name={feature extraction},
+    description={detection of a keypoint and
+        computation of a descriptor vector from its image neighbourhood}
+}
+\newglossaryentry{validation set}{}
+\newglossaryentry{test set}{}
+\newglossaryentry{consensus set}{}
+\newglossaryentry{outlier}{}
+\newglossaryentry{extrinsic parameters}{}
+\newglossaryentry{intrinsic parameters}{}
+\newglossaryentry{rigid transformation}{}
+\newglossaryentry{proper rigid transformation}{}
+\newglossaryentry{correspondence}{
+    name=correspondence,
+    description={a supposed match between a query feature and a model feature; found by nearest-neighbour search}
+}
+\newglossaryentry{scene}{}
+\newglossaryentry{view}{}
 

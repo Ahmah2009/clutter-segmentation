@@ -30,12 +30,12 @@ The {\it Robot Operating System} (\ros) is an open-source framework for the
 development of robot applications, having its roots in the STAIR project at
 Stanford University. In \ros, distributed nodes communicate by publishing and
 subscribing to topics. In our case, the interesting topics were the image and
-the 3D point cloud, together forming the sought-after depth images. In ROS,
-depth images and other data can be recorded in so-called bags. \ros contains
-the \vslam package, which is only used by \tod because it contains a RANSAC
+the 3D point cloud, together forming the sought-after depth images. These
+images and other data can be recorded in so-called bags. \ros contains the
+\vslam package, which is only used by \tod because it contains a RANSAC
 implementation for solving the PnP problem.
 
-The {\it Point Cloud Library} (\ros) is concerned with processing 3D data. A
+The {\it Point Cloud Library} (\pcl) is concerned with processing 3D data. A
 point cloud is a set of vertices in space; a low-level representation of
 three-dimensional entities in space. For example, the output of the Kinect
 camera is a point cloud.
@@ -386,7 +386,7 @@ throughout this chapter that more inliers are positively correlated with the
 probability of the guess being correct. Measures for correctness are defined in
 \refSection{subsection:measured-statistics}.
 
-A {\it guess ranking} is a function $r$ that assigns a real-valued score to a
+A {\it \gls{guess ranking}} is a function $r$ that assigns a real-valued score to a
 guess $(i, \hat{T}, S)$. Different rankings can be defined and plugged into
 \clutseg, such as a ranking based on proximity to the camera, or a combination
 of multiple guess rankings. Yet, the ranking of interest is a guess ranking
@@ -401,7 +401,7 @@ an object by supplying more 3D points.
 
 \subsection{Guess Refinement}
 
-Given a guess, the idea behind {\it guess refinement} is to spend additional
+Given a guess, the idea behind {\it \gls{guess refinement}} is to spend additional
 computation resources on selected guesses to reduce the expected error in pose
 estimates. Guess refinement in \clutseg takes one of the guesses $(i, \hat{T},
 S)$. \clutseg matches the query features only against the model features of the
@@ -419,7 +419,7 @@ least to be empirically verified.
 
 \subsection{Guess Rejection}
 
-A technique denoted as {\it guess rejection} reduces the chance of returning an
+A technique denoted as {\it \gls{guess rejection}} reduces the chance of returning an
 incorrect guess. \clutseg rejects guesses whose guess ranking is smaller than a
 configurable parameter value {\tt accept\_threshold}. How guess rejection
 exactly works and in which scenarios it is useful is explained in the following
@@ -634,9 +634,9 @@ forth between rotation matrix and axis-angle representation, and is readily
 available in \opencv.
 % TODO: need citation
 
-\subsubsection{Scene Scores}
+\subsubsection{Guess Scores}
 
-Here, we present a scene score that measures \clutseg's performance on a single
+Here, we present a score that measures \clutseg's performance on a single
 query scene. The goal is to find a score function that closely models the
 utility of a guess made for a query scene.
 
@@ -648,7 +648,7 @@ introduce a combined classification and estimation score.
 Let $\alpha_{max} = \frac{\pi}{9}$ and $t_{max} = 3\mbox{cm}$ be the maximum
 tolerable errors in orientation and translation, respectively. The choices are
 consistent with the {\it Solutions in Perceptions Challenge 2011}.  Then, for a
-query scene with ground truth $G$ and a guess $g$, we define the scene score
+query scene with ground truth $G$ and a guess $g$, we define the {\it \gls{guess score}}
 function $u$ as
 
 \begin{equation}
@@ -660,7 +660,7 @@ u: G, g \mapsto
     \end{dcases}
 \end{equation}
 
-The presented scene score function is piecewise continuous. Thus, it retains
+The presented guess score function is piecewise continuous. Thus, it retains
 more information than a simple statistic that records the binary observation
 whether the guess is within or beyond an error margin. The influence of error
 in pose is bounded, and outliers do not influence average the score function

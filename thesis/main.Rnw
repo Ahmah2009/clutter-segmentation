@@ -42,10 +42,14 @@
 	%% inter line spacing
 %\linespread{1.0}
 
+\usepackage[toc]{glossaries}
+
 \makeglossaries
 
 	
 \begin{document}
+
+    \input{components/terms}
 
 	\frontmatter
 	
@@ -120,7 +124,6 @@
 		\appendix %---------------------------------------
 	
     % FIXME: problems with appendix
-		\input{components/terms}
         \input{chapters/appendix}
 
 		% see http://en.wikibooks.org/wiki/LaTeX/Glossary
