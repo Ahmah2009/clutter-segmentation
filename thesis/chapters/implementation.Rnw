@@ -172,7 +172,7 @@ pre-processed images are shown in \refFigure{figure:camera-calib-fallback}.
         Median Filtering & {\tt convert -median 2 \$1 \$2} & 0/23 \\
     \end{tabular}
     \label{table:camera-calib-fallback}
-    \caption[Image pre-processing operations for camera calibration]{Success rates of detecting chessboards after image processing
+    \caption[Various image processing operations for more reliable camera calibration]{Success rates of detecting chessboards after image processing
         operations on 23 images where the detection originally failed.}
 \end{table}
 

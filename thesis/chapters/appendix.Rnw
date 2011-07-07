@@ -22,6 +22,9 @@ provide a rough guidance that helps close the gap to the implementation.
         {\tt clutseg} & {\tt GuessRanking} & guess ranking \\
         {\tt clutseg} & {\tt ResponseFunction} & performance measure \\
     \end{tabular} 
+    \caption[A mapping between the terminology in the theory and in the
+            implementation]{A mapping between the terminology in the theory and in the
+            implementation.}
     \label{table:class-mapping}
 \end{table}
 
@@ -50,6 +53,7 @@ most of them, patches have been supplied.
         \tod & 5104 & frecognizer detects way too many keypoints \\
         \tod & 5111 & Workaround for OpenCV 1044: Features outside of mask included in training \\
     \end{tabular} 
+    \caption[Related bug reports]{Related bug reports.}
     \label{table:bug-reports}
 \end{table} 
 
@@ -65,7 +69,8 @@ most of them, patches have been supplied.
         RAM & 1 Gigabyte DDR-RAM & \\
         OS & Ubuntu 10.10 Maverick \\
     \end{tabular}
-    \caption[Hard- and software configuration for parameter optimization]{Hard- and software configuration for parameter optimization.}
+    \caption[The hard- and software configuration for parameter
+        optimization]{The hard- and software configuration for parameter optimization.}
     \label{table:hardsoftware-parameter-optimization}
   \end{center}
 \end{table}
@@ -79,8 +84,8 @@ most of them, patches have been supplied.
         RAM & 2 Gigabyte DDR3 & \\
         OS & Ubuntu 10.10 Maverick \\
     \end{tabular}
-    \caption[Hard- and software configuration for computation speed benchmark]
-        {Hard- and software configuration for computation speed benchmark.}
+    \caption[The hard- and software configuration for computation speed benchmark]
+        {The hard- and software configuration for computation speed benchmark.}
     \label{table:hardsoftware-sift-surf-orb-benchmark}
   \end{center}
 \end{table}

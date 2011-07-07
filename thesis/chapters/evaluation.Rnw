@@ -337,8 +337,8 @@ parameters {\tt octaves} and {\tt scale\_factor}.
         {\tt octaves} & \Sexpr{sps$octaves} \\
         {\tt scale\_factor} & \Sexpr{sps$scale_factor} \\
     \end{tabular}
-    \caption[Selected \clutseg parameters for feature extraction]{Selected
-        \clutseg parameters for feature extraction.}
+    \caption[The selected \clutseg parameters for feature extraction]{The
+        selected \clutseg parameters for feature extraction.}
     \label{table:selected-parameters-features}
   \end{center}
 \end{table}
@@ -366,8 +366,8 @@ stages to match the binary features produced by Oriented BRIEF.
         {\tt refine\_min\_inliers\_count} & \Sexpr{sps$refine_min_inliers_count} \\
         {\tt accept\_threshold} & \Sexpr{sps$accept_threshold}
     \end{tabular}
-    \caption[Selected \clutseg parameters for feature matching and pose
-            estimation]{Selected \clutseg parameters for feature matching and pose
+    \caption[The selected \clutseg parameters for feature matching and pose
+            estimation]{The selected \clutseg parameters for feature matching and pose
             estimation.}
     \label{table:sps-match-guess}
   \end{center}
