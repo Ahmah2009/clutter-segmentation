@@ -417,6 +417,44 @@ void insert_experiments(sqlite3* & db) {
     ee.batch = "run-14";
     insert_if_not_exist(db, ee);
 
+    for (int detectRansacIterationsCount = 100; detectRansacIterationsCount <= 1000; detectRansacIterationsCount += 100) {
+        for (int refineRansacIterationsCount = 100; refineRansacIterationsCount <= 1000; refineRansacIterationsCount += 100, orb++) {
+            Experiment e = clone_setup(db, 4180);
+            e.paramset.detect_pms_guess.ransacIterationsCount = detectRansacIterationsCount;
+            e.paramset.refine_pms_guess.ransacIterationsCount = refineRansacIterationsCount;
+            e.name = str(boost::format("orb-lshbinary-%d") % orb);
+            e.batch = "run-15";
+            e.human_note = "test RANSAC iterations";
+            insert_if_not_exist(db, e);
+        }
+    }
+
+    // We use experiment 4180. Run 25 subsequent runs with the same
+    // configuration in order to obtain averages. Just taking the best
+    // result of all >4000 experiments seems very much like cheating.
+    for (int i = 0; i < 25; i++, orb++) {
+        Experiment e = clone_setup(db, 4180);
+        e.name = str(boost::format("orb-lshbinary-%d") % orb);
+        e.batch = "run-16";
+        e.human_note = "averaging run using exp. config. 4180";
+        insert_if_not_exist(db, e);
+    }
+
+    // Compare with BruteForceMatcher by testing application performance.  We
+    // can also compare the number of matches yielded by nearest-neighbour
+    // search.
+    size_t orb_bf = 0;
+    for (int i = 0; i < 25; i++, orb_bf++) {
+        Experiment e = clone_setup(db, 4180);
+        e.paramset.detect_pms_match.type = "BF-BINARY";
+        e.paramset.refine_pms_match.type = "BF-BINARY";
+        e.name = str(boost::format("orb-bfbinary-%d") % orb_bf);
+        e.batch = "run-17";
+        e.human_note = "avg. run using brute-force binary matcher and exp. config. 4180";
+        insert_if_not_exist(db, e);
+    }
+
+
     /* that one is nonsense
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
     {
