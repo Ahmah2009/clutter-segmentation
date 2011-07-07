@@ -93,7 +93,7 @@ d = \normtwo{\ \oTv \pth{ \vec{0} }\ }
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{media/coordinate-frames}
+        \includegraphics[width=0.5\textwidth]{coordinate-frames}
     \end{center}
     \caption{The view coordinate system and the object coordinate system}
     \label{figure:coordinate-frames}
@@ -145,7 +145,7 @@ of the center of perspective \cite{Forsyth2003, Bradski2008}.
 
 % \begin{figure}[h]
 %    \begin{center}
-%        \includegraphics[width=0.8\textwidth]{media/camera-model}
+%        \includegraphics[width=0.8\textwidth]{camera-model}
 %    \end{center}
 %    \caption{}
 %     \label{figure:camera-model}
@@ -232,7 +232,7 @@ is insufficient if query scenes show objects in arbitrary orientations.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.55\textwidth]{media/single-view-or}
+        \includegraphics[width=0.55\textwidth]{single-view-or}
         \caption[Object recognition with models learned from a single view]{Object recognition with models learned from a single view. The example shows three correspondences
 between query features ($\times$) and model features ($\bullet$).}
         \label{figure:single-view-or}
@@ -251,7 +251,7 @@ incorporates features recorded from different viewpoints
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{media/multi-view-or}
+        \includegraphics[width=0.7\textwidth]{multi-view-or}
         \caption[Object recognition with models learned from multiple
             views]{Object recognition with models learned from multiple views.  The example
             shows correspondences between query features ($\times$) and model features
@@ -418,7 +418,7 @@ depicted in \refFigure{figure:orb-test-locations}.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.4\textwidth]{media/orb-test-locations}
+        \includegraphics[width=0.4\textwidth]{orb-test-locations}
         \label{figure:orb-test-locations}
         \caption{The 256 test locations of Oriented BRIEF}
     \end{center}
@@ -445,9 +445,6 @@ especially true when using the {\tt POPCNT} instruction, which is available at
 least in AMD and Intel architectures \cite{AMD2009, Intel2007}.
 
 \subsubsection{Locality Sensitive Hashing}
-
-% TODO: cite can also be adapted to match binary features such as BRIEF. 
-% TODO: consistent use of uppercase and lowercase in algorithm names
 
 SIFT, ORB and other feature detectors and descriptors are used to describe an
 image in terms of local features. Nearest neighbour matching can then find

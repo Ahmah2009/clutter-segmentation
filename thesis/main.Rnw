@@ -15,7 +15,6 @@
 %% Draft document mode
 %% Final document
 \documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR12mm,DIV13]{scrbook}
-
 %\documentclass[11pt,a4paper,bibtotoc,idxtotoc,headsepline,footsepline,footexclude,BCOR20mm,DIV10]{scrbook}
 
 % KOMA-Optionen:
@@ -36,17 +35,17 @@
 % include commands
 \input{components/commands}
 
-\graphicspath{{./chapters/}}
+\graphicspath{{./chapters/}, {./media/}}
 
+\makeglossaries
 %\makeindex
 	%% inter line spacing
 %\linespread{1.0}
 
-\usepackage[toc]{glossaries}
+% FIXME
+\usepackage{draftwatermark}
+\SetWatermarkLightness{ 0.95 }
 
-\makeglossaries
-
-	
 \begin{document}
 
     \input{components/terms}

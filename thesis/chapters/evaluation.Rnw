@@ -71,7 +71,7 @@ keypoints on average per image of the modelbase raw data.
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{media/modelbase}
+        \includegraphics[width=0.5\textwidth]{modelbase}
         \caption[The four textured objects used in evaluation]{The four objects \assamTea, \haltbareMilch, \jacobsCoffee, and \icedtea, which were used in evaluation}
         \label{figure:modelbase}
     \end{center}
@@ -89,7 +89,7 @@ texture which is confined only to certain regions on its surface.
 % Would be nice to have:
 % \begin{figure}
 %    \begin{center}
-%        \includegraphics[width=0.3\textwidth]{media/modelbase-3D}
+%        \includegraphics[width=0.3\textwidth]{modelbase-3D}
 %        \caption[The model features of a selected modelbase]{Model features of a selected modelbase}
 %        \label{figure:modelbase-3D}
 %    \end{center}
@@ -112,7 +112,7 @@ varying levels of occlusion. Each object appears in upright orientation.
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.8\textwidth]{media/validation-scene}
+        \includegraphics[width=0.8\textwidth]{validation-scene}
 \caption[The object coordinate systems defined in a validation scene]{From left to right: (a) A validation scene showing \jacobsCoffee,
 \haltbareMilch, \icedtea, and the ground truth; (b) three coordinate systems
 that must align with the object coordinate systems of the three instances.}
@@ -399,7 +399,8 @@ set.
           "avg(r.avg_detect_choice_inliers) as avg_detect_choice_inliers,",
           "avg(r.avg_refine_matches) as avg_refine_matches,",
           "avg(r.avg_refine_inliers) as avg_refine_inliers,",
-          "avg(r.avg_refine_choice_inliers) as avg_refine_choice_inliers",
+          "avg(r.avg_refine_choice_inliers) as avg_refine_choice_inliers,",
+          "avg(r.test_runtime) as avg_test_runtime",
           # joins 
           "from experiment e",
           "join response r on e.response_id = r.id",
@@ -453,7 +454,7 @@ and the average rotational error was \Sexpr{signif(180 / pi * avg_fail_angle_err
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=\textwidth]{media/validation-scene-success}
+        \includegraphics[width=\textwidth]{validation-scene-success}
         \caption[A validation scene where \icedtea is recognized]{From left to right: (a) A validation scene; (b) a visualization of the estimated pose for \icedtea.}
         \label{figure:validation-scene-success}
     \end{center}
@@ -493,6 +494,44 @@ The initial guess that was selected for refinement had a support of
 confidence values in the detection stage and the refinement stage cannot be
 compared because which of the correspondences are designated inlier depends on
 the {\tt refine\_max\_projection\_error} parameter.
+
+<<>>=
+    sps_bf_avg = dbGetQuery(con, paste(
+          "select e.id as id,",
+          "avg(r.succ_rate) as avg_succ_rate,",
+          "avg(r.value) as avg_value,",
+          "avg(r.none_rate) as avg_none_rate,",
+          "avg(r.mislabel_rate) as avg_mislabel_rate,",
+          "avg(r.avg_succ_trans_err) as avg_succ_trans_err,",
+          "avg(r.avg_succ_angle_err) as avg_succ_angle_err,",
+          "avg(r.avg_trans_err) as avg_trans_err,",
+          "avg(r.avg_angle_err) as avg_angle_err,",
+          "avg(r.avg_detect_matches) as avg_detect_matches,",
+          "avg(r.avg_detect_inliers) as avg_detect_inliers,",
+          "avg(r.avg_detect_choice_inliers) as avg_detect_choice_inliers,",
+          "avg(r.avg_refine_matches) as avg_refine_matches,",
+          "avg(r.avg_refine_inliers) as avg_refine_inliers,",
+          "avg(r.avg_refine_choice_inliers) as avg_refine_choice_inliers,",
+          "avg(r.test_runtime) as avg_test_runtime",
+          # joins 
+          "from experiment e",
+          "join response r on e.response_id = r.id",
+          "and (e.batch='run-17')"))
+@
+
+Recognizing an object took \Sexpr{signif(sps_avg$avg_test_runtime / 21, 2)}
+seconds on average using the setup described in
+\refTable{table:hardsoftware-parameter-optimization}. Using brute-force nearest
+neighbour search instead of Locality Sensitive Hashing, the system took
+\Sexpr{signif(sps_bf_avg$avg_test_runtime / 21, 2)} seconds per image.
+Brute-force search yielded \Sexpr{round(sps_bf_avg$avg_detect_matches)} correspondences per image, very
+similar to LSH. Hence, LSH ran at least a factor
+\Sexpr{floor(sps_bf_avg$avg_test_runtime / sps_avg$avg_test_runtime)}
+ faster than brute-force search. Both LSH and brute-force search lead to similar
+success rates.
+
+%TODO: give exact number 81% and 82% but first need to see whether 
+% vlsam initializes the seed for generating random numbers
 
 <<>>=
     rm(e_orb)
@@ -589,7 +628,7 @@ arises how well ORB responds to different numbers of desired features.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=\textwidth]{media/orb-response-test-images}
+        \includegraphics[width=\textwidth]{orb-response-test-images}
         \caption[Four test images for Oriented BRIEF]{From left to right: (a)
             \assamTea, (b) {\it clutter}, (c) {\it house}, and (d) {\it mandrill}.}
             \label{figure:orb-response-test-images}
@@ -695,7 +734,7 @@ which probably makes it hard to obtain informative features.
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.2\textwidth]{media/icedtea_smallprint}
+        \includegraphics[width=0.2\textwidth]{icedtea_smallprint}
         \caption[Repetitive texture shown on the back of \icedtea]{Repetitive texture on template object \icedtea.}
     \end{center}
 \end{figure}
@@ -764,7 +803,7 @@ max\_projection\_error}.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.55\textwidth]{media/far-away-aligned-model}
+        \includegraphics[width=0.55\textwidth]{far-away-aligned-model}
             \caption[A schematic explanation of a far-away aligned model with many
 inliers]{An example, where all points of a far-away aligned model are projected to the same point
 ($\triangle = \hat{q}$) on the image plane. All four correspondences $c_1$, $c_2$,
@@ -790,7 +829,7 @@ $\normtwo{\oTvh\pth{\vec{0}}}$.
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.4\textwidth]{media/ransac-max-projection-error-deficiency-sample}
+        \includegraphics[width=0.4\textwidth]{ransac-max-projection-error-deficiency-sample}
         \caption[An example scene with a far-away aligned model]{On a test scene, the badly aligned pose still results in many inliers.}
         \label{figure:distant-pose-estimate}
     \end{center}
@@ -819,7 +858,7 @@ does not (\refFigure{figure:systematic-error-model}~b-c).
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=0.8\textwidth]{media/systematic-error-model}
+        \includegraphics[width=0.8\textwidth]{systematic-error-model}
         \caption[The 3D models of \downy and \icedtea extracted from multiple views]{From left to right: (a) Correct model of {\it downy}; (b) side view of {\icedtea} model; (c) top view of {\icedtea} model.}
         \label{figure:systematic-error-model}
     \end{center}
@@ -836,7 +875,7 @@ form of a hash ('\#').
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=\textwidth]{media/clutseg-model-xyhist}
+        \includegraphics[width=\textwidth]{clutseg-model-xyhist}
         \caption[The coordinate histograms of four \clutseg models]{From left to right: $xy$-coordinate histogram of (a) \assamTea, (b) \haltbareMilch, (c) \jacobsCoffee, (d) \icedtea.}
         \label{figure:clutseg-model-xyhist}
     \end{center}
@@ -850,7 +889,7 @@ cuboid. Hence, their $xy$-coordinate histograms should be similar, which is not 
 case.
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=\textwidth]{media/tod-model-xyhist}
+        \includegraphics[width=\textwidth]{tod-model-xyhist}
         \caption[The coordinate histograms of four \tod models]{From left to right: $xy$-coordinate histogram of (a) {\it campbells\_chicken\_noodle}, (b) {\it downy}, (c) {\it fat\_free\_milk}, (d) {\it good\_earth\_tea}.}
         \label{figure:tod-model-xyhist}
     \end{center}

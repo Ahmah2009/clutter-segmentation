@@ -16,7 +16,7 @@ storing and retrieving experimental data, and \rproject for analysing data.
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.8\textwidth]{media/clutseg-deps}
+        \includegraphics[width=0.8\textwidth]{clutseg-deps}
         \caption[The software dependencies of \clutseg]{\clutseg depends (amongst others) on \tod, \ros,
         \pcl, \opencv, \vslam, \rproject, and \sqlite.} \end{center}
 \end{figure}
@@ -130,7 +130,7 @@ help to find the chessboard corners and then estimate the extrinsic parameters
 by solving the perspective-n-point problem. 
 
 \begin{figure}[h!] \begin{center}
-\includegraphics[width=0.5\textwidth]{media/fiducial-object} \caption{The
+\includegraphics[width=0.5\textwidth]{fiducial-object} \caption{The
 relation between the fiducial markers and the object coordinate system}
 \end{center}
 \end{figure}
@@ -178,7 +178,7 @@ pre-processed images are shown in \refFigure{figure:camera-calib-fallback}.
 
 \begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=\textwidth]{media/pose-pre-process}
+        \includegraphics[width=\textwidth]{pose-pre-process}
         \label{figure:camera-calib-fallback}
         \caption[An original and three pre-processed images for camera calibration]{From left to right: (1)
 Original image where pose estimation failed; after (2) Dithering to Binary;
@@ -209,7 +209,7 @@ disk of $2.3$ to compensate for the initial opening step.
 % probably should not include a picture from other database?
 % \begin{figure}[h!]
 %    \begin{center}
-%        \includegraphics[width=0.75\textwidth]{media/mask-post-process}
+%        \includegraphics[width=0.75\textwidth]{mask-post-process}
 %        \caption[Post-processed image mask]{
 %            Mask before and after correction. The latter is close
 %            to the true region of interest.}
@@ -297,9 +297,12 @@ integrates different nearest-neighbour algorithms. There is FLANN, which we
 have not tested.  \tod offers brute-force matching algorithms. We used Locally
 Sensitive Hashing in \tod for matching.
 
+\tod finds up to $k$ nearest neighbours for each query feature. The maximum
+number $k$ of correspondences per query feature can be controlled by parameter
+{\tt knn}.  \tod implements the ratio test, as described in \cite{1999}.
+
 % TODO: introduce parameter knn
 % TODO: discuss ratio test from lowe
-% TODO: introduce parameter do_ratio_test
 % TODO: introduce parameter ratio_threshold
 
 \subsubsection{Guess}
@@ -329,7 +332,7 @@ guesses never share a correspondence.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=0.55\textwidth]{media/inlier-criteria.png}
+        \includegraphics[width=0.55\textwidth]{inlier-criteria.png}
         \caption[A model aligned to the query scene]{A model aligned to the
             query scene. The query features ($\times$) correspond to model features
             ($\bullet$).  The correspondence belonging to the lower right query feature is
@@ -504,17 +507,15 @@ would like to test two different matchers and three different feature
 detectors. This would result in around $6 \cdot 10^6$ parameter sets. A full
 factorial design for finding optimal parameters, as recommended in
 \cite{Alpaydin2010}, becomes difficult. The pragmatic approach chosen in this
-work is based on three ideas: First, we aim at reducing the dimensions of
-% TODO: sounds too complicated
-parameter space through an a-priori selection of parameter values by reasoning
-and by incorporating experience of other researchers. Second, tools were
-developed together with \clutseg that support visual inspection of experiment
-results in order to support an intuitive analysis. Third, the exploration of
-parameter space is done selectively, and parameter sets in promising regions
-are more thoroughly investigated. The danger of such an approach is the chance
-to only find a local optimum instead of the targeted global optimum, and the
-drawback is that results have to be formulated with even more care since they
-are not supported by a full grid of samples in parameter space.
+work is based on three ideas: First, we make an a-priori choice in algorithms.
+Second, tools were developed together with \clutseg that support visual
+inspection of experiment results in order to support an intuitive analysis.
+Third, the exploration of parameter space is done selectively, and parameter
+sets in promising regions are more thoroughly investigated. The danger of such
+an approach is the chance to only find a local optimum instead of the targeted
+global optimum, and the drawback is that results have to be formulated with
+even more care since they are not supported by a full grid of samples in
+parameter space.
 
 \subsubsection{Feature Extraction Parameters}
 
@@ -591,9 +592,6 @@ the scene. Thus, the ground truth $G$ can be described as a set of labels
 \begin{equation}
     G = \cbr{ (i,\ \oTvi{i}) : \text{object $i$ is on scene at pose $\oTvi{}$} }
 \end{equation}
-
-% TODO: introduce abbreviation for object-view transformation
-% TODO: object-view transformation or object-view transformation, consistent with object coordinates or model coordinates
 
 \subsubsection{Classification Error}
 
