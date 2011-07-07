@@ -52,7 +52,7 @@ issues has been fixed with our help in \tod.
 
 We gave an early introduction to the new Oriented BRIEF feature detector and
 descriptor in \opencv, and showed that it outperforms SIFT and SURF in terms of
-speed in our experiments. We had good experience with using Oriented BRIEF
+speed in our experiments. We demonstrated that Oriented BRIEF can be used
 together with Locality-Sensitive Hashing.
 
 We formulated the problem of estimating the pose of an object in terms of
@@ -64,14 +64,14 @@ error threshold on the image plane is chosen too large.
 % threshold might depends on the distance of the aligned model point to the image
 % plane.
 
-We presented the use of dithered binary images for camera calibration with
-chessboard-based fiducial markers in order to achieve more robustness in
-collecting the ground truth.
+We presented the use of dithered binary images in camera calibration with
+chessboard-based fiducial markers in order to achieve more reliability in the
+chessboard detection.
 
 We implemented \clutseg to transform the experimental \tod library into a
-working system, turning it from a blackbox into a system that reveals its inner
-workings. We discussed the issues that showed up in its evaluation, without
-hiding that many problems still remain to be solved.
+towards a system that reveals its inner workings. We discussed the issues that
+showed up in its evaluation, without hiding that many problems still remain to
+be solved.
 
 We provided an experiment runner that served as a robust tool for optimizing
 the system parameters. The experiments verified the assumption that it is a
@@ -112,13 +112,10 @@ arbitrary orientations in the query scenes.
 
 The performance of \tod and \clutseg is not yet sufficient to robustly
 recognize objects in a cluttered scene with objects in arbitrary orientations
-and high occlusion rates (see \refFigure{figure:clutter-pr2-kinect} (a)). Yet,
-a lot of information received from a query scene is not being used. The
-information gained by extracting local features from the 2D appearance could be
-supplemented by also considering features from the 3D shape of objects.
+and high occlusion rates (see \refFigure{figure:clutter-pr2-kinect} (a)).
 
 % incorporate feature uncertainty
-A second idea would be to take the uncertainty in the correspondences into
+An idea would be to take the uncertainty in the correspondences into
 account. We can weight correspondences according to the distance between query
 feature descriptor and model feature descriptor. We let RANSAC draw
 correspondences randomly with probabilities proportional to the weights,
@@ -140,6 +137,10 @@ weighting correspondences is presented in \cite{Pope2000}.
 Whatever method is used, experiments tell which method works best. These
 experiments require the availability of the ground truth for test scenes. The
 collection of ground truth in this work has been limited to multiple objects
-standing upright on a table.  Future work involves computing the ground truth
+standing upright on a table. Future work involves computing the ground truth
 for scenes with objects in arbitrary orientations.
+
+Finally, much of the data observed from a query scene is not being used. The
+information gained by extracting local features from the 2D appearance could be
+supplemented by also considering features from the 3D shape of objects.
 
