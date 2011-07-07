@@ -293,7 +293,7 @@ accurate} \cite{Tuytelaars2007}.
 
 Repeatability describes the chances that the same point on an object shown from
 two different viewpoints and viewing conditions is designated keypoint on both
-images. Thus, repeatability is very important when trying to find
+images. Thus, repeatability is important when trying to find
 correspondences between two images. A feature detector designates keypoints
 after examining the local image neighbourhood. These neighbourhoods can for
 example be deformed by noise, image discretization, a change of viewpoint or a
@@ -317,7 +317,7 @@ between locality and informativeness.
 \label{subsection:feature-descriptors}
 
 A feature descriptor describes the image neighbourhood of a point. It is often a
-vector. Ideally, two corresponding keypoints should have very similar
+vector. Ideally, two corresponding keypoints should have similar
 descriptor vectors, such that correspondences can be found by nearest neighbour
 search. A feature descriptor that permits for efficient matching is BRIEF
 \cite{Calonder2010}. 
@@ -556,7 +556,7 @@ parameter set such that the system performs well in the application scenario.
 
 \subsubsection{Validation Set}
 
-Choosing good parameters for parametrized algorithms is a very general problem
+Choosing good parameters for parametrized algorithms is a general problem
 in computer science. Solutions for these problems include adaptive methods that
 estimate the parameters directly from the data. For example, in adaptive
 numerical quadrature, grid points are selected according to an error estimate

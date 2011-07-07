@@ -324,7 +324,6 @@ parameters. \refTable{table:selected-parameters-features} provides values for
 feature extraction. We used the same feature extraction parameters for the
 modelbase and for the query scenes. We used the default values from \opencv for
 parameters {\tt octaves} and {\tt scale\_factor}.
-% TODO: introduce \n_features octaves and scale\_factor in theoretical and implementation part
 
 \begin{table}[h!]
   \begin{center}
@@ -475,7 +474,6 @@ and the average rotational error was \Sexpr{signif(180 / pi * avg_fail_angle_err
         "and e.test_set='ias_kinect_test_grounded_21'"))
 @
 
-% TODO: check whether n_features has been introduced
 On average, \Sexpr{round(e_orb$avg_keypoints)} keypoints have been extracted
 from a validation scene. In the detection stage, where \tod generates a set of
 initial guesses (\refSection{subsection:recognition}), LSH found
@@ -642,7 +640,7 @@ informations, though all were sampled at the same resolution of 512x512 pixels.
 Increasing values for {\tt n\_features} have been tried until the number of
 actual keypoints reaches its maximum for all four images.
 
-{\it Mandrill} has very fine-grained texture, and ORB extracted maximally
+{\it Mandrill} has fine-grained texture, and ORB extracted maximally
 \Sexpr{max(mandrill)} keypoints on this image. This number is greater than for
 image {\it house}, where only \Sexpr{max(house)} features were chosen for all
 values of {\tt n\_features} greater or equal than \Sexpr{r[[1]][min(which(house == max(house)))]}.
@@ -759,7 +757,7 @@ we obtain an inlier criteria for the bad estimate:
 All correspondences within a circle of radius $r$ around $\hat{q}$ are
 designated inliers. If this circle contains many keypoints on the query image,
 the resulting consensus set of the pose estimate might grow larger than
-expected. The effect can be neglected if radius $r$ is very small.  In the
+expected. The effect can be neglected if radius $r$ is small enough. In the
 experiment that exhibited the phenomenon, the radius was set to $r = 12$
 (pixels). Note that this radius is equivalent to the parameter {\tt
 max\_projection\_error}.

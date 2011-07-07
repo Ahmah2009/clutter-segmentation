@@ -7,12 +7,6 @@ object (\refFigure{figure:clutseg-input-output}) (b).
 \clutseg is based on the existing Textured Object Detection (\tod) Library,
 which we discuss in detail.
 
-% TODO:
-% the improvements we added to the existing libraries.
-% It finally explains how system parameters were found with the help
-% of a semi-automatic experiment runner, and how \clutseg can be
-% evaluated.
-
 \section{Software Dependencies}
 
 \clutseg depends on many other open-source
@@ -121,15 +115,15 @@ model features.
 
 \tod offers a toolchain that extracts model features from a template object on
 a rotating table. The template object is either manually or automatically
-rotated, and a depth camera takes images from multiple views. 
-% TODO: RGB is not required!
-The depth images are the basic units processed in a pipeline that comprises
-three stages for each view.  First, the computation of the object-view
-transformation.  Second, the segmentation of the region of interest that shows
-the object on the image. Third, the extraction of local 2D features and the
-construction of model features, confined to the region of interest.
+rotated, and a depth camera takes images from multiple views.  The depth images
+are the basic units processed in a pipeline that comprises three stages for
+each view.  First, the computation of the object-view transformation.  Second,
+the segmentation of the region of interest that shows the object on the image.
+Third, the extraction of local 2D features from the grayscale image of the
+view, followed by the construction of model features from the region of
+interest.
 
-\subsubsection{Computation of object-view transformation}
+\subsubsection{Camera Calibration}
 
 Consider the first step of extracting a model. The 3D points in the depth
 images are given in the view coordinate system. In order to construct model
@@ -287,7 +281,7 @@ reasonable to select the same feature extractor as in the model extraction.
 Both query feature and model feature extraction can be configured, so \tod
 allows to try different feature detectors with configurable parameters.  \tod
 also provides rBRIEF, an experimental modified version of BRIEF, which we used
-in some experiments but then replaced it in favor of Oriented BRIEF from
+in some experiments but we then replaced in favor of Oriented BRIEF from
 \opencv.
 
 \subsubsection{Feature Matching}
