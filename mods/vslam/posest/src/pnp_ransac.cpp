@@ -1,4 +1,5 @@
 #include "posest/pnp_ransac.h"
+#include <ctime>
 #include <iostream>
 #include "tbb/parallel_for.h"
 #include "tbb/blocked_range.h"
@@ -184,7 +185,8 @@ bool solvePnPRansac(const vector<Point3f>& object_points, const vector<Point2f>&
     inliers = &local_inliers;
   }
 
-  RNG rng;
+  time_t t = time(NULL);
+  RNG rng(t);
   Mat rvecl(3, 1, CV_64FC1), tvecl(3, 1, CV_64FC1);
   rvec.copyTo(rvecl);
   tvec.copyTo(tvecl);
