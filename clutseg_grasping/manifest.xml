@@ -1,0 +1,15 @@
+<package>
+  <description brief="shopping_demo">
+
+  </description>
+  <author>Dejan Pangercic</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/clutseg_grasping</url>
+  <depend package="visualization_msgs" />
+  <depend package="ias_drawer_executive" />
+  <depend package="ias_table_msgs" />
+  <depend package="pcl_ros"/>
+  <depend package="geometry_msgs"/>
+  <depend package="clutseg"/>
+</package>
