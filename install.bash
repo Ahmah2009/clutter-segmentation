@@ -80,6 +80,7 @@ function always() {
 
 RSQLITE='RSQLite_0.9-4.tar.gz'
 RCRAN='http://cran.r-project.org/src/contrib'
+ROS_STACKS='ros-diamondback-object-manipulation ros-diamondback-pr2-object-manipulation ros-diamondback-pr2-common-actions'
 
 pushd $d >> /dev/null
     step "not_a_dir clutter-segmentation"   "git clone indefero@code.in.tum.de:clutter-segmentation.git"               "Cloning repository clutter-segmentation.git"
@@ -91,6 +92,7 @@ pushd $d >> /dev/null
     step "always"                           "export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH"  "Amending PATH"
     step "always"                           "mods-link"                                                                "Applying patches and modifications"
     step "always"                           "rosdep install clutseg"                                                   "Installing clutseg system dependencies"
+    step "always"                           "sudo apt-get install $ROS_STACKS"                                         "Installing additional stacks for ROS diamondback"
     step "always"                           "rosmake clutseg"                                                          "Building clutseg using rosmake"
     step "always"                           "roscd clutseg"                                                            "Changing to clutseg path"
     step "always"                           "make tests"                                                               "Compiling clutseg tests"
