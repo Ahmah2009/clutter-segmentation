@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="clutseg" type="clutsegmenter_node" name="clutsegmenter_node" output="screen" respawn="true">
+    <param name="modelbase" value="$(find clutseg)/data/orb.tar"/>
+    <param name="camera_info" value="$(find clutseg)/data/camera.yml"/>
+    <param name="input_cloud_topic" value="/kinect_head/camera/rgb/points"/>
+    <param name="input_image_topic" value="/kinect_head/camera/rgb/image_color"/>
+</node>
+</launch>
