@@ -425,7 +425,7 @@ namespace clutseg {
 
     void Experiment::record_commit() {
         FILE *in;
-        in = popen(str(boost::format("git log -1 --format=oneline %s/clutter-segmentation") % getenv("CLUTSEG_PATH")).c_str(), "r");
+        in = popen(str(boost::format("cd %s/clutter-segmentation && git log -1 --format=oneline") % getenv("CLUTSEG_PATH")).c_str(), "r");
         char *line = NULL;
         size_t n = 0;
         ssize_t len = getline(&line, &n, in);
