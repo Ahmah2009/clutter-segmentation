@@ -24,3 +24,4 @@ object_recognition_experimental/rbrief/src/detectors.cpp
 opencv_candidate/src/Camera.cpp
 opencv_candidate/src/circlesgrid.cpp
 vision_opencv/opencv2/Makefile
+vslam/posest/src/pnp_ransac.cpp
