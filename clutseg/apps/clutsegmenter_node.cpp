@@ -34,11 +34,14 @@
 #include <sensor_msgs/Image.h>
 #include <std_msgs/String.h>
 #include <cv_bridge/CvBridge.h>
+#include <boost/thread/mutex.hpp>
 
 //msg synchronisation
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
+
+#include <clutseg/ClutsegObject.h>
 
 using namespace std;
 using namespace message_filters;
@@ -65,6 +68,9 @@ public:
   cv::Mat query_image_bgr8;
   sensor_msgs::CvBridge bridge;
   clutseg::Clutsegmenter sgm;
+  ros::ServiceServer service;
+  sensor_msgs::PointCloud2 inliers_msg;
+  boost::mutex lock;
   ////////////////////////////////////////////////////////////////////////////////
   ClutterSegmenter (ros::NodeHandle &n) : n(n),  synchronizer_( MySyncPolicy(1), cloud_sub_, camera_sub_)
   {
@@ -89,8 +95,22 @@ public:
 
     sgm = clutseg::Clutsegmenter(modelbase, true);
     cv::namedWindow("hud");
+
+    service = n.advertiseService("clutseg_inliers", &ClutterSegmenter::inliersCallback, this);
+    ROS_INFO("[ClutterSegmenter:] service <clutseg_inliers> is up");
+
     ROS_INFO ("[ClutterSegmenter:] Constructor up");
   }
+
+  bool inliersCallback(clutseg::ClutsegObject::Request  &req,
+		       clutseg::ClutsegObject::Response &res )
+  {
+    boost::mutex::scoped_lock mutex(lock);
+    res.object = inliers_msg;
+    ROS_INFO("[ClutterSegmenter:] service <clutseg_inliers> returning");
+    return true;
+  }
+
 
   ////////////////////////////////////////////////////////////////////////////////
   void callback (const sensor_msgs::PointCloud2ConstPtr& pc, const sensor_msgs::ImageConstPtr& im)
@@ -114,7 +134,6 @@ public:
     if (result.guess_made) 
       { 
 	// 3.1. Publish inlier cloud
-	sensor_msgs::PointCloud2 inliers_msg;
 	clutseg::PointCloudT inliers = result.refine_choice.inlierCloud;
 	pcl::toROSMsg (inliers, inliers_msg);
 	inliers_publisher.publish(inliers_msg);
