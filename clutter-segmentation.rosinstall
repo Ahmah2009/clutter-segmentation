@@ -38,3 +38,13 @@
     version: '-r 37180' 
 }
 
+- git: {
+    local-name: tumros-internal,
+    uri: 'gitosis@git9.in.tum.de:tumros-internal'
+}
+
+- git: {
+    local-name: mapping,
+    uri: 'indefero@code.in.tum.de:mapping.git'
+}
+
