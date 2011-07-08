@@ -65,7 +65,6 @@ public:
   message_filters::Connection sync_connection_;
   clutseg::PointCloudT query_cloud;
   cv::Mat query_image;
-  cv::Mat query_image_bgr8;
   sensor_msgs::CvBridge bridge;
   clutseg::Clutsegmenter sgm;
   ros::ServiceServer service;
@@ -117,7 +116,10 @@ public:
   {
     //1. Reading input data
     // get image
-    query_image = bridge.imgMsgToCv(im, "passthrough");
+    query_image = bridge.imgMsgToCv(im, "bgr8");
+    // imshow("hud", query_image);
+    // cv::waitKey(-1);
+
     // get cloud
     pcl::fromROSMsg (*pc, query_cloud);
     
@@ -142,6 +144,8 @@ public:
 	std_msgs::String object_msg;
 	object_msg.data = result.refine_choice.getObject()->name;
 	object_publisher.publish(object_msg);
+
+    	cout << "[ClutterSegmenter:] Recognized " << object_msg.data << endl;
 
 	// 3.3. Publish pose
 	geometry_msgs::PoseStamped pose_msg;
@@ -169,8 +173,8 @@ public:
       cv_bridge::CvImage cv_hud;
       //cv_hud.encoding = sensor_msgs::image_encodings::BGR8;
       cv_hud.image = hud;
-      // cv::imshow("hud", cv_hud.image);
-      // cv::waitKey(-1);
+      cv::imshow("hud", cv_hud.image);
+      cv::waitKey(-1);
       hud_publisher.publish(cv_hud.toImageMsg());
     } 
   }
@@ -178,7 +182,7 @@ public:
 
 int main (int argc, char** argv)
 {
-  ros::init (argc, argv, "cloudsegmenter_node");
+  ros::init (argc, argv, "clutsegmenter_node");
   ros::NodeHandle n("~");
   ClutterSegmenter cs(n);
   ros::spin ();

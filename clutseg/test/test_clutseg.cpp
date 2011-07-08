@@ -35,6 +35,8 @@ class test_clutseg : public ::testing::Test {
 
         virtual void SetUp() {
             if (!loaded) {
+		assert(getenv("CLUTSEG_PATH") != NULL);
+
                 FeatureExtractionParams fp;
                 readFeParams("data/test_clutseg.features.config.yaml", fp);
 

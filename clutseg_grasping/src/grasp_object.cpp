@@ -82,16 +82,16 @@ int main (int argc, char **argv)
     sensor_msgs::PointCloud2 object_cloud, object_cloud_transformed;
     
     //get the object from clutsegmenter_node
-    ros::ServiceClient client = nh.serviceClient<clutseg::ClutsegObject>("/cloudsegmenter_node/clutseg_inliers");
+    ros::ServiceClient client = nh.serviceClient<clutseg::ClutsegObject>("/clutsegmenter_node/clutseg_inliers");
     clutseg::ClutsegObject srv;
     if (client.call(srv))
       {
-	ROS_INFO("[grasp_object: ] Calling </cloudsegmenter_node/clutseg_inliers> service succeeded");
+	ROS_INFO("[grasp_object: ] Calling </clutsegmenter_node/clutseg_inliers> service succeeded");
 	object_cloud = srv.response.object;
       }
     else
       {
-	ROS_ERROR("[grasp_object: ] Calling </cloudsegmenter_node/clutseg_inliers> service failed");
+	ROS_ERROR("[grasp_object: ] Calling </clutsegmenter_node/clutseg_inliers> service failed");
 	return 1;
       }
 
