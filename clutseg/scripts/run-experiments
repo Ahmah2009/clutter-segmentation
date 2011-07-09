@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+function usage() {
+    print_usage "run-experiments" "[--debug|--memcheck]"
+    cat <<USAGE
+
+Starts the experiment runner using the configuration supplied by the
+environment.
+USAGE
+}
+
+source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/../../experiment_setup.bash
+
+if has_opt --debug ; then
+    debug="gdb --args"
+elif has_opt --memcheck ; then
+    debug="valgrind --tool=memcheck"
+fi
+
+
+if [ "$?" = 0 ] ; then
+    nice -n 1 $memcheck $debug $(rospack find clutseg)/bin/run_experiments $CLUTSEG_EXPERIMENT_DB $CLUTSEG_TRAIN_CACHE_DIR $CLUTSEG_RESULT_DIR
+fi
+
