@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+function usage() {
+    print_usage $(basename $0) "[tod-bag]" "[tod-tf-bag]"
+    cat <<USAGE
+
+Plays a training bag from the tod kinect training dataset using rosbag and
+shows everything in rviz. Replay must be started by hitting <space> in the
+terminal.
+USAGE
+}
+
+if [ ! "$(pgrep rosout)" ] ; then
+    echo "WARNING: Master server roscore does not seem to be running."
+fi 
+
+# Start rviz
+source $(rospack find clutseg)/../scripts/base.bash
+expect_arg 0
+expect_arg 1 
+rosrun rviz rviz --display-config $(rospack find clutseg)/../misc/pcl_view_training.vcg &
+rosbag play $(get_arg 0) $(get_arg 1) --pause
+
