@@ -454,6 +454,17 @@ void insert_experiments(sqlite3* & db) {
         insert_if_not_exist(db, e);
     }
 
+    for (int i = 0; i < 25; i++, orb_bf++) {
+        Experiment e = clone_setup(db, 4180);
+        e.paramset.detect_pms_match.type = "BF-BINARY";
+        e.paramset.refine_pms_match.type = "BF-BINARY";
+        e.name = str(boost::format("orb-bfbinary-%d") % orb_bf);
+        e.batch = "run-18";
+        e.human_note = "same as run-17 but this time with initialized seed in vslam/posest";
+        insert_if_not_exist(db, e);
+    }
+
+
 
     /* that one is nonsense
     // SIFT + rBRIEF + LSH-BINARY (extractor_type=multi-scale)
