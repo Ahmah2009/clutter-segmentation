@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage "train-keypoints" "training-base"
     cat <<USAGE
-Usage: train-keypoints <base>
 
 Creates images showing keypoints on training images from feature.yaml.gz files.
 Prior to invoking this script, these feature files have to be generated, e.g.
@@ -10,12 +10,12 @@ by calling train-detect.
 USAGE
 }
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash
 
-expect_arg $1
+expect_arg 0
 
-base=$1
-pushd $CLUTSEG_PATH/$base > /dev/null
+base=$(get_arg 0)
+pushd $base > /dev/null
     for d in *; do
         if [ -d $d ]; then
             subj=$(basename $d)

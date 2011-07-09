@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage "train-detect" "training-base" "[--verbose]" "[--serial]" "[--debug]"
     cat <<USAGE
-Usage: train-detect <base> [--verbose] [--debug] [--serial}
 
-Detects features from training images given pose and masks.
+Detects features from training images given poses and masks.
+
+--verbose       be talkative
+--serial        do not use multiple threads; for paranoid people
+--debug         run the feature detection in GNU debugger
 USAGE
 }
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash
 
 expect_arg 0
 base=$(get_arg 0)
@@ -26,7 +30,7 @@ if has_opt --serial ; then
     jobs=1
 fi
 
-pushd $CLUTSEG_PATH/$base > /dev/null
+pushd $base > /dev/null
     assert_base
     for d in *; do
         if [ -d $d ]; then
