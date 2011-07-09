@@ -1,13 +1,14 @@
 .TH CLUTTER-SEGMENTATION "JUNE 2011" 
+
 .SH NAME
 
 clutter-segmentation - a ROS package for recognizing objects in cluttered scenes
 
-.SH Source 
+.SH SOURCES
 
     $ git clone indefero@code.in.tum.de:clutter-segmentation.git
 
-.SH Installation
+.SH INSTALLATION 
 
 The clutseg package is built on top of ROS packages tod_training and
 tod_detecting in the object_recognition stack. It has been developed and
@@ -31,15 +32,14 @@ If you want to have convenient access to the scripts:
 
     $ export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
 
-.SH Running tests
+.SH RUNNING TESTS 
 
-Since clutter-segmentation has been developed against unstable and not exactly
-bug-free packages, there are quite a bunch of tests available that test for
-functionality and regression in package clutseg and its not-exactly reliable
-dependencies. Some of these tests require Gigabytes of test data that have not
-been included in the repository. Some smaller test data has been included, and
-other tests do not require any test data to run. You can compile the tests 
-(standard for ROS packages) via
+There are plenty of tests available that test for functionality and regression
+in package clutseg and its - often experimental - dependencies. Some of these
+tests require Gigabytes of test data that have not been included in the
+repository. Some smaller test data has been included, and other tests do not
+require any test data to run. You can compile the tests (standard for ROS
+packages) via
 
     make tests
 
@@ -57,7 +57,7 @@ or another example
 
 for running a single test only.
 
-.SH Learning Models from TOD raw data 
+.SH LEARNING MODELS FROM TOD_* RAW DATA 
 
 TOD comes with some example raw data that can be used for populating a modelbase.
 There are also test images available. The general approach to generate a modelbase
@@ -77,11 +77,11 @@ Unfortunately, it seems that it's only the topic names listed but not the data
 types. Inspecting the sample data using rosbag info show the different kinds of
 data that might have to be included in training data:
 
-camera_info   sensor_msgs/CameraInfo 
-image         sensor_msgs/Image      
-image_mono    sensor_msgs/Image      
-points2       sensor_msgs/PointCloud2
-tf            tf/tfMessage 
+    camera_info   sensor_msgs/CameraInfo 
+    image         sensor_msgs/Image      
+    image_mono    sensor_msgs/Image      
+    points2       sensor_msgs/PointCloud2
+    tf            tf/tfMessage 
 
 
 There are some ROS bags available that can be used for training purposes.
