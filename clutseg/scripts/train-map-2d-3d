@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage $(basename $0) "training-base"
     cat <<USAGE
-Usage: train-detect <base>
 
-Maps 2d keypoints to their corresponding 3d points in training image.
+Maps 2D keypoints to their corresponding 3D points in training image.
 USAGE
 }
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash
 
 expect_arg 0
 base=$(get_arg 0)
 
-pushd $CLUTSEG_PATH/$base > /dev/null
+pushd $base > /dev/null
     assert_base
     for d in *; do
         if [ -d $d ]; then
