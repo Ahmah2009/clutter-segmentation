@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage "result-montage" "[artifact]" "[experiment_id]" "[--show]"
     cat <<USAGE
-Usage: result-montage <artifact> <experiment-id> [--show]
 
 Constructs a collage picture from experiment results. Requires variable
 CLUTSEG_RESULT_DIR to be set in the environment. Generated pictures will be
@@ -11,9 +11,8 @@ environment).
 USAGE
 }
 
-source ~/.env
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
-source $CLUTSEG_PATH/experiment_setup.bash
+source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/../../experiment_setup.bash
 
 if [ "$CLUTSEG_RESULT_DIR" = "" ] ; then
     usage
