@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+function usage() {
+    print_usage "ias-kinect-get" "dir"
+    cat <<EOF
+
+Downloads IAS Kinect bags.
+
+    dir     store the bags in this path 
+EOF
+}
+
+cd $(rospack find clutseg)
+source ../scripts/base.bash
+
+expect_arg 0
+
+pushd $(get_arg 0) > /dev/null
+    # TODO: broken link
+    wget --input-file $CLUTSEG_PATH/clutter-segmentation/misc/ias-kinect-bags.wget --base http://ias.cs.tum.edu/~pangerci/
+popd > /dev/null
+

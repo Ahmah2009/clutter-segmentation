@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
-source ~/.env
+function usage() {
+    print_usage "mods-link"
+    cat <<EOF
+
+Applies patches and modifications to dependencies through hardlinking.
+EOF
+}
+
+cd $(rospack find clutseg)
+source ../scripts/base.bash
+
 for mod in $(cat $CLUTSEG_PATH/clutter-segmentation/mods/mods.txt) ; do
     src=$CLUTSEG_PATH/clutter-segmentation/mods/$mod
     dst=$CLUTSEG_PATH/$mod 

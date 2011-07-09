@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage "base-pose" "base" "[--no-fix]" "[--leave-fix]" "[--debug]"
     cat <<USAGE
-Usage: base-pose <base> [--no-fix] [--leave-fix] [--debug]
+Estimates object pose from images with fiducial markers in directory <base>.
 
-Performs pose estimation on images with fiducial markers. If flag '--no-fix' is
-given no pre-processed alternative images will provided and existing
-alternative image for pose estimations will be removed. Flag --leave-fix will
-not create alternative images but leave existing untouched. An alternative
-image especially designed as a fallback for tod_training pose_estimator has the
-name <image>.pre.pose.png. 
+--no-fix        if given no pre-processed alternative images will provided and
+                existing alternative images for pose estimations will be removed.
+            
+--leave-fix     if given will not create alternative images but leave existing
+                ones untouched.  An alternative image designed as a fallback
+                for pose_estimator of tod_training has the name <image>.pre.pose.png. 
 USAGE
 }
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash
 
 expect_arg 0
 base=$(get_arg 0)
@@ -22,7 +23,7 @@ if has_opt --debug ; then
     debug="gdb --args "
 fi
 
-pushd $CLUTSEG_PATH/$base > /dev/null
+pushd $base > /dev/null
     assert_base
     for d in *; do
         assert_base

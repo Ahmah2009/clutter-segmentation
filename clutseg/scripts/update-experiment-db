@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
-cd $CLUTSEG_PATH
-source setup.bash
-roscd clutseg
+function usage() {
+    print_usage "update-experiment-db" "database"
+    cat <<EOF
+
+Updates database schemata.
+
+    database    a path to a SQLite3 database
+EOF
+}
+
+cd $(rospack find clutseg)
+source ../scripts/base.bash
+
 rm data/test.sqlite3 
 rm data/paramsel.sqlite3 
 cat schema/*.sql | sqlite3 data/test.sqlite3

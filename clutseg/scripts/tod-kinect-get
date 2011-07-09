@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+function usage() {
+    print_usage "tod-kinect-get" "dir"
+    cat <<EOF
+
+Downloads TOD Kinect bags from http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training
+
+    dir     store the bags in this path 
+EOF
+}
+
+cd $(rospack find clutseg)
+source ../scripts/base.bash
+
+expect_arg 0
+
+pushd $(get_arg 0) > /dev/null
+    wget --input-file $CLUTSEG_PATH/clutter-segmentation/misc/tod-kinect-bags.wget --base  http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training/
+popd > /dev/null
+

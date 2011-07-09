@@ -9,6 +9,12 @@ function script_init() {
     fi
 }
 
+function print_usage() {
+    name=$1
+    shift
+    echo -e "usage: \033[1m${name}\033[0m $*"
+}
+
 function has_opt() {
     arg=$1
 
@@ -47,9 +53,9 @@ function get_arg() {
 function assert_base() {
     if ! [ -f fiducial.yml ] ; then
         cat <<ERROR
-No fiducial.yml in training/testing base. Exiting for safety reasons. Notev
-that the existence of this file just shows that flags this a training or
-testing directory.
+No fiducial.yml in training/testing base. Exiting for safety reasons. Note that
+the existence of this file is just a flag that shows this a training or testing
+directory.
 ERROR
         exit
     fi

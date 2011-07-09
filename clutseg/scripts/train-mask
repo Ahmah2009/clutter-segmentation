@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage "train-mask" "training-base" "[--fix]"
     cat <<USAGE
-Usage: train-mask <base> [--fix] 
 
-Performs masking. If flag '--fix' is given the masks are postprocessed, an
-attempt to remove areas in the mask outside of the actual region of interest.
+Computes the masks for a training base.
+
+--fix    if given, the masks are postprocessed; an attempt to remove areas in
+         the mask outside of the true region of interest.
 USAGE
 }
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash
 
 expect_arg 0
 base=$(get_arg 0)
 
-pushd $CLUTSEG_PATH/$base > /dev/null
+pushd $base > /dev/null
     assert_base
     for d in *; do
         if [ -d $d ]; then

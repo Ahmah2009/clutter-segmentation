@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+function usage() {
+    print_usage "base-dump" "base" "camera_info" "image" "points2"
+    cat <<USAGE
+
+Dumps image and point clouds from bags in directory <base> to directory <base>.
+No other files will be deleted or replaced in the training or test base.
+
+base          the training/test base
+camera_info   the name of the sensor_msgs/CameraInfo topic
+image         the name of the sensor_msgs/Image topic
+points2       the name of the sensor_msgs/PointCloud2 topic
+USAGE
+}
+
+source $(rospack find clutseg)/../scripts/base.bash
+
+expect_arg 0
+base=$(get_arg 0)
+
+expect_arg 1 
+camera_info=$(get_arg 1)
+expect_arg 2
+image=$(get_arg 2)
+expect_arg 3
+points2=$(get_arg 3)
+
+pushd $base > /dev/null
+    for bag in *.bag; do
+        subj=$(basename $bag .bag)
+        echo "Dumping $subj"
+        echo "--------------------------------------------------------"
+        echo "Running tod_training bag_dumper ..."
+        rosrun tod_training bag_dumper -P . -N $subj -B $bag --camera_info=$camera_info --image=$image --points2=$points2
+    done
+popd > /dev/null
+
