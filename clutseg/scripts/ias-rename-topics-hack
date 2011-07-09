@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+function usage() {
+    print_usage $(basename $0) "[bag-dir]"
+    cat <<USAGE
+    
+Renames topics in a bag such that tod_training (in SVN revision 50320)
+understands what's inside. Telling tod_training's bag_dumper which topic name
+corresponds to what data does not work as bag_dumper is buggy. Use this tool to
+preprocess bags prior to training.
+
+bag-dir     a directory in which (first level only) the bags are. Bags will
+            be modified in place.
+USAGE
+}
+source $(rospack find clutseg)/../scripts/base.bash
+expect_arg 0
+export PYTHONPATH="$(rospack find rosbag)/src:$PYTHONPATH"
+/usr/bin/env python $(rospack find clutseg)/scripts/ias-rename-topics-hack.py "$@"

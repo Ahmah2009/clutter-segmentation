@@ -1,14 +1,5 @@
 #!/usr/bin/env python
 
-"""Renames topics in a bag such that tod_training (in SVN revision 50320)
-understands what's inside. Telling tod_training's bag_dumper which topic name
-corresponds to what data does not work as bag_dumper is buggy. Use this tool to
-preprocess bags prior to training.
-
-This script requires /opt/ros/diamondback/stacks/ros_comm/tools/rosbag/src or
-similar to be in your PYTHONPATH environment variable.
-"""
-
 import os
 import rosbag
 import argparse
