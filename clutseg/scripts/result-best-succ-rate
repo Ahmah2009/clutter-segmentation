@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
-source ~/.env 
-source $CLUTSEG_PATH/experiment_setup.bash
-$CLUTSEG_PATH/clutter-segmentation/scripts/result-best-succ-rate.R
+
+function usage() {
+    print_usage "result-best-succ-rate" 
+    cat <<USAGE
+
+Generate plots for best experiment w.r.t. succ_rate.
+USAGE
+}
+
+cd $(rospack find clutseg)
+source ../scripts/base.bash
+source ../../experiment_setup.bash
+echo "result-best-succ-rate $*"
+Rscript scripts/result-best-succ-rate.R $*

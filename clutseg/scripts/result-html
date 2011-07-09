@@ -114,6 +114,7 @@ EOF
 }
 
 function table() {
+    echo "Generating table '$1'"
     echo "<h2>$1</h2>" >> $out
     echo "<table>" >> $out
     sqlite3 -header -html $CLUTSEG_EXPERIMENT_DB "$2"  >> $out
@@ -181,8 +182,8 @@ plotid=0
 
 function plot() {
     ((plotid++))
-    fn=corr.$2.$3.$plotid.png
-    result-corr-succ-rate "$1" "$2" "$3" "$4" $report_dir/$fn "$5" "$6" > /dev/null
+    fn="corr.$2.$3.$plotid.png"
+    rosrun clutseg result-corr-succ-rate "$1" "$2" "$3" "$4" "$report_dir/$fn" "$5" "$6" > /dev/null
     echo "<img src='$fn' />"
 }
 
@@ -302,8 +303,11 @@ EOF
     foot $index
 }
 
+echo "Generating tables"
 report_tables
+echo "Generating plots"
 report_plots 
+echo "Generating index"
 report_index
 
 # TODO: remove hack
