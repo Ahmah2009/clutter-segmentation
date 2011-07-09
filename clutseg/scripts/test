@@ -1,14 +1,25 @@
 #!/usr/bin/env bash
 
 function usage() {
-    echo "test.bash [--fast] [google options] [gtest_filter]"
+    print_usage $(basename $0) "[gtest_filter]" "[--fast]"
+
+    cat <<USAGE
+
+Tests clutseg. Better than 'make tests' because it does not rebuild the
+executables.  Only useful in quick edit-compile-test cycles.
+
+gtest_filter    the Google Test filter as accepted by --gtest_filter option
+--fast          if set, tests that take more time are skipped
+USAGE
 }
+
+cd $(rospack find clutseg)
+source ../scripts/base.bash
 
 cp CMakeLists.txt CMakeLists.txt.backup
 cp CMakeListsTest.txt CMakeLists.txt
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash
-make tests
+make tests -j 4
 if [ "$?" = "0" ] ; then
     if has_opt "--fast" ; then
         touch build/fast.flag
