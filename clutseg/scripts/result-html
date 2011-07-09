@@ -3,7 +3,6 @@
 function usage() {
     print_usage "result-html" "[--upload]" "[--delete]"
     cat <<USAGE
-Usage: result-html
 
 Generates a HTML report about the experiments and their results. Requires
 CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be set in
@@ -42,8 +41,8 @@ artifacts
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash $*
-source $(rospack find clutseg)/../experiment_setup.bash
+source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/../../experiment_setup.bash
 
 if [ "$CLUTSEG_EXPERIMENT_DB" = "" ] ; then
     usage
