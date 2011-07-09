@@ -46,7 +46,7 @@
 using namespace std;
 using namespace message_filters;
 typedef message_filters::sync_policies::ApproximateTime< sensor_msgs::PointCloud2,
-							 sensor_msgs::Image > MySyncPolicy;
+							 sensor_msgs::Image> MySyncPolicy;
 
 class ClutterSegmenter
 {
@@ -110,7 +110,6 @@ public:
     return true;
   }
 
-
   ////////////////////////////////////////////////////////////////////////////////
   void callback (const sensor_msgs::PointCloud2ConstPtr& pc, const sensor_msgs::ImageConstPtr& im)
   {
@@ -145,6 +144,7 @@ public:
 	object_msg.data = result.refine_choice.getObject()->name;
 	object_publisher.publish(object_msg);
 
+	// call to ROSINFO does not want to compile
     	cout << "[ClutterSegmenter:] Recognized " << object_msg.data << endl;
 
 	// 3.3. Publish pose
@@ -171,10 +171,10 @@ public:
 	  clutseg::drawGuess(hud, result.refine_choice, camera, opencv_candidate::PoseRT());
 	}
       cv_bridge::CvImage cv_hud;
-      //cv_hud.encoding = sensor_msgs::image_encodings::BGR8;
+      cv_hud.encoding = sensor_msgs::image_encodings::BGR8;
       cv_hud.image = hud;
-      cv::imshow("hud", cv_hud.image);
-      cv::waitKey(-1);
+      // cv::imshow("hud", cv_hud.image);
+      // cv::waitKey(-1);
       hud_publisher.publish(cv_hud.toImageMsg());
     } 
   }
