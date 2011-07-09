@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage "result-html" "[--upload]" "[--delete]"
     cat <<USAGE
 Usage: result-html
 
 Generates a HTML report about the experiments and their results. Requires
 CLUTSEG_EXPERIMENT_DB, CLUTSEG_RESULT_DIR and CLUTSEG_ARTIFACT_DIR to be set in
-the environment. Requires R and sqlite3 command line interface installed.
+the environment. Requires R and SQLite3 command line interface installed.
+
+--upload    if set, upload the database and the results to a remote host via rsync
+--delete    if set, use rsync with option --delete to remove files from remote host 
 
 It generates a directory <CLUTSEG_ARTIFACT_DIR>/report, and will contain HTML
-pages and images. The report is designed to be stand-alone and will be uploaded
+pages and images. The report is designed to be stand-alone and can be uploaded
 using rsync if CLUTSEG_RESULT_URL is set. The report consists of the following
 artifacts
 
@@ -38,11 +42,8 @@ artifacts
 USAGE
 }
 
-if [ -f "~./env" ] ; then
-    source ~/.env 
-fi
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
-source $CLUTSEG_PATH/experiment_setup.bash
+source $(rospack find clutseg)/../scripts/base.bash $*
+source $(rospack find clutseg)/../experiment_setup.bash
 
 if [ "$CLUTSEG_EXPERIMENT_DB" = "" ] ; then
     usage
@@ -127,7 +128,7 @@ function report_tables() {
     head $out "Tables"
 
     echo "<h2>Target</h2>" >> $out
-    result-best-succ-rate
+    rosrun clutseg result-best-succ-rate
     echo "<img src='best_succ_rate.png' />" >> $out
     echo "<img src='best_succ_rate.refine_choice.collage.jpg' />" >> $out
     cat >> $out <<EOF
@@ -159,7 +160,7 @@ EOF
 EOF
 
     table "Receiver Operating Characteristics" "select * from view_experiment_detect_roc order by detect_tp_rate / detect_fp_rate desc"
-    result-roc
+    rosrun clutseg result-roc
     echo "<img src='detect_roc.png' />" >> $out
 
     table "Errors" "select * from view_experiment_error"
