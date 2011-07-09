@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 #include <vector>
 #include <algorithm>
+#include <ctime>
 #include <opencv2/flann/general.h>
 #include "rbrief/lsh.hpp"
 
@@ -252,9 +253,12 @@ void Matcher::add(const TrainingBase& base)
 
 void Matcher::match(const Mat& queryDescriptors)
 {
+  clock_t b = clock();
   tod::Matches matches;
   privateMatch(queryDescriptors, matches);
   convertMatches(matches);
+  clock_t a = clock();
+  cout << "[MATCHER]: Matching took " << 1. * (a - b) / CLOCKS_PER_SEC << " seconds" << endl;
 }
 
 void Matcher::getObjectMatches(int objectId, tod::Matches& matches) const
@@ -309,6 +313,7 @@ int Matcher::getObjectIndex(const DMatch& match)
 
 void Matcher::convertMatches(const tod::Matches& matches)
 {
+  cout << "[MATCHER]: Number of correspondences from kNN-search: " << matches.size() << endl;
   objectMatches.clear();
   objectMatches.resize(objectIds.size());
 
@@ -322,12 +327,15 @@ void Matcher::convertMatches(const tod::Matches& matches)
 
     objectMatches[objectIndex].push_back(match);
   }
+  size_t c = 0;
   for (size_t i = 0; i < objectMatches.size(); i++)
   {
     //keep, the matches unique on the training index side
     uniqueMatches(objectMatches[i], objectMatches[i], CompareOpIdx<TrainIdx> ());
     std::sort(objectMatches[i].begin(), objectMatches[i].end()); //keep the matches sorted by distance
+    c += objectMatches[i].size();
   }
+  cout << "[MATCHER]: Number of correspondences after making a choice where one model features matches many query features: " << c << endl;
 }
 
 void Matcher::privateMatch(const Mat& queryDescriptors, tod::Matches& matches)
