@@ -8,7 +8,6 @@ Generates a diagram that shows the ROC point for all finished experiments.
 USAGE
 }
 
-
 cd $(rospack find clutseg)
 source ../../experiment_setup.bash
 Rscript scripts/result-roc.R

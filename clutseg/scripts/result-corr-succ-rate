@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+function usage() {
+    print_usage "result-corr-succ-rate" 
+    cat <<USAGE
+
+Generates a correlation diagram (scatter plot).
+USAGE
+}
+
+cd $(rospack find clutseg)
+source ../../experiment_setup.bash
+Rscript scripts/result-corr-succ-rate.R

@@ -3,6 +3,7 @@ library(RSQLite)
 # correlate-succ-rate <title> <x> <y> <view> <filename> [<xmin>,<xmax> [<ymin>,<ymax>]]
 # export CLUTSEG_EXPERIMENT_DB="/media/29FAF067618013AC/experiments.sqlite3" &&
 # ./correlate-succ-rate.R "Detector Receiver Operating Characteristics" value refine_sipc "view_experiment_scores" /home/julius/Temp/correlate-succ-rate.png 0,1 0,1
+# TODO: rename!
 
 args = commandArgs(TRUE)
 title = args[1]
