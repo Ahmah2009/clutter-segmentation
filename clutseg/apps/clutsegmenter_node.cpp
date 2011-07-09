@@ -88,8 +88,8 @@ public:
     n.param("camera_info", camera_info, std::string("./data/camera.yml"));
 
     // // synchronized subscriptions 
-    camera_sub_.subscribe( n, input_image_topic, 1000 );
-    cloud_sub_.subscribe( n, input_cloud_topic, 1000 );
+    camera_sub_.subscribe( n, input_image_topic, 1 );
+    cloud_sub_.subscribe( n, input_cloud_topic, 1 );
     sync_connection_ = synchronizer_.registerCallback( &ClutterSegmenter::callback, this );
 
     sgm = clutseg::Clutsegmenter(modelbase, true);
