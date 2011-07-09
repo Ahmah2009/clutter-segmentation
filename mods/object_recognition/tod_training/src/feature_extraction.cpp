@@ -69,13 +69,12 @@ namespace tod
     FeatureExtractionParams FeatureExtractionParams::CreateSampleParams()
     {
         FeatureExtractionParams params;
-        params.descriptor_type = "rBRIEF";
-        params.detector_type = "FAST";
-        params.extractor_type = "multi-scale";
+        params.descriptor_type = "ORB";
+        params.detector_type = "ORB";
+        params.extractor_type = "ORB";
         params.extractor_params["octaves"] = 3;
-        params.detector_params["min_features"] = 500;
-        params.detector_params["max_features"] = 700;
-        params.detector_params["threshold"] = 200;
+        params.extractor_params["scale_factor"] = 1.2;
+        params.detector_params["n_features"] = 5000;
         return params;
     }
 
