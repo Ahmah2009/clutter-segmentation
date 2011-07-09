@@ -91,8 +91,8 @@ int main (int argc, char **argv)
       }
     else
       {
-	ROS_ERROR("[grasp_object: ] Calling </clutsegmenter_node/clutseg_inliers> service failed");
-	return 1;
+	ROS_ERROR("[grasp_object: ] Calling </cloudsegmenter_node/clutseg_inliers> service failed");
+	return -1;
       }
 
     //transform cloud to base link
@@ -107,6 +107,7 @@ int main (int argc, char **argv)
     else
       {
 	ROS_ERROR("[grasp_object: ] No transform found!!!");
+	return -1;
       }
 	
     //Calculate the centroid of the object
