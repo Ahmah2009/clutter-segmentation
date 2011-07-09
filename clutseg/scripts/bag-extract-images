@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+export PYTHONPATH=$(rospack find cv_bridge)/src/cv_bridge:$PYTHONPATH
+cd $(rospack find clutseg)
+/usr/bin/env python scripts/bag-extract-images.py "$@"
