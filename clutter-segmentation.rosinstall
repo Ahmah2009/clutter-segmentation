@@ -48,3 +48,13 @@
     uri: 'indefero@code.in.tum.de:mapping.git'
 }
 
+- svn: {
+    local-name: articulation-experimental,
+    uri: 'http://alufr-ros-pkg.googlecode.com/svn/branches/articulation-experimental'
+}
+
+- svn: {
+    local-name: alufr-ros-pkg,
+    uri: 'http://alufr-ros-pkg.googlecode.com/svn/trunk'
+}
+

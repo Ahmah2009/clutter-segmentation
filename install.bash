@@ -80,7 +80,7 @@ function always() {
 
 RSQLITE='RSQLite_0.9-4.tar.gz'
 RCRAN='http://cran.r-project.org/src/contrib'
-ROS_STACKS='ros-diamondback-object-manipulation ros-diamondback-pr2-object-manipulation ros-diamondback-pr2-common-actions'
+ROS_STACKS='ros-diamondback-object-manipulation ros-diamondback-pr2-object-manipulation ros-diamondback-pr2-common-actions ros-diamondback-pr2-cockpit'
 
 pushd $d >> /dev/null
     step "not_a_dir clutter-segmentation"   "git clone indefero@code.in.tum.de:clutter-segmentation.git"               "Cloning repository clutter-segmentation.git"

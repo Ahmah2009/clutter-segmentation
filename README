@@ -3,67 +3,33 @@
 
 clutter-segmentation - a ROS package for recognizing objects in cluttered scenes
 
+.SH Source 
+
+    $ git clone indefero@code.in.tum.de:clutter-segmentation.git
 
 .SH Installation
 
 The clutseg package is built on top of ROS packages tod_training and
 tod_detecting in the object_recognition stack. It has been developed and
-tested on ROS Diamondback running on a Ubuntu 10.10 Maverick Meerkat. You can
-follow this recipe to get it running. It admittably requires a couple of
-really nasty workarounds.
+tested on ROS Diamondback running on a Ubuntu 10.10 Maverick Meerkat.
 
-    1. Create an installation directory and open it in a terminal 
+Use the install.bash script in the repository. It installs system dependencies
+and required ROS stacks via aptitude, checks out other ROS stacks, creates the
+overlays, and compiles the clutter-segmentation packages.
 
-This directory is called CLUTSEG_PATH and will later contain the clutseg
-repository and the required ROS overlays.
+    $ ./install.bash <CLUTSEG_PATH>
 
-    2. git clone indefero@code.in.tum.de:clutter-segmentation.git
+Hit 's' for skip when being asked for what action to take on repository
+clutter-segmentation. The environment variable CLUTSEG_PATH is important, it is
+referenced by scripts and software tests. 
 
-Your CLUTSEG_PATH directory should now contain the repository
-clutter-segmentation.
+    $ cd $CLUTSEG_PATH
 
-    3. sudo easy_install rosinstall
+    $ source setup.bash
 
-If you don't have python-setuptools installed, you can also get the tool
-directly from http://pypi.python.org/pypi/rosinstall
+If you want to have convenient access to the scripts:
 
-    4. rosinstall . clutter-segmentation/clutter-segmentation.rosinstall
-
-This will setup dependencies and ROS overlays. Hit 's' for skip when being asked
-for what action to take on repository clutter-segmentation. Including it in the
-clutter-segmentation.rosinstall file will make sure that clutseg is included in
-the ROS environment configured via setup.bash.
-
-    5. source setup.bash
-
-Depending on your needs, you might add this to your ~/.bashrc file.
-
-    6. rosdep install clutseg
-
-    7. export CLUTSEG_PATH=$(pwd)
-
-This environment variable is used by ROS package clutseg in various occasions
-It is recommended to add this to your ~./.bashrc file. Note that environment
-variables defined in ~/.bashrc are usually not read in non-interactive session,
-such as cron. Most of the scripts in clutseg that require CLUTSEG_PATH will
-therefore read ~/.env (non-standard) before executing.
-
-    8. export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
-
-    9. mods-link
-
-Apply patches on tod_training, tod_detecting, rbrief, fiducial and some other
-places where serious bugs were blocking progress or blackbox behaviour was
-blocking the gain of valuable information.
-
-   10. rosmake --rosdep-install clutseg
-
-   11. Install RSQlite
-
-You can get it from http://cran.r-project.org/web/packages/RSQLite, as this R
-package is not prepackaged for Ubuntu Meerkat. Follow the installation
-instructions on the website.
-
+    $ export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH
 
 .SH Running tests
 
@@ -83,14 +49,13 @@ and run them by calling
 
 You can also run single tests via
 
-   bin/utest --gtest_filter=ParamSelTest.*
+   bin/utest --gtest_filter=test_extractor.*
 
 or another example
 
-   bin/utest --gtest_filter=ConnCompTest.FillSmallConnectedComponents
+   bin/utest --gtest_filter=test_conn_comp.largest_connected_component
 
-for running only a specific test.
-
+for running a single test only.
 
 .SH Learning Models from TOD raw data 
 
@@ -149,4 +114,3 @@ and generate the training data base using
 
 The tutorial describing how to generate bags for training is just an empty
 stub.
-
