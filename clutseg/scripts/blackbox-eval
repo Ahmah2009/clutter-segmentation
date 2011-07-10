@@ -1,21 +1,33 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage $(basename $0) "training-base" "test-base" "tod-config" "[--debug]"
     cat <<USAGE
-Usage: test-eval <train-base> <test-config> <test-base> [--debug]
 
-Runs the given classifier on a testing set.
+Evaluates the tod_* object recognition system on a set of test images.
+
+EXAMPLES
+
+    $ rosrun clutseg $(basename $0) ias_kinect_train ias_kinect_test_all configs/config.minInliersCount_25.maxProjectionError_12.yaml
+
+    $ rosrun clutseg $(basename $0) ias_kinect_train_v2 ias_kinect_test_all $(rospack find clutseg)/data/tod.config.yaml
+
+    $ rosrun clutseg $(basename $0) ias_kinect_train ias_kinect_test_train_20 configs/config.minInliersCount_25.yaml
+
+    $ rosrun clutseg $(basename $0) ias_kinect_train_v2 ias_kinect_test_train_20 $(rospack find clutseg)/data/tod.config.yaml
+
 USAGE
 }
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash
 
 expect_arg 0
 expect_arg 1
 expect_arg 2
+
 trainbase=$(get_arg 0)
-config=$(get_arg 1)
-testbase=$(get_arg 2)
+testbase=$(get_arg 1)
+config=$(get_arg 2)
 
 if has_opt --debug ; then
     debug="gdb --args"
@@ -32,5 +44,5 @@ pushd $CLUTSEG_PATH > /dev/null
         --mode=1 \
         --verbose=0 \
         -f $config
-    test-symlink $testbase/result
+    rosrun clutseg blackbox-result-symlinks $testbase/result
 popd > /dev/null
