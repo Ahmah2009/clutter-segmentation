@@ -10,7 +10,7 @@ EOF
 }
 
 cd $(rospack find clutseg)
-source ../scripts/base.bash
+source scripts/common
 
 expect_arg 0
 

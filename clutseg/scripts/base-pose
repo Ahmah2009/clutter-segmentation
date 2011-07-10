@@ -14,7 +14,7 @@ Estimates object pose from images with fiducial markers in directory <base>.
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 expect_arg 0
 base=$(get_arg 0)

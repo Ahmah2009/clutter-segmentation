@@ -12,7 +12,7 @@ bag-dir     a directory in which (first level only) the bags are. Bags will
             be modified in place.
 USAGE
 }
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 expect_arg 0
 export PYTHONPATH="$(rospack find rosbag)/src:$PYTHONPATH"
 /usr/bin/env python $(rospack find clutseg)/scripts/ias-rename-topics-hack.py "$@"

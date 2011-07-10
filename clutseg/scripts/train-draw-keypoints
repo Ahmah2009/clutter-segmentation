@@ -10,7 +10,7 @@ by calling train-detect.
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 expect_arg 0
 

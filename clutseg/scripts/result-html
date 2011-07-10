@@ -41,7 +41,7 @@ artifacts
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 source $(rospack find clutseg)/../../experiment_setup.bash
 
 if [ "$CLUTSEG_EXPERIMENT_DB" = "" ] ; then

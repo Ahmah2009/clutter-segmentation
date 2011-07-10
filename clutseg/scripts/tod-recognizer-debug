@@ -9,7 +9,7 @@ in all the required arguments and options.
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 pkg_tod_detecting=$(rospack find tod_detecting)
 gdb --args $pkg_tod_detecting/bin/recognizer \

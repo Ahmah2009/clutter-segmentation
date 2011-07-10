@@ -10,7 +10,7 @@ EOF
 }
 
 cd $(rospack find clutseg)
-source ../scripts/base.bash
+source scripts/common
 
 rm data/test.sqlite3 
 rm data/paramsel.sqlite3 

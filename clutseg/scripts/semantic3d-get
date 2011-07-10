@@ -13,7 +13,7 @@ dst             the target directory
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 objlist=$(mktemp)
 

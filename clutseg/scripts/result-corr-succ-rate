@@ -9,6 +9,6 @@ USAGE
 }
 
 cd $(rospack find clutseg)
-source ../scripts/base.bash
+source scripts/common
 source ../../experiment_setup.bash
 Rscript scripts/result-corr-succ-rate.R "$@"

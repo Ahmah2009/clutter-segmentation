@@ -12,7 +12,7 @@ Detects features from training images given poses and masks.
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 expect_arg 0
 base=$(get_arg 0)

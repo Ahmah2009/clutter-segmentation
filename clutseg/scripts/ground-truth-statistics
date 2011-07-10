@@ -13,7 +13,7 @@ ground-truth    lists which objects can be seen on which images
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 expect_arg 0
 

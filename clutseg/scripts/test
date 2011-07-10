@@ -14,7 +14,7 @@ USAGE
 }
 
 cd $(rospack find clutseg)
-source ../scripts/base.bash
+source scripts/common
 
 cp CMakeLists.txt CMakeLists.txt.backup
 cp CMakeListsTest.txt CMakeLists.txt

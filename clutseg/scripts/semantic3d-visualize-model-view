@@ -13,7 +13,7 @@ angle               angle in 30 degrees step, use format \$04d
 HELP
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 expect_arg 0
 expect_arg 1

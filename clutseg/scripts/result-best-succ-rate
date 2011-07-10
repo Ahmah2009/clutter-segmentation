@@ -9,7 +9,7 @@ USAGE
 }
 
 cd $(rospack find clutseg)
-source ../scripts/base.bash
+source scripts/common
 source ../../experiment_setup.bash
 echo "result-best-succ-rate $*"
 Rscript scripts/result-best-succ-rate.R $*

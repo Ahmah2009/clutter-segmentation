@@ -12,7 +12,7 @@ demonstration purposes.
 USAGE
 }
 
-source $(rospack find clutseg)/../scripts/base.bash
+source $(rospack find clutseg)/scripts/common
 
 cmd=""
 if has_opt --debug ; then
