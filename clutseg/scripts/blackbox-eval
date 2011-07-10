@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "training-base" "test-base" "tod-config" "[--debug]"
+    print_usage $(basename $0) "training-base" "test-base" "tod-config" "[ground]" "[--debug]"
     cat <<USAGE
 
 Evaluates the tod_* object recognition system on a set of test images.
@@ -16,6 +16,10 @@ EXAMPLES
 
     $ rosrun clutseg $(basename $0) ias_kinect_train_v2 ias_kinect_test_train_20 $(rospack find clutseg)/data/tod.config.yaml
 
+    $ rosrun clutseg $(basename $0) tod_kinect_train_15 tod_kinect_test_27 configs/config.minInliersCount_15.yaml ground-truth-15.txt
+
+    $ rosrun clutseg $(basename $0) tod_kinect_train_15 tod_kinect_test_train_20 configs/config.minInliersCount_25.yaml
+
 USAGE
 }
 
@@ -28,6 +32,11 @@ expect_arg 2
 trainbase=$(get_arg 0)
 testbase=$(get_arg 1)
 config=$(get_arg 2)
+ground=$(get_arg 3)
+
+if [ "$ground" = "" ] ; then
+    ground="ground-truth.txt"
+fi
 
 if has_opt --debug ; then
     debug="gdb --args"
@@ -36,11 +45,11 @@ fi
 pushd $CLUTSEG_PATH > /dev/null
     mkdir -p $testbase/result
     rm -rf $testbase/result/*
-    $debug blackbox_recognizer \
+    $debug $(rospack find clutseg)/bin/blackbox_recognizer \
         -B $trainbase \
         -I $testbase \
         --store=$testbase/result \
-        --testdesc=$testbase/ground-truth.txt \
+        --testdesc=$testbase/$ground \
         --mode=1 \
         --verbose=0 \
         -f $config
