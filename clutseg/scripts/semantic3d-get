@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
 
-if [ "$1" = "--help" ] || [ ! "$1" ] ; then
-    cat <<HELP
-Usage: semantic3d-download.bash [--no-extract] <directory>
+function usage() {
+    print_usage $(basename $0) "[--no-extract]" "dst"
+    cat <<USAGE
 
 Downloads all semantic dataset from IAS/TUM using wget to any specified
 directory.
-HELP
-    exit
-fi
 
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+--no-extract    if specified, bags will not be extracted
+dst             the target directory
+
+USAGE
+}
+
+source $(rospack find clutseg)/../scripts/base.bash
 
 objlist=$(mktemp)
+
+expect_arg 0
 
 cat >> $objlist <<EOF
 bean-can
@@ -77,7 +79,7 @@ pushd $1 > /dev/null
         wget -nv http://ias.cs.tum.edu/download/semantic-3d/data/raw/$obj.tar.bz2
         wget -nv http://ias.cs.tum.edu/download/semantic-3d/data/images-roi/$obj.png.tar.bz2
 
-        if [ ! "$1" = "--no-extract" ] && [ ! "$2" = "--no-extract" ] ; then
+        if ! has_opt --no-extract ; then 
             echo "Creating directories for $obj ..."
             mkdir $obj.delimited.pcd
             mkdir $obj.delimited.rotated.pcd

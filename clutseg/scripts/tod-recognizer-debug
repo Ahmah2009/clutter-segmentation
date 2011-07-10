@@ -1,21 +1,15 @@
 #!/usr/bin/env bash
-#
 
-if [ "$1" = "--help" ] ; then
-    cat <<HELP
-Usage: recognizer-debug.bash
+function usage() {
+    print_usage $(basename $0)
+    cat <<USAGE
 
-Runs the recognizer executable of tod_detecting in GNU debugger. Might be
-useful for quick regression tests.
-HELP
-    exit
-fi
+Runs the "recognizer" executable of tod_detecting in the GNU debugger, filling
+in all the required arguments and options.
+USAGE
+}
 
-source ~/.env
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+source $(rospack find clutseg)/../scripts/base.bash
 
 pkg_tod_detecting=$(rospack find tod_detecting)
 gdb --args $pkg_tod_detecting/bin/recognizer \

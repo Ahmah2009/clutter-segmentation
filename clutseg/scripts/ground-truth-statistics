@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 function usage() {
-    print_usage $(basename $0) "testdesc"
+    print_usage $(basename $0) "ground-truth"
 
     cat <<USAGE
 
-Collects statistics for a test description file. Can check test description
-file for typos, count the number of images, objects and the number of different
+Collects statistics for a ground truth file. Can check test description file
+for typos, count the number of images, objects and the number of different
 subjects seen on these images.
 
-testdesc    a testdesc file
+ground-truth    lists which objects can be seen on which images
 
 USAGE
 }
@@ -17,4 +17,4 @@ source $(rospack find clutseg)/../scripts/base.bash
 
 expect_arg 0
 
-/usr/bin/env python $(rospack find clutseg)/scripts/testdesc-statistics.py "$@"
+/usr/bin/env python $(rospack find clutseg)/scripts/ground-truth-statistics.py "$@"
