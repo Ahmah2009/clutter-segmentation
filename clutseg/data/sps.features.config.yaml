@@ -1,0 +1,16 @@
+%YAML:1.0
+
+# This belongs to the selected parameter set (SPS) as described in the thesis.
+
+feature_extraction_params:
+   detector_type: ORB
+   extractor_type: ORB
+   descriptor_type: ORB
+   detector_params:
+      max_features: 0.
+      min_features: 0.
+      n_features: 5000.
+      threshold: 0.
+   extractor_params:
+      octaves: 3.
+      scale_factor: 1.2000000000000000e+00

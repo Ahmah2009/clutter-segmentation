@@ -1,0 +1,33 @@
+%YAML:1.0
+
+# This belongs to the selected parameter set (SPS) as described in the thesis.
+
+TODParameters:
+   # GuessParameters
+   GuessParameters:
+      min_cluster_size: 0
+      min_inliers_count: 17
+      ransac_iterations_count: 1000
+      max_projection_error: 5.
+      descriptor_distance_threshold: 0
+      min_stddev_factor: 0.0
+   # FeatureExtractionParams
+   feature_extraction_params:
+       detector_type: ORB
+       extractor_type: ORB
+       descriptor_type: ORB
+       detector_params:
+          n_features: 5000
+          max_features: 0
+          min_features: 0
+          threshold: 0
+       extractor_params:
+          octaves: 3.
+          scale_factor: 1.2
+   # MatcherParameters
+   MatcherParameters:
+      matcher_type: LSH-BINARY
+      knn: 3
+      do_ratio_test: 0
+   ClusterParameters:
+      max_distance: 0
