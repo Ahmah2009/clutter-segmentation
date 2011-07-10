@@ -26,8 +26,11 @@ bags=$(get_arg 1)
 if [ "$bags" != "" ] ; then
     rosrun tod_training dump_all.py $bags $base 
     cp $bags/fiducial.yml $base/
-    cp $bags/features.config.yaml $base/
-    cp $bags/config.yaml $base/
+    # Copy over configuration
+    cp $bags/features.config.yaml   $base/features.config.yaml
+    cp $bags/detect.config.yaml     $base/detect.config.yaml
+    cp $bags/refine.config.yaml     $base/refine.config.yaml
+    cp $bags/config.yaml            $base/config.yaml
     pushd $base > /dev/null
         # Find the camera file and put it into the top-level directory of the
         # training base. The clutsegmenter script expects it at this location
