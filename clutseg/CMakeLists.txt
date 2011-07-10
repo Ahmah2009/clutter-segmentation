@@ -60,6 +60,9 @@ target_link_libraries(draw_ground_truth ${PROJECT_NAME})
 rosbuild_add_executable(draw_keypoints apps/draw_keypoints.cpp)
 target_link_libraries(draw_keypoints ${PROJECT_NAME})
 
+rosbuild_add_executable(draw_coordinate_histogram apps/draw_coordinate_histogram.cpp)
+target_link_libraries(draw_coordinate_histogram ${PROJECT_NAME})
+
 rosbuild_add_executable(fixmask apps/fixmask.cpp)
 target_link_libraries(fixmask ${PROJECT_NAME})
 

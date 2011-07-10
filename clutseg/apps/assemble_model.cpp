@@ -36,13 +36,6 @@ struct Opts {
     string modelbase_dir;
     string object;
     string pcd_out_file;
-    float xmin;
-    float xmax;
-    float xw;
-    float ymin;
-    float ymax;
-    float yw;
-    string hist_file;
 };
 
 int options(int argc, char ** argv, Opts& opts) {
@@ -59,23 +52,13 @@ int options(int argc, char ** argv, Opts& opts) {
     po::options_description d("Allowed options");
     d.add_options()("help", "Print this help message.");
 
-    po::options_description dh("Histogram options");
-    dh.add_options()
-        ("hist", po::value<string>(&opts.hist_file), "destination file for histogram (image)")
-        ("xmin", po::value<float>(&opts.xmin)->default_value(-0.2f), "minimum x-value included")
-        ("xmax", po::value<float>(&opts.xmax)->default_value(0.2f), "maximum x-value included")
-        ("xw", po::value<float>(&opts.xw)->default_value(0.001f), "bin width in direction x")
-        ("ymin", po::value<float>(&opts.ymin)->default_value(-0.2f), "minimum y-value included")
-        ("ymax", po::value<float>(&opts.ymax)->default_value(0.2f), "maximum y-value included")
-        ("yw", po::value<float>(&opts.yw)->default_value(0.001f), "bin width in direction y");
-
     po::positional_options_description p;
     p.add(modelbase.c_str(), 1);
     p.add(object.c_str(), 1);
     p.add(pcd_out.c_str(), 1);
 
     po::options_description c;
-    c.add(d).add(dh).add(h);
+    c.add(d).add(h);
 
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(c).positional(p).run(), vm);
@@ -89,7 +72,6 @@ int options(int argc, char ** argv, Opts& opts) {
             "described in its object coordinate system." << endl;
         cout << endl;
         cout << d << endl;
-        cout << dh << endl;
         return 1;
     }
 
@@ -188,14 +170,6 @@ int main(int argc, char **argv) {
     }
 
     io::savePCDFileASCII(opts.pcd_out_file, model);
-
-    if (opts.hist_file != "") {
-        Mat xy_hist_bgr;
-        drawCoordinateHist(xy_hist_bgr, model, XY,
-                opts.xmin, opts.xmax, opts.xw,
-                opts.ymin, opts.ymax, opts.yw, true);
-        imwrite(opts.hist_file, xy_hist_bgr);
-    }
     
     return 0;
 }
