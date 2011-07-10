@@ -1,23 +1,24 @@
 #!/usr/bin/env bash
 
-if [ "$1" = "--help" ] || [ ! "$1" ] ; then
-    cat <<HELP
-Usage: semantic3d-visualize-registration.bash <training-subject>
+function usage() {
+    print_usage $(basename $0) "semantic3d-base" "subject"
+    
+    cat <<USAGE
 
 Shows all rotated, translated and delimitated point clouds of one training
-subject.
-HELP
-    exit
-fi
+subject in the semantic3d base.
+USAGE
+}
 
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+source $(rospack find clutseg)/../scripts/base.bash
 
-obj=$1
+expect_arg 0
+expect_arg 1
 
-pushd $CLUTSEG_PATH/semantic3d-data/$obj.delimited.rotated.pcd > /dev/null
+base=$(get_arg 0)
+obj=$(get_arg 1)
+
+pushd $base/$obj.delimited.rotated.pcd > /dev/null
     rosrun pcl_visualization pcd_viewer \
         ${obj}_-180_.log.delimited.rotated.pcd \
         ${obj}_-150_.log.delimited.rotated.pcd \

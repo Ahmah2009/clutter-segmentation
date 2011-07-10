@@ -1,24 +1,28 @@
 #!/usr/bin/env bash
 
-if [ "$1" = "--help" ] || [ ! "$1" ] ; then
+function usage() {
+    print_usage $(basename $0) "semantic3d-base" "model" "angle"
     cat <<HELP
-Usage: semantic3d-visualize.bash <training-subject> <angle> 
 
 Displays the point clouds associated with a training subject from a certain
 angle.
+
+semantic3d-base     the directory where the data is in
+model               display a view for this object 
+angle               angle in 30 degrees step, use format \$04d 
 HELP
-    exit
-fi
+}
 
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+source $(rospack find clutseg)/../scripts/base.bash
 
-obj=$1
-angle=$2
+expect_arg 0
+expect_arg 1
+expect_arg 2
 
-cd $C 
+base=$(get_arg 0)
+obj=$(get_arg 1)
+angle=$(get_arg 2)
+
 # workaround for bug https://code.ros.org/trac/wg-ros-pkg/ticket/5072
 a=$(mktemp --suffix .pcd)
 b=$(mktemp --suffix .pcd)

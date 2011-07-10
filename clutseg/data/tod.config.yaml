@@ -1,0 +1,36 @@
+%YAML:1.0
+# this is the configuration file as recommended from
+# the tutorial in tod_detecting and tod_training
+# see http://www.ros.org/wiki/tod_detecting/Tutorials/Recognition%20tools
+# TODParameters
+TODParameters:
+   # GuessParameters
+   GuessParameters:
+      min_cluster_size: 5
+      min_inliers_count: 5 
+      ransac_iterations_count: 100
+      max_projection_error: 6.
+      descriptor_distance_threshold: 0.5
+      min_stddev_factor: 0.0
+   # FeatureExtractionParams
+   feature_extraction_params:
+       detector_type: ORB
+       extractor_type: ORB
+       descriptor_type: ORB
+       detector_params:
+          max_features: 400.
+          min_features: 300.
+          threshold: 0.000001
+          n_features: 5000
+       extractor_params:
+          octaves: 3.
+          scale_factor: 1.2
+   # MatcherParameters
+   MatcherParameters:
+      matcher_type: LSH-BINARY
+      ratio_threshold: 0.8
+      knn: 3
+      do_ratio_test: 0 
+   # ClusterParameters
+   ClusterParameters:
+      max_distance: 50

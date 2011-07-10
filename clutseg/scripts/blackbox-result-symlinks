@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 function usage() {
+    print_usage $(basename $0) "test-result"
     cat <<USAGE
-Usage: test-symlink <test-result>
 
 Creates folders with symlinks to selected artifacts in a test result directory.
 The <test-result> parameter shall point to a test result directory, see also
@@ -14,7 +14,7 @@ source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
 
 expect_arg 0
 
-result=$CLUTSEG_PATH/$(get_arg 0)
+result=$(get_arg 0)
 
 # create_symlinks <folder-name> <glob-suffix-pattern>
 function create_symlinks() {

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+function usage() {
+    print_usage $(basename $0)
+    
+    cat <<USAGE
+
+    TODO
+USAGE
+}
+
+source $(rospack find clutseg)/../scripts/base.bash
+
+function do_test() {
+    modelbase=$1
+    testbase=$2
+    config=$3
+    pushd $CLUTSEG_PATH > /dev/null
+        mkdir -p $testbase/result
+        rosrun clutseg blackbox-result-symlinks -u $testbase/result
+        rm -f $testbase/result/*
+        rosrun clutseg blackbox_recognizer \
+            -B $modelbase \
+            -I $testbase \
+            --store=$testbase/result \
+            --testdesc=$testbase/ground-truth.txt \
+            --mode=1 \
+            --verbose=0 \
+            -f $config 
+        rosrun clutseg blackbox-result-symlinks $testbase/result
+    popd > /dev/null
+}
+
+expect_arg 0
+wt=$(get_arg 0)
+
+if [ "$wt" = "ias_kinect_test_all" ] ; then
+    do_test ias_kinect_train ias_kinect_test_all configs/config.minInliersCount_25.maxProjectionError_12.yaml
+    # do_test ias_kinect_train_v2 ias_kinect_test_all $(rospack find clutseg)/data/tod.config.yaml
+elif [ "$wt" = "ias_kincet_test_train_20" ] ; then
+    do_test ias_kinect_train ias_kinect_test_train_20 configs/config.minInliersCount_25.yaml
+else
+    echo "Invalid argument."
+fi
