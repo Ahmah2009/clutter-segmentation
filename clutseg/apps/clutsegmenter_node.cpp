@@ -137,6 +137,8 @@ public:
 	// 3.1. Publish inlier cloud
 	clutseg::PointCloudT inliers = result.refine_choice.inlierCloud;
 	pcl::toROSMsg (inliers, inliers_msg);
+	inliers_msg.header.frame_id = pc->header.frame_id;
+	inliers_msg.header.stamp = ros::Time::now();
 	inliers_publisher.publish(inliers_msg);
 
 	//3.2. Publish name of the recognized object
