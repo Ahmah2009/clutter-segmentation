@@ -1,0 +1,58 @@
+The system presented in this work enables a PR2 => The system presented in this work enables a Personal Robot 2 (PR2, http://www.willowgarage.com/pages/pr2/overview)
+
+the PR2 robot at Technische Universität München with a Kinect camera mounted on its top => the PR2 robot at Technische Universität München with a Kinect camera mounted on its top. 
+
+though a publication had not been present at the time of writing => remove, it will be presented 1000%
+
+(TOD) stack in the Robot Operating System. => (TOD) stack in the Robot Operating System (ROS).
+
+The Kinect camera measures the time-of-flight of near-infrared rays to compute the distance between camera and points in 3D space within a range of 0.8-3.5 meters => The Kinect camera simultaneously provides imagery as well as depth measurements. The latter works by continuously-projecting an infrared structured light onto the environment which is then sensed by an infrared light sensitive camera. The typical depth range of a camera is between 0.8 and 3.5 meters. 
+
+a grayscale version of the image (a). => a grayscale version of the image (b).
+
+The model is a sparse point cloud that is described in a standard coordinate system. => The 3D part of the model, a sparse point cloud, is described in a standard coordinate system.
+
+Figure 1.3.: The correspondences between the query image => Figure 1.3.: The unfiltered correspondences between the query image
+
+We chose Oriented BRIEF as a feature detector and descriptor because its binary features
+were appealing, and because it had not been much researched so far => try to be a bit more explicit here, mention speed, robustness to translation and rotation
+
+A model of an object is described in its own coordinate system. => to which point of the object is it attached?
+
+In three dimensions, a proper rigid transformation of vectors => In three dimensions, a proper rigid transformation of an arbitrary point p
+
+Figure 2.1.: The view coordinate system => I would call it camera coordinate system from the begining on
+
+two different coordinate system => two different coordinate systems
+
+Eq. 2.4 => I am not sure what are you trying to say with this equation. You tried to express the L2 norm right? What is the 0 in the parenthesis, a translational component only? For the distance between 2 points in space the translational components are enough.
+
+Unlike the intrinsic camera parameters that describe properties of the camera
+independently of its standpoint, => remove unless you write a sentence or two about the intrinsic cam parameters (see openCV book, chapter 11)
+
+TOD uses camera calibration techniques from OpenCV, where the intrinsic parameters are known,
+but the extrinsic parameters remain to be estimated. => While in our case the intrinsic parameters of the Kinect RGB sensor are factory specified, we still have to estimate the extrinsic parameters using following principle from OpenCV. => Join with the next paragraph
+ 
+it is possible to recognize objects up to a 20 degree rotation => it is possible to
+recognize objects with the varying rotation of up to 20 degrees
+
+Put a paragraph on FAST into section 2.2.2.
+
+for neighbourhoods f of the keypoints => f is used couple of lines before to denote the image
+
+and a corresponding paper is expected to be published at the International Conference on
+Computer Vision 2011. => safe to remove it
+
+Oriented BRIEF (ORB) => reference
+
+Oriented BRIEF uses test locations as depicted in Figure 2.2.3. => Oriented BRIEF uses test locations as depicted in Figure 2.4.
+
+The description about ORB given above is based on a presentation at the International
+Conference on Robotics and Automation (ICRA) 2011 in Shanghai, and inferred from the
+implementation of ORB in the OpenCV library. => remove
+
+unique on an image => unique in an image
+
+Receiver operating characteristics => Receiver Operating Characteristics
+
+An image is described by a set of labels, and symmetrically => An image is described by a set of labels, and conversely
