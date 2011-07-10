@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "train-detect" "training-base" "[--verbose]" "[--serial]" "[--debug]"
+    print_usage "training-base" "[--verbose]" "[--serial]" "[--debug]"
     cat <<USAGE
 
 Detects features from training images given poses and masks.

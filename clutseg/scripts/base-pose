@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "base-pose" "base" "[--no-fix]" "[--leave-fix]" "[--debug]"
+    print_usage "base" "[--no-fix]" "[--leave-fix]" "[--debug]"
     cat <<USAGE
 Estimates object pose from images with fiducial markers in directory <base>.
 

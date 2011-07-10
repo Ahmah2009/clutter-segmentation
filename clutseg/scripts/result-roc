@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "result-roc" 
+    print_usage
     cat <<USAGE
 
 Generates a diagram that shows the ROC point for all finished experiments.

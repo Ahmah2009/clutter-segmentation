@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "train-mask" "training-base" "[--fix]"
+    print_usage "training-base" "[--fix]"
     cat <<USAGE
 
 Computes the masks for a training base.

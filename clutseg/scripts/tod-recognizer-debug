@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0)
+    print_usage
     cat <<USAGE
 
 Runs the "recognizer" executable of tod_detecting in the GNU debugger, filling

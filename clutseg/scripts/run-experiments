@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "run-experiments" "[--debug|--memcheck]"
+    print_usage "[--debug|--memcheck]"
     cat <<USAGE
 
 Starts the experiment runner using the configuration supplied by the

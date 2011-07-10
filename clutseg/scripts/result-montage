@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "result-montage" "[artifact]" "[experiment_id]" "[--show]"
+    print_usage "[artifact]" "[experiment_id]" "[--show]"
     cat <<USAGE
 
 Constructs a collage picture from experiment results. Requires variable

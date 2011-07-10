@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "result-corr-succ-rate" 
+    print_usage
     cat <<USAGE
 
 Generates a correlation diagram (scatter plot).

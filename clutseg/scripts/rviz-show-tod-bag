@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "[tod-bag]" "[tod-tf-bag]"
+    print_usage "[tod-bag]" "[tod-tf-bag]"
     cat <<USAGE
 
 Plays a training bag from the tod kinect training dataset using rosbag and

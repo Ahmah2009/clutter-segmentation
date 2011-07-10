@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "[--debug]"
+    print_usage "[--debug]"
     cat <<USAGE
 
 Runs the blackbox recognizer, using tod kinect training dataset 9 and tod

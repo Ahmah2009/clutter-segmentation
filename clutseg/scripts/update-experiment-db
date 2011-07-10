@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 function usage() {
-    print_usage "update-experiment-db" "database"
+    print_usage "database"
     cat <<EOF
 
 Updates database schemata.

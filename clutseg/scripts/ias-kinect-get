@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 function usage() {
-    print_usage "ias-kinect-get" "dir"
+    print_usage "dir"
     cat <<EOF
 
 Downloads IAS Kinect bags.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 function usage() {
-    print_usage $(basename $0) "[bag-dir]"
+    print_usage "[bag-dir]"
     cat <<USAGE
     
 Renames topics in a bag such that tod_training (in SVN revision 50320)

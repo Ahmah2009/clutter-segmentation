@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "train-keypoints" "training-base"
+    print_usage "training-base"
     cat <<USAGE
 
 Creates images showing keypoints on training images from feature.yaml.gz files.

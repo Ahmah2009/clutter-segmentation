@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "result-html" "[--upload]" "[--delete]"
+    print_usage "[--upload]" "[--delete]"
     cat <<USAGE
 
 Generates a HTML report about the experiments and their results. Requires

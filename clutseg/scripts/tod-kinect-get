@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 function usage() {
-    print_usage "tod-kinect-get" "dir"
+    print_usage "dir"
     cat <<EOF
 
 Downloads TOD Kinect bags from http://vault.willowgarage.com/wgdata1/vol1/tod_kinect_bags/training

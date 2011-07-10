@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source ~/.env
-
 function script_init() {
     if has_opt -h || has_opt --help ; then
         usage
@@ -10,9 +8,7 @@ function script_init() {
 }
 
 function print_usage() {
-    name=$1
-    shift
-    echo -e "usage: \033[1m${name}\033[0m $*"
+    echo -e "usage: \033[1m$(basename $0)\033[0m $*"
 }
 
 function has_opt() {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "training-base" "test-base" "tod-config" "[ground]" "[--debug]"
+    print_usage "training-base" "test-base" "tod-config" "[ground]" "[--debug]"
     cat <<USAGE
 
 Evaluates the tod_* object recognition system on a set of test images.

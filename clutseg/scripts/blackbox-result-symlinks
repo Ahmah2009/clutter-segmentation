@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "test-base"
+    print_usage "test-base"
     cat <<USAGE
 
 Creates folders with symlinks to selected artifacts in a test result directory.

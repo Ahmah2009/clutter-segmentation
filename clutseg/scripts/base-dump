@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "base-dump" "base" "camera_info" "image" "points2"
+    print_usage "base" "camera_info" "image" "points2"
     cat <<USAGE
 
 Dumps image and point clouds from bags in directory <base> to directory <base>.

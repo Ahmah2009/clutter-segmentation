@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "[--no-extract]" "dst"
+    print_usage "[--no-extract]" "dst"
     cat <<USAGE
 
 Downloads all semantic dataset from IAS/TUM using wget to any specified

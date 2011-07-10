@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "semantic3d-base" "model" "angle"
+    print_usage "semantic3d-base" "model" "angle"
     cat <<HELP
 
 Displays the point clouds associated with a training subject from a certain

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "semantic3d-base" "subject"
+    print_usage "semantic3d-base" "subject"
     
     cat <<USAGE
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "result-best-succ-rate" 
+    print_usage
     cat <<USAGE
 
 Generate plots for best experiment w.r.t. succ_rate.

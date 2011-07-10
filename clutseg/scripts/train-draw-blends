@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage "train-blend" "training-base" "[--keypoints]"
+    print_usage "training-base" "[--keypoints]"
     cat <<USAGE
 
 Creates blend images from masks and images. If an image has no mask (e.g. pose

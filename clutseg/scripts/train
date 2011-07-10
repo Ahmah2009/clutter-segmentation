@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "training-base" "[bag-dir]"
+    print_usage "training-base" "[bag-dir]"
     cat <<USAGE
 
 Dumps the downloaded training bag files and constructs a training base using
