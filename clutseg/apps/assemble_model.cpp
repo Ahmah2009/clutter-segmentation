@@ -7,6 +7,7 @@
 #include "clutseg/gcc_diagnostic_disable.h"
     #include <boost/foreach.hpp>
     #include <boost/format.hpp>
+    #include <boost/program_options.hpp>
     #include <cv.h>
     #include <iostream>
     #include <pcl/point_cloud.h>
@@ -29,33 +30,94 @@ using namespace cv;
 using namespace opencv_candidate;
 using namespace pcl;
 using namespace std;
+namespace po = boost::program_options;
+
+struct Opts {
+    string modelbase_dir;
+    string object;
+    string pcd_out_file;
+    float xmin;
+    float xmax;
+    float xw;
+    float ymin;
+    float ymax;
+    float yw;
+    string hist_file;
+};
+
+int options(int argc, char ** argv, Opts& opts) {
+    string modelbase = "modelbase";
+    string object = "object";
+    string pcd_out = "pcd_out";
+
+    po::options_description h("Hidden options");
+    h.add_options()
+        (modelbase.c_str(), po::value<string>(&opts.modelbase_dir), "modelbase directory")
+        (object.c_str(), po::value<string>(&opts.object), "assemble model for this object")
+        (pcd_out.c_str(), po::value<string>(&opts.pcd_out_file), "destination point-cloud file");
+
+    po::options_description d("Allowed options");
+    d.add_options()("help", "Print this help message.");
+
+    po::options_description dh("Histogram options");
+    dh.add_options()
+        ("hist", po::value<string>(&opts.hist_file), "destination file for histogram (image)")
+        ("xmin", po::value<float>(&opts.xmin)->default_value(-0.2f), "minimum x-value included")
+        ("xmax", po::value<float>(&opts.xmax)->default_value(0.2f), "maximum x-value included")
+        ("xw", po::value<float>(&opts.xw)->default_value(0.001f), "bin width in direction x")
+        ("ymin", po::value<float>(&opts.ymin)->default_value(-0.2f), "minimum y-value included")
+        ("ymax", po::value<float>(&opts.ymax)->default_value(0.2f), "maximum y-value included")
+        ("yw", po::value<float>(&opts.yw)->default_value(0.001f), "bin width in direction y");
+
+    po::positional_options_description p;
+    p.add(modelbase.c_str(), 1);
+    p.add(object.c_str(), 1);
+    p.add(pcd_out.c_str(), 1);
+
+    po::options_description c;
+    c.add(d).add(dh).add(h);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).options(c).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || vm.count(modelbase) == 0 || vm.count(object) == 0 || vm.count(pcd_out) == 0) {
+        cout << "usage: \033\[1massemble_model\033[0m [options] " + modelbase + " " + object + " " + pcd_out << endl;
+        cerr << endl <<
+            "Reads in a model from the modelbase (a.k.a. TrainingBase) and generates a" << endl <<
+            "point cloud file that contains all model points (corresponding to features)" << endl <<
+            "described in its object coordinate system." << endl;
+        cout << endl;
+        cout << d << endl;
+        cout << dh << endl;
+        return 1;
+    }
+
+    return 0;
+}
 
 int main(int argc, char **argv) {
-    if (argc != 4 && argc != 11) {
-        cerr << "Usage: assemble_model <base> <object> <dst> [<xmin> <xmax> <xw> <ymin> <ymax> <yw> <hist_xy>]" << endl;
-        cerr << endl <<
-            "Reads in a model from the modelbase (a.k.a. TrainingBase) and generates a\n"
-            "point cloud file that contains all model points (corresponding to features)\n"
-            "described in its object coordinate system." << endl;
-        return -1;
+    Opts opts;
+    if (options(argc, argv, opts)) {
+        return 1;
     }
 
     // Loading all of them is a little bit of overkill
     vector<Ptr<tod::TexturedObject> > objects;
-    tod::Loader loader(argv[1]);
+    tod::Loader loader(opts.modelbase_dir);
     loader.readTexturedObjects(objects);
 
     int i = -1;
     Ptr<tod::TexturedObject> object = NULL;
     BOOST_FOREACH(const Ptr<tod::TexturedObject> & obj, objects) {
         i++;
-        if (obj->name == argv[2]) {
+        if (obj->name == opts.object) {
             object = obj;
         }
     }
 
     if (i == -1) {
-        cerr << "Object " << argv[2] << " does not exist." << endl;
+        cerr << "Object " << opts.object << " does not exist." << endl;
         cerr << "Objects in modelbase: ";
         BOOST_FOREACH(const Ptr<tod::TexturedObject> & obj, objects) {
             cerr << obj->name << " ";
@@ -125,14 +187,14 @@ int main(int argc, char **argv) {
         model += view_cloud; */
     }
 
-    io::savePCDFileASCII(argv[3], model);
+    io::savePCDFileASCII(opts.pcd_out_file, model);
 
-    if (argc > 8) {
+    if (opts.hist_file != "") {
         Mat xy_hist_bgr;
         drawCoordinateHist(xy_hist_bgr, model, XY,
-                atof(argv[4]), atof(argv[5]), atof(argv[6]),
-                atof(argv[7]), atof(argv[8]), atof(argv[9]), true);
-        imwrite(argv[10], xy_hist_bgr);
+                opts.xmin, opts.xmax, opts.xw,
+                opts.ymin, opts.ymax, opts.yw, true);
+        imwrite(opts.hist_file, xy_hist_bgr);
     }
     
     return 0;

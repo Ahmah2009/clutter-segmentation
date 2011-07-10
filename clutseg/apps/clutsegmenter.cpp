@@ -101,7 +101,7 @@ int options(int argc, char ** argv, Opts& opts) {
     {
         cout << "usage: \033\[1mclutsegmenter\033[0m [options] " + modelbase + " " + query_image << endl;
         cout << endl;
-        cout << d << "\n";
+        cout << d << endl;
         return 1;
     }
 
