@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
 
 function usage() {
-    cat <<USAGE
-Usage: montage-test-results <test-base>
+    print_usage $(basename $0) "test-base"
 
-Creates montages using imagemagick for a test result
+    cat <<USAGE
+
+Creates posters of result images (such as showing the guesses for all test
+images in one big montage).
 USAGE
 }
 
-source ~/.env
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash $*
 
-testbase=$CLUTSEG_PATH/$1
+expect_arg 0
 
-expect_arg $1 
+testbase=$(get_arg 0)
 
 function do_montage() {
     pushd $testbase/result > /dev/null

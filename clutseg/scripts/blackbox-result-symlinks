@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
 
 function usage() {
-    print_usage $(basename $0) "test-result"
+    print_usage $(basename $0) "test-base"
     cat <<USAGE
 
 Creates folders with symlinks to selected artifacts in a test result directory.
-The <test-result> parameter shall point to a test result directory, see also
-option --store in blackbox_recognizer.
 USAGE
 }
 
-source $CLUTSEG_PATH/clutter-segmentation/scripts/base.bash $*
+source $(rospack find clutseg)/../scripts/base.bash
 
 expect_arg 0
 
-result=$(get_arg 0)
+result=$(get_arg 0)/result
 
 # create_symlinks <folder-name> <glob-suffix-pattern>
 function create_symlinks() {
