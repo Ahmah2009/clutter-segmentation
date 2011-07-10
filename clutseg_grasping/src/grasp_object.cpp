@@ -106,7 +106,7 @@ int main (int argc, char **argv)
       }
     else
       {
-	ROS_ERROR("[grasp_object: ] No transform found!!!");
+	ROS_ERROR("[grasp_object: ] No transform found between base_link and %s ", object_cloud.header.frame_id.c_str());
 	return -1;
       }
 	
