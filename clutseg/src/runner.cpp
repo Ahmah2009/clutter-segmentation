@@ -77,7 +77,7 @@ namespace clutseg {
     void ExperimentRunner::runExperiment(Clutsegmenter & sgm, Experiment & e) {
         bfs::path p = getenv("CLUTSEG_PATH");
         bfs::path test_dir = p / e.test_set;
-        GroundTruth  testdesc = loadGroundTruth(test_dir / "testdesc.txt");
+        GroundTruth  testdesc = loadGroundTruth(test_dir / "ground-truth.txt");
         SetResult resultSet;
         bfs::path camera_path = test_dir / "camera.yml";
         assert_path_exists(camera_path);

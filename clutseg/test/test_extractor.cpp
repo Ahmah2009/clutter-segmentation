@@ -632,7 +632,7 @@ TEST_F(test_extractor, sift_surf_orb_benchmark) {
         // Read images
         bfs::path p(getenv("CLUTSEG_PATH"));
         bfs::path v = p / "ias_kinect_test_grounded_21";
-        GroundTruth g = loadGroundTruthWithoutPoses((v / "testdesc.txt").string());
+        GroundTruth g = loadGroundTruthWithoutPoses((v / "ground-truth.txt").string());
         vector<bfs::path> image_paths;
         /* doesn't work for some ******* reason --- std::transform(g.begin(), g.end(),
             images.begin(), images.end(),

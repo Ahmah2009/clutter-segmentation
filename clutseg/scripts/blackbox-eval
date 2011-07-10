@@ -28,7 +28,7 @@ pushd $CLUTSEG_PATH > /dev/null
         -B $trainbase \
         -I $testbase \
         --store=$testbase/result \
-        --testdesc=$testbase/testdesc.txt \
+        --testdesc=$testbase/ground-truth.txt \
         --mode=1 \
         --verbose=0 \
         -f $config

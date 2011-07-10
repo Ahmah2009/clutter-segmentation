@@ -35,7 +35,7 @@ TEST(test_ground, label_read_many) {
 }
 
 TEST(test_ground, read_ground_truth_without_poses) {
-    GroundTruth  m = loadGroundTruthWithoutPoses("./data/testdesc.txt");
+    GroundTruth  m = loadGroundTruthWithoutPoses("./data/ground-truth.txt");
     LabelSet s = m["t0000.png"];
 
     BOOST_FOREACH(const Label & np, s.labels) {
