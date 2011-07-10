@@ -45,7 +45,7 @@ pushd $base > /dev/null
             # only run with one job, seems to be some racing condition
             # but I did not attempt to find the bug
             # rosrun tod_training pose_estimator -d $subj -j1
-            $debug $(rospack find tod_training)/bin/pose_estimator -d $subj -j1
+            $debug $(rospack find tod_training)/bin/pose_estimator -d $subj -j1 --verbose=0
        fi
     done
 popd > /dev/null

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+function usage() {
+    print_usage $(basename $0) "training-base" "[bag-dir]"
+    cat <<USAGE
+
+Dumps the downloaded training bag files and constructs a training base using
+tod_training, including pose estimation, masking, feature detection and
+2D-3D-mapping.
+
+bag-dir         a directory that contains bag files, fiducial markers, and
+                configuration files. Use tod-kinect-get in order to fetch this
+                data. If not given, it is assumed that the bags were already
+                extracted to <training-base>.
+training-base   destination directory
+USAGE
+}
+
+source $(rospack find clutseg)/../scripts/base.bash
+
+expect_arg 0
+
+base=$(get_arg 0)
+bags=$(get_arg 1)
+
+if [ "$bags" != "" ] ; then
+    rosrun tod_training dump_all.py $bags $base 
+    cp $bags/fiducial.yml $base/
+    cp $bags/features.config.yaml $base/
+    cp $bags/config.yaml $base/
+    pushd $base > /dev/null
+        # Find the camera file and put it into the top-level directory of the
+        # training base. The clutsegmenter script expects it at this location
+        # by default.
+        cp $(find -iname "camera.yml" | head -1) camera.yaml
+        # Auto-generate the config.txt which lists all the objects.
+        find -type d | egrep "\w*" -o > config.txt
+    popd > /dev/null
+fi
+
+rosrun clutseg base-pose $base
+rosrun clutseg train-mask --fix $base
+rosrun clutseg train-detect $base
+rosrun clutseg train-map-2d-3d $base
+
