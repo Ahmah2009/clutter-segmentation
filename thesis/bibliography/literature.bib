@@ -353,7 +353,39 @@ TODO decide about {{, {, " in title
     url = {http://computer.org/proceedings/iccv/0164/vol\%202/01641150abs.htm},
     url = {http://ieeexplore.ieee.org/lpdocs/epic03/wrapper.htm?arnumber=790410},
     volume = {2},
-    year = {1999},
+    year = {1999}
+}
+
+@article{Lowe2004,
+    author = {Lowe, David G.},
+    title = {{Distinctive Image Features from Scale-Invariant Keypoints}},
+    journal = {International Journal of Computer Vision},
+    publisher = {Springer Netherlands},
+    issn = {0920-5691},
+    keyword = {Computer Science},
+    pages = {91-110},
+    volume = {60},
+    number = {2},
+    url = {http://dx.doi.org/10.1023/B:VISI.0000029664.99615.94},
+    abstract = {This paper presents a method for extracting distinctive
+        invariant features from images that can be used to perform reliable
+        matching between different views of an object or scene. The
+        features are invariant to image scale and rotation, and are shown
+        to provide robust matching across a substantial range of affine
+        distortion, change in 3D viewpoint, addition of noise, and change
+        in illumination. The features are highly distinctive, in the sense
+        that a single feature can be correctly matched with high
+        probability against a large database of features from many images.
+        This paper also describes an approach to using these features for
+        object recognition. The recognition proceeds by matching individual
+        features to a database of features from known objects using a fast
+        nearest-neighbor algorithm, followed by a Hough transform to
+        identify clusters belonging to a single object, and finally
+        performing verification through least-squares solution for
+        consistent pose parameters. This approach to recognition can
+        robustly identify objects among clutter and occlusion while
+        achieving near real-time performance.},
+   year = {2004}
 }
 
 @book{Melsa1978,
@@ -415,6 +447,13 @@ inproceedings{Muja2009,
     year = {2010}
 }
 
+@inproceedings{Quigley2009,
+    title = {{ROS: an open-source Robot Operating System}},
+    booktitle = {International Conference on Robots and Automation Workshop on Open Source Software},
+    year = {2009},
+    author = {Morgan Quigley and Ken Conley and Brian P. Gerkey and Josh Faust and Tully Foote and Jeremy Leibs and Rob Wheeler and Andrew Y. Ng}
+}
+
 @article{Rosten2006,
     abstract = {Where feature points are used in real-time frame-rate
         applications, a high-speed feature detector is necessary. Feature
@@ -454,16 +493,20 @@ TODO print last page of bibliography
     url     =    "http://lanl.arXiv.org/pdf/0810.2434",
 }
 
-TODO include ?
-misc{Nabble2009,
-    author = {Rosten, Edward},
-    note = {{http://old.nabble.com/FAST-corner-detection-in-OpenCV.-ts24955212.html, viewed July 2011}}
+@inproceedings{Rublee2011,
+    author = {Ethan Rublee and Vincent Rabaud and Kurt Konolige and Gary Bradski},
+    title = {{ORB: an efficient alternative to SIFT or SURF}},
+    booktitle = {{Proceedings of the 13th IEEE International Conference on Computer Vision}},
+    note = {To appear},
+    year = {2011}
 }
 
-TODO include ?
-misc{OpenCV,
-    author = {OpenCV},
-    note = {{http://opencv.willowgarage.com, viewed July 2011}}
+@inproceedings{Rusu2011,
+    author = {Radu Bogdan Rusu and Steve Cousins},
+    title = {{3d is here: Point Cloud Library (PCL)}},
+    booktitle = {International Conference on Robotics and Automation, Shanghai, China},
+    month = {June},
+    year = {2011}
 }
 
 TODO put into separate file
@@ -548,10 +591,4 @@ TODO print
     year = {2007}
 }
 
-@unpublished{Rublee2011,
-    author = {Ethan Rublee and Vincent Rabaud and Kurt Konolige and Gary Bradski},
-    title = {{ORB: an efficient alternative to SIFT or SURF}},
-    booktitle = {{ICCV 2011}},
-    note = {To appear},
-    year = {2011}
-}
+
