@@ -65,26 +65,27 @@ system. The question arises which coordinate systems are convenient and how
 many are necessary. In our case, the two different coordinate systems discussed
 in the following prove sufficient.
 
-The {\it \gls{camera coordinate system}} is attached to the camera. Two of its basis
-vectors define the image plane and the remaining basis vector is directed
-towards the scene. The camera coordinate system is convenient for the robot. For
-example, if the robot is programmed to grasp an object at two points, it needs
-to know the camera coordinates of the two grasping points. The {\it \gls{object
-coordinate system}}, on the other hand, is attached to the object. The model
-features are located in the object coordinate system, which is also called
-model coordinate system in the literature \cite{Pope2000}. Both coordinate
-systems are shown in \refFigure{figure:coordinate-frames}. The PRT between
-object coordinates and camera coordinates is called the {\it \gls{object-camera
-transformation}} and is denoted by $\ocT$. Subsequently, its inverse PRT is
-called {\it \gls{camera-object transformation}} and denoted by $\coT$
+The {\it \gls{camera coordinate system}} (c) is attached to the camera. Two of
+its basis vectors define the image plane and the remaining basis vector is
+directed towards the scene. The camera coordinate system is convenient for the
+robot. For example, if the robot is programmed to grasp an object at two
+points, it needs to know the camera coordinates of the two grasping points. The
+{\it \gls{object coordinate system}} (o), on the other hand, is attached to the
+object. The model features are located in the object coordinate system, which
+is also called model coordinate system in the literature \cite{Pope2000}. Both
+coordinate systems are shown in \refFigure{figure:coordinate-frames}. The PRT
+between object coordinates and camera coordinates is called the {\it
+\gls{object-camera transformation}} and is denoted by $\ocT$. Subsequently, its
+inverse PRT is called {\it \gls{camera-object transformation}} and denoted by
+$\coT$:
 
 \begin{equation}
-  \coT = \pth{ \ocT }^{-1}
+  \coT = \ocT^{-1}
 \end{equation}
 
 We stick to the subscript and superscript notation introduced in
 \cite{Forsyth2003}.  Here is an example that indicates the usefulness of these
-definitions. To compute the distance between the camera and the object origin,
+definitions. To compute the distance $d$ between the camera and the object origin $\vec{0} = (0, 0, 0)^T$,
 we may use
 
 \begin{equation}
@@ -154,12 +155,11 @@ of the center of perspective \cite{Forsyth2003, Bradski2008}.
 In the previous section, it was shown that estimating the pose of an object
 with respect to the camera is equivalent to estimating the object-camera
 transformation. There is a third way to look at this problem, and this is the
-estimation of the extrinsic parameters of the camera. Unlike the intrinsic
-camera parameters that describe properties of the camera independently of its
-standpoint, the extrinsic parameters relate the camera pose to some given
-coordinate system in its environment. Thus, equivalently to the problem
-definitions given previously in \refSection{section:object-camera-transformations},
-we can see our object recognition problem as
+estimation of the extrinsic parameters of the camera. The extrinsic parameters
+relate the camera pose to some given coordinate system in its environment.
+Thus, equivalently to the problem definitions given previously in
+\refSection{section:object-camera-transformations}, we can see our object
+recognition problem as
 
 \begin{quote}
     ``Find the extrinsic camera parameters with
@@ -168,14 +168,12 @@ we can see our object recognition problem as
 \end{quote}
 
 Estimation of camera parameters belongs to the topic of {\it camera
-calibration}.  \tod uses camera calibration techniques from OpenCV, where the
-intrinsic parameters are known, but the extrinsic parameters remain to be
-estimated.
-
-Given correspondencies of $n$ 3D points with respect to a coordinate system,
-and their $n$ projections onto the image are known, the extrinsic parameters
-can be estimated. It is an instance of the {\it perspective-$n$-point} (PnP)
-problem \cite{Fischler1981}.
+calibration}. In our case, the intrinsic parameters of the Kinect camera are
+factory-specified. \tod uses camera calibration techniques from OpenCV in order
+to find the extrinsic parameters of the camera; given that the correspondencies
+between $n$ 3D points and their $n$ projections onto the image are known, the
+extrinsic parameters can be estimated. It is an instance of the {\it
+perspective-$n$-point} (PnP) problem \cite{Fischler1981}.
 
 \section{Object Recognition}
 
@@ -226,8 +224,8 @@ Given a query image, local features are extracted and matched against the model
 (\refFigure{figure:single-view-or}). This approach works well, if the object in
 the query scene has approximately the same orientation as in the template view.
 Lowe reports that using SIFT features, discussed in
-\refSection{subsection:SIFT}, it is possible to recognize objects up to a 20
-degree rotation \cite{Lowe1999}. Unfortunately, considering only a single view
+\refSection{subsection:SIFT}, it is possible to recognize objects up to a rotation of 20
+degrees \cite{Lowe1999}. Unfortunately, considering only a single view
 is insufficient if query scenes show objects in arbitrary orientations.
 
 \begin{figure}[h]
@@ -322,6 +320,16 @@ descriptor vectors, such that correspondences can be found by nearest neighbour
 search. A feature descriptor that permits for efficient matching is BRIEF
 \cite{Calonder2010}. 
 
+\subsection{Selected Detectors and Descriptors}
+\label{section:selected-algorithms}
+
+Some of the existing detectors and descriptors are relevant for this work. We
+briefly introduce the Scale-Invariant Feature Transform (SIFT) \cite{Lowe1999,
+Lowe2004}. We use SIFT features and the Speeded-Up Robust Features (SURF)
+\cite{Bay2006} in order to compare them in terms of speed with the Oriented
+BRIEF (ORB) \cite{Rublee2011}, the latter being used in our implementation. 
+All SIFT, SURF, and ORB are both feature detectors and descriptors.
+
 \begin{table}
     \begin{center}
         \begin{tabular}{lcccc}
@@ -333,10 +341,11 @@ search. A feature descriptor that permits for efficient matching is BRIEF
             ORB & yes & yes 
         \end{tabular}
     \end{center}
-    \label{table:feature-detectors}
     \caption[Properties of selected feature detectors]{Properties of selected
             feature detectors. SIFT, SURF, and ORB are also feature descriptors}
+    \label{table:feature-detectors}
 \end{table}
+
 
 \subsubsection{SIFT}
 \label{subsection:SIFT}
@@ -348,8 +357,8 @@ pyramid in order to generate scale-invariant features. SIFT is both a feature
 detector and a descriptor. Lowe further describes a system that lets
 correspondences vote in Hough space, whose dimensions are location, orientation
 and scale \cite{Lowe1999}. When bins contain more than a predefined number of
-votes, the object is said to be recognized at this pose. SIFT has also
-successfully been applied to panorama stitching \cite{Brown2006}. 
+votes, the object is said to be recognized at this pose. SIFT is applied
+to panorama stitching \cite{Brown2006}.
 
 \subsubsection{FAST}
 
@@ -379,54 +388,47 @@ than for real-valued features using the L2 norm.
 
 \subsubsection{Oriented BRIEF}
 
-{\it Oriented BRIEF} ({\it ORB}) is a combination of the FAST feature
-detector and the BRIEF feature descriptor, plus modifications that render the
-extracted features orientation-invariant. It was designed to outperform SIFT
-and SURF at least in terms of computation time. An implementation is already
-available in the development branch (trunk) of OpenCV, and a corresponding
-paper is expected to be published at the {\it International Conference on
-Computer Vision} 2011.
+{\it Oriented BRIEF} ({\it ORB}) is a combination of the FAST feature detector
+and the BRIEF feature descriptor, plus modifications that render the extracted
+features orientation-invariant \cite{Rublee2011}. It was designed to outperform SIFT and SURF at
+least in terms of computation time. We here refer to the implementation
+available in OpenCV 2.3
+\footnote{http://code.ros.org/svn/opencv/branches/2.3/opencv/modules/features2d}.
 
 ORB computes image moments for assigning orientations to keypoints detected by
-FAST. Image moments of order $(p + q)$ are defined for a 2D digital image $f$
+FAST. Image moments of order $(p + q)$ are defined (see \cite{Gonzalez2010}) for a 2D digital image $f$
 of dimension $MxN$ as
 
 \begin{equation}
     m_{pq} = \sum_{x=0}^{M-1} \sum_{y=0}^{N-1} x^p y^q f(x, y)
 \end{equation}
 
-ORB computes moments $m_{01}$, and $m_{10}$ for neighbourhoods $f$ of the
-keypoints and designates orientations $\alpha$ as
+ORB computes the moments $m_{01}$ and $m_{10}$ for a circular neighbourhood of a
+keypoint and derives an orientation $\alpha$ for the keypoint:
 
 \begin{equation}
-    \alpha = \arctan \frac{m_{01}}{m_{10}}
+    \alpha = \arctantwo \pth{ m_{01}, m_{10} }
 \end{equation}
 
 Consider the vector $\pth{ m_{01}, m_{10} }^T \in \real^2$. The angle of this
-vector becomes the orientation of the keypoint. If $f$ were a probability
-distribution, then this vector would contain the means of the marginal
-distributions of $x$ and $y$, respectively.
-
-% TODO: verify correlation problem and relation to descriptor entropy
+vector becomes the orientation of the keypoint. If the keypoint neighbourhood
+were a probability distribution, then this vector would contain the means of
+the marginal distributions of $x$ and $y$, respectively.
 
 A problem arises, when rotating the BRIEF test pattern according to the FAST
 keypoint orientation. There is a correlation between the image moments and the
 BRIEF vectors obtained from a rotated test pattern. Such a correlation reduces
 the entropy of computed BRIEF descriptors. The solution is to compute a test
-pattern that has only little correlation. Oriented BRIEF uses test locations as
+pattern that has only little correlation. ORB uses test locations as
 depicted in \refFigure{figure:orb-test-locations}.
 
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.4\textwidth]{orb-test-locations}
+        \caption{The 256 test locations of ORB}
         \label{figure:orb-test-locations}
-        \caption{The 256 test locations of Oriented BRIEF}
     \end{center}
 \end{figure}
-
-The description about ORB given above is based on a presentation at the {\it
-International Conference on Robotics and Automation} (ICRA) 2011 in Shanghai,
-and inferred from the implementation of ORB in the OpenCV library. 
 
 \subsection{Feature Matching}
 \label{subsection:feature-matching}
@@ -507,11 +509,11 @@ defined.
 
 It is difficult to perceive our object recognition problem as a pure
 classification problem.  Assume, there were no interest in the pose of an
-object. Assume further that objects are unique on an image. Then object
+object. Assume further that objects are unique in an image. Then object
 recognition can be seen as a {\it multi-label classification} problem, as
 described in \cite{Tsoumakas2007}.  An image is described by a set of labels,
-and symmetrically, the classification result is a set of labels that predict
-which objects are in the image. The Receiver operating characteristics (ROC)
+and conversely, the classification result is a set of labels that predict
+which objects are in the image. The Receiver Operating Characteristics (ROC)
 can be used to evaluate standard two-class classifiers \cite{Fawcett2006,
 Melsa1978}. Standard measures of goodness are the true and false positive rates
 that can be computed from confusion matrices. In case of multi-label

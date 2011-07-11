@@ -1,44 +1,48 @@
 This chapter describes our \clutseg system for recognizing an object in a
-cluttered scene. It takes a query image as input
-(\refFigure{figure:clutseg-input-output}) (a); as a result it shall detect the
+cluttered scene. It takes a query image as input. As a result it shall detect the
 presence of an object, find its pose in the query scene, and mark points on the
-object (\refFigure{figure:clutseg-input-output}) (b).
+object.
+
+% TODO: maybe include input and output picture
 
 \clutseg is based on the existing Textured Object Detection (\tod) Library,
 which we discuss in detail.
 
 \section{Software Dependencies}
 
-\clutseg depends on many other open-source
-libraries. Of these, we briefly explain: \opencv for operating on images, \pcl
-for dealing with 3D data, \ros for interfacing with the robot, \sqlite for
+\clutseg depends on many other open-source libraries. Of these, we briefly
+explain (\refFigure{figure:clutseg-deps}): \opencv for operating on images,
+\pcl for dealing with 3D data, \ros for interfacing with the robot, \sqlite for
 storing and retrieving experimental data, and \rproject for analysing data.
 
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{clutseg-deps}
         \caption[The software dependencies of \clutseg]{\clutseg depends (amongst others) on \tod, \ros,
-        \pcl, \opencv, \vslam, \rproject, and \sqlite.} \end{center}
+        \pcl, \opencv, \vslam, \rproject, and \sqlite.}
+        \label{figure:clutseg-deps}
+    \end{center}
 \end{figure}
 
-{\it OpenCV} is an open-source library for computer vision. It provides for
-image representation, input and output as well as for many image processing
-operations. It offers methods for camera calibration and feature detection,
-which are used by \clutseg and \tod.
+{\it OpenCV} is an open-source library for computer vision \cite{Bradski2008}.
+It supports the representation, the input and the output of images as well as
+many image processing operations. It offers methods for camera calibration and
+feature detection, which are used by \clutseg and \tod.
 
 The {\it Robot Operating System} (\ros) is an open-source framework for the
 development of robot applications, having its roots in the STAIR project at
-Stanford University. In \ros, distributed nodes communicate by publishing and
-subscribing to topics. In our case, the interesting topics were the image and
-the 3D point cloud, together forming the sought-after depth images. These
-images and other data can be recorded in so-called bags. \ros contains the
-\vslam package, which is only used by \tod because it contains a RANSAC
-implementation for solving the PnP problem.
+Stanford University \cite{Quigley2009}. In \ros, distributed nodes communicate
+by publishing and subscribing to topics. In our case, the interesting topics
+were the image and the 3D point cloud, together forming the sought-after depth
+images. These images and other data can be recorded in so-called bags. \ros
+contains the \vslam package, which is only used by \tod because it contains a
+RANSAC implementation for solving the PnP problem.
 
-The {\it Point Cloud Library} (\pcl) is concerned with processing 3D data. A
-point cloud is a set of vertices in space; a low-level representation of
-three-dimensional entities in space. For example, the output of the Kinect
-camera is a point cloud.
+The {\it Point Cloud Library} (\pcl) is concerned with processing 3D data
+\cite{Rusu2011}. A point cloud is a set of points in n-dimensional space. For
+example, the output of the Kinect camera can be represented by a point cloud
+where each point is described by its Cartesian coordinates with respect to the
+camera and by its observed color.
 
 {\it SQLite} is a reliable file-based relational database that is well-suited
 for local applications. It is thoroughly tested with over a million tests, and
@@ -56,7 +60,7 @@ in particular also a \sqlite database.
 In this section we analyze the software underlying the \clutseg system. We
 explain how we modified it and improved it to better fulfill our requirements.
 We describe how to extract models of template objects from multiple views, and
-covers the elementary pipeline that later recognizes instances in query scenes.
+cover the elementary pipeline that later recognizes instances in query scenes.
 
 The Robot Operating System contains the packages {\it tod}, {\it tod\_training}
 and {\it tod\_detecting}. The system formed by these three \ros packages is
@@ -87,9 +91,9 @@ object.
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{../doc/tod_training}
-        \label{figure:tod-training}
         \caption[The pipeline of \tod used for learning models]{The pipeline of \tod used for learning models. The rectangular
 nodes represent processes, the slanted nodes represent data.}
+        \label{figure:tod-training}
    \end{center}
 \end{figure}
 
@@ -123,26 +127,32 @@ by the construction of model features from the region of interest.
 \subsubsection{Camera Calibration}
 
 Given a view, the first step is to obtain the object-camera transformation by
-estimating the extrinsic parameters of the camera. The camera calibration is
-based on chessboard-like fiducial markers that are glued onto the rotating
-table on two opposite sides. \opencv offers camera calibration methods that
-help to find the chessboard corners and then estimate the extrinsic parameters
-by solving the perspective-n-point problem. 
+estimating the extrinsic parameters of the camera. This is required for every
+view because the object pose changes relative to the camera, and conversely,
+the camera pose changes relative to the object. The camera calibration is based
+on chessboard-like fiducial markers that are glued onto the rotating table on
+two opposite sides (\refFigure{figure:fiducial-object}). \opencv offers camera
+calibration methods that help to find the chessboard corners and then, based on
+these corners, estimate the extrinsic parameters by solving the
+perspective-n-point problem. 
 
-\begin{figure}[h!] \begin{center}
-\includegraphics[width=0.5\textwidth]{fiducial-object} \caption{The
-relation between the fiducial markers and the object coordinate system}
-\end{center}
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{fiducial-object}
+        \caption[The fiducial coordinate system and the object coordinate system]
+                {The fiducial coordinate system and the object coordinate system are defined to be the same.}
+        \label{figure:fiducial-object}
+    \end{center}
 \end{figure}
 
 There is a subtlety in the relationship between the fiducial markers and the
 object coordinate system. The camera calibration computes the PRT $\fTv$
-between the {\it fiducial coordinate system} attached to the fiducial markers
+between the {\it fiducial coordinate system} ($f$) attached to the fiducial markers
 and the camera coordinate system. The origin in fiducial coordinates is defined
-halfway between the two chessboards. Yet, we need the object-camera
-transformation $\ocT$. The solution here consists in just {\it defining} the
-object coordinate system to be the same as the coordinate system attached to
-the fiducial markers, that is
+halfway between the two chessboards. Yet,
+we need the object-camera transformation $\ocT$. The solution here consists in
+just {\it defining} the object coordinate system to be the same as the
+coordinate system attached to the fiducial markers, that is
 \begin{equation}
     \ocT: \real^3 \to \real^3, \vec{p} \mapsto\ \fTv(\vec{p})
     \label{equation:fiducial-object}
@@ -150,17 +160,16 @@ the fiducial markers, that is
 
 As long as one of the two chessboards is detected, the transformation can be
 estimated, which proves useful when the template object occludes the chessboard
-further away from the camera. For the chessboards were sometimes not detected
-on the image at all, we used dithered binary images as a fallback if the
-chessboard corner detection on the original images failed. This improved
-reliability. We singled out 23 cases of the original images where camera
-calibration failed. Some tested image processing operations work better than
-others on these 23 images (\refTable{table:camera-calib-fallback}). Three
+further away from the camera. The chessboards were sometimes not detected in
+the image at all. In such cases, we used dithered binary images as a fallback.
+This improved reliability. We singled out 23 cases of the original images where
+camera calibration failed. Some tested image processing operations work better
+than others on these 23 images (\refTable{table:camera-calib-fallback}). Three
 pre-processed images are shown in \refFigure{figure:camera-calib-fallback}.
 
 \begin{table}[h!]
     \begin{tabular}{llrr}
-        Pre-processing method & Imagemagick command & Success rate \\
+        Pre-processing method & Imagemagick command & Success \\
         \hline
         Dithering to Binary & {\tt convert -monochrome \$1 \$2} & 23/23 \\
         Color Reduction & {\tt convert -colors 2 \$1 \$2} & 23/23 \\
@@ -171,19 +180,20 @@ pre-processed images are shown in \refFigure{figure:camera-calib-fallback}.
         Opening & {\tt convert -morphology Open Disk \$1 \$2} & 0/23 \\
         Median Filtering & {\tt convert -median 2 \$1 \$2} & 0/23 \\
     \end{tabular}
+    \caption[Various image processing operations for more reliable camera calibration]{Various image processing operations
+have been applied to the set of 23 images where detecting the chessboards initially failed. When converting these images to dithered binary images,
+the chessboard was detected on all 23 of them.}
     \label{table:camera-calib-fallback}
-    \caption[Various image processing operations for more reliable camera calibration]{Success rates of detecting chessboards after image processing
-        operations on 23 images where the detection originally failed.}
 \end{table}
 
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=\textwidth]{pose-pre-process}
-        \label{figure:camera-calib-fallback}
         \caption[An original and three pre-processed images for camera calibration]{From left to right: (1)
 Original image where pose estimation failed; after (2) Dithering to Binary;
 after (3) Color Reduction; after (4) Local Adaptive Thresholding. On images 2,
 3, and 4, the extrinsic parameters were successfully estimated.}
+        \label{figure:camera-calib-fallback}
     \end{center}
 \end{figure}
 
@@ -198,13 +208,23 @@ pass-through filter of a predefined size at the object origin $\ocT
 \pth{\vec{0}}$.  Afterwards, a radius outlier search removes all points with
 less than 20 neighbours within 2 cm. \tod projects the segmented point cloud
 onto the image plane. The set of projected points form a mask that is supposed
-to be aligned as close as possible to the true region of interest. Due to some
-bug in the underlying software, the estimate for the region of interest
-sometimes included parts of the chessboards next to the template objects. These
-undesired parts in the mask were observed to be separate connected components.
-Hence, we fixed the mask by opening the image with a disk of radius $10.3$,
-removing all but the largest connected component, and dilating the mask with a
-disk of $2.3$ to compensate for the initial opening step.
+to be aligned as close as possible to the true region of interest.
+
+% Due to some bug in the underlying software, the estimate for the region of interest
+% sometimes included parts of the chessboards next to the template objects. These
+% undesired parts in the mask were observed to be separate connected components.
+% Hence, we fixed the mask by opening the image with a disk of radius $10.3$,
+% removing all but the largest connected component, and dilating the mask with a
+% disk of radius $2.3$ to compensate for the initial opening step.
+
+% \begin{figure}[h!]
+%   \begin{center}
+%       \includegraphics[width=0.35\textwidth]{disk-4-3}
+%       \caption[Disk for opening]{
+%           }
+%       \end{center}
+% \end{figure}
+
 
 % probably should not include a picture from other database?
 % \begin{figure}[h!]
@@ -250,16 +270,17 @@ once while extracting features.
 
 This section shows how \tod can be used to recognize instances of template
 objects in query scenes, making use of the models learned in the previous
-section. The recognition process in \tod can be split into three parts: First,
-the extraction of query features. Second, the matching of query features and
-model features to obtain a set of correspondences between query image and
-models. Third, the estimation of object poses based on this set of
-correspondences.
+section (\refFigure{figure:recognition-pipeline}). The recognition process in
+\tod can be split into three parts: First, the extraction of query features.
+Second, the matching of query features and model features to obtain a set of
+correspondences between query image and models. Third, the estimation of object
+poses based on this set of correspondences.
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{../doc/tod_detecting_kinect}
         \caption[The recognition pipeline of \tod]{\tod recognition pipeline (Kinect mode).}
+        \label{figure:recognition-pipeline}
    \end{center}
 \end{figure}
 
@@ -280,8 +301,7 @@ reasonable to select the same feature extractor as in the model extraction.
 Both query feature and model feature extraction can be configured, so \tod
 allows to try different feature detectors with configurable parameters.  \tod
 also provides rBRIEF, an experimental modified version of BRIEF, which we used
-in some experiments but we then replaced in favor of Oriented BRIEF from
-\opencv.
+in some experiments but we then replaced in favor of ORB from \opencv.
 
 \subsubsection{Feature Matching}
 \label{subsubsection:tod-feature-matching}
@@ -299,7 +319,7 @@ Sensitive Hashing in \tod for matching.
 
 \tod finds up to $k$ nearest neighbours for each query feature. The maximum
 number $k$ of correspondences per query feature can be controlled by parameter
-{\tt knn}.  \tod implements the ratio test, as described in \cite{1999}.
+{\tt knn}.  \tod implements the ratio test, as described in \cite{Lowe2004}.
 
 % TODO: introduce parameter knn
 % TODO: discuss ratio test from lowe
@@ -308,9 +328,9 @@ number $k$ of correspondences per query feature can be controlled by parameter
 \subsubsection{Guess}
 
 The hypotheses \tod generates for a given query scene are called {\it guesses}.
-A guess is a triple $(i, \hat{T},\ S)$, where $i$ denotes the template object
+A guess is a triple $(i,\ \hat{T},\ S)$, where $i$ denotes the template object
 which \tod believes to see on the scene, $\hat{T}$ the estimated pose of the
-object in terms of a object-camera transformation and $S \subseteq C_i$ the
+object in terms of an object-camera transformation and $S \subseteq C_i$ the
 consensus set of inliers. 
 
 \subsubsection{Pose Estimation}
@@ -328,11 +348,11 @@ because the RANSAC call in the $j$-th iteration is told to operate only on the
 set $C_i - \bigcup_{k=1}^{j-1} S_{ik}$, and $C$ forms a partition. If not, then
 iteration is stopped, and \tod continues with the correspondence set for the
 next template object, if any. This means that the inlier sets of two different
-guesses never share a correspondence.
+guesses never share a correspondence. 
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=0.55\textwidth]{inlier-criteria.png}
+        \includegraphics[width=\textwidth]{inlier-criteria.png}
         \caption[A model aligned to the query scene]{A model aligned to the
             query scene. The query features ($\times$) correspond to model features
             ($\bullet$).  The correspondence belonging to the lower right query feature is
@@ -341,6 +361,7 @@ guesses never share a correspondence.
             feature; this correspondence is said to be an {\it inlier}, or equivalently, it
             is said to belong to the consensus set for the aligned model. The other
             correspondence is designated {\it $outlier$}.}
+        \label{figure:inlier-criteria}
    \end{center}
 \end{figure}
 
@@ -353,8 +374,10 @@ problem.  The largest consensus set found is fed to the PNP-solver in \opencv
 
 % TODO: introduce parameter max_projection_error
 
-Altogether, for a given query scene, \tod takes the query image and generates a
-set of guesses, which is the output of the \tod recognition process.
+\refFigure{figure:inlier-criteria} shows a model aligned to the scene.
+Altogether, for a given query scene, \tod takes the query image and generates
+an unordered set of guesses, which is the output of the \tod recognition
+process.
 % The task is rendered difficult by possible confusion in the partition $C$ with respect
 % to the true partition, that is some correspondences might have been matched to
 % the wrong object. \tod iterates over each correspondence set $C_i$, and
@@ -395,11 +418,11 @@ guess $(i, \hat{T}, S)$. Different rankings can be defined and plugged into
 of multiple guess rankings. Yet, the ranking of interest is a guess ranking
 $r_{S}$ that assigns scores to guesses according to the number of inliers
 \begin{equation}
-    r_S: (i, \hat{T}, S) \mapsto \norm{S}
+    r_S: (i, \hat{T}, S) \mapsto \left|S\right|
 \end{equation}
 
 The number of inliers is not only interesting because of the assumed correlation
-with probability of being correct. It also simplifies the robotic task of grabbing
+with probability of being correct. It also simplifies the robotic task of grasping 
 an object by supplying more 3D points.
 
 \subsection{Guess Refinement}
@@ -410,7 +433,7 @@ estimates. Guess refinement in \clutseg takes one of the guesses $(i, \hat{T},
 S)$. \clutseg matches the query features only against the model features of the
 $i$-th template object, as if the modelbase contained only one model. The pose
 estimation using RANSAC leads to a new set of guesses, for instances of the
-$i$-th template object only. Thebest guess according to the chosen guess
+$i$-th template object only. The best guess according to the chosen guess
 ranking is designated the {\it refined guess}.
 
 Guess refinement aims at finding more matches between query features and the
@@ -436,7 +459,7 @@ guess ranking, guess refinement and guess rejection into context.
 Given a query scene, the \clutseg recognition process first calls \tod once to
 produce a set of initial guesses $D$ for all objects in the modelbase. A
 ranking defines a total order on $D$. The inlier ranking $r_S$ is used for this
-by default. \clutseg chooses the first ranked guess in $G_D$ and computes the
+by default. \clutseg chooses the first ranked guess in $D$ and computes the
 refined guess. If the ranking of the refined guess is greater or equal than
 {\tt accept\_threshold}, it is accepted and returned as the result of the
 recognition process. In case the refined guess is rejected or no refined guess
@@ -501,9 +524,9 @@ on the choice of feature extractor, and which are treated separately.
   \end{center}
 \end{table}
 
-Even if we only consider ten of these parameters as factors to five levels
-each, we obtain $5^{10} \approx 10^6$ different parameter sets. Assuming we
-would like to test two different matchers and three different feature
+Even if we only consider five different values for each of the ten of these
+parameters, we obtain $5^{10} \approx 10^6$ different parameter sets.  Assuming
+we would like to test two different matchers and three different feature
 detectors. This would result in around $6 \cdot 10^6$ parameter sets. A full
 factorial design for finding optimal parameters, as recommended in
 \cite{Alpaydin2010}, becomes difficult. The pragmatic approach chosen in this
@@ -524,10 +547,10 @@ choice needs to be made for the feature detector and the feature descriptor.
 Feature detectors again need to be configured. The requirements described in
 \refChapter{chapter:introduction} call for a feature detector that produces
 features in good quantities, and it shall be reasonably fast. Hence, we chose
-Oriented BRIEF, which takes three main parameters. The number of levels in the
-scale-space pyramid is denoted by {\tt octaves}, the magnification factor
-between two levels is called {\tt scale\_factor}.  Parameter {\tt n\_features}
-is a hint for Oriented BRIEF on how many features are desired.
+ORB, which takes three main parameters. The number of levels in the scale-space
+pyramid is denoted by {\tt octaves}, the magnification factor between two
+levels is called {\tt scale\_factor}.  Parameter {\tt n\_features} is a hint
+for ORB on how many features are desired.
 
 \subsubsection{Feature Matching Parameters}
 
@@ -537,15 +560,14 @@ parameters in common. It is possible to plug different matching algorithms into
 refine\_matcher\_type}), but partly dictated by the prior choice of feature
 descriptor. A binary feature descriptor calls for a matcher that is
 well-designed to work with binary vectors. Also, brute-force is hardly a choice
-except for use as comparison to approximate nearest neighbour search algorithms.
-We chose the Locally Sensitive Hashing algorithm implemented in \tod.
-Parameter {\tt detect\_knn} ({\tt refine\_knn}) is a hint to the matching
-algorithm about how many neighbours per query feature shall be retrieved. The
-ratio test can be enabled or disabled by {\tt detect\_do\_ratio\_test} and
-configured by {\tt detect\_ratio\_threshold} for the detection step. In the
-refinement step it does not make sense and is disabled by default. The default
-value for {\tt detect\_ratio\_threshold} is selected to be $0.8$, as
-recommended in \cite{Lowe1999}.
+except for use as comparison to approximate nearest neighbour search
+algorithms.  We chose the Locally Sensitive Hashing algorithm implemented in
+\tod.  Parameter {\tt detect\_knn} ({\tt refine\_knn}) is a hint to the
+matching algorithm about how many neighbours per query feature shall be
+retrieved. The ratio test (\cite{Lowe2004}) can be enabled or disabled by {\tt
+detect\_do\_ratio\_test} and configured by {\tt detect\_ratio\_threshold} for
+the detection step. In the refinement step it does not make sense and is
+disabled by default.
 
 % TODO: check whether correspondences or what kind of points are removed in tod
 % guess generator after each call to ransac
@@ -565,13 +587,12 @@ than {\tt detect\_min\_inliers\_count} ({\tt refine\_min\_inliers\_count}).
 \subsection{Measured Statistics}
 \label{subsection:measured-statistics}
 
-\clutseg supports measuring its performance with regard to scene score, success
-rate, pose estimation error, and classification error on a given set of scenes.
-This subsection explains how errors and scores are computed for given query
-scenes or whole sets of query scenes where ground truth is available. We cover
-the statistics that are recorded in the learning and the recognition process,
-which are aimed at simplifying the reasoning about the system's performance and
-about the influence of parameters. 
+This subsection describes statistics that are recorded by \clutseg for a set of
+scenes where ground truth is available. We explain how errors and scores are
+computed for a given query scene or whole sets of query scenes. We cover the
+statistics that are recorded in the learning and the recognition process, which
+are aimed at simplifying the reasoning about the system's performance and about
+the influence of parameters. 
 
 \subsubsection{Learning Statistics}
 
@@ -611,12 +632,14 @@ on the scene.
 
 \subsubsection{Pose Estimation Error}
 
-The error in the estimated pose can only be computed in case the guessed object is
-actually visible in the scene. In case it is, the translational error $e_t$ given
-ground truth pose $\ocT$ and pose estimate $\ocTh$ is given by
+The error in the estimated pose can only be computed in case the guessed object
+is actually visible in the scene. In case it is visible, the translational
+error $e_t$ given ground truth pose $\ocT$ and pose estimate $\ocTh$ is given
+by the distance between the estimated location and the true location of the
+object origin $\vec{0} = (0, 0, 0)^T$:
 
 \begin{equation}
-    e_t = \normtwo{\ \ocTh \pth{ \vec{0} -\ \ocT \vec{0} }\ }
+    e_t = \normtwo{\ \ocTh \pth{ \vec{0} } -\ \ocT \pth{ \vec{0} }\ }
 \end{equation}
 
 The orientation error $e_\alpha$ is computed from the ground truth orientation $r$
@@ -666,6 +689,14 @@ too much. On the other hand, it does not provide useful gradient information in
 regions of bad parameter sets, given the function's flat surface beyond a
 certain region defined by $t_{max}$ and $\alpha_{max}$.
 
+\subsubsection{Success Rate}
+
+We define an object to be successfully recognized if and only if its estimated
+pose does not exceed the error margins for translation ($t_{max}$) and rotation
+($\alpha_{max}$). \clutseg produces only one guess per scene. The {\it success
+rate} is the ratio between the number of scenes where \clutseg successfully
+recognized an object and the number of scenes in total. 
+
 % For example, let two objects A and B be on the scene. \clutseg makes a guess,
 % but confusing objects A and B, it states that A was found at a pose close to
 % object B, and also with inliers emanating from object B. In this case, the
@@ -702,14 +733,14 @@ and the major implementation decisions that saved computing resources.
 
 \clutseg uses a \sqlite database for keeping track of parameter sets and the
 recorded statistics, as introduced in Sections~\ref{subsection:parameter-space}
-and \ref{subsection:measured-statistics}  The experiment runner can be executed
-in the background. When being idle, it polls the database for new parameter
-sets.  New parameter sets are tested for validity with computationally cheap
-tests.  The failing ones are marked and skipped, thus one failing experiment
-does not kill the process. A no-frills object-relational mapper provides a
-convenient interface to work with the database. The primary purpose of the
-database consists in selecting experiment inputs and outputs in a central,
-accessible and convenient location.  Few efforts have been spent on
+and \ref{subsection:measured-statistics}, respecitvely. The experiment runner
+can be executed in the background. When being idle, it polls the database for
+new parameter sets.  New parameter sets are tested for validity with
+computationally cheap tests.  The failing ones are marked and skipped, thus one
+failing experiment does not kill the process. A no-frills object-relational
+mapper provides a convenient interface to work with the database. The primary
+purpose of the database consists in selecting experiment inputs and outputs in
+a central, accessible and convenient location.  Few efforts have been spent on
 normalization, performance tuning or any other aspects that were not related to
 its primary purpose. For convenience, data can be selected from various
 database views.

@@ -42,9 +42,8 @@ to the object coordinate system.
 
   The resolution of the image was 1280x1024 pixels, and the dense point cloud
 had a resolution of 640x480. The sampling rate was set to about one depth image
-per second. The camera matrix needs to be recorded as well, for it is required
-at least in solving the point-to-point correspondence problem in pose
-estimation. 
+per second. The camera matrix needs to be recorded, as it is required at least
+in solving the point-to-point correspondence problem in pose estimation. 
 
 \subsection{Modelbases}
 \label{subsection:modelbase}
@@ -72,7 +71,7 @@ keypoints on average per image of the modelbase raw data.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{modelbase}
-        \caption[The four textured objects used in evaluation]{The four objects \assamTea, \haltbareMilch, \jacobsCoffee, and \icedtea, which were used in evaluation}
+        \caption[The four textured objects used in evaluation]{The four objects \assamTea, \haltbareMilch, \jacobsCoffee, and \icedtea, which were used in evaluation.}
         \label{figure:modelbase}
     \end{center}
 \end{figure}
@@ -105,10 +104,12 @@ coordinate system.
 The validation set, which was used for optimizing parameter values, was
 collected similarly to the data for the modelbases. Again, the fiducial markers
 were required for computing ground truth for the objects on the validation
-scenes.  We recorded around 50--60 scenes, each of them showing three instances
-of objects in the modelbase. Out of those, we chose 21 scenes at roughly equal
-angle increments to form the validation set. The scenes show the objects with
-varying levels of occlusion. Each object appears in upright orientation.
+scenes.  We recorded around 50--60 views of various scenes, each containing
+three objects from the modelbase. Out of those, we chose 21 scenes to form the
+validation set. We chose them in roughly equal angle increments such that the
+variance in viewpoint between two scenes is maximized. The scenes show the
+objects with varying levels of occlusion. Each object appears in upright
+orientation.
 
 \begin{figure}[h!]
     \begin{center}
@@ -225,12 +226,6 @@ of wall-clock time to compute, an average of
 \refTable{table:hardsoftware-parameter-optimization} lists the hardware and software
 configuration.
 
-<<>>=
-    rm(e_all)
-    rm(e_fast_rbrief)
-    rm(e_orb)
-@
-
 \subsection{Observations}
 
 Finding good parameters has been an interactive process. New parameter sets
@@ -258,13 +253,26 @@ a high success rate.
     hist(r_all$succ_rate, xlab = "Success rate", main="Histogram of success rates")
 @
     \end{center}
+% FIXME
     \caption[The observed success rates in the experiments]{From left to right:
-(a) the smoothed scatter plot of the success rates. Identifiers are assigned to
-experiments in increasing order over time. (b) The observed distribution of
-success rates. Useless parameter values result in a zero success rate.
+         (a) the smoothed scatter plot of success rates of \Sexpr{e_all$cnt} experiments in total.
+We assigned identifiers to the experiments in increasing order with time. The patterns reflect our
+tactics in choosing which part of parameter space to explore next.
+(b) The observed distribution of
+success rates in all experiments. Bad parameter values result in a zero success rate.
 Only a few parameter sets led to success rates greater than $90\%$.}
     \label{figure:experiment-progress}
 \end{figure}
+
+% FIXME define success rate
+% FIXME scene score => guess score
+
+<<>>=
+    rm(e_all)
+    rm(e_fast_rbrief)
+    rm(e_orb)
+    rm(r_all)
+@
 
 \subsection{Selected Parameter Set}
 
@@ -323,7 +331,9 @@ on the validation set. It contains values for all configurable system
 parameters. \refTable{table:selected-parameters-features} provides values for
 feature extraction. We used the same feature extraction parameters for the
 modelbase and for the query scenes. We used the default values from \opencv for
-parameters {\tt octaves} and {\tt scale\_factor}.
+parameters {\tt octaves} and {\tt scale\_factor}. We chose the value for
+{accept\_threshold} empirically such that it exceeded the number of inliers in
+cases where a mislabeling was observed.
 
 \begin{table}[h!]
   \begin{center}
@@ -345,7 +355,7 @@ parameters {\tt octaves} and {\tt scale\_factor}.
 
 \refTable{table:sps-match-guess} shows parameter values for the
 detection and refinement stages. We used Locality Sensitive Hashing in both
-stages to match the binary features produced by Oriented BRIEF.
+stages to match the binary features produced by ORB. 
 
 \begin{table}[h!]
   \begin{center}
@@ -415,7 +425,7 @@ set.
     }
 @
 
-For \clutseg uses randomized algorithms, we have run it with the SPS
+Since \clutseg uses randomized algorithms, we have run it with the SPS
 values for 20 times on the validation set to measure the average performance.
 The system correctly recognized an object within error bounds of 3 cm and 20
 degrees in rotation in
@@ -545,9 +555,10 @@ for the test set.
 \subsection{Performance on Test Set}
 \subsection{Performance in Live Test}
 
-\subsection{Oriented BRIEF}
+\subsection{ORB}
+\label{subsection:evaluation-orb}
 
-This subsection discusses results of experiments with Oriented BRIEF. It covers
+This subsection discusses results of experiments with ORB. It covers
 a benchmark that compares computation speed of ORB, SIFT, and SURF. It shows
 how ORB responds to the number of desired features, a parameter that cannot be
 found in many other feature detectors.
@@ -573,7 +584,7 @@ measured CPU time was roughly equivalent to wall-clock time. The hardware and
 software configuration of the notebook used for the benchmark is shown in
 \refTable{table:hardsoftware-sift-surf-orb-benchmark}.
 
-Oriented BRIEF ran about
+ORB ran about
 \Sexpr{floor(d$img_cpu[sift]/d$img_cpu[orb])} times faster than SIFT, and about
 \Sexpr{floor(d$img_cpu[surf]/d$img_cpu[orb])} times faster than SURF.  Because
 ORB required only \Sexpr{d$img_cpu[orb]} milliseconds for computing keypoints and
@@ -611,25 +622,27 @@ pose estimation.
     rm(orb)
 @
 
-\subsubsection{Feature Quantity}
+\subsubsection{Number of Features}
 
 In this work, it has been necessary to control the number of features selected
 by a feature detector.  In general, the number of features selected by a
 feature detector should be configurable, using a simple and intuitive threshold
-\cite{Tuytelaars2007}.
+\cite{Tuytelaars2007}. ORB has such a threshold, and our evaluation 
+indicates that this threshold is effective.
 
 The parameter {\tt n\_features} specifies the number of desired features
-produced by Oriented BRIEF. Other feature detectors and descriptors in \opencv,
-such as SIFT and SURF do not provide such a parameter. Neither do the feature
-detectors FAST and STAR. The parameter {\it n\_features} is simple and
-intuitive. Yet, ORB does not make any guarantee about the actual number of
-features extracted on the image. The parameter is just a hint. The question
-arises how well ORB responds to different numbers of desired features.
+produced by ORB. Other feature detectors and descriptors in \opencv, such as
+SIFT and SURF do not provide such a parameter. Neither do the feature detectors
+FAST and STAR. The parameter {\it n\_features} is simple and intuitive. Yet,
+ORB does not make any guarantee about the actual number of features extracted
+on the image. The parameter is just a hint. The question arises how well ORB
+responds to different numbers of desired features.  ORB selects features based
+on the Harris corner measure \cite{Rublee2011}.
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{orb-response-test-images}
-        \caption[Four test images for Oriented BRIEF]{From left to right: (a)
+        \caption[Four test images for ORB]{From left to right: (a)
             \assamTea, (b) {\it clutter}, (c) {\it house}, and (d) {\it mandrill}.}
             \label{figure:orb-response-test-images}
     \end{center}
@@ -665,8 +678,8 @@ arises how well ORB responds to different numbers of desired features.
     invisible(dev.off())
 @
      \includegraphics[width=0.65\textwidth]{orb-response-n-features}
-     \caption[The response of Oriented BRIEF on the number of desired features]
-         {The response of Oriented BRIEF on the number of desired features.}
+     \caption[The response of ORB on the number of desired features]
+         {The response of ORB on the number of desired features.}
      \label{figure:orb-response-n-features}
     \end{center}
 \end{figure}
@@ -683,14 +696,12 @@ actual keypoints reaches its maximum for all four images.
 \Sexpr{max(mandrill)} keypoints on this image. This number is greater than for
 image {\it house}, where only \Sexpr{max(house)} features were chosen for all
 values of {\tt n\_features} greater or equal than \Sexpr{r[[1]][min(which(house == max(house)))]}.
-
 <<>>=
    max_exceed = -min(min(r[[1]] - assam_tea),
           min(r[[1]] - clutter),
           min(r[[1]] - house),
           min(r[[1]] - mandrill))
 @
-
 The actual number was never observed to exceed the desired number of keypoints
 by more than \Sexpr{max_exceed} keypoints.
 
@@ -730,7 +741,8 @@ by more than \Sexpr{max_exceed} keypoints.
 The system had difficulties to recognize \icedtea when shown from a
 certain angle.  It turned out that \icedtea has smallprint almost all over
 its backside. The same set of letters repeatably appear over a large area,
-which probably makes it hard to obtain informative features.
+which probably makes it hard to obtain informative features. Furthermore,
+focus becomes an issue.
 
 \begin{figure}[h!]
     \begin{center}

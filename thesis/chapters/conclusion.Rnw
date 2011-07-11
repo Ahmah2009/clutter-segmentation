@@ -112,7 +112,7 @@ arbitrary orientations in the query scenes.
 
 The performance of \tod and \clutseg is not yet sufficient to robustly
 recognize objects in a cluttered scene with objects in arbitrary orientations
-and high occlusion rates (see \refFigure{figure:clutter-pr2-kinect} (a)).
+and high occlusion rates (see \refFigure{figure:clutter-pr2-kinect} a).
 
 % incorporate feature uncertainty
 An idea would be to take the uncertainty in the correspondences into

@@ -158,19 +158,20 @@ the likelihood principle.
     \begin{center}
         \includegraphics[width=\textwidth]{matches}
     \end{center}
-    \caption[The correspondences between a query image and a selected model view]{The correspondences between the query image (left), and a selected
-view of the template object (right)} \label{figure:matches}
+    \caption[The correspondences between a query image and a selected model
+view]{The (hypothetical) correspondences between the query image (left), and a
+selected view of the template object (right)} \label{figure:matches}
 \end{figure}
 
 \subsubsection{Implementation}
 
 The basic steps in learning models and recognizing objects are already
-implemented in the Textured Object Detection (\tod) stack. \tod supports the use
-of different local 2D feature detectors and descriptors. It supports a range of
-nearest-neighbour search algorithms that find correspondences between feature
-sets. Finally, \tod uses RANSAC as the afore-mentioned model-fitting algorithm
-for estimating the object poses. The confidence value is measured by the number of
-correspondences consistent with this pose. 
+implemented in the Textured Object Detection (\tod) stack. \tod supports the
+use of different local 2D feature detectors and descriptors. It supports a
+range of nearest-neighbour search algorithms that find correspondences between
+feature sets. Finally, \tod uses RANSAC as the afore-mentioned model-fitting
+algorithm for estimating the object poses. The confidence value is measured by
+the number of correspondences consistent with this pose. 
 
 We face cluttered scenes (\refFigure{figure:clutter-pr2-kinect} (a)) that do
 not only exhibit high occlusion rates, but also show objects in arbitrary
