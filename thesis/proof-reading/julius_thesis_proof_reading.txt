@@ -145,5 +145,22 @@ For equation 3.4 you have to tell me what does a 0 number represent - some sort 
 
 introduced in Sections 3.4.1 and 3.4.2 => introduced in Sections 3.4.1 and 3.4.2 respectively.
 
-
 CHAPTER 4
+as well, for it is required => as well as it is required
+
+The four objects assam tea, haltbare milch, jacobs coee, and icedtea, which
+were used in evaluation => missing dot
+
+50/60 scenes, each of them showing three instances of objects in the modelbase => 50/60 views of various scenes containing a batch of 3 objects from the modelbase.
+
+we chose 21 scenes => we chose 21 views => according to what criteria did you select them?
+
+Figure 4.3 => enrich the caption and make it more self-contained, that is explain that the plots refer to 4326 experiments
+
+For CLUTSEG uses randomized algorithms => Since CLUTSEG ... => I'd also replace all other occurances of this constellation
+
+Section 4.1.1 => Add that focus becomes an issue in cases such as smallprint on the back of an icedtea
+
+Whilst downy's model seems valid when projected onto a plane (Figure 4.11 a), icedtea's
+model does not (Figure 4.11 b-c). => Can you please elaborate on this? I am not sure what do you mean by an invalid model...
+Actually, we have to talk about the whole section 4.4.4. It seems to me that the problem was due to the axis of rotation not being the symetry axis of the object.
