@@ -1,101 +1,153 @@
 CHAPTER 1:
 The system presented in this work enables a PR2 => The system presented in this work enables a Personal Robot 2 (PR2, http://www.willowgarage.com/pages/pr2/overview)
+FIXED
 
 the PR2 robot at Technische Universität München with a Kinect camera mounted on its top => the PR2 robot at Technische Universität München with a Kinect camera mounted on its top. 
+FIXED
 
 though a publication had not been present at the time of writing => remove, it will be presented 1000%
+FIXED
 
 (TOD) stack in the Robot Operating System. => (TOD) stack in the Robot Operating System (ROS).
+FIXED
 
 The Kinect camera measures the time-of-flight of near-infrared rays to compute the distance between camera and points in 3D space within a range of 0.8-3.5 meters => The Kinect camera simultaneously provides imagery as well as depth measurements. The latter works by continuously-projecting an infrared structured light onto the environment which is then sensed by an infrared light sensitive camera. The typical depth range of a camera is between 0.8 and 3.5 meters. 
+FIXED: Kincet => Kinect
+FIXED: 3D information => depth measurements
+WON'T FIX: color images => imagery
+FIXED: depth range => typical depth range
+FIXED: Kinect camera uses structured light
+WON'T FIX: simultaneously provides X as well as Y, sounds redundant to me
 
 a grayscale version of the image (a). => a grayscale version of the image (b).
+FIXED
 
 The model is a sparse point cloud that is described in a standard coordinate system. => The 3D part of the model, a sparse point cloud, is described in a standard coordinate system.
+FIXED
 
 Figure 1.3.: The correspondences between the query image => Figure 1.3.: The unfiltered correspondences between the query image
+TODO: how to distinguish between TRUE correspondences, and HYPOTHESIZED correspondences
 
 We chose Oriented BRIEF as a feature detector and descriptor because its binary features
 were appealing, and because it had not been much researched so far => try to be a bit more explicit here, mention speed, robustness to translation and rotation
+FIXED: speed was in fact guiding the decision
+FIXED: include notion of curiosity, to see what it's worth
+WON'T FIX: robustness to translation and rotation; it was not an informed decision to use ORB
 
 CHAPTER 2:
 A model of an object is described in its own coordinate system. => to which point of the object is it attached?
+TODO: need to find the best place to explain that it is an arbitrary decision where it is attached, but one needs to stick to the definition once and for all
 
 In three dimensions, a proper rigid transformation of vectors => In three dimensions, a proper rigid transformation of an arbitrary point p
+FIXED: we do not transform vectors or points; vectors are elements of a vector space; points are entities - we can only
+change their representaiton; better talk about transforming space or coordinates => a proper rigid transformation of coordinates
 
 Figure 2.1.: The view coordinate system => I would call it camera coordinate system from the begining on
+FIXED: view coordinates => camera coordinates
+FIXED: object-view transformation => object-camera transformation, fits to the definitions of a "camera transform" in literature
+FIXED: view-object transformation => camera-object transformation
 
 two different coordinate system => two different coordinate systems
+FIXED
 
-Eq. 2.4 => I am not sure what are you trying to say with this equation. You tried to express the L2 norm right? What is the 0 in the parenthesis, a translational component only? For the distance between 2 points in space the translational components are enough.
+Eq. 2.4 => I am not sure what are you trying to say with this equation. You tried to express the L2 norm right? What is the 0 in the parenthesis, a translational component only? For the distance between 2 points in space the translational components are enough
+FIXED: I use bold-face for distinguishing vectors from scalars. In case of the zero vector, this notation becomse unclear
 
 Unlike the intrinsic camera parameters that describe properties of the camera
 independently of its standpoint, => remove unless you write a sentence or two about the intrinsic cam parameters (see openCV book, chapter 11)
+FIXED: remove, an explanation of intrinsic camera parameters is not really adding any value
 
 TOD uses camera calibration techniques from OpenCV, where the intrinsic parameters are known,
 but the extrinsic parameters remain to be estimated. => While in our case the intrinsic parameters of the Kinect RGB sensor are factory specified, we still have to estimate the extrinsic parameters using following principle from OpenCV. => Join with the next paragraph
+FIXED
  
 it is possible to recognize objects up to a 20 degree rotation => it is possible to
 recognize objects with the varying rotation of up to 20 degrees
+FIXED: indicate that rotation is applied to the object, the grammar has been borrowed from Lowe1999
 
 Put a paragraph on FAST into section 2.2.2.
+FIXED: There was a subsection title missing, my preferred order of explaining things is FAST => BRIEF => Oriented BRIEF without any diversion in between
 
 for neighbourhoods f of the keypoints => f is used couple of lines before to denote the image
+FIXED
 
 and a corresponding paper is expected to be published at the International Conference on
 Computer Vision 2011. => safe to remove it
+FIXED
 
 Oriented BRIEF (ORB) => reference
+FIXED: now reference included for both paper and source code
 
 Oriented BRIEF uses test locations as depicted in Figure 2.2.3. => Oriented BRIEF uses test locations as depicted in Figure 2.4.
+FIXED
 
 The description about ORB given above is based on a presentation at the International
 Conference on Robotics and Automation (ICRA) 2011 in Shanghai, and inferred from the
 implementation of ORB in the OpenCV library. => remove
+FIXED: refer to source and paper
 
 unique on an image => unique in an image
+FIXED
 
 Receiver operating characteristics => Receiver Operating Characteristics
+FIXED
 
 An image is described by a set of labels, and symmetrically => An image is described by a set of labels, and conversely
+FIXED
 
 CHAPTER 3:
 It takes a query image as input (Figure ??) (a); as a result it shall detect the presence of
 an object, nd its pose in the query scene, and mark points on the object (Figure ??) (b). => fix
+FIXED
 
 It provides for image => It provides tools for image
+FIXED: provide => support
 
 OpenCV is an open-source library => reference
+FIXED
 
 Robot Operating System (ROS) => reference => http://www.willowgarage.com/papers/ros-open-source-robot-operating-system
+FIXED
 
 The Point Cloud Library (PCL) => reference => http://pointclouds.org/assets/pdf/pcl_icra2011.pdf
+FIXED
 
 A point cloud is a set of vertices in space; a low-level representation of three-dimensional entities in space.
 For example, the output of the Kinect camera is a point cloud. => A point cloud is
 a set of points in n-dimensional space. For example, the output of the Kinect camera could be a 4D point cloud with three fields denoting the x, y, z coordinates and one field for the rgb color of each point in the cloud.
+FIXED
 
 and covers the elementary pipeline => and cover the elementary pipeline
+FIXED
 
 (Figure 3.2.1). => (Figure 3.2).
+FIXED
 
 1German readers will note the unfortunate choice in abbreviating \textured object detection". => haha. what does it mean?
+WON'T FIX: (German) Tod <=> Death (English) 
 
 Figure 3.2 => it would not hurt if the fonts in the figure were bigger
+FIXED
 
 On the camera calibration:
 This might be a big overdo in the thesis but I only realized this while reading a section 3.2.1. What you are actually doing is a camera pose estimation. Yes the same technique and means are used for the calibration of camera extrinsic parameters but we in fact do not perform a calibration. If we did it then we would determine the parameters, save them somewhere and use them subsequently (such as we do with intrinsic parameters). Hence camera pose estimation as we do it over and over for every view. Try to address this issue throughout the whole thesis.
+TODO I've done a quickfix for now, pointing out that the frame which the extrinsic parameters reference is changing with respect to the camera
 
 fiducial coordinate system => fiducial coordinate system (f)
+FIXED: also, object coordinate system (o) and camera coordinate system (c)
 
 The camera calibration is based on chessboard-like
 ducial markers that are glued onto the rotating table on two opposite sides. => refer to figure 3.3
+FIXED
   
 The relation between the ducial markers and the object coordinate system => Fiducal marker and object coordinate system are the same.
+FIXED: defined to be the same; I think they are not the same
 
 For the chessboards were sometimes not detected on the image at all, we used dithered binary images as a fallback if the chessboard corner detection on the original images failed. => rewrite
+FIXED
 
 (Table 3.2.1). Three pre-processed images are shown in Figure 3.2.1. => there is a mismatch between some references and figures. This is because  the label command is before the caption command.
+FIXED
 
 Due to some bug in the underlying software, the estimate for the region of interest sometimes included parts of the
 chessboards next to the template objects. These undesired parts in the mask were observed
@@ -103,64 +155,96 @@ to be separate connected components. Hence, we xed the mask by opening the imag
 a disk of radius 10.3, removing all but the largest connected component, and dilating the
 mask with a disk of 2.3 to compensate for the initial opening step. => Can you be here a bit more specific, what was the bug about?  
 What exactly does "opening the image with a disk of radius 10.3" mean? Is there a figure? with a disk of 2.3 => with a disk of radius 2.3
+FIXED I checked now. The bug was in the normal estimation routine of PCL. It's been fixed. Removed this section.
 
 Reference Figure 3.5 in first paragraph of section 3.2.2. Make sure ALL figures in the thesis are referenced in the text.
+FIXED
 
 Figure 3.5 => it would not hurt if the fonts in the figure were bigger
+FIXED
 
 SURF is never expanded, explained and referenced => fix
+FIXED expanded, referenced, but not explained
 
 between Oriented BRIEF and ORB please settle to use only one of the acronyms
+FIXED use ORB; better, only one word for one entity
 
 There is FLANN, which we have not tested. TOD oers
 brute-force matching algorithms. We used Locally Sensitive Hashing in TOD for matching. => What was the reason for not running different matchers?
 Also flann itself is a library that implements a various kind of matching algorithms, e.g. knn, search-based (see perception_pcl/flann/include/flann/algorithms/), which means that you shall say that none od the flann algorithms was used.
+TODO because there were too many bugs I had to fix
+TODO tried brute-force matching
+TODO but did not improve results
+TODO just slower
 
 in terms of a object-view => in terms of an object-view
+FIXED
 
 Figure 3.6 can be bigger in size.
+FIXED assigned extra page, this figure encodes the very central idea of the whole thesis
 
 TOD implements the ratio test, as described in [?]. => fix
+FIXED this was in Lowe2004 not in Lowe1999
 
 Altogether, for a given query scene, TOD takes the query image and generates a set of
 guesses, which is the output of the TOD recognition process. => are those guesses ordered according to some cost function?
+FIXED No, it does not. I added a comment.
 
 task of grabbing => task of grasping
+FIXED
 
 Thebest => The best
+FIXED
 
 Explain G_{D}
+FIXED G_{D} => D
 
 equal than accept_threshold => How was "accept_threshold" determined?
+FIXED determined by just looking at cases where mislabelings occurred, and taking the maximum number of inliers of such a case
 
 Equation 3.2 => Does it say that r_{S} directly equals the number of inliers S?
+FIXED regression
 
 Even if we only consider ten of these parameters as factors to five levels each, => Can you explain how is this meant?
+FIXED terminology from Alpaydin, not really required, though
 
 The default value for detect_ratio_threshold is selected to be 0:8, as recommended in [2]. => ratio of what with respect to what does it get detected? Why is the value 0.8 recommended by the SIFT paper when we are using ORB?
+FIXED ambiguous formulation, ratio test in the end not enabled
 
 false positive if, the guessed object is not on the scene; => I would say that two confused objects shall be tagged as False Positive as well
+WON'T FIX  this is how the scene score is implemented, detecting confusion requires reasoning on ground truth by comparing inliers with object boundaries, did not get to do this, so can't fix the implementation in the documentation
 
 For equation 3.4 you have to tell me what does a 0 number represent - some sort of an origin? Also parentheses do not seem to be fully right.
+FIXED elaborated, now made clear that mathbf{0} is not a number but a vector, and that this vector describes the object origin
 
 introduced in Sections 3.4.1 and 3.4.2 => introduced in Sections 3.4.1 and 3.4.2 respectively.
+FIXED
 
 CHAPTER 4
 as well, for it is required => as well as it is required
+FIXED remove "as well" (wordiness!);  "for" not to be used this way in the middle of a sentence
 
 The four objects assam tea, haltbare milch, jacobs coee, and icedtea, which
 were used in evaluation => missing dot
+FIXED
 
 50/60 scenes, each of them showing three instances of objects in the modelbase => 50/60 views of various scenes containing a batch of 3 objects from the modelbase.
+FIXED scenes cannot be collected, and instances of objects is too much explanation
 
 we chose 21 scenes => we chose 21 views => according to what criteria did you select them?
+FIXED elaborated, want to maximize change in viewpoint between two views of the very same scene
 
 Figure 4.3 => enrich the caption and make it more self-contained, that is explain that the plots refer to 4326 experiments
+FIXED
 
 For CLUTSEG uses randomized algorithms => Since CLUTSEG ... => I'd also replace all other occurances of this constellation
+FIXED though I could not find others
 
 Section 4.1.1 => Add that focus becomes an issue in cases such as smallprint on the back of an icedtea
+FIXED definitely true, I missed to write this down
 
 Whilst downy's model seems valid when projected onto a plane (Figure 4.11 a), icedtea's
 model does not (Figure 4.11 b-c). => Can you please elaborate on this? I am not sure what do you mean by an invalid model...
 Actually, we have to talk about the whole section 4.4.4. It seems to me that the problem was due to the axis of rotation not being the symetry axis of the object.
+TODO send the point cloud 
+
