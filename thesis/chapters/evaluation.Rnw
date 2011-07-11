@@ -59,9 +59,9 @@ saved about 60--70 views per object to a bag file, which has been observed to
 work better than a bag with only 40 views. For each object, around 1 Gigabyte
 of data was recorded. The next preparatory steps consisted in uncompressing the
 bag files with a script included in both \clutseg and \tod, in estimating the
-object-view transformation for each view, and in masking for each view as
+object-camera transformation for each view, and in masking for each view as
 described in \refSection{subsection:learning}.  These post-processed raw data
-provide the masks and the object-view transformation which can be used to
+provide the masks and the object-camera transformation which can be used to
 create several modelbases using different feature detectors and descriptors.
 The resulting models of each template object were much smaller in size than the
 original raw data. The models took up around 1 Megabyte of disk space each,
@@ -121,8 +121,8 @@ that must align with the object coordinate systems of the three instances.}
 \end{figure}
 
 
-Given a scene, ground truth requires the computation of the object-view transformations
-$\oTvi{i}$, $\oTvi{j}$, and $\oTvi{k}$ for the three objects $i$, $j$ and $k$
+Given a scene, ground truth requires the computation of the object-camera transformations
+$\ocTi{i}$, $\ocTi{j}$, and $\ocTi{k}$ for the three objects $i$, $j$ and $k$
 in the scene. \refFigure{figure:validation-scene} shows three coordinate
 systems, defined with respect to the fiducial markers. The object coordinate
 system was defined for an object when the model was being learnt. Therefore, an
@@ -132,7 +132,7 @@ system aligns with one of the three coordinate systems as depicted in
 the fiducial markers, such that 
 
 \begin{equation}
-    \oTvi{j}: \vec{p} \mapsto\ \fTv \pth{\vec{p}}
+    \ocTi{j}: \vec{p} \mapsto\ \fTv \pth{\vec{p}}
 \end{equation}
 
 In other words, object $j$ was placed on the rotating table in the same way as
@@ -145,11 +145,11 @@ The other two objects $i$ and $k$ were placed upright next to object $i$, with
 offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 
 \begin{equation}
-    \oTvi{i}: \vec{p} \mapsto\ \fTv \pth{ \vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} }
+    \ocTi{i}: \vec{p} \mapsto\ \fTv \pth{ \vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} }
 \end{equation}
 
 \begin{equation}
-    \oTvi{k}: \vec{p} \mapsto\ \fTv \pth{ \vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} }
+    \ocTi{k}: \vec{p} \mapsto\ \fTv \pth{ \vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} }
 \end{equation}
 
 
@@ -725,7 +725,7 @@ by more than \Sexpr{max_exceed} keypoints.
 % of rotation around an axis parallel to the image plane \cite{Lowe1999}. % TODO: confirm this
 
 
-\subsection{Repetitions in texture}
+\subsection{Repetitions in Texture}
 
 The system had difficulties to recognize \icedtea when shown from a
 certain angle.  It turned out that \icedtea has smallprint almost all over
@@ -751,13 +751,13 @@ inliers --- enough in this scene to make it the best-ranked guess.
 An explanation for the large consensus set is that the projection error is a
 measure on the image plane. Given a scene, consider any correspondence $c_i =
 (q_i, p_i) \in \real^2 \times \real^3 $ between a query feature with
-keypoint $q_i$ and a model feature with 3D point $p_i$. Let $\oTvh$ be a
+keypoint $q_i$ and a model feature with 3D point $p_i$. Let $\ocTh$ be a
 pose estimate. Let $U: \real^3 \to \real^2$ denote perspective
 projection for the calibrated camera. Define the projection $\hat{q}_i$ of the
-model point $p_i$, aligned to the scene by $\oTvh$, as
+model point $p_i$, aligned to the scene by $\ocTh$, as
 
 \begin{equation}
-    \hat{q}_i := U\pth{ \ \oTvh \pth{ p_i}\ }
+    \hat{q}_i := U\pth{ \ \ocTh \pth{ p_i}\ }
 \end{equation}
 
 The correspondence $c_i$ is designated inlier if and only if the L2-distance
@@ -765,16 +765,16 @@ between query keypoint and the projection of the model point aligned to the
 scene is less than a threshold $r$, precisely 
 
 \begin{equation}
-    c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r  \quad \wedge \quad \text{$p_i$ is visible}
+    c_i\ \text{ is an inlier w.r.t. }\ \ocTh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}_i\ } \le r  \quad \wedge \quad \text{$p_i$ is visible}
     \label{equation:inlier-definition}
 \end{equation}
 
 Now, let us model the scenario, where a distant pose estimate was generated
-for an object that is close to the camera in truth. Let $\oTv$ denote
-ground truth for $\oTvh$. 
+for an object that is close to the camera in truth. Let $\ocT$ denote
+ground truth for $\ocTh$. 
  
 \begin{equation}
-    e_t \pth{ \oTvh,\ \oTv } \geq l
+    e_t \pth{ \ocTh,\ \ocT } \geq l
 \end{equation}
 
 Choose $l$ large enough that the projection of the aligned model spans only one
@@ -790,7 +790,7 @@ of this object, this means
 Plugging \refEquation{equation:same-point} into \refEquation{equation:inlier-definition},
 we obtain an inlier criteria for the bad estimate:
 \begin{equation}
-    \forall{i \in \brt{n}}:\quad c_i\ \text{ is an inlier w.r.t. }\ \oTvh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r \quad \wedge \quad \text{$p_i$ is visible}
+    \forall{i \in \brt{n}}:\quad c_i\ \text{ is an inlier w.r.t. }\ \ocTh\quad \Leftrightarrow \quad \normtwo{\ q_i - \hat{q}\ } \le r \quad \wedge \quad \text{$p_i$ is visible}
 \end{equation}
 
 All correspondences within a circle of radius $r$ around $\hat{q}$ are
@@ -818,7 +818,7 @@ the parameter {\tt max\_projection\_error} to a lower value, which is what we ha
 done. The bad pose estimates could be pruned away by the a-priori assumption
 that objects are within a certain range. Finally, the radius $r$ could be replaced
 by a function that depends on the estimated distance
-$\normtwo{\oTvh\pth{\vec{0}}}$.
+$\normtwo{\ocTh\pth{\vec{0}}}$.
 
 % Proof is missing:
 % A final note; let us assume that, as the only source of noise, we have Gaussian

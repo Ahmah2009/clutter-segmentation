@@ -34,8 +34,8 @@ transformation} additionally requires the orthogonal transformation to be a
 rotation (the definitions of rigid transformations found in the literature are
 inconsistent, though: Reflections are excluded from rigid transformations in
 \cite{Forsyth2003}, but included in \cite{Galarza2007}, we stick to the
-latter).  In three dimensions, a proper rigid transformation of vectors can be
-represented by a rotation matrix $R \in \real^{3\times3}$ and a translation
+latter).  In three dimensions, a proper rigid transformation of coordinates can
+be represented by a rotation matrix $R \in \real^{3\times3}$ and a translation
 vector $\vec{t} \in \real^3$.
 
 \begin{equation}
@@ -54,32 +54,32 @@ called an active transformation, and explains the relationship between two
 different points in the same coordinate system.
 
 Another interpretation is to see a PRT as a passive transformation. The PRT
-transforms vector coordinates between two different coordinate system.  The
+transforms vector coordinates between two different coordinate systems.  The
 passive interpretation is used throughout this work.
 
-\subsection{Object-View Transformations}
-\label{section:object-view-transformations}
+\subsection{Object-Camera Transformations}
+\label{section:object-camera-transformations}
 
 3D points can be specified in coordinates with respect to any coordinate
 system. The question arises which coordinate systems are convenient and how
 many are necessary. In our case, the two different coordinate systems discussed
 in the following prove sufficient.
 
-The {\it \gls{view coordinate system}} is attached to the camera. Two of its basis
+The {\it \gls{camera coordinate system}} is attached to the camera. Two of its basis
 vectors define the image plane and the remaining basis vector is directed
-towards the scene. The view coordinate system is convenient for the robot. For
+towards the scene. The camera coordinate system is convenient for the robot. For
 example, if the robot is programmed to grasp an object at two points, it needs
-to know the view coordinates of the two grasping points. The {\it \gls{object
+to know the camera coordinates of the two grasping points. The {\it \gls{object
 coordinate system}}, on the other hand, is attached to the object. The model
 features are located in the object coordinate system, which is also called
 model coordinate system in the literature \cite{Pope2000}. Both coordinate
 systems are shown in \refFigure{figure:coordinate-frames}. The PRT between
-object coordinates and view coordinates is called the {\it \gls{object-view
-transformation}} and is denoted by $\oTv$. Subsequently, its inverse PRT is
-called {\it \gls{view-object transformation}} and denoted by $\vTo$
+object coordinates and camera coordinates is called the {\it \gls{object-camera
+transformation}} and is denoted by $\ocT$. Subsequently, its inverse PRT is
+called {\it \gls{camera-object transformation}} and denoted by $\coT$
 
 \begin{equation}
-  \vTo = \pth{ \oTv }^{-1}
+  \coT = \pth{ \ocT }^{-1}
 \end{equation}
 
 We stick to the subscript and superscript notation introduced in
@@ -88,42 +88,42 @@ definitions. To compute the distance between the camera and the object origin,
 we may use
 
 \begin{equation}
-d = \normtwo{\ \oTv \pth{ \vec{0} }\ }
+d = \normtwo{\ \ocT \pth{ \vec{0} }\ }
 \end{equation}
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=0.5\textwidth]{coordinate-frames}
     \end{center}
-    \caption{The view coordinate system and the object coordinate system}
+    \caption{The camera coordinate system and the object coordinate system}
     \label{figure:coordinate-frames}
 \end{figure}
 
-The object-view transformation defines the relationship between camera and
+The object-camera transformation defines the relationship between camera and
 object. Since we are only interested in the {\em relative} location and
 orientation of the object with respect to the camera, we simplify matters by
 assuming the camera to be fixed and by always looking at scenes from the eyes
 of the robot. Note that if there are multiple objects in a scene, then there
-exists one object-view transformation for each object. For example, if there
+exists one object-camera transformation for each object. For example, if there
 are two objects $1$ and $2$ in the scene, the distance $d_{12}$ between them
 may be computed by
 \begin{equation}
-d_{12} = \normtwo{\ \oTvi{1} \pth{ \vec{0} } -\ \oTvi{2} \pth{ \vec{0}} \ }
+d_{12} = \normtwo{\ \ocTi{1} \pth{ \vec{0} } -\ \ocTi{2} \pth{ \vec{0}} \ }
 \end{equation}
-where $\oTvi{1}$ and $\oTvi{2}$ are the respective object-view transformations,
+where $\ocTi{1}$ and $\ocTi{2}$ are the respective object-camera transformations,
 which uniquely determine the object poses with respect to the camera.
 
 We can reformulate our problem of recognizing objects as
 
 \begin{quote}
-    ``Find the object-view transformation for each
+    ``Find the object-camera transformation for each
     of the objects in the scene.''
 \end{quote}
 
 In the special case of a single object
 
 \begin{quote}
-    ``Find the object-view transformation for one
+    ``Find the object-camera transformation for one
     of the objects in the scene.''
 \end{quote}
 
@@ -152,13 +152,13 @@ of the center of perspective \cite{Forsyth2003, Bradski2008}.
 % \end{figure}
 
 In the previous section, it was shown that estimating the pose of an object
-with respect to the camera is equivalent to estimating the object-view
+with respect to the camera is equivalent to estimating the object-camera
 transformation. There is a third way to look at this problem, and this is the
 estimation of the extrinsic parameters of the camera. Unlike the intrinsic
 camera parameters that describe properties of the camera independently of its
 standpoint, the extrinsic parameters relate the camera pose to some given
 coordinate system in its environment. Thus, equivalently to the problem
-definitions given previously in \refSection{section:object-view-transformations},
+definitions given previously in \refSection{section:object-camera-transformations},
 we can see our object recognition problem as
 
 \begin{quote}

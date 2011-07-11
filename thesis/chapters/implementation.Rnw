@@ -115,14 +115,14 @@ a rotating table. The template object is either manually or automatically
 rotated, and a depth camera takes images from multiple views. The latter
 consist of a depth image and a grayscale image each. The views are the basic
 units processed in a pipeline that comprises three stages for each view: First,
-the computation of the object-view transformation from the image.  Second, the
+the computation of the object-camera transformation from the image.  Second, the
 segmentation of the region of interest that shows the object on the image.
 Third, the extraction of local 2D features from the grayscale image, followed
 by the construction of model features from the region of interest.
 
 \subsubsection{Camera Calibration}
 
-Given a view, the first step is to obtain the object-view transformation by
+Given a view, the first step is to obtain the object-camera transformation by
 estimating the extrinsic parameters of the camera. The camera calibration is
 based on chessboard-like fiducial markers that are glued onto the rotating
 table on two opposite sides. \opencv offers camera calibration methods that
@@ -138,13 +138,13 @@ relation between the fiducial markers and the object coordinate system}
 There is a subtlety in the relationship between the fiducial markers and the
 object coordinate system. The camera calibration computes the PRT $\fTv$
 between the {\it fiducial coordinate system} attached to the fiducial markers
-and the view coordinate system. The origin in fiducial coordinates is defined
-halfway between the two chessboards. Yet, we need the object-view
-transformation $\oTv$. The solution here consists in just {\it defining} the
+and the camera coordinate system. The origin in fiducial coordinates is defined
+halfway between the two chessboards. Yet, we need the object-camera
+transformation $\ocT$. The solution here consists in just {\it defining} the
 object coordinate system to be the same as the coordinate system attached to
 the fiducial markers, that is
 \begin{equation}
-    \oTv: \real^3 \to \real^3, \vec{p} \mapsto\ \fTv(\vec{p})
+    \ocT: \real^3 \to \real^3, \vec{p} \mapsto\ \fTv(\vec{p})
     \label{equation:fiducial-object}
 \end{equation}
 
@@ -194,7 +194,7 @@ the extraction of model features must be confined to the region in the image
 that shows the object but no background. 
 
 \tod segments the 3D point cloud of the template object using a box-shaped
-pass-through filter of a predefined size at the object origin $\oTv
+pass-through filter of a predefined size at the object origin $\ocT
 \pth{\vec{0}}$.  Afterwards, a radius outlier search removes all points with
 less than 20 neighbours within 2 cm. \tod projects the segmented point cloud
 onto the image plane. The set of projected points form a mask that is supposed
@@ -224,13 +224,13 @@ from the depth image. Local 2D features are extracted using any one of the
 feature detectors and descriptors provided in \opencv. Each of these features
 is described by a keypoint $\vec{p'}$ on the image plane and a descriptor
 vector $\vec{d}$. A camera model, whose intrinsic parameters are known,
-uniquely associates the keypoint $\vec{p'}$ with a 3D point, described in view
-coordinates $\vec{p_v}$ in the scene. Applying the inverse object-view
+uniquely associates the keypoint $\vec{p'}$ with a 3D point, described in camera 
+coordinates $\vec{p_v}$ in the scene. Applying the camera-object
 transformation, the object coordinates $\vec{p}$ are obtained by $\vec{p} =\
-\vTo \pth{\vec{p_v}}$. This yields a model feature $(\vec{p}, \vec{d})$.
+\coT \pth{\vec{p_v}}$. This yields a model feature $(\vec{p}, \vec{d})$.
 \tod stores all learned models in a {\it modelbase}.
 
-In the actual implementation, \tod applies the inverse object-view
+In the actual implementation, \tod applies the inverse object-camera
 transformation just before calling RANSAC for pose estimation, but it is
 equivalent, conceptually simpler, and computationally faster to do this only
 once while extracting features.
@@ -310,7 +310,7 @@ number $k$ of correspondences per query feature can be controlled by parameter
 The hypotheses \tod generates for a given query scene are called {\it guesses}.
 A guess is a triple $(i, \hat{T},\ S)$, where $i$ denotes the template object
 which \tod believes to see on the scene, $\hat{T}$ the estimated pose of the
-object in terms of a object-view transformation and $S \subseteq C_i$ the
+object in terms of a object-camera transformation and $S \subseteq C_i$ the
 consensus set of inliers. 
 
 \subsubsection{Pose Estimation}
@@ -579,7 +579,7 @@ When constructing the models from multiple views, some simple statistics are
 recorded. The model construction is part of \tod's codebase. It had to be
 modified in order to keep track of the minimum, maximum, and average number of
 features extracted on the views. Also, the number of times, where the
-computation of the object-view transformation failed due to undetected
+computation of the object-camera transformation failed due to undetected
 chessboards, is tracked.  The time required for building the modelbase is
 recorded as well. Results are presented in \refChapter{chapter:evaluation}.
 
@@ -590,7 +590,7 @@ truth is available. The ground truth data for a scene consist of a set of labels
 that tell which objects can be seen at which location and which orientation in
 the scene. Thus, the ground truth $G$ can be described as a set of labels
 \begin{equation}
-    G = \cbr{ (i,\ \oTvi{i}) : \text{object $i$ is on scene at pose $\oTvi{}$} }
+    G = \cbr{ (i,\ \ocTi{i}) : \text{object $i$ is on scene at pose $\ocTi{}$} }
 \end{equation}
 
 \subsubsection{Classification Error}
@@ -613,10 +613,10 @@ on the scene.
 
 The error in the estimated pose can only be computed in case the guessed object is
 actually visible in the scene. In case it is, the translational error $e_t$ given
-ground truth pose $\oTv$ and pose estimate $\oTvh$ is given by
+ground truth pose $\ocT$ and pose estimate $\ocTh$ is given by
 
 \begin{equation}
-    e_t = \normtwo{\ \oTvh \pth{ \vec{0} -\ \oTv \vec{0} }\ }
+    e_t = \normtwo{\ \ocTh \pth{ \vec{0} -\ \ocT \vec{0} }\ }
 \end{equation}
 
 The orientation error $e_\alpha$ is computed from the ground truth orientation $r$

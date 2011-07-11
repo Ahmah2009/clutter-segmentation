@@ -17,7 +17,8 @@ of several such textured objects in a single scene renders recognition of these
 shopping items difficult. The objects might be arbitrarily oriented, and prior
 assumptions about their principal axes are likely invalid.
 
-The system presented in this work enables a PR2 robot to detect an object and
+The system presented in this work enables a Personal Robot 2 (PR2,
+http://www.willowgarage.com/pages/pr2/overview) to detect an object and
 estimate its pose in the cluttered scene and provide sufficient information to
 a grasping pipeline, such that the clutter can be resolved by removing items
 one-by-one from the scene. Although, in the shopping scenario, the robot might
@@ -50,9 +51,8 @@ Rosten and Drummond introduce the FAST feature detector \cite{Rosten2006}.
 Calonder et al.\ describe BRIEF, a feature descriptor whose generated
 descriptor vectors are efficient to match \cite{Calonder2010}. Oriented BRIEF,
 derived from FAST and BRIEF, is the feature detector and descriptor chosen in
-this work, though a publication had not been present at the time of writing
-\cite{Rublee2011}.  Matching observed features with model features is a common
-sub-task in object recognition. 
+this work \cite{Rublee2011}.  Matching observed features with model features is
+a common sub-task in object recognition. 
 % For this, Muja described the FLANN library \cite{Muja2009}.
 Gionis et al.\ introduce, and Slaney and Casey summarize Locality Sensitive
 Hashing \cite{Gionis1999, Slaney2008}, which finds approximate
@@ -104,29 +104,29 @@ Detection (\tod) stack in the Robot Operating System.
         left to right: (a) Four rigid textured objects occluding each other in a
         cluttered scene; (b) a 3D-visualization of the same scene, obtained with a
         Kinect RGB-D camera; (c) the PR2 robot at Technische Universität München with a
-        Kinect camera mounted on its top}
+        Kinect camera mounted on its top.}
     \label{figure:clutter-pr2-kinect}
 \end{figure}
 
 We required our system to run on a PR2 robot at Technische Universität München,
 as depicted in \refFigure{figure:clutter-pr2-kinect} (c). The PR2 is a robotic
 platform produced by Willow Garage. A Kinect RGB-depth camera is mounted on top
-of the robot. It simultaneously provides color images and 3D depth information.
+of the robot. It simultaneously provides color images and depth measurements. 
 The Kinect camera measures the time-of-flight of near-infrared rays to compute
-the distance between camera and points in 3D space within a range of 0.8-3.5
-meters \cite{PrimeSense2010}. A depth image obtained by this camera is
-visualized in \refFigure{figure:clutter-pr2-kinect} (b).
+the distance between camera and 3D points. The typical depth range of
+a Kinect camera is between 0.8 and 3.5 meters \cite{PrimeSense2010}. A depth
+image obtained by this camera is visualized in
+\refFigure{figure:clutter-pr2-kinect} (b).
 
 In the presented approach, we first learn a model from each rigid textured
 object, one by one. An object is rotated in front of the camera, which takes
 images and 3D scans from different views of the object. For each view, local 2D
-features are extracted from the grayscale image.
-\refFigure{figure:keypoints} shows both an image of a textured object
-(a), and visualizes the keypoints extracted from a grayscale version of the
-image (a). The local 2D features, together with the associated 3D points on the
-object's surface, form the {\it \glspl{model feature}}. The model features make up the
-model of this object. The model is a sparse point cloud that is described in a
-standard coordinate system.
+features are extracted from the grayscale image.  \refFigure{figure:keypoints}
+shows both an image of a textured object (a) and the keypoints extracted from a
+grayscale version of the image (b). The local 2D features, together with the
+associated 3D points on the object's surface, form the {\it \glspl{model
+feature}}. The model features make up the model of this object. The 3D part of
+the model, a sparse point cloud, is described in a standard coordinate system.
 
 \begin{figure}[h]
     \begin{center}
@@ -191,10 +191,11 @@ many parameters, an experiment runner helps finding good parameter values.
 confidence value. Then, the best-ranked guesses are refined until a guess with
 sufficiently high confidence value is found.
 
-We chose Oriented BRIEF as a feature detector and descriptor because its binary
-features were appealing, and because it had not been much researched so far. We
-traded exactness for speed and chose Locality Sensitive Hashing for finding
-approximate nearest neighbours.
+We chose Oriented BRIEF (ORB) as a feature detector and descriptor. It yields
+binary descriptor vectors, which can be compared efficiently. We traded
+exactness for speed and chose Locality Sensitive Hashing for finding
+approximate nearest neighbours between these binary vectors. ORB is a recent
+development, and we were curious about how it performs in an application.
 
 % The new Oriented
 % BRIEF 2D local feature detector additionally aroused our curiosity.
