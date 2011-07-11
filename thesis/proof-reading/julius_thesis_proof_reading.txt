@@ -1,3 +1,4 @@
+CHAPTER 1:
 The system presented in this work enables a PR2 => The system presented in this work enables a Personal Robot 2 (PR2, http://www.willowgarage.com/pages/pr2/overview)
 
 the PR2 robot at Technische Universität München with a Kinect camera mounted on its top => the PR2 robot at Technische Universität München with a Kinect camera mounted on its top. 
@@ -17,6 +18,7 @@ Figure 1.3.: The correspondences between the query image => Figure 1.3.: The unf
 We chose Oriented BRIEF as a feature detector and descriptor because its binary features
 were appealing, and because it had not been much researched so far => try to be a bit more explicit here, mention speed, robustness to translation and rotation
 
+CHAPTER 2:
 A model of an object is described in its own coordinate system. => to which point of the object is it attached?
 
 In three dimensions, a proper rigid transformation of vectors => In three dimensions, a proper rigid transformation of an arbitrary point p
@@ -56,3 +58,92 @@ unique on an image => unique in an image
 Receiver operating characteristics => Receiver Operating Characteristics
 
 An image is described by a set of labels, and symmetrically => An image is described by a set of labels, and conversely
+
+CHAPTER 3:
+It takes a query image as input (Figure ??) (a); as a result it shall detect the presence of
+an object, nd its pose in the query scene, and mark points on the object (Figure ??) (b). => fix
+
+It provides for image => It provides tools for image
+
+OpenCV is an open-source library => reference
+
+Robot Operating System (ROS) => reference => http://www.willowgarage.com/papers/ros-open-source-robot-operating-system
+
+The Point Cloud Library (PCL) => reference => http://pointclouds.org/assets/pdf/pcl_icra2011.pdf
+
+A point cloud is a set of vertices in space; a low-level representation of three-dimensional entities in space.
+For example, the output of the Kinect camera is a point cloud. => A point cloud is
+a set of points in n-dimensional space. For example, the output of the Kinect camera could be a 4D point cloud with three fields denoting the x, y, z coordinates and one field for the rgb color of each point in the cloud.
+
+and covers the elementary pipeline => and cover the elementary pipeline
+
+(Figure 3.2.1). => (Figure 3.2).
+
+1German readers will note the unfortunate choice in abbreviating \textured object detection". => haha. what does it mean?
+
+Figure 3.2 => it would not hurt if the fonts in the figure were bigger
+
+On the camera calibration:
+This might be a big overdo in the thesis but I only realized this while reading a section 3.2.1. What you are actually doing is a camera pose estimation. Yes the same technique and means are used for the calibration of camera extrinsic parameters but we in fact do not perform a calibration. If we did it then we would determine the parameters, save them somewhere and use them subsequently (such as we do with intrinsic parameters). Hence camera pose estimation as we do it over and over for every view. Try to address this issue throughout the whole thesis.
+
+fiducial coordinate system => fiducial coordinate system (f)
+
+The camera calibration is based on chessboard-like
+ducial markers that are glued onto the rotating table on two opposite sides. => refer to figure 3.3
+  
+The relation between the ducial markers and the object coordinate system => Fiducal marker and object coordinate system are the same.
+
+For the chessboards were sometimes not detected on the image at all, we used dithered binary images as a fallback if the chessboard corner detection on the original images failed. => rewrite
+
+(Table 3.2.1). Three pre-processed images are shown in Figure 3.2.1. => there is a mismatch between some references and figures. This is because  the label command is before the caption command.
+
+Due to some bug in the underlying software, the estimate for the region of interest sometimes included parts of the
+chessboards next to the template objects. These undesired parts in the mask were observed
+to be separate connected components. Hence, we xed the mask by opening the image with
+a disk of radius 10.3, removing all but the largest connected component, and dilating the
+mask with a disk of 2.3 to compensate for the initial opening step. => Can you be here a bit more specific, what was the bug about?  
+What exactly does "opening the image with a disk of radius 10.3" mean? Is there a figure? with a disk of 2.3 => with a disk of radius 2.3
+
+Reference Figure 3.5 in first paragraph of section 3.2.2. Make sure ALL figures in the thesis are referenced in the text.
+
+Figure 3.5 => it would not hurt if the fonts in the figure were bigger
+
+SURF is never expanded, explained and referenced => fix
+
+between Oriented BRIEF and ORB please settle to use only one of the acronyms
+
+There is FLANN, which we have not tested. TOD oers
+brute-force matching algorithms. We used Locally Sensitive Hashing in TOD for matching. => What was the reason for not running different matchers?
+Also flann itself is a library that implements a various kind of matching algorithms, e.g. knn, search-based (see perception_pcl/flann/include/flann/algorithms/), which means that you shall say that none od the flann algorithms was used.
+
+in terms of a object-view => in terms of an object-view
+
+Figure 3.6 can be bigger in size.
+
+TOD implements the ratio test, as described in [?]. => fix
+
+Altogether, for a given query scene, TOD takes the query image and generates a set of
+guesses, which is the output of the TOD recognition process. => are those guesses ordered according to some cost function?
+
+task of grabbing => task of grasping
+
+Thebest => The best
+
+Explain G_{D}
+
+equal than accept_threshold => How was "accept_threshold" determined?
+
+Equation 3.2 => Does it say that r_{S} directly equals the number of inliers S?
+
+Even if we only consider ten of these parameters as factors to five levels each, => Can you explain how is this meant?
+
+The default value for detect_ratio_threshold is selected to be 0:8, as recommended in [2]. => ratio of what with respect to what does it get detected? Why is the value 0.8 recommended by the SIFT paper when we are using ORB?
+
+false positive if, the guessed object is not on the scene; => I would say that two confused objects shall be tagged as False Positive as well
+
+For equation 3.4 you have to tell me what does a 0 number represent - some sort of an origin? Also parentheses do not seem to be fully right.
+
+introduced in Sections 3.4.1 and 3.4.2 => introduced in Sections 3.4.1 and 3.4.2 respectively.
+
+
+CHAPTER 4
