@@ -46,6 +46,10 @@
 \usepackage{draftwatermark}
 \SetWatermarkLightness{ 0.95 }
 
+% FIXME
+\usepackage{styles/lineno}
+\linenumbers
+
 \begin{document}
 
     \input{components/terms}
