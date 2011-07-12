@@ -314,12 +314,16 @@ a model feature from the $i$-th template object. Finally, let $C = (C_1, \dots,
 C_n)$ denote the partition of all correspondences for the query scene, where
 $n$ is the number of template objects described in the modelbase.  \tod
 integrates different nearest-neighbour algorithms. There is FLANN, which we
-have not tested.  \tod offers brute-force matching algorithms. We used Locally
-Sensitive Hashing in \tod for matching.
+have not tested. \tod offers a brute-force matching algorithm which we use in
+\refSection{subsection:performance-validation-set} for comparison.  We use
+Locally Sensitive Hashing in \tod for matching.
 
 \tod finds up to $k$ nearest neighbours for each query feature. The maximum
 number $k$ of correspondences per query feature can be controlled by parameter
 {\tt knn}.  \tod implements the ratio test, as described in \cite{Lowe2004}.
+If a model feature is matched with multiple query features, only the
+correspondence with the minimum distance is retained. This way, \tod ensures
+that the mapping from query features to model features is injective.
 
 % TODO: introduce parameter knn
 % TODO: discuss ratio test from lowe
@@ -426,6 +430,7 @@ with probability of being correct. It also simplifies the robotic task of graspi
 an object by supplying more 3D points.
 
 \subsection{Guess Refinement}
+\label{subsection:guess-refinement}
 
 Given a guess, the idea behind {\it \gls{guess refinement}} is to spend additional
 computation resources on selected guesses to reduce the expected error in pose
