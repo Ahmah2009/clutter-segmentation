@@ -131,7 +131,7 @@ FIXED
 
 On the camera calibration:
 This might be a big overdo in the thesis but I only realized this while reading a section 3.2.1. What you are actually doing is a camera pose estimation. Yes the same technique and means are used for the calibration of camera extrinsic parameters but we in fact do not perform a calibration. If we did it then we would determine the parameters, save them somewhere and use them subsequently (such as we do with intrinsic parameters). Hence camera pose estimation as we do it over and over for every view. Try to address this issue throughout the whole thesis.
-TODO I've done a quickfix for now, pointing out that the frame which the extrinsic parameters reference is changing with respect to the camera
+FIXED I've done a quickfix for now, pointing out that the frame which the extrinsic parameters reference is changing with respect to the camera
 
 fiducial coordinate system => fiducial coordinate system (f)
 FIXED: also, object coordinate system (o) and camera coordinate system (c)
@@ -172,13 +172,7 @@ FIXED use ORB; better, only one word for one entity
 There is FLANN, which we have not tested. TOD oers
 brute-force matching algorithms. We used Locally Sensitive Hashing in TOD for matching. => What was the reason for not running different matchers?
 Also flann itself is a library that implements a various kind of matching algorithms, e.g. knn, search-based (see perception_pcl/flann/include/flann/algorithms/), which means that you shall say that none od the flann algorithms was used.
-TODO because there were too many bugs I had to fix
-TODO tried brute-force matching
-TODO but did not improve results
-TODO just slower
-
-in terms of a object-view => in terms of an object-view
-FIXED
+TODO decide about flann
 
 Figure 3.6 can be bigger in size.
 FIXED assigned extra page, this figure encodes the very central idea of the whole thesis
@@ -246,5 +240,5 @@ FIXED definitely true, I missed to write this down
 Whilst downy's model seems valid when projected onto a plane (Figure 4.11 a), icedtea's
 model does not (Figure 4.11 b-c). => Can you please elaborate on this? I am not sure what do you mean by an invalid model...
 Actually, we have to talk about the whole section 4.4.4. It seems to me that the problem was due to the axis of rotation not being the symetry axis of the object.
-TODO send the point cloud 
+FIXED sent the point cloud 
 

@@ -126,7 +126,6 @@
 		
 		\appendix %---------------------------------------
 	
-    % FIXME: problems with appendix
         \input{chapters/appendix}
 
 		% see http://en.wikibooks.org/wiki/LaTeX/Glossary
