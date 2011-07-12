@@ -18,22 +18,21 @@ rigid textured object and its 3D pose in a cluttered scene such that the
 cluttered scene can subsequently be resolved by successive removal of objects
 by a robot.
 
-A system is presented that learns local 2D features and 3D models from
-templates. It is able detect an object and estimate its pose in a cluttered
-scene by matching observed local 2D features against the learned models.
-Confidence values provide a measure of goodness for estimated object poses. For
-the object with the highest confidence value, the pose is refined in order to
-reduce error, and that estimate provides a basis for the grasping pipeline of a
-robot.  The system is based on the existing, yet immature and unstable textured
-object recognition stack in the Robot Operating System. Recent developments in
-object recognition are reviewed in this context, especially the Oriented BRIEF
-feature detector and descriptor.
+A system is presented that learns local 2D features and 3D models from objects.
+It is able detect an object and estimate its pose in a cluttered scene by
+matching observed local 2D features against the learned models.  Confidence
+values provide a measure of goodness for estimated object poses. For the object
+with the highest confidence value, the pose is refined in order to reduce
+error, and that estimate provides a basis for the grasping pipeline of a robot.
+The system is based on the existing, yet immature and unstable textured object
+recognition stack in the Robot Operating System. Recent developments in object
+recognition are reviewed in this context, especially the Oriented BRIEF feature
+detector and descriptor.
 
-Experiments have shown that in 82\% percent of cluttered scenes in a validation
-set, an object is correctly recognized in the scene within a margin for
-rotational error of 20 degrees and translational error of 3 cm.  However,
-results on a test set revealed some limitations of the system, which are also
-discussed.
+Experiments have shown that in 82\% of cluttered scenes in a validation set, an
+object is correctly recognized in the scene within a margin for rotational
+error of 20 degrees and translational error of 3 cm.  A live test on the robot
+revealed both limitations and promising aspects of the approach.
 
 \clearemptydoublepage
 \phantomsection
@@ -45,4 +44,29 @@ discussed.
 \end{center}
 \vspace{1cm}
 
+
+Die Erkennung von Objekten spielt in vielen Anwendungen der Robotik in
+Haushalten eine wichtige Rolle. Diese Arbeit beschreibt die Aufgabe, die Lage
+und Orientierung eines starren, texturierten Körpers in einer Szene mit vielen
+weiteren Objekten zu bestimmen. Auf diese Art und Weise sollen die Objekte
+nacheinander von einem Roboter entfernt werden können.
+
+Ein System wird vorgestellt, welches lokale 2D-Merkmale und 3D-Modelle von
+einem Objekt erstellt. Indem das System lokale 2D-Merkmale mit den Modellen
+assoziiert, kann es ein Objekt erkennen, und dessen Lage und Orientierung im
+Raum bestimmen. Konfidenzwerte geben Aufschluss über die Zuverlässigkeit für
+die Schätzungen der Lage und der Orientierung der Objekte.  Die erste Schätzung
+mit dem höchsten Konfidenzwert wird verfeinert. Die verfeinerte
+Schätzung reduziert den Fehler und ist Grundlage für den Roboter, das Objekt
+zu greifen. Das System basiert auf der bestehenden, noch nicht ausgereiften
+Textured-Object-Recognition-Bibliothek aus dem Robot-Operating-System.
+Jüngste Entwicklungen aus der Objekterkennung werden vorgestellt, insbesondere
+darunter der Oriented-BRIEF-Algorithmus zur Bestimmung und Beschreibung von
+lokalen 2D-Merkmalen.
+
+Experimente zeigen, dass die Lage und die Orientierung eines Objekts in 82\%
+von ausgewählten Szenen zur Validierung erfolgreich bestimmt wird, mit einer
+Fehlertoleranz von 3 cm Versatz und 20 Grad Winkelunterschied. Ein Testlauf auf
+dem Roboter zeigt sowohl Grenzen als auch vielversprechende Aspekte des
+Ansatzes auf.
 
