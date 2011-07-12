@@ -4,7 +4,7 @@
 """This experiment shall investigate the relation between the accuracy of pose
 estimations and the recognition results. The assumption is that noise in the
 pose estimations will worsen the recognition results. How much negative impact
-noiaw in the pose estimations has on the recognition results shall be verified
+noise has in the pose estimations on the recognition results shall be verified
 by experiment.
 
 Two classifiers are trained, one on the original training set and one on the
