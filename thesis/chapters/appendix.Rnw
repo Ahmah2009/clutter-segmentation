@@ -47,11 +47,11 @@ most of them, patches have been supplied.
         \tod & 5085 & frecognizer in tod\_detecting fails with "Assertion `pos < m\_num\_bits' failed." \\
         \tod & 5086 & description of command-line options of frecognizer in tod\_detecting is out-dated \\
         \tod & 5093 & Matcher::add uses object indices rather than object identifiers \\
+        \tod & 5097 & drawProjections in GuessGenerator is broken \\
         \tod & 5103 & tod\_training detects features outside of region of interest \\
         \tod & 5104 & frecognizer detects way too many keypoints \\
-        \tod & 5097 & drawProjections in GuessGenerator is broken \\
-        \tod & 5104 & frecognizer detects way too many keypoints \\
         \tod & 5111 & Workaround for OpenCV 1044: Features outside of mask included in training \\
+        \vslam & 5056 & Seed is not initialized for RANSAC random number generator in vslam/posest \\
     \end{tabular} 
     \caption[Related bug reports]{Related bug reports.}
     \label{table:bug-reports}
