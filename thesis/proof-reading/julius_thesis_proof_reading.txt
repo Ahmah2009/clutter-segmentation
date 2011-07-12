@@ -172,7 +172,7 @@ FIXED use ORB; better, only one word for one entity
 There is FLANN, which we have not tested. TOD oers
 brute-force matching algorithms. We used Locally Sensitive Hashing in TOD for matching. => What was the reason for not running different matchers?
 Also flann itself is a library that implements a various kind of matching algorithms, e.g. knn, search-based (see perception_pcl/flann/include/flann/algorithms/), which means that you shall say that none od the flann algorithms was used.
-TODO decide about flann
+FIXED removed reference to flann
 
 Figure 3.6 can be bigger in size.
 FIXED assigned extra page, this figure encodes the very central idea of the whole thesis

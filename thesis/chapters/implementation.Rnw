@@ -299,8 +299,8 @@ $C_i$ be the set of correspondences where a query feature has been matched with
 a model feature from the $i$-th template object. Finally, let $C = (C_1, \dots,
 C_n)$ denote the partition of all correspondences for the query scene, where
 $n$ is the number of template objects described in the modelbase.  \tod
-integrates different nearest-neighbour algorithms. There is FLANN, which we
-have not tested. \tod offers a brute-force matching algorithm which we use in
+integrates different nearest-neighbour algorithms. \tod offers a brute-force
+matching algorithm which we use in
 \refSection{subsection:performance-validation-set} for comparison.  We use
 Locally Sensitive Hashing in \tod for matching.
 
