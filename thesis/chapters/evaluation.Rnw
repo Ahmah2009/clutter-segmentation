@@ -846,8 +846,8 @@ indicates that this threshold is effective.
 
 The parameter {\tt n\_features} specifies the number of desired features
 produced by ORB. Other feature detectors and descriptors in \opencv, such as
-SIFT and SURF do not provide such a parameter. Neither do the feature detectors
-FAST and STAR. The parameter {\it n\_features} is simple and intuitive. Yet,
+SIFT and SURF do not provide such a parameter. Neither does the FAST feature
+detector. The parameter {\it n\_features} is simple and intuitive. Yet,
 ORB does not make any guarantee about the actual number of features extracted
 on the image. The parameter is just a hint. The question arises how well ORB
 responds to different numbers of desired features.  ORB selects features based
