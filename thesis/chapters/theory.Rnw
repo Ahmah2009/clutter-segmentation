@@ -186,21 +186,6 @@ correspondences between query features and model features. Finally, based on a
 set of correspondences, we introduce a general RANSAC-based approach of
 estimating the pose of objects in the scene.
 
-% Object recognition is the problem of labeling or locating objects in a query
-% scene. This section describes relevant mathematics and techniques used in 3D
-% object recognition with local 2D features.
-% TODO: provide references to other approaches, or different subxxx of Object Recognition (CAD based, etc.)
-% instead of just talking about doing it
-% References to other approaches,
-% such as with true 3D features or object recognition using parametric models are
-% provided but, being out of scope, not covered in detail.
-
-% \subsubsection{Applications of Object Recognition}
-% Mars mission
-% Flood detection
-% Earthquake detection
-% Industrial quality control
-
 \subsection{Local Features}
 
 In object recognition, the question arises on how to generate a description of
@@ -267,21 +252,9 @@ model. A strategy on how to select features from multiple views is presented in
 \subsection{Feature Detectors}
 \label{subsection:feature-detectors}
 
-% TODO: strip section about feature detectors down to the bare essence
-
-% FIXME: re-read Tuytelaars to get this right
 A feature detector designates keypoints in an image. There exists a multitude
 of feature detectors in the literature, and more efforts have been spent into
 inventing new ones than comparing existing ones \cite{Rosten2010}.
-
-% Some feature detector
-% algorithms assign an orientation to each keypoint. Detectors can be roughly
-% partitioned into three groups \cite{Tuytelaars2007}. First, there are {\it
-% corner detectors}, such as Harris and SUSAN, that select points with high
-% curvature. Second, {\it blob detectors} such as SURF or DoG look for points
-% that are surrounded by brighter or darker pixels \cite{Bay2006}. Third, there
-% are {\it region detectors}, such as MSER, which extract features by finding
-% image regions.
 
 There is generally no such thing as the best feature detector. As often in
 engineering, all we can do is making the best choice for the task at hand.  An
@@ -291,7 +264,7 @@ accurate} \cite{Tuytelaars2007}.
 
 Repeatability describes the chances that the same point on an object shown from
 two different viewpoints and viewing conditions is designated keypoint on both
-images. Thus, repeatability is important when trying to find
+images \cite{Rosten2010}. Thus, repeatability is important when trying to find
 correspondences between two images. A feature detector designates keypoints
 after examining the local image neighbourhood. These neighbourhoods can for
 example be deformed by noise, image discretization, a change of viewpoint or a
@@ -433,18 +406,16 @@ depicted in \refFigure{figure:orb-test-locations}.
 \subsection{Feature Matching}
 \label{subsection:feature-matching}
 
-% TODO: speed-up must be backed up by a benchmark in the evaluation section
-
 In object recognition that is based on local features, correspondences between
 known views of the object and the query image can be established by matching
 the query features with model features. The computation time depends on the
 size of the descriptor vector, the nearest neighbour algorithm and the used
 distance metric. If exactness is not required, i.e. approximate nearest
-neighbours are sufficient, then speed-ups can be achieved. % TODO: cite
-Computing the Hamming distance between binary features is faster than computing
-the L2-norm for real-valued feature descriptors \cite{Calonder2010}. This holds
-especially true when using the {\tt POPCNT} instruction, which is available at
-least in AMD and Intel architectures \cite{AMD2009, Intel2007}.
+neighbours are sufficient, then speed-ups can be achieved.  Computing the
+Hamming distance between binary features is faster than computing the L2-norm
+for real-valued feature descriptors \cite{Calonder2010}. This holds especially
+true when using the {\tt POPCNT} instruction, which is available at least in
+AMD and Intel architectures \cite{AMD2009, Intel2007}.
 
 \subsubsection{Locality Sensitive Hashing}
 
@@ -482,19 +453,6 @@ Pose estimation using RANSAC can be categorized as a method of {\it pose
 consistency} or {\it alignment}, where first a pose is hypothesized, and
 then the hypothesized pose is verified for support by the remaining data
 \cite{Forsyth2003}.
-
-% There are six degrees of freedom for an object to be located and oriented in
-% space, three for translation and three for orientation. 
-% Three 2D points in perspective projection are INsufficient to fully determine a pose.
-% If there were no noise in the set of 2D correspondences, we would be able to
-% find poses of an object by simply taking any three correspondences belonging to
-% this object. Unfortunately, image noise, discretization effects and approximate
-% nearest neighbours asks for a more sophisticated approach that incorporates
-% strategies to deal with noise and inconsistency. RANSAC iteratively selects
-% three correspondences to compute pose estimates. The 3D model of the template
-% object aligned to the estimated pose is then projected on the query image plane
-% to compute the projection error and the consensus set. The size of the
-% resulting consensus sets plays an important role in this work.
 
 \section{Machine Learning}
 
@@ -569,7 +527,3 @@ It is interesting to estimate the error which a classifier or estimator is
 expected to make when working on new instances. This is the generalization
 error which cannot be estimated on the validation set. Instead a separate test
 set is required to estimate the generalization error \cite{Alpaydin2010}.
-% , and is related to the problem of assuming appropriate priors
-% in Bayesian inference.
-
-% TODO: some concluding sentences
