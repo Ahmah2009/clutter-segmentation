@@ -5,21 +5,23 @@
     source("../scripts/common.R")
 @
 
-This chapter presents the experimental results of the \clutseg system, on the
-validation set, on a test set and results from a live test on the PR2 robot at
-Technische Universität München. It covers how the modelbase was built, how
-validation data, ground truth, and the test data have been obtained. We discuss
-the parameter set found by experimentation. Scenes are presented in which the
-system performs well.  We also cover the limitations and issues that were
-revealed during the evaluation.
+This chapter presents the experimental results of the \clutseg system on the
+validation set, % on a test set
+and results from a live test on the PR2 robot at Technische Universität
+München. It covers how the modelbase was built, how validation data, ground
+truth, and the test data have been obtained. We discuss the parameter set found
+by experimentation. Scenes are presented in which the system performs well.  We
+also cover the limitations and issues that were revealed during the evaluation.
 
 \section{Data Acquisition}
 \label{section:data-acquisition}
 
-This section shows how all the data required for constructing the modelbases,
-the validation set and the test set was obtained. Those three artifacts all
-required raw data, which have been collected in a similar fashion, using the
-same hardware and software setup.
+This section shows how all the data required for constructing the modelbases and
+the validation set
+% and the test set
+was obtained. The modelbases and the validation set required raw data, which
+have been collected in a similar fashion and the same hardware and software
+setup.
 
 % The Robot
 % Operating System running on the PR2 robot is organized as a distributed system
@@ -154,18 +156,17 @@ offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 \end{equation}
 
 
-
-\subsection{Test Set}
-
-The test set was made of cluttered scenes of various character. All four
-objects are shown on the test scene. Some scenes showed objects in upright
-position, but some objects occluding others. Other scenes showed objects in
-arbitrary orientations and with medium occlusion. Other, yet more difficult
-scenes, showed objects in arbitrary orientations and with severe occlusion.
-
-The test set data have been collected similarly to the validation set, but
-ground truth was not computed. The evaluation on the test set was therefore
-restricted to visual analysis.
+% \subsection{Test Set}
+%
+% The test set was made of cluttered scenes of various character. All four
+% objects are shown on the test scene. Some scenes showed objects in upright
+% position, but some objects occluding others. Other scenes showed objects in
+% arbitrary orientations and with medium occlusion. Other, yet more difficult
+% scenes, showed objects in arbitrary orientations and with severe occlusion.
+%
+% The test set data have been collected similarly to the validation set, but
+% ground truth was not computed. The evaluation on the test set was therefore
+% restricted to visual analysis.
 
 \section{Experiments}
 
@@ -264,7 +265,6 @@ Only a few parameter sets led to success rates greater than $90\%$.}
     \label{figure:experiment-progress}
 \end{figure}
 
-% FIXME define success rate
 % FIXME scene score => guess score
 
 <<>>=
@@ -385,13 +385,14 @@ stages to match the binary features produced by ORB.
 
 \section{Performance}
 
-The performance of the \clutseg system has been tested on the validation set, on a
-separate test set, and in a live test on the PR2 robot. This section reviews
-\clutseg's performance for a parameter set that worked well on the validation
-set. 
+The performance of the \clutseg system has been tested on the validation set,
+% on a separate test set,
+and in a live test on the PR2 robot. This section reviews \clutseg's
+performance for a parameter set that worked well on the validation set. 
 % It also covers observations made on a broad range of experiments.
 
 \subsection{Performance on Validation Set}
+\label{subsection:performance-validation-set}
 
 <<>>=
     sps_avg = dbGetQuery(con, paste(
@@ -425,9 +426,9 @@ set.
     }
 @
 
-Since \clutseg uses randomized algorithms, we have run it with the SPS
-values for 20 times on the validation set to measure the average performance.
-The system correctly recognized an object within error bounds of 3 cm and 20
+Since \clutseg uses randomized algorithms, we have run it with the SPS values
+for 20 times on the validation set to measure the average performance.  The
+system correctly recognized an object within error bounds of 3 cm and 20
 degrees in rotation in
 \Sexpr{signif(sps_avg$avg_succ_rate * 100, 2)}\% of the validation scenes. One
 of the scenes where \clutseg successfully recognized an object is visualized in
@@ -534,10 +535,13 @@ seconds on average using the setup described in
 \refTable{table:hardsoftware-parameter-optimization}. Using brute-force nearest
 neighbour search instead of Locality Sensitive Hashing, the system took
 \Sexpr{signif(sps_bf_avg$avg_test_runtime / 21, 2)} seconds per image.
-Brute-force search yielded \Sexpr{round(sps_bf_avg$avg_detect_matches)} correspondences per image, very
-similar to LSH. Hence, LSH ran at least a factor
-\Sexpr{floor(sps_bf_avg$avg_test_runtime / sps_avg$avg_test_runtime)}
- faster than brute-force search. Both LSH and brute-force search lead to similar
+Brute-force search yielded \Sexpr{round(sps_bf_avg$avg_detect_matches)}
+correspondences per image, very similar to LSH. Since \tod ensures injectivity
+in the mapping of query features to model features, and since LSH does not
+guarantee to find $k$ nearest neighbours, the number of correspondences found
+by either LSH or brute-force matching does not need to match. LSH ran at least
+a factor \Sexpr{floor(sps_bf_avg$avg_test_runtime / sps_avg$avg_test_runtime)}
+faster than brute-force search. Both LSH and brute-force search lead to similar
 success rates.
 
 %TODO: give exact number 81% and 82% but first need to see whether 
@@ -550,10 +554,224 @@ success rates.
 The success rate of \Sexpr{round(100 * sps_avg$avg_succ_rate)}\% is over-optimistic with regard to the test scenes, because the
 validation set was used for optimizing the system. For ground truth was
 available for the validation set, more precise data can be presented on it than
-for the test set. 
+% for the test set. 
+for the live test.
 
-\subsection{Performance on Test Set}
+% \subsection{Performance on Test Set}
 \subsection{Performance in Live Test}
+
+This section shows the results of a live test of \clutseg on the PR2. We tested
+whether the system is able to recognize an object in cluttered scenes with high
+occlusion rates and objects in arbitrary orientation
+(\refFigure{figure:clutter}); how duplicates in the scene affect the
+recognition process (\refFigure{figure:duplicates}); in which setups \clutseg
+confuses objects (\refFigure{figure:confusion}); and whether the system is able
+to recognize an object in the presence of many textured objects in the scene
+(\refFigure{figure:many}).  Finally, we tested whether the PR2 is able to grasp
+a recognized object (\refFigure{figure:grasp}).
+
+The guess refinement only matches query features agains the model features of
+one single object (\refSection{subsection:guess-refinement}). The figures in
+this section show the number of correspondencies (inliers) consistent with the
+estimated pose, and the total number of correspondencies between the query
+image and the single model. For example, consider the guess with label {\it
+\haltbareMilch(10, 201)} from \refFigure{figure:clutter} (a). Its consensus set
+contains $10$ inliers. Between the query image and the model of \haltbareMilch,
+201 correspondencies were found in total.
+
+% uprightness
+
+Recognition worked better when the objects were in upright position. \clutseg
+had more difficulties with objects in  arbitrary orientations.
+\refFigure{figure:clutter} (a) shows a scene where \haltbareMilch was
+recognized. Only 10 inliers were consistent with its estimated pose, which is
+also off the ground truth. \refFigure{figure:clutter} (b) presents a similar
+scene where \icedtea was accurately recognized.
+
+In scenes containing \icedtea and at least one other object from the modelbase,
+we observed that \clutseg has a strong tendency to recognize \icedtea. We
+tested each of the six possible pairings of the four objects in the modelbase.
+The relation, where $A > B$ denotes ``A is recognized if shown together with B
+in a scene'' was observed to be \icedtea > \haltbareMilch = \jacobsCoffee >
+\assamTea. The four objects are described by a different number of model
+features (\refTable{table:number-model-features}). From the initial guesses,
+\clutseg selects the one with the highest guess ranking, which explains this
+observation.
+
+\begin{table}
+    \begin{center}
+        \begin{tabular}{lr}
+            Model           & Number of model features \\
+            \hline
+            \assamTea       & 4623 \\
+            \haltbareMilch  & 6981 \\
+            \icedtea        & 15184 \\
+            \jacobsCoffee   & 8912 \\
+        \end{tabular}
+        \caption[The number of model features of \assamTea, \haltbareMilch, \icedtea, and \jacobsCoffee]
+        {The number of model features of \assamTea, \haltbareMilch, \icedtea, and \jacobsCoffee.}
+        \label{table:number-model-features}
+    \end{center}
+\end{table}
+
+\clutseg and \tod do not perform any clustering of correspondences prior to
+pose estimation. With duplicates on the scene, the number of inliers consistent
+with the estimated pose of an object decreases. This can be explained by \tod
+making the mapping from query features to model features injective. Yet, even
+in the presence of many duplicate objects, \clutseg still recognizes objects
+(\refFigure{figure:duplicates}).
+
+Some shopping items do not only resemble each other in shape, but also in
+appearance. The (wild-berries) \icedtea and the peach-flavored ice tea were
+confused by \clutseg (\refFigure{figure:confusion} a). \clutseg guessed
+correctly after adding (wild-berries) \icedtea to the scene
+(\refFigure{figure:confusion} b).
+
+The recognition of objects is generally rendered more difficult when many
+textured object are on the scene; it is more likely that the nearest neighbour
+of a query feature is not a true correspondence between object and model. How
+difficult it becomes is an open question. We tested scenes with many textured
+objects. Most of them did not belong to the modelbase though. \clutseg
+encountered no difficulties in the scenes depicted by \refFigure{figure:many}
+nor in similar scenes tested.
+
+The grasping algorithm is based on computing the centroid of the inlier cloud.
+The gripper of the PR2 is unfortunately not large enough to grasp \icedtea.
+The maximum aperture of the gripper permits the PR2 to grasp \assamTea,
+\haltbareMilch and \jacobsCoffee, but there is almost no margin for error.
+This made the grasping in the live test hard. However, in all test runs, we
+observed the PR2 to correctly steer its manipulator correctly towards the
+object.  A succcessful attempt where the PR2 grasps the recognized \assamTea is
+shown in \refFigure{figure:grasp}.
+
+
+% duplicateness
+
+% confusionness
+
+% manyness
+
+% graspingness
+
+% conclusionness
+
+% LIVE TEST SETUP
+
+% the images taken were recorded from a Kinect camera in 1280x1024 resolution
+
+% the more surface the PR2 sees, the easier recognition
+
+% the vertical angle affects the recognition process
+
+% angles closer to the angle in the training data work better 
+
+% if objects do not stand upright on the table, recognition is more difficult
+% and often, pose is not correctly estimated
+
+% the inliers almost always belong only to the guessed object
+
+
+% duplicates do not severely affect the recognition process,
+% but they affect the number of inliers
+
+% many textured objects render recognition more difficult
+% the number of inliers decreases if more objects are put in the scene
+
+
+
+
+
+
+% GRASPING 
+
+% the grasping is centroid-based
+
+% push-grasping would be a enhancement
+
+% the PR2 gripper aperture is not wide enough to grasp the objects reliably
+
+% MISCELLANEOUS
+
+% recognition is pretty fast, about three seconds
+
+% icedtea is the easiest object to recognize
+
+% assam tea is the hardest object to recognize
+
+% haltbareMilch easier than assamtea
+
+
+% icedtea easier than assamtea
+
+
+% icedtea easier than haltbaremilch
+
+
+% icedtea easier than jacobscoffee
+
+
+% jacobscoffee easier than assamtea
+% haltbareMilch and jacobscoffee equal 
+
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{clutter}
+        \caption[\clutseg recognizes \haltbareMilch and \icedtea in cluttered
+scenes]{Two cluttered scenes with all four objects from the model base as seen
+by the PR2. From left to right: (a) \haltbareMilch was recognized with 10
+inliers out of 201 correspondences between the image and the model of
+\haltbareMilch. The pose is fairly off the ground truth pose, yet the inliers
+belong to the right object. (b) \clutseg precisely estimated the pose of
+\icedtea with a confidence value of 155 inliers out of 516 correspondences in a
+scene with high occlusion rate.}
+        \label{figure:clutter}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{duplicates} \caption[\clutseg
+recognizes \icedtea and \assamTea in scenes with duplicates]{From left to
+right: (a) \icedtea was recognized despite of the presence of many duplicates.
+(b) \clutseg recognized one of the four items of \assamTea.}
+\label{figure:duplicates}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{confusion}
+        \caption[\clutseg confuses peach ice tea with \icedtea]{From left to
+right: (a) The (wild berries) \icedtea in the modelbase was confused with peach
+ice tea. (b) The additional presence of (wild berries) \icedtea resolves the
+confusion. }
+\label{figure:confusion}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{many}
+        \caption[\clutseg recognizes \icedtea and \jacobsCoffee in scenes with
+many textured objects]{Many textured objects in the scene render recognition
+more difficult. From left to right: (a) \icedtea was recognized with 40 inliers
+in a scene with 11 textured objects. (b) After removing \icedtea and its
+easy-to-confuse peach-flavored variant, \jacobsCoffee was recognized with 21
+inliers out of 284 correspondences.}
+        \label{figure:many}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=\textwidth]{grasp}
+        \caption[The PR2 graps \assamTea]{The PR2 grasps \assamTea.}
+        \label{figure:grasp}
+    \end{center}
+\end{figure}
+
+\newpage
 
 \subsection{ORB}
 \label{subsection:evaluation-orb}
@@ -885,9 +1103,9 @@ drawn onto the histograms. The histogram clearly shows the erroneous models,
 especially in the case of \icedtea's; its $xy$-coordinate histogram has roughly the
 form of a hash ('\#'). 
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=\textwidth]{clutseg-model-xyhist}
+        \includegraphics[width=0.9\textwidth]{clutseg-model-xyhist}
         \caption[The coordinate histograms of four \clutseg models]{From left to right: $xy$-coordinate histogram of (a) \assamTea, (b) \haltbareMilch, (c) \jacobsCoffee, (d) \icedtea.}
         \label{figure:clutseg-model-xyhist}
     \end{center}
@@ -899,9 +1117,9 @@ In comparison, the \tod model histograms look as expected
 (\refFigure{figure:tod-model-xyhist}~c).  Just like \icedtea, \fatFreeMilk is a
 cuboid. Hence, their $xy$-coordinate histograms should be similar, which is not the
 case.
-\begin{figure}[h]
+\begin{figure}[h!]
     \begin{center}
-        \includegraphics[width=\textwidth]{tod-model-xyhist}
+        \includegraphics[width=0.9\textwidth]{tod-model-xyhist}
         \caption[The coordinate histograms of four \tod models]{From left to right: $xy$-coordinate histogram of (a) {\it campbells\_chicken\_noodle}, (b) {\it downy}, (c) {\it fat\_free\_milk}, (d) {\it good\_earth\_tea}.}
         \label{figure:tod-model-xyhist}
     \end{center}
