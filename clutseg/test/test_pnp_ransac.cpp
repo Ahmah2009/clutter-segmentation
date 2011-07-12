@@ -37,7 +37,7 @@ TEST_F(test_pnp_ransac, rng_deterministic) {
 TEST_F(test_pnp_ransac, rng_initialized_seed) {
     RNG rng;
     RNG rng2;
-    rng2.state = clock();
+    rng2.state = time(NULL);
     cout << rng() << endl;
     cout << rng2() << endl;
     EXPECT_NE(rng(), rng2());
