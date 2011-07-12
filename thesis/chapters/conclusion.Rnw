@@ -20,8 +20,8 @@ number of features to be extracted.
 % Binary features are extremely fast to match with LSH
 Locally-Sensitive Hashing proved to work well with binary features; it achieved
 a speed-up of %TODO
-times over brute-force matching in the validation scenes, and the success rate
-and the average scene score were not impacted by trading exactness for speed.
+times over brute-force matching in the validation scenes, and both the success rate
+and the average guess score were not impacted by trading exactness for speed.
 
 % RANSAC can cope with lots of noise
 Although RANSAC turned out to be surprisingly robust to outliers and noise, our
