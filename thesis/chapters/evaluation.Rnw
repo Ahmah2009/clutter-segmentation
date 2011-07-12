@@ -134,7 +134,7 @@ system aligns with one of the three coordinate systems as depicted in
 the fiducial markers, such that 
 
 \begin{equation}
-    \ocTi{j}: \vec{p} \mapsto\ \fTv \pth{\vec{p}}
+    \ocTi{j}: \vec{p} \mapsto\ \fcT \pth{\vec{p}}
 \end{equation}
 
 In other words, object $j$ was placed on the rotating table in the same way as
@@ -147,11 +147,11 @@ The other two objects $i$ and $k$ were placed upright next to object $i$, with
 offset of $-0.15$ and $0.13$ (in metres) in x-direction of fiducial coordinates
 
 \begin{equation}
-    \ocTi{i}: \vec{p} \mapsto\ \fTv \pth{ \vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} }
+    \ocTi{i}: \vec{p} \mapsto\ \fcT \pth{ \vec{p} - \begin{pmatrix} 0.15 \\ 0 \\ 0 \end{pmatrix} }
 \end{equation}
 
 \begin{equation}
-    \ocTi{k}: \vec{p} \mapsto\ \fTv \pth{ \vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} }
+    \ocTi{k}: \vec{p} \mapsto\ \fcT \pth{ \vec{p} + \begin{pmatrix} 0.13 \\ 0 \\ 0 \end{pmatrix} }
 \end{equation}
 
 

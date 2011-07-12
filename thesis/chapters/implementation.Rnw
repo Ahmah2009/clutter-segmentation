@@ -142,7 +142,7 @@ perspective-n-point problem.
 \end{figure}
 
 There is a subtlety in the relationship between the fiducial markers and the
-object coordinate system. The camera calibration computes the PRT $\fTv$
+object coordinate system. The camera calibration computes the PRT $\fcT$
 between the {\it fiducial coordinate system} ($f$) attached to the fiducial markers
 and the camera coordinate system. The origin in fiducial coordinates is defined
 halfway between the two chessboards. Yet,
@@ -150,7 +150,7 @@ we need the object-camera transformation $\ocT$. The solution here consists in
 just {\it defining} the object coordinate system to be the same as the
 coordinate system attached to the fiducial markers, that is
 \begin{equation}
-    \ocT: \real^3 \to \real^3, \vec{p} \mapsto\ \fTv(\vec{p})
+    \ocT: \real^3 \to \real^3, \vec{p} \mapsto\ \fcT(\vec{p})
     \label{equation:fiducial-object}
 \end{equation}
 
