@@ -212,7 +212,7 @@ The default value for detect_ratio_threshold is selected to be 0:8, as recommend
 FIXED ambiguous formulation, ratio test in the end not enabled
 
 false positive if, the guessed object is not on the scene; => I would say that two confused objects shall be tagged as False Positive as well
-WON'T FIX  this is how the scene score is implemented, detecting confusion requires reasoning on ground truth by comparing inliers with object boundaries, did not get to do this, so can't fix the implementation in the documentation
+WON'T FIX  this is how the guess score is implemented, detecting confusion requires reasoning on ground truth by comparing inliers with object boundaries, did not get to do this, so can't fix the implementation in the documentation
 
 For equation 3.4 you have to tell me what does a 0 number represent - some sort of an origin? Also parentheses do not seem to be fully right.
 FIXED elaborated, now made clear that mathbf{0} is not a number but a vector, and that this vector describes the object origin
