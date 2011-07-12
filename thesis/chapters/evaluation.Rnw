@@ -608,7 +608,7 @@ observation.
             \icedtea        & 15184 \\
             \jacobsCoffee   & 8912 \\
         \end{tabular}
-        \caption[The number of model features of \assamTea, \haltbareMilch, \icedtea, and \jacobsCoffee]
+        \caption[The numbers of model features for the four objects in the modelbase]
         {The number of model features of \assamTea, \haltbareMilch, \icedtea, and \jacobsCoffee.}
         \label{table:number-model-features}
     \end{center}
@@ -753,20 +753,20 @@ confusion. }
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{many}
-        \caption[\clutseg recognizes \icedtea and \jacobsCoffee in scenes with
-many textured objects]{Many textured objects in the scene render recognition
+\caption[\clutseg recognizes \icedtea and \jacobsCoffee in scenes with
+many objects]{Many textured objects in the scene render recognition
 more difficult. From left to right: (a) \icedtea was recognized with 40 inliers
 in a scene with 11 textured objects. (b) After removing \icedtea and its
 easy-to-confuse peach-flavored variant, \jacobsCoffee was recognized with 21
 inliers out of 284 correspondences.}
-        \label{figure:many}
+    \label{figure:many}
     \end{center}
 \end{figure}
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=\textwidth]{grasp}
-        \caption[The PR2 graps \assamTea]{The PR2 grasps \assamTea.}
+        \caption[The PR2 grasps \assamTea]{The PR2 grasps \assamTea.}
         \label{figure:grasp}
     \end{center}
 \end{figure}
