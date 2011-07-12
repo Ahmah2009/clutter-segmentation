@@ -3,8 +3,6 @@ cluttered scene. It takes a query image as input. As a result it shall detect th
 presence of an object, find its pose in the query scene, and mark points on the
 object.
 
-% TODO: maybe include input and output picture
-
 \clutseg is based on the existing Textured Object Detection (\tod) Library,
 which we discuss in detail.
 
@@ -52,8 +50,6 @@ exporting data quickly into human-readable formats.
 {\it R} is an open-source environment for statistical computing and graphics.
 It excels in good documentation. R supports many different sources of data, and
 in particular also a \sqlite database.
-
-% TODO: add references to OpenCV and ROS in bibliography?
 
 \section{Textured Object Detection Library}
 
@@ -255,16 +251,6 @@ transformation just before calling RANSAC for pose estimation, but it is
 equivalent, conceptually simpler, and computationally faster to do this only
 once while extracting features.
 
-% MAYBE: test what happens if one uses just every second, third, or fourth view
-% it is no longer (see changeset https://code.ros.org/trac/wg-ros-pkg/changeset/50688/branches/trunk_diamondback/stacks/object_recognition/tod_detecting/src/Loader.cpp)
-% that tod* select the views by angle steps.
-% \tod uses a simple heuristic for selecting which model features are
-% incorporated in a model; it selects the model features from views in roughly
-% equal angle steps with respect to the rotating table. \tod stores the modelbase
-% in a hierarchical manner on the filesystem, retaining data even from views that
-% are not actually included in the models.
-% TODO: refer to paper that select view based on informativeness, information content, entropy
-
 \subsection{Recognition}
 \label{subsection:recognition}
 
@@ -325,10 +311,6 @@ If a model feature is matched with multiple query features, only the
 correspondence with the minimum distance is retained. This way, \tod ensures
 that the mapping from query features to model features is injective.
 
-% TODO: introduce parameter knn
-% TODO: discuss ratio test from lowe
-% TODO: introduce parameter ratio_threshold
-
 \subsubsection{Guess}
 
 The hypotheses \tod generates for a given query scene are called {\it guesses}.
@@ -376,16 +358,10 @@ RANSAC/LD algorithm presented in \cite{Fischler1981}. It solves the P4P
 problem.  The largest consensus set found is fed to the PNP-solver in \opencv
 ({\tt cv::solvePnP}), which then computes the final pose estimate.
 
-% TODO: introduce parameter max_projection_error
-
 \refFigure{figure:inlier-criteria} shows a model aligned to the scene.
 Altogether, for a given query scene, \tod takes the query image and generates
 an unordered set of guesses, which is the output of the \tod recognition
 process.
-% The task is rendered difficult by possible confusion in the partition $C$ with respect
-% to the true partition, that is some correspondences might have been matched to
-% the wrong object. \tod iterates over each correspondence set $C_i$, and
-% generates pose estimates for instances of the $i$-th template object.
 
 \section{Clutter Segmentation Tool}
 
@@ -399,14 +375,6 @@ only the one with the highest confidence value. Third, guess rejection reduces
 the probability of settling on the wrong guess.  Finally, this section covers
 the tools that help to find good parameters for the clutseg system, and help
 collect statistics to evaluate its performance.
-
-% The reasons why \clutseg has been developed were two-fold: First, given the robotic
-% task of resolving the clutter in the scene requires the robot to locate one
-% object in the scene. \tod produces several guesses, and to select a suitable
-% one is sufficient for our application. 
-% Third, when working with experimental, unstable
-% software, it often proves useful to wrap certain parts of it with a
-% more convenient interface.
 
 \subsection{Guess Ranking}
 
@@ -503,7 +471,6 @@ have already been introduced in the previous chapters, others still need to be
 described. Table~\ref{table:parameters} shows an overview of all configurable
 system parameters, except the parameters for feature extraction, which depend
 on the choice of feature extractor, and which are treated separately.
-% TODO: treat feature extractor params somewhere (table?)
 
 \begin{table}[h!]
   \begin{center}
@@ -574,11 +541,6 @@ detect\_do\_ratio\_test} and configured by {\tt detect\_ratio\_threshold} for
 the detection step. In the refinement step it does not make sense and is
 disabled by default.
 
-% TODO: check whether correspondences or what kind of points are removed in tod
-% guess generator after each call to ransac
-% TODO: describe k-NN matching and what this means in this context
-% TODO: describe pruning of correspondences that find neighbours in many images
-
 \subsubsection{Pose Estimation Parameters}
 
 The pose estimation step in detection and refinement depends on three
@@ -633,7 +595,6 @@ a guess.
 Unfortunately, this scheme does not cover the case in which two objects have
 been confused. In the application scenario, several objects are expected to be
 on the scene. 
-% TODO: need to give numbers in evaluation section about none_rate
 
 \subsubsection{Pose Estimation Error}
 
@@ -658,7 +619,6 @@ using the dot-product, we have
 Rodrigues' rotation formula can be used for efficiently converting back and
 forth between rotation matrix and axis-angle representation, and is readily
 available in \opencv.
-% TODO: need citation
 
 \subsubsection{Guess Scores}
 
@@ -701,14 +661,6 @@ pose does not exceed the error margins for translation ($t_{max}$) and rotation
 ($\alpha_{max}$). \clutseg produces only one guess per scene. The {\it success
 rate} is the ratio between the number of scenes where \clutseg successfully
 recognized an object and the number of scenes in total. 
-
-% For example, let two objects A and B be on the scene. \clutseg makes a guess,
-% but confusing objects A and B, it states that A was found at a pose close to
-% object B, and also with inliers emanating from object B. In this case, the
-% presented score function will still assign a classification score of 0.5. To
-% detect this, the definition for ground truth would have to be extended to
-% include the regions on the query image that belong to each object. Then it is
-% possible to distinguish between true and false inliers.
 
 \subsubsection{Recognition Statistics}
 
