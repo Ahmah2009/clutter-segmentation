@@ -793,7 +793,7 @@ revision 5465), except for ORB, where the number of desired features was set to
 
 \refFigure{figure:sift-surf-orb-benchmark} shows the CPU time per image, the
 CPU time per keypoint, and the number of keypoints, averaged over 21 images
-from the validation set. None of the three detectors runs in parallel, and the
+from the validation set. None of the three detectors run in parallel, and the
 measured CPU time was roughly equivalent to wall-clock time. The hardware and
 software configuration of the notebook used for the benchmark is shown in
 \refTable{table:hardsoftware-sift-surf-orb-benchmark}.
