@@ -1,6 +1,5 @@
 \SweaveOpts{echo=FALSE}
 
-
 <<>>=
     source("../scripts/common.R")
 @
@@ -254,7 +253,6 @@ a high success rate.
     hist(r_all$succ_rate, xlab = "Success rate", main="Histogram of success rates")
 @
     \end{center}
-% FIXME
     \caption[The observed success rates in the experiments]{From left to right:
          (a) the smoothed scatter plot of success rates of \Sexpr{e_all$cnt} experiments in total.
 We assigned identifiers to the experiments in increasing order with time. The patterns reflect our
@@ -264,8 +262,6 @@ success rates in all experiments. Bad parameter values result in a zero success 
 Only a few parameter sets led to success rates greater than $90\%$.}
     \label{figure:experiment-progress}
 \end{figure}
-
-% FIXME scene score => guess score
 
 <<>>=
     rm(e_all)
@@ -539,21 +535,21 @@ Brute-force search yielded \Sexpr{round(sps_bf_avg$avg_detect_matches)}
 correspondences per image, very similar to LSH. Since \tod ensures injectivity
 in the mapping of query features to model features, and since LSH does not
 guarantee to find $k$ nearest neighbours, the number of correspondences found
-by either LSH or brute-force matching does not need to match. LSH ran at least
-a factor \Sexpr{floor(sps_bf_avg$avg_test_runtime / sps_avg$avg_test_runtime)}
-faster than brute-force search. Both LSH and brute-force search lead to similar
-success rates.
-
-%TODO: give exact number 81% and 82% but first need to see whether 
-% vlsam initializes the seed for generating random numbers
+by either LSH or brute-force matching does not need to match. So, LSH ran at
+least a factor \Sexpr{floor(sps_bf_avg$avg_test_runtime / sps_avg$avg_test_runtime)}
+faster than brute-force search. When measuring only
+the runtime for feature matching alone, we observed LSH to be more than a
+magnitude faster than brute-force search. The success rate of LSH on the 
+validation set was \Sexpr{round(100 * sps_bf_avg$avg_succ_rate)}\%.
 
 <<>>=
     rm(e_orb)
 @
 
-The success rate of \Sexpr{round(100 * sps_avg$avg_succ_rate)}\% is over-optimistic with regard to the test scenes, because the
-validation set was used for optimizing the system. For ground truth was
-available for the validation set, more precise data can be presented on it than
+For the selected parameter values, the success rate of \Sexpr{round(100 * sps_avg$avg_succ_rate)}\% is over-optimistic with regard to the test scenes,
+because the validation set was used for optimizing the system. For ground truth
+was available for the validation set, more precise data can be presented on it
+than
 % for the test set. 
 for the live test.
 
@@ -930,42 +926,19 @@ by more than \Sexpr{max_exceed} keypoints.
 
 \section{Issues}
 
-% \subsection{Prior Assumption about Orientation}
-
-% many presentations of object recognition systems seem to make the prior assumption of objects appearing in upright pose.
-% the performance on the test set which showed objects in arbitrary orientation was below expectations
-% the model features were extracted by a scan of the object from positions on a circle
-% the query features are observed from a position on a sphere around the object
-% features are rotation-invariant only to rotation of objects around an axis parallel to the optical axis 
-% the number of matches significantly reduced on the images with objects in arbitrary orientation
-
-% Many presentations of object recognition systems in media and literature seem
-% to make the prior assumption that objects in query scenes are oriented in
-% upright position. Our test set shows scenes with objects not only in clutter,
-% but also in arbitrary orientation.  This adds extra difficulty. \clutseg had
-% problems with locating an object at least in TODO of TODO test scenes. When we
-% collected raw data for the modelbase, we made an implicit prior assumption
-% about the orientation of objects in query scenes. We scanned the template
-% object from several points on a circle around the object. Yet, the query scenes
-% show instances from arbitrary points on spheres around them.
-
-% Rotation-invariant feature detectors cope with 3D rotation of objects around an
-% axis parallel to the optical axis. SIFT features still operate up to 20 degrees
-% of rotation around an axis parallel to the image plane \cite{Lowe1999}. % TODO: confirm this
-
-
 \subsection{Repetitions in Texture}
 
-The system had difficulties to recognize \icedtea when shown from a
-certain angle.  It turned out that \icedtea has smallprint almost all over
-its backside. The same set of letters repeatably appear over a large area,
-which probably makes it hard to obtain informative features. Furthermore,
-focus becomes an issue.
+The system had difficulties to recognize \icedtea when shown from a certain
+angle.  It turned out that \icedtea has smallprint almost all over its backside
+(\refFigure{figure:icedtea-smallprint}). The same set of letters repeatably appear
+over a large area, which probably makes it hard to obtain informative features.
+Furthermore, focus becomes an issue.
 
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.2\textwidth]{icedtea_smallprint}
         \caption[Repetitive texture shown on the back of \icedtea]{Repetitive texture on template object \icedtea.}
+        \label{figure:icedtea-smallprint}
     \end{center}
 \end{figure}
 
