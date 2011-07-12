@@ -169,6 +169,10 @@ int main(int argc, char **argv) {
         model += view_cloud; */
     }
 
+    cout << "         Model: " << opts.object << endl;
+    cout << "         Views: " << object->observations.size() << endl;
+    cout << "Model features: " << model.size() << endl;
+
     io::savePCDFileASCII(opts.pcd_out_file, model);
     
     return 0;
