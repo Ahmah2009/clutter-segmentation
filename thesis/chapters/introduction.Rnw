@@ -1,4 +1,5 @@
 \section{Intended Purpose}
+% TODO: check whether captions are centered
 
 Object recognition is one of the fundamental tasks in computer vision. One of
 its applications is in robotics. Especially in household environments it is
@@ -111,7 +112,7 @@ Detection (\tod) stack in the Robot Operating System.
 We required our system to run on a PR2 robot at Technische Universität München,
 as depicted in \refFigure{figure:clutter-pr2-kinect} (c). The PR2 is a robotic
 platform produced by Willow Garage. A Kinect RGB-depth camera is mounted on top
-of the robot. It simultaneously provides color images and depth measurements. 
+of the robot. It simultaneously provides colour images and depth measurements. 
 The Kinect camera measures the time-of-flight of near-infrared rays to compute
 the distance between camera and 3D points. The typical depth range of
 a Kinect camera is between 0.8 and 3.5 meters \cite{PrimeSense2010}. A depth
@@ -121,9 +122,9 @@ image obtained by this camera is visualized in
 In the presented approach, we first learn a model from each rigid textured
 object, one by one. An object is rotated in front of the camera, which takes
 images and 3D scans from different views of the object. For each view, local 2D
-features are extracted from the grayscale image.  \refFigure{figure:keypoints}
+features are extracted from the greyscale image.  \refFigure{figure:keypoints}
 shows both an image of a textured object (a) and the keypoints extracted from a
-grayscale version of the image (b). The local 2D features, together with the
+greyscale version of the image (b). The local 2D features, together with the
 associated 3D points on the object's surface, form the {\it \glspl{model
 feature}}. The model features make up the model of this object. The 3D part of
 the model, a sparse point cloud, is described in a standard coordinate system.
@@ -140,7 +141,7 @@ the model, a sparse point cloud, is described in a standard coordinate system.
 Given an image of a scene, we use the models to recognize instances of the
 \glspl{template object}. For clarity, we call a scene a {\it \gls{query scene}} if we want
 to recognize objects in it. First, local 2D features are extracted from a
-grayscale {\it \gls{query image}} depicting the query scene. These features are
+greyscale {\it \gls{query image}} depicting the query scene. These features are
 called {\it \glspl{query feature}} in order to distinguish them from model features.
 Nearest-neighbour search permits to find {\it \glspl{correspondence}} between a query
 feature and one or more model features. Some of these correspondences for a

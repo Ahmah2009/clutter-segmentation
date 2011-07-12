@@ -130,7 +130,7 @@ systems, defined with respect to the fiducial markers. The object coordinate
 system was defined for an object when the model was being learnt. Therefore, an
 object must be placed in the validation scene such that its object coordinate
 system aligns with one of the three coordinate systems as depicted in
-\refFigure{figure:validation-scene}. We placed object $j$ in the center between
+\refFigure{figure:validation-scene}. We placed object $j$ in the centre between
 the fiducial markers, such that 
 
 \begin{equation}
@@ -329,7 +329,7 @@ feature extraction. We used the same feature extraction parameters for the
 modelbase and for the query scenes. We used the default values from \opencv for
 parameters {\tt octaves} and {\tt scale\_factor}. We chose the value for
 {accept\_threshold} empirically such that it exceeded the number of inliers in
-cases where a mislabeling was observed.
+cases where a mislabelling was observed.
 
 \begin{table}[h!]
   \begin{center}
@@ -429,7 +429,7 @@ degrees in rotation in
 \Sexpr{signif(sps_avg$avg_succ_rate * 100, 2)}\% of the validation scenes. One
 of the scenes where \clutseg successfully recognized an object is visualized in
 \refFigure{figure:validation-scene-success}, which shows the ground truth with
-labeled axes, the estimated pose, and the keypoints of query features that
+labelled axes, the estimated pose, and the keypoints of query features that
 found both a match with a model feature and support the pose estimate.
 
 The guesses that remained within the afore-mentioned error bounds showed an average
@@ -566,14 +566,14 @@ to recognize an object in the presence of many textured objects in the scene
 (\refFigure{figure:many}).  Finally, we tested whether the PR2 is able to grasp
 a recognized object (\refFigure{figure:grasp}).
 
-The guess refinement only matches query features agains the model features of
+The guess refinement only matches query features against the model features of
 one single object (\refSection{subsection:guess-refinement}). The figures in
-this section show the number of correspondencies (inliers) consistent with the
-estimated pose, and the total number of correspondencies between the query
+this section show the number of correspondences (inliers) consistent with the
+estimated pose, and the total number of correspondences between the query
 image and the single model. For example, consider the guess with label {\it
 \haltbareMilch(10, 201)} from \refFigure{figure:clutter} (a). Its consensus set
 contains $10$ inliers. Between the query image and the model of \haltbareMilch,
-201 correspondencies were found in total.
+201 correspondences were found in total.
 
 % uprightness
 
@@ -637,7 +637,7 @@ The maximum aperture of the gripper permits the PR2 to grasp \assamTea,
 \haltbareMilch and \jacobsCoffee, but there is almost no margin for error.
 This made the grasping in the live test hard. However, in all test runs, we
 observed the PR2 to correctly steer its manipulator correctly towards the
-object.  A succcessful attempt where the PR2 grasps the recognized \assamTea is
+object.  A successful attempt where the PR2 grasps the recognized \assamTea is
 shown in \refFigure{figure:grasp}.
 
 
@@ -793,7 +793,7 @@ revision 5465), except for ORB, where the number of desired features was set to
 
 \refFigure{figure:sift-surf-orb-benchmark} shows the CPU time per image, the
 CPU time per keypoint, and the number of keypoints, averaged over 21 images
-from the validation set. None of the three detectors is parallelized, and the
+from the validation set. None of the three detectors runs in parallel, and the
 measured CPU time was roughly equivalent to wall-clock time. The hardware and
 software configuration of the notebook used for the benchmark is shown in
 \refTable{table:hardsoftware-sift-surf-orb-benchmark}.
@@ -930,9 +930,9 @@ by more than \Sexpr{max_exceed} keypoints.
 
 The system had difficulties to recognize \icedtea when shown from a certain
 angle.  It turned out that \icedtea has smallprint almost all over its backside
-(\refFigure{figure:icedtea-smallprint}). The same set of letters repeatably appear
-over a large area, which probably makes it hard to obtain informative features.
-Furthermore, focus becomes an issue.
+(\refFigure{figure:icedtea-smallprint}). The same set of letters repeatedly
+appear over a large area, which probably makes it hard to obtain informative
+features. Furthermore, focus becomes an issue.
 
 \begin{figure}[h!]
     \begin{center}

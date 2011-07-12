@@ -40,7 +40,7 @@ The {\it Point Cloud Library} (\pcl) is concerned with processing 3D data
 \cite{Rusu2011}. A point cloud is a set of points in n-dimensional space. For
 example, the output of the Kinect camera can be represented by a point cloud
 where each point is described by its Cartesian coordinates with respect to the
-camera and by its observed color.
+camera and by its observed colour.
 
 {\it SQLite} is a reliable file-based relational database that is well-suited
 for local applications. It is thoroughly tested with over a million tests, and
@@ -53,8 +53,8 @@ in particular also a \sqlite database.
 
 \section{Textured Object Detection Library}
 
-In this section we analyze the software underlying the \clutseg system. We
-explain how we modified it and improved it to better fulfill our requirements.
+In this section we analyse the software underlying the \clutseg system. We
+explain how we modified it and improved it to better fulfil our requirements.
 We describe how to extract models of template objects from multiple views, and
 cover the elementary pipeline that later recognizes instances in query scenes.
 
@@ -72,7 +72,7 @@ participated in the {\it Solutions in Perception Challenge} contest at ICRA
 optimized for working better with a Prosilica MP 5 camera \cite{Shishkov2011}.
 While the latter clusters correspondences prior to pose estimation, the former
 does not. \tod recognizes objects solely by intensity and depth information;
-color information is ignored. \clutseg uses \tod in the Kinect mode.
+colour information is ignored. \clutseg uses \tod in the Kinect mode.
 
 \subsection{Learning}
 \label{subsection:learning}
@@ -113,11 +113,11 @@ interest.
 \tod offers a toolchain that extracts model features from a template object on
 a rotating table. The template object is either manually or automatically
 rotated, and a depth camera takes images from multiple views. The latter
-consist of a depth image and a grayscale image each. The views are the basic
+consist of a depth image and a greyscale image each. The views are the basic
 units processed in a pipeline that comprises three stages for each view: First,
 the computation of the object-camera transformation from the image.  Second, the
 segmentation of the region of interest that shows the object on the image.
-Third, the extraction of local 2D features from the grayscale image, followed
+Third, the extraction of local 2D features from the greyscale image, followed
 by the construction of model features from the region of interest.
 
 \subsubsection{Camera Calibration}
@@ -161,14 +161,14 @@ the image at all. In such cases, we used dithered binary images as a fallback.
 This improved reliability. We singled out 23 cases of the original images where
 camera calibration failed. Some tested image processing operations work better
 than others on these 23 images (\refTable{table:camera-calib-fallback}). Three
-pre-processed images are shown in \refFigure{figure:camera-calib-fallback}.
+preprocessed images are shown in \refFigure{figure:camera-calib-fallback}.
 
 \begin{table}[h!]
     \begin{tabular}{llrr}
         Pre-processing method & Imagemagick command & Success \\
         \hline
         Dithering to Binary & {\tt convert -monochrome \$1 \$2} & 23/23 \\
-        Color Reduction & {\tt convert -colors 2 \$1 \$2} & 23/23 \\
+        Colour Reduction & {\tt convert -colors 2 \$1 \$2} & 23/23 \\
         Local Adaptive Thresh. & {\tt convert \$1 -lat 25x25 -threshold 50\% \$2} & 23/23 \\
         Thresholding & {\tt convert \$1 -threshold 50\% \$2} & 19/23 \\
         Sharpening & {\tt convert -sharpen 0x12 \$1 \$2} & 2/23 \\
@@ -185,9 +185,9 @@ the chessboard was detected on all 23 of them.}
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=\textwidth]{pose-pre-process}
-        \caption[An original and three pre-processed images for camera calibration]{From left to right: (1)
+        \caption[An original and three preprocessed images for camera calibration]{From left to right: (1)
 Original image where pose estimation failed; after (2) Dithering to Binary;
-after (3) Color Reduction; after (4) Local Adaptive Thresholding. On images 2,
+after (3) Colour Reduction; after (4) Local Adaptive Thresholding. On images 2,
 3, and 4, the extrinsic parameters were successfully estimated.}
         \label{figure:camera-calib-fallback}
     \end{center}
@@ -287,7 +287,7 @@ reasonable to select the same feature extractor as in the model extraction.
 Both query feature and model feature extraction can be configured, so \tod
 allows to try different feature detectors with configurable parameters.  \tod
 also provides rBRIEF, an experimental modified version of BRIEF, which we used
-in some experiments but we then replaced in favor of ORB from \opencv.
+in some experiments but we then replaced in favour of ORB from \opencv.
 
 \subsubsection{Feature Matching}
 \label{subsubsection:tod-feature-matching}
@@ -310,6 +310,7 @@ number $k$ of correspondences per query feature can be controlled by parameter
 If a model feature is matched with multiple query features, only the
 correspondence with the minimum distance is retained. This way, \tod ensures
 that the mapping from query features to model features is injective.
+% TODO: injectivity is not a word
 
 \subsubsection{Guess}
 
@@ -690,7 +691,7 @@ and the major implementation decisions that saved computing resources.
 
 \clutseg uses a \sqlite database for keeping track of parameter sets and the
 recorded statistics, as introduced in Sections~\ref{subsection:parameter-space}
-and \ref{subsection:measured-statistics}, respecitvely. The experiment runner
+and \ref{subsection:measured-statistics}, respectively. The experiment runner
 can be executed in the background. When being idle, it polls the database for
 new parameter sets.  New parameter sets are tested for validity with
 computationally cheap tests.  The failing ones are marked and skipped, thus one

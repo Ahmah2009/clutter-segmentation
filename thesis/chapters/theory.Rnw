@@ -142,7 +142,7 @@ Since both \tod and \clutseg use OpenCV, an open source library for computer
 vision, we adopt their camera model. It is a pinhole camera model, where a
 perspective projection is used to determine the projection of a 3D point onto
 the image plane \cite{Bradski2008}. This plane is conveniently defined in front
-of the center of perspective \cite{Forsyth2003, Bradski2008}. 
+of the centre of perspective \cite{Forsyth2003, Bradski2008}. 
 
 % \begin{figure}[h]
 %    \begin{center}
@@ -170,7 +170,7 @@ recognition problem as
 Estimation of camera parameters belongs to the topic of {\it camera
 calibration}. In our case, the intrinsic parameters of the Kinect camera are
 factory-specified. \tod uses camera calibration techniques from OpenCV in order
-to find the extrinsic parameters of the camera; given that the correspondencies
+to find the extrinsic parameters of the camera; given that the correspondences
 between $n$ 3D points and their $n$ projections onto the image are known, the
 extrinsic parameters can be estimated. It is an instance of the {\it
 perspective-$n$-point} (PnP) problem \cite{Fischler1981}.
@@ -267,7 +267,7 @@ two different viewpoints and viewing conditions is designated keypoint on both
 images \cite{Rosten2010}. Thus, repeatability is important when trying to find
 correspondences between two images. A feature detector designates keypoints
 after examining the local image neighbourhood. These neighbourhoods can for
-example be deformed by noise, image discretization, a change of viewpoint or a
+example be deformed by noise, image discretisation, a change of viewpoint or a
 change in lighting conditions \cite{Tuytelaars2007}. These deformations have to
 be addressed by a feature detector to achieve repeatability. In order to
 achieve invariance as regards scale and rotation, features can be extracted at
@@ -338,10 +338,10 @@ to panorama stitching \cite{Brown2006}.
 FAST is a feature detector that designates keypoints by looking at a Bresenham
 circle of 16 pixels in diameter around a candidate keypoint. If nine contiguous
 pixels of the diameter pixels are all brighter (a), or all darker (b) than the
-center pixel plus (a), or minus (b) a certain threshold, then the circle center
+centre pixel plus (a), or minus (b) a certain threshold, then the circle centre
 is designated keypoint \cite{Rosten2006}. FAST is efficient because it can rule
 out certain candidate keypoints by reasoning on the diameter pixels values
-north, east, south and west of the center. FAST-ER builds on this idea, but
+north, east, south and west of the centre. FAST-ER builds on this idea, but
 reasons about the diameter pixels in an order optimized by ID3; the information
 gain is computed on a set of training images \cite{Rosten2010}. \opencv 2.2
 just contains an implementation of FAST, presumably because of its smaller code

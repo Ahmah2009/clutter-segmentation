@@ -102,7 +102,7 @@ call this the {\it model frame}. This model is attached to the template object.
 % onto the real-world template objects with a pencil, which was extremely useful
 % in later experimentation.
 
-We capture depth and grayscale image information from several different views.
+We capture depth and greyscale image information from several different views.
 In each {\it model view}, we gain partial information about the template
 object. 3D points can be expressed in {\it camera coordinates}, where the {\it
 view frame} is attached to the camera \footnote{tod\_* developers often refer
@@ -336,7 +336,7 @@ option.
 
 If the pose cannot be retrieved from the original image because the corners
 of the chessboard could not be detected, there is a fallback to an image that
-has been dithered and converted into grayscale using imagemagick's monochrome
+has been dithered and converted into greyscale using imagemagick's monochrome
 operator.
 
 \subsubsection*{Masking}
@@ -360,7 +360,7 @@ Output
 \end{itemize}
 
 The point cloud segmentation (see pointcloud\_segmentation.cpp) works as
-follows: The pose estimated from the fiducial markers becomes the center point
+follows: The pose estimated from the fiducial markers becomes the centre point
 of a rectangular box that is used to extract the 3-dimensional region of
 interest. The box shape is hard-coded and cannot be altered without changing
 the source code. After retrieving all those points in the point cloud that fall
@@ -410,8 +410,8 @@ Output
 
 
 Looking into apps/detector.cpp, we can see that it first reads the stereo image
-as gray-scale. The color information is not included into the feature
-description (which would probably be a bad idea anyway since color information
+as gray-scale. The colour information is not included into the feature
+description (which would probably be a bad idea anyway since colour information
 is very much subject to illumination). Then, a feature detector and a feature
 extractor is built according to the parameters specified in
 features.config.yaml. This configuration file is compulsory. The feature
@@ -489,7 +489,7 @@ fiducial.yml                    Description of the fiducial marker.
 fat_free_milk/                  One folder per object
     camera.yml              Camera information
            ...
-           image_00052.png          full color image
+           image_00052.png          full colour image
 image_00052.png.f3d.yaml.gz compressed feature description incl. pose
 image_00052.features.yaml.gz    compressed feature description incl. pose
 image_00052.png.mask.png               black and white mask   
