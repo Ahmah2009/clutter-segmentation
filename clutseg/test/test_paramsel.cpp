@@ -29,7 +29,7 @@ struct test_paramsel : public ::testing::Test {
         experiment.time = "2011-01-02 20:12:23";
         experiment.train_set = "hypothetical_train_set";
         experiment.test_set = "hypothetical_test_set";
-        modelbase.human_note = "a note inserted by a human";
+        experiment.human_note = "a note inserted by a human";
         experiment.machine_note = "a note made by the machine";
         experiment.batch = "some_group";
         experiment.paramset.pms_clutseg.accept_threshold = 15;
@@ -382,7 +382,7 @@ TEST_F(test_paramsel, experiment_write_read) {
     rest.deserialize(db); 
     EXPECT_EQ(experiment.train_set, rest.train_set);
     EXPECT_EQ(experiment.test_set, rest.test_set);
-    EXPECT_EQ(modelbase.human_note, rest.human_note);
+    EXPECT_EQ(experiment.human_note, rest.human_note);
     EXPECT_EQ(experiment.machine_note, rest.machine_note);
     EXPECT_EQ(experiment.batch, rest.batch);
     EXPECT_EQ(experiment.skip, rest.skip);
