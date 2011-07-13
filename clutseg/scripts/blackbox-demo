@@ -20,15 +20,16 @@ if has_opt --debug ; then
 fi
 
 pushd $CLUTSEG_PATH > /dev/null
+    rm -r tod_kinect_test_27/result/*
     $cmd $(rospack find clutseg)/bin/blackbox_recognizer \
         --base=tod_kinect_train_9/ \
         --tod_config=tod_kinect_train_9/config.yaml \
         --image=tod_kinect_test_27 \
         --testdesc=tod_kinect_test_27/testdesc-9.txt \
         --store=tod_kinect_test_27/result \
-        --result=tod_kinect_test_27/blackbox_recognizer-demo.result.txt \
-        --stats=tod_kinect_test_27/blackbox_recognizer-demo.stats.txt \
-        --roc=tod_kinect_test_27/blackbox_recognizer-demo.roc.gnuplot \
+        --result=tod_kinect_test_27/blackbox-demo.result.txt \
+        --stats=tod_kinect_test_27/blackbox-demo.stats.txt \
+        --roc=tod_kinect_test_27/blackbox-demo.roc.gnuplot \
         --verbose=1
 popd > /dev/null
 
