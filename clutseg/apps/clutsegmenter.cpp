@@ -24,7 +24,6 @@ using namespace pcl;
 using namespace std;
 namespace po = boost::program_options;
 
-// TODO: enable -Wunused-parameter for this file
 // http://stackoverflow.com/questions/6227420/how-to-use-gcc-diagnostic-pragma-with-c-template-functions
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -153,7 +152,7 @@ int main(int argc, char **argv) {
         imshow("Refined guess", c);
         waitKey(-1);
 
-        /* This is a good idea, and quite promising for the tod 
+        /* This is a good idea, and quite promising for tod 
         vector<tod::Guess> guesses;
         for (size_t i = 0; i < result.detect_choices.size(); i++) {
             if (result.detect_choices[i].inliers.size() > 50) {

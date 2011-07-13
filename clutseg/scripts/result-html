@@ -310,7 +310,7 @@ report_plots
 echo "Generating index"
 report_index
 
-# TODO: remove hack
+# TODO: remove hack, probably doesn't work correctly
 cp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.png $report_dir/
 cp $CLUTSEG_ARTIFACT_DIR/best_succ_rate.refine_choice.collage.jpg $report_dir/
 

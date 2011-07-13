@@ -37,11 +37,9 @@ class test_map : public ::testing::Test {
         Mat img;
         Mat markerImg;
         PoseRT pose;
-        //PointCloud<PointXYZ> cloud;
         PointCloudT cloud;
 };
 
-// TODO: move to test_pcl_visualization_addons
 TEST_F(test_map, add_marker_3d) {
     SKIP_IF_FAST
 

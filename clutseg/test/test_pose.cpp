@@ -22,8 +22,6 @@ using namespace clutseg;
 
 namespace bfs = boost::filesystem;
 
-// TODO: consistently name tests
-
 struct test_pose : public ::testing::Test {
 
     void SetUp() {

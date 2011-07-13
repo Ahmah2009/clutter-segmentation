@@ -82,7 +82,6 @@ namespace clutseg {
         imwrite(dci_path.string(), dci);
 
         // Save keypoints
-        // TODO: extract method
         bfs::path feat_path = erd / (img_basename + ".features.yaml.gz");
         bfs::create_directories(feat_path.parent_path());
         FileStorage feat_fs(feat_path.string(), FileStorage::WRITE);
@@ -91,7 +90,6 @@ namespace clutseg {
         feat_fs.release();
 
         // Save refine choice
-        // TODO: extract method
         bfs::path lc_path = erd / (img_basename + ".refine_choice.yaml.gz");
         bfs::create_directories(lc_path.parent_path());
         LabelSet lls;
@@ -105,7 +103,6 @@ namespace clutseg {
         // Save detect choices 
         bfs::path dc_path = erd / (img_basename + ".detect_choices.yaml.gz");
         bfs::create_directories(dc_path.parent_path());
-        // TODO: extract convert method
         LabelSet dls;
         BOOST_FOREACH(const Guess & c, report.result.detect_choices) {
             dls.labels.push_back(Label(c.getObject()->name, poseToPoseRT(c.aligned_pose())));

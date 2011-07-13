@@ -41,7 +41,6 @@ namespace clutseg {
         return m;
     }
 
-    // TODO: does not really parse a python configuration file
     GroundTruth  loadGroundTruthWithoutPoses(const bfs::path & filename) {
         assert_path_exists(filename);
         GroundTruth  m;
@@ -50,7 +49,7 @@ namespace clutseg {
         if (!f.is_open()) {
             throw ios_base::failure(
                 str(boost::format(
-                "Cannot open testdesc file '%s', does it exist?") % filename));
+                "Cannot open ground-truth file '%s', does it exist?") % filename));
         }
         size_t s = 1024;
         char cline[1024];
