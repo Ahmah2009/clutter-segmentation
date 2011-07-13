@@ -185,7 +185,7 @@ the chessboard was detected on all 23 of them.}
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=\textwidth]{pose-pre-process}
-        \caption[An original and three preprocessed images for camera calibration]{From left to right: (1)
+        \caption[The original image and three preprocessed images for camera calibration]{From left to right: (1)
 Original image where pose estimation failed; after (2) Dithering to Binary;
 after (3) Colour Reduction; after (4) Local Adaptive Thresholding. On images 2,
 3, and 4, the extrinsic parameters were successfully estimated.}
