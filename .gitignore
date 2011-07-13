@@ -5,6 +5,7 @@ tags
 *.swp
 *.swo
 *.pyc
+clutseg/doc
 clutseg/srv_gen
 clutseg/src/clutseg
 thesis/main.tex

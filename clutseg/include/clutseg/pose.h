@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Julius Adorf
  *
  * Provides helper methods for transforming model coordinates to camera
@@ -117,15 +117,20 @@ namespace clutseg {
      * rotation P and the difference rotation this function computes. */
     cv::Mat diffRotation(const cv::Mat & P, const cv::Mat & Q);
 
-    /** Computes the angle between two orientations given by poses p and q,
-     * with rotation matrices P and Q. Function diffRotation computes the rotation
-     * matrix D such that P * D = Q. This difference D is a rotation around a
-     * certain axis about a certain angle. The angle is returned by this function.
+    /**
+     * \brief Computes the angle between two orientations (i.e. objects).
+     *
+     * The poses p and q define two coordinate systems with respect to the
+     * camera coordinate system. The angle between these two coordinate systems
+     * is computed. Consider the rotation matrices P and Q that correspond to
+     * the proper rigid transformations p and q. The rotation matrix D is
+     * computed, such that P * D = Q. The magnitude of rotation around the
+     * rotation axis of D is returned.
      */
     double angle_between(const opencv_candidate::PoseRT & p,
                                     const opencv_candidate::PoseRT & q);
 
-    /** Computes the distance between the origin of p and the origin of q. */
+    /** \brief Computes the distance between the origin of p and the origin of q. */
     double dist_between(const opencv_candidate::PoseRT & p,
                                 const opencv_candidate::PoseRT & q);
 

@@ -1,6 +1,8 @@
-/**
+/*
  * Author: Julius Adorf
- *
+ */
+
+/**
  * This module helps computing the score as defined by Solutions in Perception
  * Challenge 2011 (from now on referred to as SIPC) at ICRA in Shanghai. This
  * challenge asked the contestants to correctly label and locate objects in

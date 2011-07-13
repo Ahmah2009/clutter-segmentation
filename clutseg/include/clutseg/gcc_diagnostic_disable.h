@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Julius Adorf
  *
  * Disables certain compiler warnings, useful when using third-party libraries

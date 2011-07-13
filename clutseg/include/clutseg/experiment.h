@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Julius Adorf
  */
 
@@ -16,15 +16,21 @@
 
 namespace clutseg {
 
-    /** Cache entry */
+    /** \brief Cache entry for the modelbase cache.
+     *
+     * A modelbase is created from raw data (train_set) and the specification
+     * of the feature extraction parameters.
+     */
     struct TrainFeatures {
 
         TrainFeatures();
         TrainFeatures(const std::string & train_set, const tod::FeatureExtractionParams & fe_params);
 
+        /** \brief Directory containing raw data for creating the modelbase */
         std::string train_set;
         tod::FeatureExtractionParams fe_params;
-
+    
+        /** \brief Generate the modelbase from the raw data and the feature extraction parameters. */
         void generate();
 
         bool operator==(const TrainFeatures & rhs) const;
@@ -33,7 +39,10 @@ namespace clutseg {
 
     };
 
-    /** Caches extracted features from training images in a two-level
+    /**
+     * \brief Caches modelbases.
+     *
+     * Caches extracted features from training images in a two-level
      * directory. Each set of training features is uniquely defined by its original
      * training data set and the feature extraction parameters. This cache manager
      * is responsible for retrieving existing training feature sets, and for

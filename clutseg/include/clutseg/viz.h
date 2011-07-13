@@ -19,31 +19,28 @@
 
 namespace clutseg {
 
-    /** \brief Draws keypoints on top of a canvas.
-     * 
-     * Delegates drawing to OpenCV but makes sure to set default values that
-     * are consistently used in package clutseg.
-     *
-     * @param canvas    Output image. Any valid non-empty matrix.
-     * @param keypoints
-     * @param color
+    /**
+     * \brief Draws keypoints on top onto a canvas. The canvas must be initialized.
      */
     void drawKeypoints(cv::Mat & canvas, const std::vector<cv::KeyPoint> & keypoints,
                         const cv::Scalar & color = cv::Scalar(0, 0, 255));
 
-    /** \brief Draws guess inliers on top of a canvas. */
+    /** 
+     * \brief Draws the inliers of a guess onto a canvas. The canvas must be initialized.
+     */
     void drawInliers(cv::Mat & canvas, const tod::Guess & guess,
                         const cv::Scalar & color = cv::Scalar(0, 255, 0));
 
-    /** \brief Draws a given pose.
+    /**
+     * \brief Draws a given pose (i.e. the object coordinate system) onto a canvas.
      *
-     * The pose is projected on the canvas using the camera information. The
-     * result shows a coordinate system that visualizes the pose on the image.
-     * Pose will be drawn on top of existing canvas content.
+     * The canvas must be initialized. The axes of the object coordinate system
+     * are projected on the canvas using the camera information.
      *
      * This function has been derived from TOD fiducial package, but has been
      * extended to support drawing the axes in customizable colors and with
-     * custom axis labels. */
+     * custom axis labels.
+     */
     void drawPose(cv::Mat & canvas, const opencv_candidate::PoseRT & pose, const opencv_candidate::Camera & camera,
                   const cv::Scalar & colorX = cv::Scalar(255, 0,0),
                   const cv::Scalar & colorY = cv::Scalar(0, 255, 0),
@@ -52,54 +49,78 @@ namespace clutseg {
                   const std::string & labelY = "Y",
                   const std::string & labelZ = "Z");
 
-    /** \brief Draws guesses onto the canvas. The inliers will be drawn as well
-     * as the guessed poses and the labels. If ground truth is available, the true
-     * poses for the tagged subject will also be visualized. For every guess, the
-     * same color will be used for the label, pose and inliers. Ground truth will
-     * be drawn in shades of gray for all guesses but those will be easily
-     * distinguishable anyway.
+    /**
+     * \brief Draws guesses onto a canvas.
+     *  
+     * The canvas must be initialized. Draws the inliers, the guessed pose, the
+     * label, and the ground truth pose (if available) for each guess. Each
+     * guess is assigned a color. Only the ground truth is always coloured in
+     * shades of grey.
      */
     void drawGuesses(cv::Mat & canvas, const std::vector<tod::Guess> & guesses,
                         const opencv_candidate::Camera & camera,
                         const std::vector<opencv_candidate::PoseRT> & ground_poses);
 
+    /** \brief Draws guesses onto a canvas. See clutseg::drawGuesses. */
     void drawGuesses(cv::Mat & canvas, const std::vector<tod::Guess> & guesses,
                         const opencv_candidate::Camera & camera);
 
-    /** \brief Convenience method, just delegates to drawGuesses */
+    /** \brief Draws a guess onto a canvas. See clutseg::drawGuesses. */
     void drawGuess(cv::Mat & canvas, const tod::Guess & guess,
                     const opencv_candidate::Camera & camera, const opencv_candidate::PoseRT ground_pose);
 
-    /** \brief Prints a multiline text onto the canvas and returns a bounding
+    /**
+     * \brief Draws a multiline text onto the canvas and returns a bounding
      * rectangle. 
+     *
+     * The canvas must be initialized. Each vector item contains one line of
+     * the text. The bounding rectangle of the resulting text is computed and
+     * returned.
      */
     cv::Rect drawText(cv::Mat& canvas, const std::vector<std::string> & lines,
                     const cv::Point & topleft, int fontFace, double fontScale,
                     int thickness, const cv::Scalar & color);
 
-    /** Draws a label at the projected origin of a pose. */
+    /**
+     * \brief Draws a label onto the canvas at the projected origin of a pose.
+     *
+     * The canvas must be initialized.
+     */
     void drawLabelAtOrigin(cv::Mat & canvas, const opencv_candidate::PoseRT & pose, const opencv_candidate::Camera & camera,
                             const std::string & label, const cv::Scalar & color);
 
-    /** \brief Draws matches from query image to all training images and puts
-     * them together in a big collage. */
+    /**
+     * \brief Draws matches between the query image and all training images
+     * which have more than a minimum number of matches and draws them onto the
+     * canvas.
+     *
+     * The canvas must be initialized. The canvas is arranged as a big collage.
+     */
     void drawAllMatches(cv::Mat & canvas, const tod::TrainingBase & base,
                             const cv::Ptr<tod::Matcher> matcher, const cv::Mat& testImage,
                             const tod::KeypointVector & testKeypoints,
                             const std::string & baseDirectory);
 
-    /** Draws ground truth poses and labels */
+    /**
+     * \brief Draws ground truth poses and labels onto the canvas.
+     * 
+     * The canvas must be initialized.
+     */
     void drawGroundTruth(cv::Mat & canvas, const clutseg::LabelSet & groundTruth,
                             const opencv_candidate::Camera & camera);
 
 
+    /**
+     * \brief The three coordinate planes of a Cartesian coordinate system.
+     * X-Y-plane, X-Z-plane, and Z-X-plane.
+     */
     enum CoordinatePlane {
         XY, YZ, ZX 
     };
 
     /**
-     * Draws a histogram of a point cloud by projecting it orthogonally onto
-     * a coordinate planes.
+     * \brief Draws a histogram of a point cloud by projecting it orthogonally onto a
+     * coordinate plane.
      *
      * @param hist      the destination image, a histogram
      * @param cloud     the point cloud

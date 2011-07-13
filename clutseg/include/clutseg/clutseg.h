@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Julius Adorf
  */
 
@@ -24,9 +24,7 @@
 
 namespace clutseg {
 
-    /** Collection of statistics for Clutsegmenter. Serves as an accumulator,
-     * and includes counts for later averaging. Be careful, even variables such as
-     * detect_fp_rate are accumulators. */
+    /** \brief Accumulator object of statistics for clutseg:Clutsegmenter. */
     struct ClutsegmenterStats {
 
         ClutsegmenterStats() :
@@ -58,27 +56,38 @@ namespace clutseg {
         long acc_refine_choice_inliers;
         long choices;
 
-        /** Computes average statistics, and stores them into a response
-         * object. This function merges locally accumulated statistics into the global
-         * response statistics. */
+        /**
+         * \brief Computes average statistics, and stores them into a response
+         * object.
+         */
         void populateResponse(Response & r) const;
 
     };
 
+    /** \brief Recognizes an object in a query scene. */
     class Clutsegmenter {
         
         public:
 
-            /** Constructed segmenter will be invalid and cannot be used. */
+            /** \brief Dummy constructor; constructed segmenter will be invalid
+             * and may not be used. */
             Clutsegmenter();
+
+            // TODO: rename baseDirectory => modelbase_dir
    
-            /** Reads models from baseDirectory and reads detect and refine
-             * configurations from <baseDirectory>/detect.config.yaml and
-             * <baseDirectory>/refine.config.yaml and uses default values for
+            /**
+             * \brief Constructs a Clutsegmenter for recognizing objects in a
+             * query scene.
+             *
+             * Reads models from baseDirectory and reads detect and refine
+             * configurations from [baseDirectory]/detect.config.yaml and
+             * [baseDirectory]/refine.config.yaml and uses default values for
              * accept_threshold and the ranking. If tar == true, then
              * baseDirectory is interpreted as a tar file. */ 
             Clutsegmenter(const std::string & baseDirectory, bool tar = false);
 
+            /** \brief Constructs a Clutsegmenter for recognizing objects in a
+             * query scene. */
             Clutsegmenter(const std::string & baseDirectory,
                             const std::string & detect_config,
                             const std::string & refine_config,
@@ -86,6 +95,8 @@ namespace clutseg {
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
                             bool do_refine = true);
 
+            /** \brief Constructs a Clutsegmenter for recognizing objects in a
+             * query scene. */
             Clutsegmenter(const std::string & baseDirectory,
                             const tod::TODParameters & detect_params,
                             const tod::TODParameters & refine_params,
@@ -93,58 +104,90 @@ namespace clutseg {
                             float accept_threshold = -std::numeric_limits<float>::infinity(),
                             bool do_refine = true);
 
-            /** Retrieves parameters used for detection stage. Writes to the
-             * parameters are transparent to the segmenter. */
+            /** \brief Returns a reference to the parameters used in the
+             * detection stage.  Changes to these parameters are transparent to
+             * the segmenter. */
             tod::TODParameters & getDetectParams();
 
-            /** Retrieves parameters used for locating stage. Writes to the
-             * parameters are transparent to the segmenter. */
+            /** \brief Returns a reference to the parameters used in the
+             * refinement stage.  Changes to these parameters are transparent
+             * to the segmenter. */
             tod::TODParameters & getRefineParams();
 
             int getAcceptThreshold() const;
 
             void setAcceptThreshold(int accept_threshold);
 
+            /** \brief Returns the guess ranking used for both the detection stage and the refinement stage. */
             cv::Ptr<GuessRanking> getRanking() const;
 
+            /** \brief See Clutsegmenter::getRanking. */
             void setRanking(const cv::Ptr<GuessRanking> & ranking);
 
+            /** \brief See Clutsegmenter::isDoRefine. */
             void setDoRefine(bool do_refine);
 
+            /** \brief If true, the refinement stage is enabled.
+             *
+             * If false, the refinement stage is disabled; the initial guess in
+             * the detection stage is returned directly.
+             */
             bool isDoRefine() const;
 
-            /** Gets a set of template objects this segmenter knows, such as
-              * assam_tea, haltbare_milch, and so on. */
+            /** \brief Returns a set of template objects this segmenter knows,
+             * such as assam_tea, haltbare_milch, icedtea, ... . */
             std::set<std::string> getTemplateNames() const;
 
+            /**
+             * \brief Configures the parameter values.
+             *
+             * Convenient if the parameter set is read from a database.
+             */
             void reconfigure(const Paramset & params);
-        
+       
+            /**
+             * \brief Resets the accumulator object used for collecting statistics.
+             *
+             * See Clutsegmenter::ClutsegmenterStats. After performing an experiment on a
+             * batch of images, for which average statistics are obtained, the
+             * accumulator object must be reset.
+             */ 
             void resetStats();
-
+            
+            /**
+             * \brief Gets the accumulator object that contains the statistics, 
+             * recorded since the last call to Clutsegmenter::resetStats.
+             */
             ClutsegmenterStats getStats() const;
 
-            /** Attempts to find an object in the scene. It makes a best guess
-             * according to some ranking. This algorithm proceeds in two steps.First,
-             * objects are detected on the image with little regard on their exact
-             * locations. High-ranked guesses are refined by applying more computing
-             * resources and by using a object-specific test until the refined guess meets
-             * an acceptance criterium, which is given by a ranking threshold. */
+            /**
+             * \brief Finds an object in the scene.
+             *
+             * Requires a query image and returns the estimated pose for an
+             * object.  The detection stage yields a set of initial guesses.
+             * The highest-ranked initial guess is improved in the refinement
+             * stage.
+             */
             void recognize(const Query & query, Result & result);
 
         private:
 
+            /** \brief Detection stage. */
             bool detect(tod::Features2d & queryF2d,
                         std::vector<tod::Guess> & detectChoices,
                         std::vector<std::pair<int, int> > & matches);
 
+            /** \brief Refinement stage. */
             bool refine(const tod::Features2d & queryF2d,
                         const PointCloudT & queryCloud,
                         tod::Guess & refineChoice,
                         std::vector<std::pair<int, int> > & matches);
 
+            /** \brief Load parameters from file. */
             void loadParams(const std::string & config,
                             tod::TODParameters & params);
 
+            /** \brief Load modelbase. */
             void loadBase();
 
             ClutsegmenterStats stats_;

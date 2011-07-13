@@ -5,15 +5,10 @@
   <author>Julius Adorf</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <!-- <url>http://ros.org/wiki/clutseg_util</url> -->
+  <!-- <url>http://ros.org/wiki/clutseg</url> -->
   <depend package="pcl_visualization" />
   <depend package="opencv_candidate" />
   <depend package="tod_detecting" />
-  <!-- <depend package="sensor_msgs" />
-  <depend package="opencv2" />
-  <depend package="cv_bridge" />
-  <depend package="roscpp" />
-  <depend package="std_msgs" />-->
   <depend package="image_transport" />
   <depend package="message_filters" />
 
@@ -25,6 +20,7 @@
 
   <export>
       <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lclutseg -lsqlite3" />
+      <rosdoc config="rosdoc.yaml" />
   </export>
 
 
