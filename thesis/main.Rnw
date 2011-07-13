@@ -42,13 +42,11 @@
 	%% inter line spacing
 %\linespread{1.0}
 
-% FIXME
-\usepackage{draftwatermark}
-\SetWatermarkLightness{ 0.95 }
+% \usepackage{draftwatermark}
+% \SetWatermarkLightness{ 0.95 }
 
-% FIXME
-\usepackage{styles/lineno}
-\linenumbers
+% \usepackage{styles/lineno}
+% \linenumbers
 
 \begin{document}
 
