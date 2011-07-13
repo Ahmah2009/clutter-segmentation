@@ -257,7 +257,6 @@ namespace clutseg {
                     TrainFeatures tr_feat(e.train_set, e.paramset.train_pms_fe);
                     if (tr_feat != cur_tr_feat) {
                         if (!cache_.trainFeaturesExist(tr_feat)) {
-                            // FIXME: this has either to be specified in setup or derived from number of images
                             int max_seconds = 2400;
                             if (cache_.trainFeaturesBlacklisted(tr_feat)) {
                                 e.skip = true;

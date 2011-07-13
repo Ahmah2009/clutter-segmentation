@@ -186,8 +186,6 @@ namespace clutseg {
                         acc_angle_sq_err += a * a;
                         acc_trans_err += abs(t);
                         acc_trans_sq_err += t * t;
-                        // FIXME: these are directly parameter-dependent measures,
-                        //        put max_angle_error and max_trans_error somewhere
                         if (a <= CLUTSEG_SIPC_MAX_ANGLE && t <= CLUTSEG_SIPC_MAX_TRANS) {
                             successes++;
                             acc_succ_angle_err += abs(a);
