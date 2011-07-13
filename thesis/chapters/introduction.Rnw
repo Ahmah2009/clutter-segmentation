@@ -170,8 +170,8 @@ feature sets. Finally, \tod uses RANSAC as the afore-mentioned model-fitting
 algorithm for estimating the objects' poses. The confidence value is measured by
 the number of correspondences consistent with this pose. 
 
-We encounter cluttered scenes (\refFigure{figure:clutter-pr2-kinect} (a)) that do
-not only exhibit high occlusion rates, but also show objects in arbitrary
+We encounter cluttered scenes (\refFigure{figure:clutter-pr2-kinect} a) that 
+exhibit high occlusion rates, as well as show objects in arbitrary
 orientations. For our application, it is sufficient to resolve the clutter
 object by object. Hence, we chose to concentrate on finding the pose of only
 one object in the scene. In the following, when we are talking about {\it
