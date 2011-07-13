@@ -10,8 +10,6 @@ mismatches in the correspondences.  Finally, this chapter shows how the
 implemented system relates to the framework of classifiers and estimators,
 which is helpful for the evaluation given in \refChapter{chapter:evaluation}.
 
-% TODO replace "view" by "camera" in figures
-
 \section{Prerequisites in Geometry}
 
 A model of an object is described in its own coordinate system. Another

@@ -1,5 +1,4 @@
 \section{Intended Purpose}
-% TODO: check whether captions are centered
 
 Object recognition is one of the fundamental tasks in computer vision. One of
 its applications is in robotics. Especially in household environments, it is
