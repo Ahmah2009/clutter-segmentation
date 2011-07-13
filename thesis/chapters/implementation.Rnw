@@ -281,9 +281,7 @@ not include 3D information.
 
 \subsubsection{Extraction of Query Features}
 
-Similarly to the extraction of model features, \tod uses one of the \opencv
-feature extractors to find a set of query features in the image. It is
-reasonable to select the same feature extractor as in the model extraction.
+The extraction of query features is similar to the extraction of model features.
 Both query feature and model feature extraction can be configured, so \tod
 allows to try different feature detectors with configurable parameters.  \tod
 also provides rBRIEF, an experimental modified version of BRIEF, which we used
@@ -373,7 +371,7 @@ refinement aims at spending more computational resources on specifically
 improving pose estimates for guesses with high confidence value, and returning
 only the one with the highest confidence value. Third, guess rejection reduces
 the probability of settling on the wrong guess.  Finally, this section covers
-the tools that help to find good parameters for the clutseg system, and help
+the tools that help to find good parameters for the clutseg system, and help to
 collect statistics to evaluate its performance.
 
 \subsection{Guess Ranking}
@@ -497,7 +495,7 @@ on the choice of feature extractor, and which are treated separately.
 \end{table}
 
 Even if we only consider five different values for each of the ten of these
-parameters, we obtain $5^{10} \approx 10^6$ different parameter sets.  Assuming
+parameters, we obtain $5^{10} \approx 10^6$ different parameter sets.  Assume
 we would like to test two different matchers and three different feature
 detectors. This would result in around $6 \cdot 10^6$ parameter sets. A full
 factorial design for finding optimal parameters, as recommended in
