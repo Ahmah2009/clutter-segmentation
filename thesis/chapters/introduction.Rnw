@@ -2,30 +2,30 @@
 % TODO: check whether captions are centered
 
 Object recognition is one of the fundamental tasks in computer vision. One of
-its applications is in robotics. Especially in household environments it is
-often not only necessary for a robot to detect the presence of an object; for
-grasping and for making further decisions on a semantic level, it also needs
-to find the pose of the object.
+its applications is in robotics. Especially in household environments, it is
+often necessary for a robot to detect the presence of an object, as well as
+find the pose of the object such that the robot can grasp it and make further
+decisions on a semantic level.
 
-A particular application addressed by this work is a robot in a household
-environment which is given the task to go shopping. Afterwards, the robot
-empties the shopping bag onto a table, and plans to move the items bought to
-appropriate storage facilities. The shopping items on the table form a
-cluttered scene. Most of these are rigid bodies and can be distinguished by
+A particular application addressed by this work involves a robot in a household
+environment. The robot is given the task to go shopping, to empty the shopping
+bag onto a table, and to move the items to the appropriate storage facilities.
+When the items are laid out on the table, they form a cluttered scene.  Most of
+these objects are rigid bodies that can be distinguished by their
 characteristic texture, which is composed of pictorial descriptions of the
 product, labels, and company logos. High levels of occlusion and the presence
 of several such textured objects in a single scene renders recognition of these
-shopping items difficult. The objects might be arbitrarily oriented, and prior
+shopping items difficult. Since the objects may be arbitrarily oriented, prior
 assumptions about their principal axes are likely invalid.
 
 The system presented in this work enables a Personal Robot 2 (PR2,
 http://www.willowgarage.com/pages/pr2/overview) to detect an object and
-estimate its pose in the cluttered scene and provide sufficient information to
-a grasping pipeline, such that the clutter can be resolved by removing items
-one-by-one from the scene. Although, in the shopping scenario, the robot might
-have prior knowledge about which objects the scene contains, this information
-is not used in this work, in order to develop a system that is general enough
-to be applied to other application scenarios.
+estimate its pose in the cluttered scene to provide sufficient information to a
+grasping pipeline, such that the clutter can be resolved by removing items
+one-by-one from the scene. Although, in the shopping scenario, the robot may
+have prior knowledge about what objects are present in the scene, this
+information is not used in this work, in order to develop a system that is
+general enough to be applied to other application scenarios.
 
 \section{Problem Statement}
 \label{section:problem-statement}
@@ -37,9 +37,8 @@ and to remove it from the cluttered scene.
 
 \section{Related Work}
 
-In the literature many approaches to object recognition are described. They
-differ in techniques and scope. Techniques using local features have been
-especially relevant to this work. 
+In literature many different approaches to object recognition are described.
+The techniques using local features have been especially relevant to this work. 
 
 Tuytelaars and Mikolajczyk qualitatively review local feature detectors
 and descriptors \cite{Tuytelaars2007}, and provide guidance for making an
@@ -51,10 +50,9 @@ Rosten and Drummond introduce the FAST feature detector \cite{Rosten2006}.
 % both designed to be efficient.
 Calonder et al.\ describe BRIEF, a feature descriptor whose generated
 descriptor vectors are efficient to match \cite{Calonder2010}. Oriented BRIEF,
-derived from FAST and BRIEF, is the feature detector and descriptor chosen in
-this work \cite{Rublee2011}.  Matching observed features with model features is
-a common sub-task in object recognition. 
-% For this, Muja described the FLANN library \cite{Muja2009}.
+derived from FAST and BRIEF, is the feature detector and descriptor chosen for
+this work \cite{Rublee2011}.  A common sub-task in object recognition is matching observed features
+with model features. % For this, Muja described the FLANN library \cite{Muja2009}.
 Gionis et al.\ introduce, and Slaney and Casey summarize Locality Sensitive
 Hashing \cite{Gionis1999, Slaney2008}, which finds approximate
 nearest neighbours.
@@ -68,7 +66,7 @@ Fischler and Bolles excellently explain RANSAC and deal with the
 perspective-n-point problem \cite{Fischler1981}.  Dogar and Srinivasa recently
 researched the problem of robustly grasping objects in a cluttered scene
 \cite{Dogar2010}. Forsyth and Ponce's work on computer vision served as a
-reference and influenced the terminology in this work \cite{Forsyth2003}. The
+reference and is what influenced the terminology in this work \cite{Forsyth2003}. The
 same applies to Gonzalez and Woods in the field of image processing
 \cite{Gonzalez2010}.  Alpaydin's excellent introduction to machine learning
 \cite{Alpaydin2010} has influenced our experiment design and parameter
@@ -91,9 +89,9 @@ difficult. In general, shopping items are often shaped similarly. Worse,
 different products are sold in packagings of the same shape. The distinguishing
 feature of these objects is texture.
 
-Thus, it seems natural to rely on texture to recognize objects. Originally, it
-had been considered to combine the information from textured surfaces with the
-information contained in the shapes of the rigid bodies. In the end, we solely
+Thus, it seems natural to rely on texture to recognize objects.  We originally
+considered to combine the information from textured surfaces with the
+information contained in the shapes of the rigid bodies, however, we solely
 used texture information, and based our system on the existing Textured Object
 Detection (\tod) stack in the Robot Operating System.
 
@@ -120,7 +118,7 @@ image obtained by this camera is visualized in
 \refFigure{figure:clutter-pr2-kinect} (b).
 
 In the presented approach, we first learn a model from each rigid textured
-object, one by one. An object is rotated in front of the camera, which takes
+object. An object is rotated in front of the camera, which takes
 images and 3D scans from different views of the object. For each view, local 2D
 features are extracted from the greyscale image.  \refFigure{figure:keypoints}
 shows both an image of a textured object (a) and the keypoints extracted from a
@@ -138,7 +136,7 @@ the model, a sparse point cloud, is described in a standard coordinate system.
     \label{figure:keypoints}
 \end{figure}
 
-Given an image of a scene, we use the models to recognize instances of the
+Given an image of a scene, we can use the models to recognize instances of the
 \glspl{template object}. For clarity, we call a scene a {\it \gls{query scene}} if we want
 to recognize objects in it. First, local 2D features are extracted from a
 greyscale {\it \gls{query image}} depicting the query scene. These features are
@@ -148,7 +146,7 @@ feature and one or more model features. Some of these correspondences for a
 query scene are shown in \refFigure{figure:matches}. Based on these
 correspondences, a model-fitting algorithm that is robust with respect to
 outliers, aligns models to the 3D scene such that their projections onto the
-image plane best explain the observed data.  Finally, if an {\it \gls{aligned model}}
+image plane explain the observed data.  Finally, if an {\it \gls{aligned model}}
 sufficiently explains the correspondences, the system {\it \glspl{guess}} the object
 to appear in the query scene at the pose of the aligned model. A {\it \gls{confidence value}}
 measures the degree to which a guess explains the observed data. Although we do
@@ -171,10 +169,10 @@ implemented in the Textured Object Detection (\tod) stack. \tod supports the
 use of different local 2D feature detectors and descriptors. It supports a
 range of nearest-neighbour search algorithms that find correspondences between
 feature sets. Finally, \tod uses RANSAC as the afore-mentioned model-fitting
-algorithm for estimating the object poses. The confidence value is measured by
+algorithm for estimating the objects' poses. The confidence value is measured by
 the number of correspondences consistent with this pose. 
 
-We face cluttered scenes (\refFigure{figure:clutter-pr2-kinect} (a)) that do
+We encounter cluttered scenes (\refFigure{figure:clutter-pr2-kinect} (a)) that do
 not only exhibit high occlusion rates, but also show objects in arbitrary
 orientations. For our application, it is sufficient to resolve the clutter
 object by object. Hence, we chose to concentrate on finding the pose of only
@@ -182,12 +180,12 @@ one object in the scene. In the following, when we are talking about {\it
 recognizing} an object, we mean both detecting its presence and estimating its
 pose.
 
-We present a new system called \clutseg, built on top of \tod. Its purpose is
-three-fold: Primarily, it adapts \tod to our purpose of resolving a cluttered
+We present a new system called \clutseg, built on top of \tod. It has three
+purposes: Primarily, it adapts \tod to our purpose of resolving a cluttered
 scene by locating one object in the scene.  Second, it helps choosing between
 the multitude of available feature detectors and descriptors, and selecting one
-of the nearest-neighbour search algorithms. Third, since \tod and \clutseg have
-many parameters, an experiment runner helps finding good parameter values.
+of the nearest-neighbour search algorithms. Third, it helps to find good parameter
+values since \tod and \clutseg have many parameters.
 
 \clutseg locates an object by ranking the initial guesses from \tod by
 confidence value. Then, the best-ranked guesses are refined until a guess with

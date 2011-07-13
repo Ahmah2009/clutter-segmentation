@@ -3,8 +3,8 @@
 \section{Key Results}
 
 % Made TOD work despite of many issues
-Whilst our evaluation revealed that many issues remain to be solved, we showed
-that an object recognition system can be built basically on three concepts:
+While our evaluation reveals that many issues remain to be solved, we have shown
+that an object recognition system can be built on three basic concepts:
 First, extracting local 2D features using off-the-shelve feature detectors and
 descriptors.  Second, nearest-neighbour search to find correspondences between
 the scene under investigation and the models. Third, a model-fitting algorithm
@@ -18,30 +18,30 @@ correspondences.
     surf = which(d$extractor == "SURF")
     orb = which(d$extractor == "ORB")
 @
-Our experiments showed the Oriented BRIEF feature detector and descriptor to be
+Our experiments showed that the Oriented BRIEF feature detector and descriptor are
 \Sexpr{floor(d$img_cpu[sift]/d$img_cpu[orb])}
 times faster than SIFT, and  
-\Sexpr{floor(d$img_cpu[surf]/d$img_cpu[orb])} 
-compared with SURF. ORB is interesting for real-time applications.  Oriented
-BRIEF is one of the first feature detectors and descriptors that permit to
+\Sexpr{floor(d$img_cpu[surf]/d$img_cpu[orb])} times faster
+than SURF. ORB is interesting for real-time applications.  Oriented
+BRIEF is one of the first feature detectors and descriptors that permit us to
 conveniently specify the number of features to be extracted.
 
 % Binary features are extremely fast to match with LSH
 Locally-Sensitive Hashing proved to work well with binary features; it was a
 magnitude faster than brute-force matching in the validation scenes, and both
-the success rate and the average guess score were not impacted by trading
+the success rate and the average guess score were hardly impacted by trading
 exactness for speed.
 
 % RANSAC can cope with lots of noise
-Although RANSAC turned out to be surprisingly robust to outliers and noise, our
-evaluation showed that it can only do so with a large number of iterations.
+Although RANSAC turned out to be surprisingly robust with respect to outliers
+and noise, in our experiments, it achieved so only with 1000 iterations.
 Hence, most of the time was spent in RANSAC when recognizing objects in a
 scene, compared to the nearest-neighbour search with Locally-Sensitive Hashing,
 or to the negligible amount of time spent in generating local 2D features with
 Oriented BRIEF.
 
 % Many parameters cause serious trouble
-\clutseg and \tod use randomized and approximate algorithms, and deal with
+\clutseg and \tod use randomized and approximate algorithms, and can cope with
 noisy data. They are exposed to high levels of uncertainty. This calls for a
 statistical analysis, which can only be accomplished if the systems are
 designed from the beginning to incorporate methods for collecting statistical
@@ -50,22 +50,22 @@ data.
 
 \section{Contribution}
 
-We helped to fix issues with \tod, \ros and \opencv. We provided a test case
-that helped to make the SIFT implementation in \opencv respect the image mask
-provided when extracting features using SIFT. A problem with the
+We have helped to fix some issues with \tod, \ros and \opencv. We provided a test
+case that helped to make the SIFT implementation in \opencv respect the image
+mask provided when extracting features using SIFT. A problem with the
 DynamicFeatureAdaptor in \opencv which adaptively tries to extract a
 pre-specified number of features from an image was fixed soon after our bug
-report. We helped improve the YAML implementation for \opencv 2.3. Usability
-issues have been reported for the point cloud viewer in \ros. A number of
-issues has been fixed with our help in \tod.
+report. We have helped improve the YAML implementation for \opencv 2.3, and reported
+some usability issues for the point cloud viewer in \ros. A number of issues have
+been fixed with our help in \tod.
 
-We gave an early introduction to the new Oriented BRIEF feature detector and
-descriptor in \opencv, and showed that it outperforms SIFT and SURF in terms of
-speed in our experiments. We demonstrated that Oriented BRIEF can be used
+We have given an early introduction to the new Oriented BRIEF feature detector and
+descriptor in \opencv, and have shown that it outperforms SIFT and SURF in terms of
+speed in our experiments. We have demonstrated that Oriented BRIEF can be used
 together with Locality-Sensitive Hashing.
 
 We formulated the problem of estimating the pose of an object in terms of
-camera calibration and show how it can be reduced to solving the
+camera calibration and showed how it can be reduced to solving the
 perspective-n-point problem. We showed how RANSAC, when used for solving the
 perspective-n-point problem, can find bad solutions in case the projection
 error threshold on the image plane is chosen too large.
@@ -83,7 +83,7 @@ showed up in its evaluation, without hiding that many problems still remain to
 be solved.
 
 We provided an experiment runner that served as a robust tool for optimizing
-the system parameters. The experiments verified the assumption that it is a
+the system parameters. Our experiments verified the assumption that it is a
 good idea to base confidence values on the number of correspondences that are
 consistent with pose estimates, and that starting from a fairly inexact set of
 initial guesses, we can obtain a guess with high confidence by refining the
@@ -106,6 +106,7 @@ initial guess with the highest ranking.
 % get rid of the fiducial markers
 % remove systematic error in model extraction
 % collect model views from spherical viewpoints
+Our experiments suggest a number of improvements.
 The collection of raw data for models can be improved. We could do away with
 the fiducial markers by rotating the objects with a robotic manipulator. The
 ground truth can be computed by the transformations that correspond to the
@@ -120,21 +121,21 @@ object in arbitrary orientations; thus accounting for the objects to appear in
 arbitrary orientations in the query scenes.
 
 The performance of \tod and \clutseg is not yet sufficient to robustly
-recognize objects in a cluttered scene with objects in arbitrary orientations
+recognize objects in a cluttered scene in which objects appear in arbitrary orientations
 and high occlusion rates (see \refFigure{figure:clutter-pr2-kinect} a,
 \refFigure{figure:clutter}).
 
 % incorporate feature uncertainty
-An idea would be to take the uncertainty in the correspondences into
-account. We can weight correspondences according to the distance between query
+One idea would be to take the uncertainty in the correspondences into
+account. We can weigh correspondences according to the distance between query
 feature descriptor and model feature descriptor. We let RANSAC draw
 correspondences randomly with probabilities proportional to the weights,
-instead drawing from a uniform distribution. This way, RANSAC will more often
+instead of drawing from a uniform distribution. This way, RANSAC will more often
 consider close correspondences between the query image and the modelbase; we
 expect that this permits to run RANSAC with fewer iterations. Even more, the
 confidence value for a pose can be computed from the sum of weights of all
 those correspondences that are consistent with this pose, a voting scheme that
-accounts for uncertainty. The ideas about taking uncertainty into account is
+accounts for uncertainty. These ideas about taking uncertainty into account are
 not new; a method based on model feature uncertainty, and which also involves
 weighting correspondences is presented in \cite{Pope2000}.
 
@@ -144,11 +145,11 @@ weighting correspondences is presented in \cite{Pope2000}.
 
 % invent methods to collect ground truth
 
-Whatever method is used, experiments tell which method works best. These
+Whichever method is used, experiments will tell which method works best. These
 experiments require the availability of the ground truth for test scenes. The
 collection of ground truth in this work has been limited to multiple objects
-standing upright on a table. Future work involves computing the ground truth
-for scenes with objects in arbitrary orientations.
+standing upright on a table. Future work should involve computing the ground
+truth for scenes with objects in arbitrary orientations.
 
 Finally, much of the data observed from a query scene is not being used. The
 information gained by extracting local features from the 2D appearance could be
