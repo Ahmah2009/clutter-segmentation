@@ -282,7 +282,7 @@ background, or on areas that carry little information.
 A local feature only carries information about a small neighbourhood of a point.
 This ensures that it is still repeatable despite of occlusion. A small
 neighbourhood also leads to less informative features, enforcing a trade-off
-between locality and informativeness.
+between locality and informativeness \cite{Tuytelaars2007}.
 
 \subsection{Feature Descriptors}
 \label{subsection:feature-descriptors}
