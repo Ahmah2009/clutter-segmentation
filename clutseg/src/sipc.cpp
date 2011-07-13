@@ -37,15 +37,15 @@ namespace clutseg {
         }
     }
 
-    float refine_sipc_t::score() {
+    float RefineSipc::score() {
         return (0.5 * cscore + 0.25 * rscore + 0.25 * tscore) / frames;
     }
 
-    float detect_sipc_t::score() {
+    float DetectSipc::score() {
         return acc_score / objects;
     }
 
-    void refine_sipc_t::print() {
+    void RefineSipc::print() {
         cout << "SIPC Results" << endl
             << "---------------------------------------------------------------" << endl
             << "    Number of frames = " << frames << endl

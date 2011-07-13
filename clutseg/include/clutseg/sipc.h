@@ -85,8 +85,8 @@
 
 namespace clutseg {
 
-    struct refine_sipc_t {
-        refine_sipc_t() : frames(0), rscore(0), tscore(0), cscore(0) {}
+    struct RefineSipc {
+        RefineSipc() : frames(0), rscore(0), tscore(0), cscore(0) {}
         int frames;
         float rscore;
         float tscore;
@@ -95,8 +95,8 @@ namespace clutseg {
         void print();
     };
 
-    struct detect_sipc_t {
-        detect_sipc_t() : objects(0), acc_score(0) {}
+    struct DetectSipc {
+        DetectSipc() : objects(0), acc_score(0) {}
 
         int objects;
         float acc_score;

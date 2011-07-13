@@ -123,14 +123,14 @@ namespace clutseg {
             detect_fp(0), detect_fn(0), detect_tn(0), avg_refine_guesses(0),
             avg_refine_matches(0), avg_refine_inliers(0), avg_refine_choice_matches(0),
             avg_refine_choice_inliers(0), train_runtime(0), test_runtime(0)
-            { refine_sipc = refine_sipc_t(); detect_sipc = detect_sipc_t(); }
+            { refine_sipc = RefineSipc(); detect_sipc = DetectSipc(); }
 
         /** Average of the values returned by the response function */
         float value;
         /** Locate SIPC score, see sipc.h */
-        refine_sipc_t refine_sipc;
+        RefineSipc refine_sipc;
         /** Detect SIPC score, see sipc.h */
-        detect_sipc_t detect_sipc;
+        DetectSipc detect_sipc;
         /** Average of query images where refinement (up to error margins)
          * succeeded. Depends on max_angle_error and max_trans_error. */
         float succ_rate;

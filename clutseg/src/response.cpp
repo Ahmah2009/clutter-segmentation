@@ -24,7 +24,7 @@ namespace clutseg {
     void update_detect_sipc(const Result & result,
                             const LabelSet & ground,
                             const set<string> & templateNames,
-                            detect_sipc_t & detect_sipc) {
+                            DetectSipc & detect_sipc) {
         int s_h = 0;
         int s_m = 0;
         int s_n = 0;
@@ -89,7 +89,7 @@ namespace clutseg {
     void update_refine_sipc(const Result & result,
                             const LabelSet & ground,
                             const set<string> & /* templateNames */,
-                            refine_sipc_t & refine_sipc) {
+                            RefineSipc & refine_sipc) {
         if (ground.emptyScene()) {
             if (result.guess_made) {
                 // False positive
@@ -229,8 +229,8 @@ namespace clutseg {
                                         Response & rsp) {
         rsp.value = 0.0;
 
-        rsp.detect_sipc = detect_sipc_t();
-        rsp.refine_sipc = refine_sipc_t();
+        rsp.detect_sipc = DetectSipc();
+        rsp.refine_sipc = RefineSipc();
 
         for (GroundTruth::const_iterator it = groundSet.begin(); it != groundSet.end(); it++) {
             string img_name = it->first;
