@@ -3,7 +3,7 @@
  */
 
 #include "clutseg/clutseg.h"
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 #include "clutseg/storage.h"
 
 #include "clutseg/gcc_diagnostic_disable.h"
@@ -21,7 +21,7 @@ namespace clutseg {
                                 const ResultStorage & storage);
 
             /** Runs experiments, using configurations provided by a database.  After
-             * an experiment has been run, the response is saved into field 'response', the
+             * an modelbase.has been run, the response is saved into field 'response', the
              * time will be recorded and after running the experiment 'has_run' is set to
              * false and the experiment will be serialized to the database. Running an
              * experiment might take a lot of time, depending on the given test set and the

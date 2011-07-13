@@ -5,7 +5,7 @@
  */
 
 #include "clutseg/db.h"
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 #include "clutseg/paramsel.h"
 
 using namespace clutseg;

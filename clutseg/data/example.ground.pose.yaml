@@ -1,0 +1,53 @@
+%YAML:1.0
+labels:
+   -
+      name: icedtea
+      # PoseRT
+      pose:
+         rvec: !!opencv-matrix
+            rows: 3
+            cols: 1
+            dt: d
+            data: [ 3.3181819319725037e-01, -2.8674452304840088e+00,
+                1.0454777479171753e+00 ]
+         tvec: !!opencv-matrix
+            rows: 3
+            cols: 1
+            dt: d
+            data: [ 7.3684304952621460e-03, -5.7848725467920303e-02,
+                1.0642895698547363e+00 ]
+         estimated: 1
+   -
+      name: jacobs_coffee
+      # PoseRT
+      pose:
+         rvec: !!opencv-matrix
+            rows: 3
+            cols: 1
+            dt: d
+            data: [ 3.3181819319725037e-01, -2.8674452304840088e+00,
+                1.0454777479171753e+00 ]
+         tvec: !!opencv-matrix
+            rows: 3
+            cols: 1
+            dt: d
+            data: [ -2.6538249850273132e-01, -1.0749394446611404e-01,
+                1.1035614013671875e+00 ]
+         estimated: 1
+   -
+      name: haltbare_milch
+      # PoseRT
+      pose:
+         rvec: !!opencv-matrix
+            rows: 3
+            cols: 1
+            dt: d
+            data: [ 3.3181819319725037e-01, -2.8674452304840088e+00,
+                1.0454777479171753e+00 ]
+         tvec: !!opencv-matrix
+            rows: 3
+            cols: 1
+            dt: d
+            data: [ -1.3874813914299011e-01, -8.4444373846054077e-02,
+                1.0853281021118164e+00 ]
+         estimated: 1

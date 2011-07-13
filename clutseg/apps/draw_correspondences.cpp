@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>

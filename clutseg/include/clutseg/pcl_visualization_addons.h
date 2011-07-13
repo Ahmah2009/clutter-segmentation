@@ -15,20 +15,27 @@
 
 namespace clutseg {
 
+    /** \brief Adds the axes of a coordinate system described by a pose to the PCLVisualizer */
     void addPose(pcl_visualization::PCLVisualizer & visualizer,
                 const opencv_candidate::PoseRT & pose,
                 const std::string & id_prefix = std::string(""));
 
+    /** \brief Add a marker to the PCLVisualizer at a specific point. */
     void addMarker3d(pcl_visualization::PCLVisualizer & visualizer,
                     const pcl::PointXYZ & p,
                     int r = 255, int g = 0, int b = 0, 
                     const std::string & id_prefix = std::string("")); 
 
+    /** \brief Add multiple markers to the PCLVisualizer */
     void addMarker3d(pcl_visualization::PCLVisualizer & visualizer,
                     const PointCloudT & cloud,
                     int r = 255, int g = 0, int b = 0, 
                     const std::string & id_prefix = std::string("")); 
 
+    /** \brief Add a polygon to the PCLVisualizer.
+     *
+     * The point cloud is interpreted as an ordered list of polygon vertices.
+     */
     void addMarkerPolygon3d(pcl_visualization::PCLVisualizer & visualizer,
                     const PointCloudT & cloud,
                     int r = 255, int g = 0, int b = 0,

@@ -12,6 +12,7 @@
 
 namespace clutseg {
 
+    /** \brief Options taken by blackbox recognizer */
     struct Options {
         std::string imageDirectory;
         std::string baseDirectory;

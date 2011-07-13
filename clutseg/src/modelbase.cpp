@@ -2,7 +2,7 @@
  * Author: Julius Adorf
  */
 
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 
 #include "clutseg/check.h"
 #include "clutseg/flags.h"

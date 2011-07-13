@@ -18,11 +18,14 @@
 
 namespace clutseg {
 
+    /** \briefs Maps 2D points in a scene to the corresponding 3D points. */
     void mapToCloud(PointCloudT & keypoints3d,
                     const std::vector<cv::Point> keypoints2d,
                     const cv::Mat & scene2d,
                     const PointCloudT & scene3d);
 
+    /** \briefs Maps the inliers (here: keypoints) in a scene to the
+     * corresponding 3D points. */
     void mapInliersToCloud(PointCloudT & keypoints3d, const tod::Guess & guess,
                     const cv::Mat & scene2d, const PointCloudT & scene3d);
 }

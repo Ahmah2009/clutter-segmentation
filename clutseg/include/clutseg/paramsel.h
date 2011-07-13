@@ -45,6 +45,10 @@ namespace clutseg {
 
     };
 
+    /** \brief Parameters specifically for the clutseg::Clutsegmenter
+     *
+     * See table <var>pms_clutseg</var>.
+     */
     struct ClutsegParams : public Serializable {
 
         float accept_threshold;
@@ -56,6 +60,10 @@ namespace clutseg {
 
     };
 
+    /** \brief Parameters for the clutseg::Clutsegmenter, including all parameters for TOD.
+     *
+     * See table <var>paramset</var>.
+     */
     struct Paramset : public Serializable {
 
         Paramset() : train_pms_fe_id(-1), recog_pms_fe_id(-1),
@@ -98,10 +106,11 @@ namespace clutseg {
 
     };
 
-    /** Stores statistics about an experiment run on a test set. These values
-     * guide the selection of better configurations. Note that we distinguish
-     * between failures and successes that are defined by the joint angular and
-     * translational error exceeding a predefined threshold. */
+    /**
+     * \brief Stores statistics for an experiment.
+     * 
+     * See table <var>response</var>.
+     */
     struct Response : public Serializable {
 
         /** A maintainer's nightmare */
@@ -226,6 +235,11 @@ namespace clutseg {
 
     };
 
+    /**
+     * \brief An experiment.
+     *
+     * See table <var>experiment</var>.
+     */
     struct Experiment : public Serializable {
       
         Experiment() : skip(false), flags(0), has_run(false) {
@@ -256,7 +270,7 @@ namespace clutseg {
          * optimization. The skip flag is separate because this flag is likely to be
          * set and cleared not only by the machine. */
         uint32_t flags;
-        /** Specifies whether this experiment has already been carried out. In case
+        /** Specifies whether this modelbase.has already been carried out. In case
          * it has been carried out, and the experiment is serialized to the database
          * column response_id will be a valid reference into table response. If not
          * run yet, column response_id will be set to NULL when serializing. */
@@ -277,17 +291,30 @@ namespace clutseg {
 
     };
 
+    /** \brief Reads feature extraction parameters from a database. */
     void deserialize_pms_fe(sqlite3* db, tod::FeatureExtractionParams & pms_fe, int64_t & id);
+    /** \brief Writes feature extraction parameters to a database. */
     void serialize_pms_fe(sqlite3* db, const tod::FeatureExtractionParams & pms_fe, int64_t & id);
 
+    /** \brief Reads feature matching parameters from a database. */
     void deserialize_pms_match(sqlite3* db, tod::MatcherParameters & pms_match, int64_t & id);
+    /** \brief Writes feature matching parameters to a database. */
     void serialize_pms_match(sqlite3* db, const tod::MatcherParameters & pms_match, int64_t & id);
 
+    /** \brief Reads pose estimation parameters from a database. */
     void deserialize_pms_guess(sqlite3* db, tod::GuessGeneratorParameters & pms_guess, int64_t & id);
+    /** \brief Writes pose estimation parameters to a database. */
     void serialize_pms_guess(sqlite3* db, const tod::GuessGeneratorParameters & pms_guess, int64_t & id);
 
+    /** \brief Reads in all experiments that have not been run yet. */ 
     void selectExperimentsNotRun(sqlite3* & db, std::vector<Experiment> & exps);
 
+    /**
+     * \brief Sorts experiments by modelbase.
+     *
+     * This helps to avoid having to create several different modelbases before
+     * starting the first experiment.
+     */ 
     void sortExperimentsByModelbase(std::vector<Experiment> & exps);
     
     typedef std::map<std::string, std::string> MemberMap;
@@ -306,10 +333,13 @@ namespace clutseg {
 
     void setMemberField(MemberMap & m, const std::string & field, const std::string & val);
 
-    /** No-frills, low-level insert-or-update function that generates a SQL
-     * statement. Be careful, not much efforts have been spent into making it safe
-     * in any way (you can easily delete the whole table by a crafted SQL-query.
-     * Also, be careful with any string data because it is not correctly quoted. */
+    /** \brief No-frills, low-level insert-or-update function that generates a
+     * SQL statement.
+     *
+     * Be careful, not much efforts have been spent into making it safe in any
+     * way (you can easily delete the whole table by a crafted SQL-query.
+     * Also, be careful with any string data because it is not correctly
+     * quoted. */
     void insertOrUpdate(sqlite3* & db, const std::string & table, const MemberMap & m, int64_t & id);
 
 }

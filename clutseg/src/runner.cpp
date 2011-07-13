@@ -6,7 +6,7 @@
 
 #include "clutseg/check.h"
 #include "clutseg/clutseg.h"
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 #include "clutseg/paramsel.h"
 #include "clutseg/ranking.h"
 #include "clutseg/response.h"
@@ -114,7 +114,7 @@ namespace clutseg {
             storage_.record(report);
 
             if (terminate) {
-                cout << "[RUN] Registered termination request. Program will be terminated as soon as the experiment has been carried out completely." << endl;
+                cout << "[RUN] Registered termination request. Program will be terminated as soon as the modelbase.has been carried out completely." << endl;
             }
 
             // The heavy load on both CPU and IO often makes the operating

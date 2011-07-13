@@ -5,7 +5,6 @@
 #ifndef _EXPERIMENT_H_
 #define _EXPERIMENT_H_
 
-// TODO: responsibilities between experiment.h and paramsel.h are unclear
 #include "clutseg/gcc_diagnostic_disable.h"
     #include <boost/filesystem.hpp>
     #include <set>
@@ -130,19 +129,59 @@ namespace clutseg {
 
     };
 
+    /** \brief Computes the SHA1 hashcode for a file. */
     std::string sha1(const std::string & file);
 
+    /**
+     * \brief Computes the SHA1 hashcode for a set of feature extraction parameters.
+     *
+     * Writes the feature extraction parameters to a file, and then returns the SHA1
+     * hashcode of the file.
+     *
+     * @see clutseg::sha1.
+     */
     std::string sha1(const tod::FeatureExtractionParams & feParams);
 
-
+    /**
+     * \brief Read the feature extraction parameters from a YAML file.
+     *
+     * See clutseg/data/sps.features.config.yaml for an example file.
+     *
+     * @see writeFeParams
+     */
     void readFeParams(const boost::filesystem::path & p, tod::FeatureExtractionParams & feParams);
 
+    /**
+     * \brief Write the feature extraction parameters to a YAML file.
+     *
+     * See clutseg/data/sps.features.config.yaml for an example file.
+     *
+     * @see readFeParams
+     */
     void writeFeParams(const boost::filesystem::path & p, const tod::FeatureExtractionParams & feParams);
 
+    /**
+     * \brief Read the parameters for tod_* from a YAML file.
+     *
+     * See clutseg/data/sps.detect.config.yaml or
+     * clutseg/data/sps.refine.config.yaml for examples.
+     *
+     * @see writeTodParams
+     */
     void readTodParams(const boost::filesystem::path & p, tod::TODParameters & todParams);
 
+    /**
+     * \brief Write the parameters for tod_* to a YAML file.
+     *
+     * @see writeTodParams
+     */
     void writeTodParams(const boost::filesystem::path & p, const tod::TODParameters & todParams);
 
+    /** \brief List the names of the objects in a modelbase.
+     *
+     * Lists the directories. Each directory in the modelbase directory is assumed to be the name
+     * of an object in the modelbase.
+     */
     std::set<std::string> listTemplateNames(const boost::filesystem::path & dir);
 
 }

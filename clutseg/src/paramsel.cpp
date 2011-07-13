@@ -4,7 +4,7 @@
 
 #include "clutseg/paramsel.h"
 
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 #include "clutseg/db.h"
 
 #include <boost/foreach.hpp>

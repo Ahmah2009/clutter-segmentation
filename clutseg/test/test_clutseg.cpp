@@ -8,7 +8,7 @@
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
 #include "clutseg/db.h"
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 #include "clutseg/pose.h"
 #include "clutseg/viz.h"
 

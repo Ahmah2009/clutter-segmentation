@@ -6,7 +6,7 @@
 
 #include "clutseg/clutseg.h"
 #include "clutseg/common.h"
-#include "clutseg/experiment.h"
+#include "clutseg/modelbase.h"
 #include "clutseg/flags.h"
 
 #include <boost/filesystem.hpp>
