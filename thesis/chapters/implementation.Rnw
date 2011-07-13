@@ -310,7 +310,6 @@ number $k$ of correspondences per query feature can be controlled by parameter
 If a model feature is matched with multiple query features, only the
 correspondence with the minimum distance is retained. This way, \tod ensures
 that the mapping from query features to model features is injective.
-% TODO: injectivity is not a word
 
 \subsubsection{Guess}
 

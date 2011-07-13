@@ -1100,6 +1100,6 @@ case.
 
 Unfortunately, the source for the systematic error is yet unknown, although the
 odds are that the issue is related to camera calibration and/or the accuracy of
-the depth image. Despite of the issues presented in this section, the performance on the
-validation set and the live test is promising. It remains to see whether better models can
-further improve results.
+the depth image. Despite the issues presented in this section, the performance
+on the validation set and the live test is promising. It remains to see whether
+better models can further improve results.

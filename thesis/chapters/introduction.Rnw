@@ -18,8 +18,7 @@ of several such textured objects in a single scene renders recognition of these
 shopping items difficult. Since the objects may be arbitrarily oriented, prior
 assumptions about their principal axes are likely invalid.
 
-The system presented in this work enables a Personal Robot 2 (PR2,
-http://www.willowgarage.com/pages/pr2/overview) to detect an object and
+The system presented in this work enables a Personal Robot 2 (PR2\footnote{http://www.willowgarage.com/pages/pr2/overview}) to detect an object and
 estimate its pose in the cluttered scene to provide sufficient information to a
 grasping pipeline, such that the clutter can be resolved by removing items
 one-by-one from the scene. Although, in the shopping scenario, the robot may
