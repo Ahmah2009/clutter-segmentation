@@ -474,7 +474,7 @@ TEST_F(test_paramsel, sort_experiments_by_train_features) {
     e3.serialize(db);
     vector<Experiment> exps;
     selectExperimentsNotRun(db, exps);
-    sortExperimentsByTrainFeatures(exps);
+    sortExperimentsByModelbase(exps);
     ASSERT_EQ(3, exps.size());
     EXPECT_TRUE(exps[0].id == e2.id || exps[2].id == e2.id);
 }

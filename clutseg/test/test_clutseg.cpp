@@ -50,13 +50,13 @@ class test_clutseg : public ::testing::Test {
                 lp.read(lp_in[TODParameters::YAML_NODE_NAME]);
                 lp_in.release();
 
-                cache = TrainFeaturesCache("build/train_cache");
-                tr_feat = TrainFeatures("ias_kinect_train_v2", fp);
-                if (!fast() && !cache.trainFeaturesExist(tr_feat)) {
+                cache = ModelbaseCache("build/train_cache");
+                tr_feat = Modelbase("ias_kinect_train_v2", fp);
+                if (!fast() && !cache.modelbaseExist(tr_feat)) {
                     tr_feat.generate();
-                    cache.addTrainFeatures(tr_feat);
+                    cache.addModelbase(tr_feat);
                }
-               sgm = Clutsegmenter(cache.trainFeaturesDir(tr_feat).string(), dp, lp);
+               sgm = Clutsegmenter(cache.modelbaseDir(tr_feat).string(), dp, lp);
             }
             loaded = true;
 
@@ -80,8 +80,8 @@ class test_clutseg : public ::testing::Test {
 
         static Clutsegmenter sgm;
         static bool loaded;
-        TrainFeaturesCache cache;
-        TrainFeatures tr_feat;
+        ModelbaseCache cache;
+        Modelbase tr_feat;
         Mat haltbare_milch_train_img;
         PointCloudT haltbare_milch_train_cloud;
         Mat clutter_img;
@@ -161,7 +161,7 @@ TEST_F(test_clutseg, constructor_opaque) {
     TODParameters refine_params;
 
     Clutsegmenter s(
-        cache.trainFeaturesDir(tr_feat).string(),
+        cache.modelbaseDir(tr_feat).string(),
         detect_params,
         refine_params
     );
@@ -255,7 +255,7 @@ TEST_F(test_clutseg, recog_foremost_in_clutter) {
 
     Ptr<GuessRanking> prox_ranking = new ProximityRanking();
     sgm = Clutsegmenter(
-        cache.trainFeaturesDir(tr_feat).string(),
+        cache.modelbaseDir(tr_feat).string(),
         detect_params,
         refine_params,
         prox_ranking

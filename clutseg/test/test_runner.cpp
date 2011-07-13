@@ -12,7 +12,7 @@ using namespace std;
 struct test_runner : public ::testing::Test {
 
     void SetUp() {
-        TrainFeaturesCache cache("build/train_cache");
+        ModelbaseCache cache("build/train_cache");
         ResultStorage storage("build/results");
         runner = ExperimentRunner(db, cache, storage);
     }

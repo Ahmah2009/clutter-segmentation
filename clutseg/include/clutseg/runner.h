@@ -17,7 +17,7 @@ namespace clutseg {
         public:
 
             ExperimentRunner();
-            ExperimentRunner(sqlite3* db, const TrainFeaturesCache & cache,
+            ExperimentRunner(sqlite3* db, const ModelbaseCache & cache,
                                 const ResultStorage & storage);
 
             /** Runs experiments, using configurations provided by a database.  After
@@ -38,7 +38,7 @@ namespace clutseg {
             void skipExperimentsWhereFeatureExtractorCreateFailed(std::vector<Experiment> & exps);
 
             sqlite3* db_;
-            TrainFeaturesCache cache_;
+            ModelbaseCache cache_;
             ResultStorage storage_;
 
     };

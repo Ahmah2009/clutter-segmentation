@@ -36,7 +36,7 @@ struct test_experiment : public ::testing::Test {
         // corresponds to feParams 
         feat_dir = bfs::path(cache_dir) / train_set / feParamsSha1;
         bfs::create_directories(cache_dir);
-        cache = TrainFeaturesCache(cache_dir);
+        cache = ModelbaseCache(cache_dir);
     }
 
     void TearDown() {
@@ -46,10 +46,10 @@ struct test_experiment : public ::testing::Test {
     FeatureExtractionParams feParams;
     string feParamsSha1;
     string train_set;
-    TrainFeatures tr_feat;
+    Modelbase tr_feat;
     string cache_dir;
     bfs::path feat_dir;
-    TrainFeaturesCache cache;
+    ModelbaseCache cache;
 
 };
 
@@ -84,8 +84,8 @@ TEST_F(test_experiment, train_features_equal) {
     FeatureExtractionParams feParams2;
     readFeParams("./data/features.config.yaml", feParams1);
     readFeParams("./data/features.config.yaml", feParams2);
-    TrainFeatures tr_feat_1("train_set", feParams1);
-    TrainFeatures tr_feat_2("train_set", feParams2);
+    Modelbase tr_feat_1("train_set", feParams1);
+    Modelbase tr_feat_2("train_set", feParams2);
     EXPECT_TRUE(tr_feat_1 == tr_feat_2);
 }
 
@@ -95,28 +95,28 @@ TEST_F(test_experiment, train_features_not_equal) {
     readFeParams("./data/features.config.yaml", feParams1);
     readFeParams("./data/features.config.yaml", feParams2);
     feParams2.detector_type = "STAR";
-    TrainFeatures tr_feat_1("train_set", feParams1);
-    TrainFeatures tr_feat_2("train_set", feParams2);
+    Modelbase tr_feat_1("train_set", feParams1);
+    Modelbase tr_feat_2("train_set", feParams2);
     EXPECT_TRUE(tr_feat_1 != tr_feat_2);
 }
 
 
 TEST_F(test_experiment, train_features_dir) {
-    EXPECT_EQ(feat_dir.string(), cache.trainFeaturesDir(tr_feat)); 
+    EXPECT_EQ(feat_dir.string(), cache.modelbaseDir(tr_feat)); 
 }
 
 TEST_F(test_experiment, train_features_exist) {
-    TrainFeaturesCache cache(cache_dir);
-    EXPECT_FALSE(cache.trainFeaturesExist(tr_feat)); 
+    ModelbaseCache cache(cache_dir);
+    EXPECT_FALSE(cache.modelbaseExist(tr_feat)); 
     bfs::create_directories(feat_dir);
-    EXPECT_TRUE(cache.trainFeaturesExist(tr_feat));
+    EXPECT_TRUE(cache.modelbaseExist(tr_feat));
 }
 
 TEST_F(test_experiment, add_train_features_fail_if_already_exist) {
-    cache.addTrainFeatures(tr_feat, false);
-    EXPECT_TRUE(cache.trainFeaturesExist(tr_feat));
+    cache.addModelbase(tr_feat, false);
+    EXPECT_TRUE(cache.modelbaseExist(tr_feat));
     try {
-        cache.addTrainFeatures(tr_feat);
+        cache.addModelbase(tr_feat);
         EXPECT_TRUE(false);
     } catch (...) {
         
@@ -124,9 +124,9 @@ TEST_F(test_experiment, add_train_features_fail_if_already_exist) {
 }
 
 TEST_F(test_experiment, add_train_features) {
-    EXPECT_FALSE(cache.trainFeaturesExist(tr_feat));
-    cache.addTrainFeatures(tr_feat, false);
-    EXPECT_TRUE(cache.trainFeaturesExist(tr_feat));
+    EXPECT_FALSE(cache.modelbaseExist(tr_feat));
+    cache.addModelbase(tr_feat, false);
+    EXPECT_TRUE(cache.modelbaseExist(tr_feat));
     EXPECT_TRUE(bfs::exists(feat_dir / "assam_tea" / "image_00000.png.f3d.yaml.gz"));
     EXPECT_TRUE(bfs::exists(feat_dir / "haltbare_milch" / "image_00025.png.f3d.yaml.gz"));
     EXPECT_TRUE(bfs::exists(feat_dir / "icedtea" / "image_00012.png.f3d.yaml.gz"));
@@ -137,8 +137,8 @@ TEST_F(test_experiment, add_train_features) {
 TEST_F(test_experiment, gen_and_use_train_features) {
     SKIP_IF_FAST
 
-    cache.addTrainFeatures(tr_feat, false);
-    TrainFeatures new_tr_feat;
+    cache.addModelbase(tr_feat, false);
+    Modelbase new_tr_feat;
     new_tr_feat.train_set = tr_feat.train_set;
     new_tr_feat.fe_params = FeatureExtractionParams::CreateSampleParams();
     new_tr_feat.fe_params.detector_params["threshold"] = 40;
@@ -146,16 +146,16 @@ TEST_F(test_experiment, gen_and_use_train_features) {
     writeFeParams((p / train_set / "features.config.yaml").string(), new_tr_feat.fe_params);
 
     new_tr_feat.generate();
-    cache.addTrainFeatures(new_tr_feat);
+    cache.addModelbase(new_tr_feat);
     EXPECT_NE(sha1(new_tr_feat.fe_params), sha1(tr_feat.fe_params));
-    EXPECT_NE(cache.trainFeaturesDir(new_tr_feat), cache.trainFeaturesDir(tr_feat));
+    EXPECT_NE(cache.modelbaseDir(new_tr_feat), cache.modelbaseDir(tr_feat));
 
     FileFlag dirty(p / train_set / "dirty.flag");
     EXPECT_FALSE(dirty.exists());
 
     // TODO: load configs that make sense
     Clutsegmenter segmenter(
-        cache.trainFeaturesDir(new_tr_feat).string(),
+        cache.modelbaseDir(new_tr_feat).string(),
             (p / "ias_kinect_train/config.yaml").string(),
             (p / "ias_kinect_train/config.yaml").string()
         );
@@ -178,7 +178,7 @@ TEST_F(test_experiment, list_template_names) {
 }
 
 TEST_F(test_experiment, blacklist) {
-    ASSERT_FALSE(cache.trainFeaturesBlacklisted(tr_feat));
-    cache.blacklistTrainFeatures(tr_feat);
-    ASSERT_TRUE(cache.trainFeaturesBlacklisted(tr_feat));
+    ASSERT_FALSE(cache.modelbaseBlacklisted(tr_feat));
+    cache.blacklistModelbase(tr_feat);
+    ASSERT_TRUE(cache.modelbaseBlacklisted(tr_feat));
 }

@@ -16,26 +16,45 @@
 
 namespace clutseg {
 
-    /** \brief Cache entry for the modelbase cache.
+    /** \brief A modelbase. 
      *
-     * A modelbase is created from raw data (train_set) and the specification
-     * of the feature extraction parameters.
+     * A modelbase contains the models of textured objects. An instance of this
+     * class is merely a specification of how to create the models of an
+     * object, given the data in Modelbase::train_set (images, point clouds,
+     * masks, ...) and the parameters to use for extracting model features
+     * (Modelbase::fe_params).
      */
-    struct TrainFeatures {
+    struct Modelbase {
 
-        TrainFeatures();
-        TrainFeatures(const std::string & train_set, const tod::FeatureExtractionParams & fe_params);
+        /** \brief Dummy constructor. Returns an invalid modelbase. */
+        Modelbase();
 
-        /** \brief Directory containing raw data for creating the modelbase */
+        Modelbase(const std::string & train_set, const tod::FeatureExtractionParams & fe_params);
+
         std::string train_set;
         tod::FeatureExtractionParams fe_params;
     
-        /** \brief Generate the modelbase from the raw data and the feature extraction parameters. */
+        /**
+         * \brief Generate the modelbase from the data and the feature
+         * extraction parameters.
+         *
+         * The generated model features are stored in the directory specified
+         * by Modelbase::train_set. It is the responsibility of the cache
+         * manager (ModelbaseCache) to transfer the model features into the
+         * cache.
+         */
         void generate();
 
-        bool operator==(const TrainFeatures & rhs) const;
-        bool operator!=(const TrainFeatures & rhs) const;
-        bool operator<(const TrainFeatures & rhs) const;
+        /** \brief Two modelbases are equal if and only if they have been created from the 
+         * same Modelbase::train_set directory and have the same feature extraction parameters. */
+        bool operator==(const Modelbase & rhs) const;
+
+        /** \brief See Modelbase::operator== */
+        bool operator!=(const Modelbase & rhs) const;
+
+        /** \brief Compares modelbases by train_set and by the SHA1 of the
+         * feature extraction parameters. */
+        bool operator<(const Modelbase & rhs) const;
 
     };
 
@@ -81,25 +100,25 @@ namespace clutseg {
      * requested feature configuration with the feature configuration loaded
      * from the training set.
      */
-    class TrainFeaturesCache {
+    class ModelbaseCache {
 
         public:
 
-            TrainFeaturesCache();
+            ModelbaseCache();
 
-            TrainFeaturesCache(const boost::filesystem::path & cache_dir);
+            ModelbaseCache(const boost::filesystem::path & cache_dir);
 
-            boost::filesystem::path trainFeaturesDir(const TrainFeatures & tr_feat);
+            boost::filesystem::path modelbaseDir(const Modelbase & tr_feat);
 
-            bool trainFeaturesExist(const TrainFeatures & tr_feat);
+            bool modelbaseExist(const Modelbase & tr_feat);
 
-            float trainRuntime(const TrainFeatures & tr_feat);
+            float trainRuntime(const Modelbase & tr_feat);
 
-            void addTrainFeatures(const TrainFeatures & tr_feat, bool consistency_check = true);
+            void addModelbase(const Modelbase & tr_feat, bool consistency_check = true);
 
-            bool trainFeaturesBlacklisted(const TrainFeatures & tr_feat);
+            bool modelbaseBlacklisted(const Modelbase & tr_feat);
             
-            void blacklistTrainFeatures(const TrainFeatures & tr_feat);
+            void blacklistModelbase(const Modelbase & tr_feat);
 
         private:
             
@@ -107,7 +126,7 @@ namespace clutseg {
             
             boost::filesystem::path cache_dir_;
 
-            std::set<TrainFeatures> blacklist_;
+            std::set<Modelbase> blacklist_;
 
     };
 

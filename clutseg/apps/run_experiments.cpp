@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 
     if (term) return 1;
 
-    TrainFeaturesCache cache(cache_dir);
+    ModelbaseCache cache(cache_dir);
     ResultStorage storage(result_dir);
     cout << "Running experiments ..." << endl;
     runner = ExperimentRunner(db, cache, storage);

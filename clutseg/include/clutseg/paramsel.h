@@ -288,7 +288,7 @@ namespace clutseg {
 
     void selectExperimentsNotRun(sqlite3* & db, std::vector<Experiment> & exps);
 
-    void sortExperimentsByTrainFeatures(std::vector<Experiment> & exps);
+    void sortExperimentsByModelbase(std::vector<Experiment> & exps);
     
     typedef std::map<std::string, std::string> MemberMap;
    

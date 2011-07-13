@@ -539,7 +539,7 @@ namespace clutseg {
         sqlite3_finalize(select);
     }
 
-    struct ExperimentTrainFeaturesComparator {
+    struct ExperimentModelbaseComparator {
         bool operator()(const Experiment & a, const Experiment & b) {
             return (a.train_set == b.train_set) ?
                 (sha1(a.paramset.train_pms_fe) < sha1(b.paramset.train_pms_fe)) :
@@ -547,8 +547,8 @@ namespace clutseg {
         }
     };
 
-    void sortExperimentsByTrainFeatures(std::vector<Experiment> & exps) {
-        sort(exps.begin(), exps.end(), ExperimentTrainFeaturesComparator());
+    void sortExperimentsByModelbase(std::vector<Experiment> & exps) {
+        sort(exps.begin(), exps.end(), ExperimentModelbaseComparator());
     }
 
 }

@@ -35,7 +35,7 @@ namespace clutseg {
     ExperimentRunner::ExperimentRunner() : terminate(false) {}
 
     ExperimentRunner::ExperimentRunner(sqlite3* db,
-                                       const TrainFeaturesCache & cache,
+                                       const ModelbaseCache & cache,
                                        const ResultStorage & storage) :
                                         terminate(false), db_(db),
                                         cache_(cache), storage_(storage) {}
@@ -216,7 +216,7 @@ namespace clutseg {
         }
     }
 
-    void generate(TrainFeatures & tr_feat) {
+    void generate(Modelbase & tr_feat) {
         tr_feat.generate();
     }
 
@@ -235,8 +235,8 @@ namespace clutseg {
             // Make it more likely that the training features do not have to be
             // reload. Since it is only a few seconds, it does not matter too
             // much, though.
-            sortExperimentsByTrainFeatures(exps);
-            TrainFeatures cur_tr_feat;
+            sortExperimentsByModelbase(exps);
+            Modelbase cur_tr_feat;
             Clutsegmenter *sgm = NULL;
 
             skipExperimentsWhereFeatureExtractorCreateFailed(exps);
@@ -254,11 +254,11 @@ namespace clutseg {
                 } else if (e.skip) {
                     cerr << "[RUN]: Skipping experiment (id=" << e.id << ")" << endl;
                 } else {
-                    TrainFeatures tr_feat(e.train_set, e.paramset.train_pms_fe);
+                    Modelbase tr_feat(e.train_set, e.paramset.train_pms_fe);
                     if (tr_feat != cur_tr_feat) {
-                        if (!cache_.trainFeaturesExist(tr_feat)) {
+                        if (!cache_.modelbaseExist(tr_feat)) {
                             int max_seconds = 2400;
-                            if (cache_.trainFeaturesBlacklisted(tr_feat)) {
+                            if (cache_.modelbaseBlacklisted(tr_feat)) {
                                 e.skip = true;
                                 e.flags |= Experiment::FLAG_TRAIN_TIMEOUT;
                                 e.machine_note = str(boost::format("took longer than %d for training") % max_seconds);
@@ -274,9 +274,9 @@ namespace clutseg {
                             if (g.timed_join(boost::posix_time::seconds(max_seconds))) {
                                 if (terminate) break;
                                 cerr << "[RUN]: Adding training features to cache " << e.name << endl;
-                                cache_.addTrainFeatures(tr_feat);
+                                cache_.addModelbase(tr_feat);
                             } else {
-                                cache_.blacklistTrainFeatures(tr_feat);
+                                cache_.blacklistModelbase(tr_feat);
                                 e.skip = true;
                                 e.flags |= Experiment::FLAG_TRAIN_TIMEOUT;
                                 e.machine_note = str(boost::format("took longer than %d for training") % max_seconds);
@@ -289,7 +289,7 @@ namespace clutseg {
                         }
                         delete sgm;
                         sgm = new Clutsegmenter(
-                            cache_.trainFeaturesDir(tr_feat).string(),
+                            cache_.modelbaseDir(tr_feat).string(),
                             TODParameters(), TODParameters());
                     }
 

@@ -31,13 +31,13 @@ namespace bfs = boost::filesystem;
 
 namespace clutseg {
 
-    TrainFeatures::TrainFeatures(const std::string & train_set,
+    Modelbase::Modelbase(const std::string & train_set,
                                     const tod::FeatureExtractionParams & fe_params) :
                                     train_set(train_set), fe_params(fe_params) {}
 
-    TrainFeatures::TrainFeatures() {}
+    Modelbase::Modelbase() {}
 
-    void TrainFeatures::generate() {
+    void Modelbase::generate() {
         bfs::path p(getenv("CLUTSEG_PATH"));
         bfs::path train_dir = p / train_set;
         bfs::path gen_bash = train_dir / "generate.bash";
@@ -123,36 +123,36 @@ namespace clutseg {
         dirty.clear();
     }
 
-    bool TrainFeatures::operator==(const TrainFeatures & rhs) const {
+    bool Modelbase::operator==(const Modelbase & rhs) const {
         return train_set == rhs.train_set && sha1(fe_params) == sha1(rhs.fe_params);
     }
 
-    bool TrainFeatures::operator!=(const TrainFeatures & rhs) const {
+    bool Modelbase::operator!=(const Modelbase & rhs) const {
         return !operator==(rhs);
     }
 
-    bool TrainFeatures::operator<(const TrainFeatures & rhs) const {
+    bool Modelbase::operator<(const Modelbase & rhs) const {
         return (train_set < rhs.train_set) ? true :
                 sha1(fe_params) < sha1(rhs.fe_params);
     }
 
     // TODO: fix problems with empty parameter constructors
-    TrainFeaturesCache::TrainFeaturesCache() {}
+    ModelbaseCache::ModelbaseCache() {}
 
-    TrainFeaturesCache::TrainFeaturesCache(const bfs::path & cache_dir) : cache_dir_(cache_dir) {}
+    ModelbaseCache::ModelbaseCache(const bfs::path & cache_dir) : cache_dir_(cache_dir) {}
 
-    bfs::path TrainFeaturesCache::trainFeaturesDir(const TrainFeatures & tr_feat) {
+    bfs::path ModelbaseCache::modelbaseDir(const Modelbase & tr_feat) {
         return cache_dir_ / tr_feat.train_set / sha1(tr_feat.fe_params);
     }
 
-    bool TrainFeaturesCache::trainFeaturesExist(const TrainFeatures & tr_feat) {
-        return bfs::exists(trainFeaturesDir(tr_feat));
+    bool ModelbaseCache::modelbaseExist(const Modelbase & tr_feat) {
+        return bfs::exists(modelbaseDir(tr_feat));
     }
 
-    float TrainFeaturesCache::trainRuntime(const TrainFeatures & tr_feat) {
-        if (trainFeaturesExist(tr_feat)) {
+    float ModelbaseCache::trainRuntime(const Modelbase & tr_feat) {
+        if (modelbaseExist(tr_feat)) {
             FILE *f;
-            f = fopen((trainFeaturesDir(tr_feat) / "train_runtime").string().c_str(), "r");
+            f = fopen((modelbaseDir(tr_feat) / "train_runtime").string().c_str(), "r");
             float t;
             if (fscanf(f, "%f", &t) < 0) {
                 t = NAN;
@@ -198,8 +198,8 @@ namespace clutseg {
         }
     }
 
-    void TrainFeaturesCache::addTrainFeatures(const TrainFeatures & tr_feat, bool consistency_check) {
-        if (trainFeaturesExist(tr_feat)) {
+    void ModelbaseCache::addModelbase(const Modelbase & tr_feat, bool consistency_check) {
+        if (modelbaseExist(tr_feat)) {
             throw runtime_error("train features already exist");
         } else {
             bfs::path p(getenv("CLUTSEG_PATH"));
@@ -227,7 +227,7 @@ namespace clutseg {
             }
 
 
-            bfs::path tr_feat_dir = trainFeaturesDir(tr_feat);
+            bfs::path tr_feat_dir = modelbaseDir(tr_feat);
             bfs::create_directories(tr_feat_dir);
 
             set<string> templates = listTemplateNames(train_dir);
@@ -240,11 +240,11 @@ namespace clutseg {
         }
     }
 
-    bool TrainFeaturesCache::trainFeaturesBlacklisted(const TrainFeatures & tr_feat) {
+    bool ModelbaseCache::modelbaseBlacklisted(const Modelbase & tr_feat) {
         return blacklist_.count(tr_feat) == 1;
     }
 
-    void TrainFeaturesCache::blacklistTrainFeatures(const TrainFeatures & tr_feat) {
+    void ModelbaseCache::blacklistModelbase(const Modelbase & tr_feat) {
         blacklist_.insert(tr_feat);
     }
 
