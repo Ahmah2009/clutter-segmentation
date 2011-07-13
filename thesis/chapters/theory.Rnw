@@ -500,7 +500,7 @@ goodness that are generally available for estimators.
 
 Our recognition problem neither fits a pure classification nor a pure
 estimation problem. In this work, a measure of ``goodness'' sees the object
-recognition system as a combination of classifier and estimator. Estimation
+recognition system as a combination of classifier and estimator. The estimation of
 ``goodness'' is conditioned to the classifier making the right choice, and
 scenes that contain multiple instances of the same object are not considered.
 
