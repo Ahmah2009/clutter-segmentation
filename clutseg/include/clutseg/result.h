@@ -17,6 +17,7 @@
 
 namespace clutseg {
 
+    /** \brief The recognition results. */
     struct Result {
 
         Result() :  guess_made(false),
@@ -53,6 +54,11 @@ namespace clutseg {
 
     };
 
+    /**
+     * \brief Results on a set of images.
+     *
+     * @see LabelSet
+     */
     typedef std::map<std::string, Result > SetResult;
 
 }

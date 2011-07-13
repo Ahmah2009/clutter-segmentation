@@ -13,6 +13,7 @@
 
 namespace clutseg {
 
+    /** \brief A query scene. */
     struct Query {
         
         Query() : img(), cloud() {}

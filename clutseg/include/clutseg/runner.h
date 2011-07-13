@@ -12,6 +12,13 @@
 
 namespace clutseg {
 
+    /** \brief Runs experiments.
+     *
+     * Takes a database, a modelbase cache, and a directory for storing the
+     * results.  The experiment runner polls the database for new experiments.
+     * If there are any the experiments are carried out and the results written
+     * to the database and the directory.
+     */
     class ExperimentRunner {
 
         public:

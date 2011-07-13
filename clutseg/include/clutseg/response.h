@@ -18,11 +18,14 @@
 
 namespace clutseg {
 
-    /** Computes the response of the estimator on a given test set.  As such
-     * the result has to be compared with ground truth. The smaller the response,
-     * the better the guess compared to ground truth. The response function is
-     * deliberately defined over the whole test set rather than for a single query
-     * to allow to incorporate (and collect) global performance statistics. */
+    /**
+     * \brief Computes the response of the system on a given test set.
+     *
+     * As such the result has to be compared with ground truth. The smaller the
+     * response, the better the guess compared to ground truth. The response
+     * function is deliberately defined over the whole test set rather than for
+     * a single query to allow to incorporate (and collect) global performance
+     * statistics. */
     class ResponseFunction {
 
         protected:
@@ -42,7 +45,7 @@ namespace clutseg {
 
     };
 
-    /** Computes the response using the error measured by the sum of squares. */
+    /** \brief Computes the response using the error measured by the sum of squares cut off at a certain threshold. */
     class CutSseResponseFunction : public ResponseFunction {
 
         public:
