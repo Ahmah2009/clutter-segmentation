@@ -31,7 +31,7 @@ A {\it rigid transformation} of coordinates is defined as an orthogonal
 transformation followed by a translation in Euclidean space. An orthogonal
 transformation is either a reflection or a rotation. A {\it proper rigid
 transformation} additionally requires the orthogonal transformation to be a
-rotation (the definitions of rigid transformations found in the literature are
+rotation (the definitions of rigid transformations found in literature are
 inconsistent, though: Reflections are excluded from rigid transformations in
 \cite{Forsyth2003}, but included in \cite{Galarza2007}, we stick to the
 latter).  In three dimensions, a proper rigid transformation of coordinates can
@@ -72,7 +72,7 @@ robot. For example, if the robot is programmed to grasp an object at two
 points, it needs to know the camera coordinates of the two grasping points. The
 {\it \gls{object coordinate system}} (o), on the other hand, is attached to the
 object. The model features are located in the object coordinate system, which
-is also called model coordinate system in the literature \cite{Pope2000}. Both
+is also called model coordinate system in literature \cite{Pope2000}. Both
 coordinate systems are shown in \refFigure{figure:coordinate-frames}. The PRT
 between object coordinates and camera coordinates is called the {\it
 \gls{object-camera transformation}} and is denoted by $\ocT$. Subsequently, its
@@ -253,7 +253,7 @@ model. A strategy on how to select features from multiple views is presented in
 \label{subsection:feature-detectors}
 
 A feature detector designates keypoints in an image. There exists a multitude
-of feature detectors in the literature, and more efforts have been spent into
+of feature detectors in literature, and more efforts have been spent into
 inventing new ones than comparing existing ones \cite{Rosten2010}.
 
 There is generally no such thing as the best feature detector. As often in
