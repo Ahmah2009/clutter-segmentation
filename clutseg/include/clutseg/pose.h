@@ -141,15 +141,13 @@ namespace clutseg {
      * @param mpt       model coordinates
      * @param vpt       camera coordinates  
      */
-    void modelToView(const cv::Mat & mvtrans, const cv::Mat & mvrot, const cv::Mat & mpt, cv::Mat & vpt);
-
-//TODO rename modelToView to modelToCamera
+    void modelToCamera(const cv::Mat & mvtrans, const cv::Mat & mvrot, const cv::Mat & mpt, cv::Mat & vpt);
 
     /** \brief Transforms model coordinates to camera coordinates.
      *
-     * @see modelToView
+     * @see modelToCamera
      */
-    void modelToView(const opencv_candidate::PoseRT & pose, const cv::Point3d & mpt, cv::Point3d & vpt);
+    void modelToCamera(const opencv_candidate::PoseRT & pose, const cv::Point3d & mpt, cv::Point3d & vpt);
 
     opencv_candidate::PoseRT translatePose(const opencv_candidate::PoseRT & p, const cv::Mat & model_tvec);
    

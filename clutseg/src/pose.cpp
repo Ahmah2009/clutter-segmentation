@@ -209,11 +209,11 @@ namespace clutseg {
         out.release();
     }
 
-    void modelToView(const Mat & mvtrans, const Mat & mvrot, const Mat & mpt, Mat & vpt) {
+    void modelToCamera(const Mat & mvtrans, const Mat & mvrot, const Mat & mpt, Mat & vpt) {
         vpt = mvrot * mpt + mvtrans;
     }
 
-    void modelToView(const PoseRT & pose, const Point3d & mpt, Point3d & vpt) {
+    void modelToCamera(const PoseRT & pose, const Point3d & mpt, Point3d & vpt) {
         vector<Point3d> op(1, mpt);
         Mat mop(op);
         Mat R;
@@ -230,7 +230,7 @@ namespace clutseg {
         Rodrigues(dst.rvec, mvrot);
         Mat st;
         src.tvec.convertTo(st, CV_64FC1);
-        modelToView(st, mvrot, model_tvec, dst.tvec);
+        modelToCamera(st, mvrot, model_tvec, dst.tvec);
         dst.estimated = true;
         return dst;
     }
