@@ -2,7 +2,7 @@
 
 Object recognition is one of the fundamental tasks in computer vision. One of
 its applications is in robotics. Especially in household environments, it is
-often necessary for a robot to detect the presence of an object, as well as
+often necessary for a robot to detect the presence of an object, as well as to
 find the pose of the object such that the robot can grasp it and make further
 decisions on a semantic level.
 
@@ -18,7 +18,7 @@ shopping items difficult. Since the objects may be arbitrarily oriented, prior
 assumptions about their principal axes are likely invalid.
 
 The system presented in this work enables a Personal Robot 2 (PR2\footnote{http://www.willowgarage.com/pages/pr2/overview}) to detect an object and
-estimate its pose in the cluttered scene to provide sufficient information to a
+estimate its pose in a cluttered scene to provide sufficient information to a
 grasping pipeline, such that the clutter can be resolved by removing items
 one-by-one from the scene. Although, in the shopping scenario, the robot may
 have prior knowledge about what objects are present in the scene, this
@@ -48,7 +48,7 @@ Rosten and Drummond introduce the FAST feature detector \cite{Rosten2006}.
 % both designed to be efficient.
 Calonder et al.\ describe BRIEF, a feature descriptor whose generated
 descriptor vectors are efficient to match \cite{Calonder2010}. Oriented BRIEF,
-derived from FAST and BRIEF, is the feature detector and descriptor chosen for
+derived by Rublee et al. from FAST and BRIEF, is the feature detector and descriptor chosen for
 this work \cite{Rublee2011}.  A common sub-task in object recognition is matching observed features
 with model features. % For this, Muja described the FLANN library \cite{Muja2009}.
 Gionis et al.\ introduce, and Slaney and Casey summarize Locality Sensitive
