@@ -88,7 +88,8 @@
  %% mark pages as draft copies
  %\usepackage[english,all,light]{draftcopy}
  %% use hypertex version of hyperref
- \usepackage[hypertex,hyperindex=false,colorlinks=false]{hyperref}
+% Enable hyperref for clickable links in PDF 
+%\usepackage[hypertex,hyperindex=false,colorlinks=false]{hyperref}
 \else %% reduce output size \pdfcompresslevel=9
  %% declare pdfinfo
  %\pdfinfo { 
@@ -108,12 +109,13 @@
  
  %% allow rotations
  \usepackage{rotating}
+% Enable hyperref for clickable links in PDF 
  %% use pdftex version of hyperref
- \usepackage[pdftex,colorlinks=true,linkcolor=red,citecolor=red,%
- anchorcolor=red,urlcolor=red,bookmarks=true,%
- bookmarksopen=true,bookmarksopenlevel=0,plainpages=false%
- bookmarksnumbered=true,hyperindex=false,pdfstartview=%
- ]{hyperref}
+ %\usepackage[pdftex,colorlinks=true,linkcolor=red,citecolor=red,%
+ %anchorcolor=red,urlcolor=red,bookmarks=true,%
+ %bookmarksopen=true,bookmarksopenlevel=0,plainpages=false%
+ %bookmarksnumbered=true,hyperindex=false,pdfstartview=%
+ %]{hyperref}
 %
 %\usepackage[pdftex,colorlinks=false,linkcolor=red,citecolor=red,%
 % anchorcolor=red,urlcolor=red,bookmarks=true,%
