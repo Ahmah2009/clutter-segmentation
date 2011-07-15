@@ -114,3 +114,13 @@ and generate the training data base using
 
 The tutorial describing how to generate bags for training is just an empty
 stub.
+
+.SH RESOURCES
+
+    * C++, http://www.cplusplus.com/reference
+    * Lib-C, http://www.gnu.org/s/hello/manual/libc
+    * OpenCV, http://opencv.willowgarage.com/documentation/cpp
+    * Boost, http://www.boost.org/doc/libs
+    * ROS, http://www.ros.org/wiki
+    * SQLite, http://www.sqlite.org/c3ref/intro.html
+    * SQL, http://www.w3schools.com/sql
