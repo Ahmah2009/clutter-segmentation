@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 #
 
-if [ "$1" = "--help" ] ; then
-    cat <<HELP
-Usage: frecognizer-debug.bash
+function usage() {
+    print_usage
+
+    cat <<USAGE
+
+(experimental, might take some work to get it running)
 
 Collects statistics using tod kinect training dataset and some of
 its images (misused) as training images.
-HELP
-    exit
-fi
+USAGE
+}
 
-if [ ! "$CLUTSEG_PATH" ] ; then
-    echo "ERROR: Environment variable CLUTSEG_PATH is not defined."
-    exit
-fi
+source $(rospack find clutseg)/scripts/common
 
 testconfig=$(mktemp)
 cat >> $testconfig <<EOF
@@ -50,7 +49,7 @@ tod_kinect_train_9/odwalla_lime/image_00002.png = odwalla_lime
 EOF
 pushd $CLUTSEG_PATH > /dev/null
     # Collect statistics
-    python clutter-segmentation/scripts/recognizer_stats.py \
+    python cluttersegmentation/scripts/recognizer_stats.py \
            --test $CLUTSEG_PATH \
            --truth $testconfig \
            --base tod_kinect_train_9/ \
