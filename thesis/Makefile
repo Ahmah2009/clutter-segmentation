@@ -10,7 +10,27 @@ main.pdf: main.tex
 	pdflatex main.tex | ${WARNING}
 	pdflatex main.tex | ${WARNING}
 
-main.tex: main.Rnw chapters/*.tex bibliography/literature.bib components/*.tex
+main.tex: main.Rnw chapters/appendix.tex \
+	               chapters/conclusion.tex \
+				   chapters/evaluation.tex \
+				   chapters/implementation.tex \
+				   chapters/introduction.tex \
+				   chapters/theory.tex \
+				   bibliography/literature.bib \
+				   components/abstract.tex \
+				   components/abstract_german.tex \
+				   components/acknowledgements.tex \
+				   components/cover.tex \
+				   components/commands.tex \
+				   components/disclaimer.tex \
+				   components/glossary.tex \
+				   components/info.tex \
+				   components/outline.tex \
+				   components/preface.tex \
+				   components/settings.tex \
+				   components/terms.tex \
+				   components/titlepage.tex \
+				   components/text.tex
 	Rscript scripts/PngSweave.R main.Rnw
 
 chapters/introduction.tex: chapters/introduction.Rnw
