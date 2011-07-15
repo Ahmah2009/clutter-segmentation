@@ -20,7 +20,7 @@ thesis/*.bbl
 thesis/*.blg
 thesis/*.lof
 thesis/*.lot
-thesis/*.pdf
+thesis/main.pdf
 thesis/*.glo
 thesis/*.toc
 thesis/*.log
