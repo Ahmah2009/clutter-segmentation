@@ -3,28 +3,28 @@
  */
 
 /**
- * This module helps computing the score as defined by Solutions in Perception
- * Challenge 2011 (from now on referred to as SIPC) at ICRA in Shanghai. This
- * challenge asked the contestants to correctly label and locate objects in
- * multiple test scenes. Every test scene may contain more than one object.
- * The SIPC score is used to rank the contestants, and it is a linear
- * combination of pure classification results and pure estimation results.  By
- * classifying each test scene (i.e. labeling each object correctly), one can
- * already gain 50% of the maximum score. For each correctly labeled object,
- * scores are assigned according to error of estimated pose. The error is
- * bounded though, and inversely, the score as well and cannot be negative.
- * Bad pose estimation therefore does not negatively influence final results,
- * but locating objects precisely will give you additional score. The maximum
- * score of 100% can only be reached if all objects are classified correctly
- * and each of them is located up to error margins of 3cm in translation, and
- * 20 degrees in rotational error.
+ * This module helps computing the score similar to the one defined in the
+ * Solutions in Perception Challenge 2011 (from now on referred to as SIPC) at
+ * ICRA in Shanghai. This challenge asked the contestants to correctly label
+ * and locate objects in multiple test scenes. Every test scene may contain
+ * more than one object.  The SIPC score is used to rank the contestants, and
+ * it is a linear combination of pure classification results and pure
+ * estimation results. By classifying each test scene (i.e. labeling each
+ * object correctly), one can already gain 50% of the maximum score. For each
+ * correctly labeled object, scores are assigned according to error of
+ * estimated pose. The error is bounded though, and inversely, the score as
+ * well and cannot be negative.  Bad pose estimation therefore does not
+ * negatively influence final results, but locating objects precisely will give
+ * you additional score. The maximum score of 100% can only be reached if all
+ * objects are classified correctly and each of them is located up to error
+ * margins of 3cm in translation, and 20 degrees in rotational error.
  * 
  * In the case, we only recognize one of the objects, we do not make any
  * statement about true negatives, but the SIPC score can still be calculated
  * if we make the decision that you can achieve full classificaton score by
  * always correctly labeling exactly one object in each image. Besides from
  * that, the calculation remains the same. Locating all objects is more difficult
- * than locating only one object (at least that is what I expect).
+ * than locating only one object.
  *
  * See "How To Read a Detailed Score Report (ICRA2011 Solutions in Perception
  * Challenge)", in the following referred to as SIPC11 for a description. The
@@ -40,7 +40,7 @@
  * The following cases can happen in a test scene (when attempting to recognize
  * single objects only).
  *
- *  scene type          choice                      n.score     ROC terminology 
+ *  scene type          system output              n.score     ROC terminology 
  * ----------------------------------------------------------------------------
  *   empty              none                        1.0         true negative
  *   empty              some object not on scene    0.0         false positive    
@@ -57,16 +57,6 @@
  * ground truth instances, and in case the number of detected duplicates does not
  * match the number of ground truth objects, there are either false negatives, or
  * false positives.
- *
- * The guys from the Challenge haven't answered to my questions yet, and I was
- * unable to obtain detailed reports about the contestants' performance. I am
- * therefore very much not inclined to either use their code for scoring. A
- * simple escape would be to just not care about duplicates. That's a
- * simplification, and having prior knowledge about the test data leads to bias
- * of the classifier/estimator (e.g. can discard duplicate guesses right away
- * to improve SIPC score, if we knew in advance whether test scenes will
- * contain duplicates or not). For sake of simplicity, I take this shortcut,
- * but will document this decision.
  *
  * See 
  * http://vault.willowgarage.com/wgdata1/vol1/solutions_in_perception/Willow_Final_Test_Set/tests.zip
