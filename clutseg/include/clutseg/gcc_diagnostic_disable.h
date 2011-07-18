@@ -3,8 +3,8 @@
  */
 
 /**
- * Disables certain compiler warnings, useful when using libraries whose
- * authors did not care too about compiler warnings.
+ * Disables certain compiler warnings, useful when using other libraries that
+ * produce warnings.
  */
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"

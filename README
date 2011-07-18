@@ -112,9 +112,6 @@ and generate the training data base using
     $ rosrun tod_training train_all.sh
     $ cp bags/config.txt base/config.txt
 
-The tutorial describing how to generate bags for training is just an empty
-stub.
-
 .SH RESOURCES
 
     * C++, http://www.cplusplus.com/reference
