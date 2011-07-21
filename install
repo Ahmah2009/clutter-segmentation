@@ -99,6 +99,5 @@ pushd $d >> /dev/null
     step "always"                           "sudo R CMD INSTALL $RSQLITE"                                              "Installing RSQLite"
     step "always"                           "rm $RSQLITE"                                                              "Removing RSQLite Archive"
     step "always"                           "bin/utest --gtest_filter=test_extractor.orb_extract_features"             "Running simple ORB test"
-    step "always"                           "bin/utest --gtest_filter=test_clutseg.recog_using_tar"                    "Running recognition test"
 popd >> /dev/null
 
