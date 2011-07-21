@@ -84,7 +84,6 @@ ROS_STACKS='ros-diamondback-object-manipulation ros-diamondback-pr2-object-manip
 
 pushd $d >> /dev/null
     step "not_a_dir clutter-segmentation"   "git clone indefero@code.in.tum.de:clutter-segmentation.git"               "Cloning repository clutter-segmentation.git"
-    step "always"                           "cd clutter-segmentation && git checkout dependency-upgrade && cd .."      "Change to branch dependency-upgrade"
     step "not_available rosinstall"         "sudo easy_install rosinstall"                                             "Installing rosinstall tool" 
     step "always"                           "rosinstall . clutter-segmentation/clutter-segmentation.rosinstall"        "Checking out dependencies via rosinstall"
     step "always"                           "source setup.bash"                                                        "Sourcing environment via setup.bash"
@@ -100,5 +99,6 @@ pushd $d >> /dev/null
     step "always"                           "sudo R CMD INSTALL $RSQLITE"                                              "Installing RSQLite"
     step "always"                           "rm $RSQLITE"                                                              "Removing RSQLite Archive"
     step "always"                           "bin/utest --gtest_filter=test_extractor.orb_extract_features"             "Running simple ORB test"
+    step "always"                           "bin/utest --gtest_filter=test_clutseg.recog_using_tar"                    "Running recognition test"
 popd >> /dev/null
 
