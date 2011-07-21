@@ -173,12 +173,6 @@ namespace clutseg {
         cfg_out.close();
     }
 
-    void copyDetectorStats(const bfs::path & train_dir, const bfs::path & tr_feat_dir, set<string> templates) {
-        BOOST_FOREACH(const string & subj, templates) {
-            bfs::copy_file(train_dir / subj / "detector_stats.yaml", tr_feat_dir / subj / "detector_stats.yaml");
-        }
-    }
-
     void copyTrainRuntime(const bfs::path & train_dir, const bfs::path & tr_feat_dir) {
         bfs::copy_file(train_dir / "train_runtime", tr_feat_dir / "train_runtime");
     }
@@ -234,7 +228,6 @@ namespace clutseg {
 
             generateConfigTxt(tr_feat_dir, templates);
             copyF3dArchives(train_dir, tr_feat_dir, templates);
-            copyDetectorStats(train_dir, tr_feat_dir, templates);
             copyTrainRuntime(train_dir, tr_feat_dir);
             writeFeParams(tr_feat_dir / "features.config.yaml", tr_feat.fe_params);
         }

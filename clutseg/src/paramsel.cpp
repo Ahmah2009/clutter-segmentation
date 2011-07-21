@@ -68,6 +68,12 @@ namespace clutseg {
         pms_fe.detector_params["n_features"] = sqlite3_column_int(read, c++);
         pms_fe.extractor_params["scale_factor"] = sqlite3_column_double(read, c++);
         pms_fe.extractor_params["octaves"] = sqlite3_column_int(read, c++);
+
+        // Workaround for issue with feature_extraction.cpp in tod_training
+        pms_fe.extractor_params["n_features"] = pms_fe.detector_params["n_features"];
+        pms_fe.detector_params["scale_factor"] = pms_fe.extractor_params["scale_factor"];
+        pms_fe.detector_params["octaves"] = pms_fe.extractor_params["octaves"];
+
         sqlite3_finalize(read);
     }
 

@@ -172,6 +172,8 @@ namespace clutseg {
 
         Features2d f2d;
         f2d.image = query.img;
+        // TODO: document or inject intrinsic camera parameters
+        f2d.camera = Camera("./data/camera.yml", Camera::TOD_YAML);
         
         // Generate a couple of guesses. Ideally, each object on the scene is
         // detected and there are no misclassifications.

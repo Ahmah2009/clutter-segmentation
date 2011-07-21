@@ -80,17 +80,16 @@ function always() {
 
 RSQLITE='RSQLite_0.9-4.tar.gz'
 RCRAN='http://cran.r-project.org/src/contrib'
-ROS_STACKS='ros-diamondback-object-manipulation ros-diamondback-pr2-object-manipulation ros-diamondback-pr2-common-actions ros-diamondback-pr2-cockpit'
+ROS_STACKS='ros-diamondback-object-manipulation ros-diamondback-pr2-object-manipulation ros-diamondback-pr2-common-actions ros-diamondback-pr2-cockpit ros-diamondback-tabletop-object-perception'
 
 pushd $d >> /dev/null
-    step "not_a_dir clutter-segmentation"   "git clone indefero@code.in.tum.de:clutter-segmentation.git"               "Cloning repository clutter-segmentation.git"
+    step "not_a_dir clutter-segmentation"   "git clone indefero@code.in.tum.de:clutter-segmentation.git -b dependency-upgrade"               "Cloning repository clutter-segmentation.git"
     step "not_available rosinstall"         "sudo easy_install rosinstall"                                             "Installing rosinstall tool" 
     step "always"                           "rosinstall . clutter-segmentation/clutter-segmentation.rosinstall"        "Checking out dependencies via rosinstall"
     step "always"                           "source setup.bash"                                                        "Sourcing environment via setup.bash"
     step "always"                           "rosdep install clutseg"                                                   "Installing dependencies via rosdep"
     step "always"                           "export CLUTSEG_PATH=$(pwd)"                                               "Exporting CLUTSEG_PATH"
-    step "always"                           "export PATH=$CLUTSEG_PATH/clutter-segmentation/scripts/script-bin:$PATH"  "Amending PATH"
-    step "always"                           "mods-link"                                                                "Applying patches and modifications"
+    step "always"                           "rosrun clutseg mods-link"                                                 "Applying patches and modifications"
     step "always"                           "rosdep install clutseg"                                                   "Installing clutseg system dependencies"
     step "always"                           "sudo apt-get install $ROS_STACKS"                                         "Installing additional stacks for ROS diamondback"
     step "always"                           "rosmake clutseg"                                                          "Building clutseg using rosmake"

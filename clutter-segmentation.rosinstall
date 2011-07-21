@@ -1,30 +1,25 @@
 # Use this rosinstall script in the directory where repository
-# clutter-segmentation resides in. The revisions have been freezed at a state
-# where tod_training and tod_detecting were in a working state.
+# clutter-segmentation resides in. 
 - svn: {
     local-name: object_recognition,
-    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition@50974',
-    version: '-r 50974'
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition',
 }
 - svn: {
     local-name: object_recognition_experimental,
-    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental@50974',
-    version: '-r 50974'
+    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/object_recognition_experimental',
 }
 - svn: {
     local-name: perception_pcl_addons,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk@36588',
-    version: '-r 36588'
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/perception_pcl_addons/trunk@36904',
+    version: '-r 36904'
 }
 - svn: {
     local-name: vslam,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vslam/trunk@36486',
-    version: '-r 36486' 
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vslam/trunk',
 }
 - svn: {
     local-name: opencv_candidate,
-    uri: 'https://code.ros.org/svn/wg-ros-pkg/branches/trunk_diamondback/stacks/vision_bleeding/opencv_candidate@50974',
-    version: '-r 50974'
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vision_future/trunk/opencv_candidate',
 }
 - git: {
     local-name: clutter-segmentation,
@@ -34,25 +29,33 @@
 - other: {local-name: /opt/ros/diamondback/stacks}
 - svn: {
     local-name: vision_opencv,
-    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vision_opencv/trunk@37180',
-    version: '-r 37180' 
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/vision_opencv/trunk',
 }
 
+- svn: {
+    local-name: sensor_msgs,
+    uri: 'https://code.ros.org/svn/ros-pkg/stacks/common_msgs/trunk/sensor_msgs'
+}
+
+# TODO: provide version
 - git: {
     local-name: tumros-internal,
     uri: 'gitosis@git9.in.tum.de:tumros-internal'
 }
 
+# TODO: provide version
 - git: {
     local-name: mapping,
     uri: 'indefero@code.in.tum.de:mapping.git'
 }
 
+# TODO: provide version
 - svn: {
     local-name: articulation-experimental,
     uri: 'http://alufr-ros-pkg.googlecode.com/svn/branches/articulation-experimental'
 }
 
+# TODO: provide version
 - svn: {
     local-name: alufr-ros-pkg,
     uri: 'http://alufr-ros-pkg.googlecode.com/svn/trunk'

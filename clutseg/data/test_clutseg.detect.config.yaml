@@ -11,21 +11,23 @@ TODParameters:
       min_stddev_factor: 0.
    # FeatureExtractionParams
    feature_extraction_params:
-      detector_type: FAST
-      extractor_type: multi-scale
-      descriptor_type: rBRIEF
+      detector_type: ORB
+      extractor_type: ORB
+      descriptor_type: ORB
       detector_params:
-         max_features: 0.
-         min_features: 0.
-         threshold: 40.
+         n_features: 5000.
+         scale_factor: 1.2
+         octaves: 3.
       extractor_params:
+         n_features: 5000.
+         scale_factor: 1.2
          octaves: 3.
    # MatcherParameters
    MatcherParameters:
       matcher_type: LSH-BINARY
       ratio_threshold: 8.0000001192092896e-01
       knn: 3
-      do_ratio_test: 1
+      do_ratio_test: 0
    # ClusterParameters
    ClusterParameters:
       max_distance: -1028637952

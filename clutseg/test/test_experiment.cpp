@@ -27,7 +27,7 @@ struct test_experiment : public ::testing::Test {
     void SetUp() {
         readFeParams("./data/features.config.yaml", feParams);
         // Generated from file.
-        feParamsSha1 = "b8bb41a305d5616c97f54efc0edb63af561fe342";
+        feParamsSha1 = "fb0810219fb7df49954549231df7b93fcc50eabf";
         // Arbitrary.
         train_set = "ias_kinect_train_v2";
         tr_feat.fe_params = feParams;

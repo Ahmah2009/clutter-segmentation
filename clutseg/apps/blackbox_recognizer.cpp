@@ -32,7 +32,6 @@
 #include "clutseg/viz.h"
 
 #include "clutseg/gcc_diagnostic_disable.h"
-    #include <tod/training/stats.h>
     #include <tod/detecting/Loader.h>
     #include <tod/detecting/Recognizer.h>
     #include <pcl/point_cloud.h>
@@ -229,9 +228,8 @@ int main(int argc, char *argv[])
         // In anyway, it's cheap to recreate those instances. Remark: this is due to a
         // bug in DynamicAdaptedFeatureAdaptor in OpenCV.
         TrainingBase base(objects);
-        detector_stats detector_stats;
         Ptr < FeatureExtractor > extractor =
-            FeatureExtractor::create(opts.params.feParams, detector_stats);
+            FeatureExtractor::create(opts.params.feParams);
 
         cv::Ptr < Matcher > rtMatcher =
             Matcher::create(opts.params.matcherParams);

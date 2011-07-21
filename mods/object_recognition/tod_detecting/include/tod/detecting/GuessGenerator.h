@@ -106,8 +106,7 @@ class GuessGenerator
 public:
   GuessGenerator(GuessGeneratorParameters params_);
   void calculateGuesses(const cv::Ptr<TexturedObject>& object, const std::vector<std::vector<int> >& clusterIndices,
-                        const std::vector<cv::DMatch>& matches, const KeypointVector& keypoints, const cv::Mat& image,
-                        std::vector<Guess>& guesses);
+                        const std::vector<cv::DMatch>& matches, const Features2d& test, std::vector<Guess>& guesses);
   void calculateGuesses(const Features2d& features_2d, const PointCloud &query_cloud,
                         const cv::Ptr<TexturedObject>& object, const std::vector<cv::DMatch>& matches,
                         std::vector<Guess>& guesses);
