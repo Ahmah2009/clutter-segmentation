@@ -1,10 +1,27 @@
 sqlite3:
+    arch: sqlite3
     ubuntu: libsqlite3-dev sqlite3
 imagemagick:
+    arch: imagemagick
     ubuntu: imagemagick
 r-recommended:
     ubuntu: r-recommended 
 r-cran-dbi:
     ubuntu: r-cran-dbi 
 sha1sum:
+    arch: coreutils
     ubuntu: coreutils
+opencv2.3:
+    arch: opencv
+cmake:
+    arch: cmake
+libtbb:
+    arch: intel-tbb
+libtiff:
+    arch: libtiff
+suitesparse:
+    arch: suitesparse
+gtk2:
+    arch: gtk2
+libvtk:
+    arch: vtk
